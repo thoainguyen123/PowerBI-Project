@@ -1,0 +1,95 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "db2ceb6367918b02ba3d",
+  "position": {
+    "x": 24,
+    "y": 16,
+    "z": 1000,
+    "width": 912,
+    "height": 72,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "TOÀN CẢNH DANH MỤC DỰ ÁN, PHÁP LÝ VÀ NGUỒN LỰC",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "20pt",
+                      "color": "#173B70",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Executive Summary · Cơ cấu danh mục dự án",
+                    "textStyle": {
+                      "fontWeight": "normal",
+                      "fontSize": "10pt",
+                      "color": "#5B667A",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TOÀN CẢNH DANH MỤC DỰ ÁN, PHÁP LÝ VÀ NGUỒN LỰC Executive Summary · Cơ cấu danh mục dự án'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

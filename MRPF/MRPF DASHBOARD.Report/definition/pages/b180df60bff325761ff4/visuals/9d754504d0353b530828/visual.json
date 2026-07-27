@@ -1,0 +1,96 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "9d754504d0353b530828",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 63000,
+    "height": 60.372364025766785,
+    "width": 210.4408117469585,
+    "tabOrder": 63000
+  },
+  "visual": {
+    "visualType": "FlowVisual_C29F1DCC_81F5_4973_94AD_0517D44CC06A",
+    "objects": {
+      "flowInfo": [
+        {
+          "properties": {
+            "FlowId": {
+              "expr": {
+                "Literal": {
+                  "Value": "'/providers/Microsoft.ProcessSimple/environments/Default-1fd1dfc4-e5e3-4d37-addb-3eca411ecaec/flows/cfd72f61-a015-4a96-8b3c-094ff34f2063'"
+                }
+              }
+            },
+            "ManagementUri": {
+              "expr": {
+                "Literal": {
+                  "Value": "'https://asia.api.flow.microsoft.com/providers/Microsoft.ProcessSimple'"
+                }
+              }
+            },
+            "EnvironmentId": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Default-1fd1dfc4-e5e3-4d37-addb-3eca411ecaec'"
+                }
+              }
+            },
+            "EnvironmentLocation": {
+              "expr": {
+                "Literal": {
+                  "Value": "'asia'"
+                }
+              }
+            },
+            "EnvironmentRegion": {
+              "expr": {
+                "Literal": {
+                  "Value": "'southeastasia'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "buttonText": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Refesh'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ],
+      "buttonFill": [
+        {
+          "properties": {
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": 0.2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "id": "default"
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

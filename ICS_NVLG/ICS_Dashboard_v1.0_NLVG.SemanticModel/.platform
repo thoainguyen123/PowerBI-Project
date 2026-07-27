@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ICS_Dashboard_v1.0_NLVG"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b482a8ec-20c8-4ccf-81ac-9045870e97d1"
+  }
+}

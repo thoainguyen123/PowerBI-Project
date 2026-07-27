@@ -1,0 +1,192 @@
+table Dim_Period
+	lineageTag: a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6
+
+	measure 'Measure 2'
+		lineageTag: 343b7e7a-7526-424d-9f34-82e740a3789f
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Measure 3'
+		lineageTag: aaa51782-e796-4656-9e28-91b0c62d10c4
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	column DateKey
+		dataType: int64
+		isKey
+		formatString: 0
+		lineageTag: d1e2f3a4-b5c6-47d8-e9f0-a1b2c3d4e5f6
+		summarizeBy: count
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Năm - Quý'
+		dataType: string
+		lineageTag: e2f3a4b5-c6d7-48e9-f0a1-b2c3d4e5f6a7
+		summarizeBy: none
+		sourceColumn: Năm - Quý
+		sortByColumn: QuarterKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: string
+		lineageTag: f3a4b5c6-d7e8-49f0-a1b2-c3d4e5f6a7b8
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quater
+		dataType: string
+		lineageTag: a4b5c6d7-e8f9-40a1-b2c3-d4e5f6a7b8c9
+		summarizeBy: none
+		sourceColumn: quater
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d7e8f9a0-b1c2-43d4-e5f6-a7b8c9d0e1f2
+		summarizeBy: none
+		sourceColumn: QuarterKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter_Name
+		dataType: string
+		lineageTag: f9a0b1c2-d3e4-45f6-a7b8-c9d0e1f2a3b4
+		summarizeBy: none
+		sourceColumn: Quarter_Name
+		sortByColumn: QuarterKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterStartDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 19e5be2e-990c-4278-823d-2a743a238a03
+		summarizeBy: none
+		sourceColumn: QuarterStartDate
+
+		variation Variation
+			isDefault
+			relationship: 0822cbb7-cdb4-4549-8a6c-eeb70c3cbcdc
+			defaultHierarchy: LocalDateTable_c9caf710-4f0f-41ba-af0f-80a2d654e0c2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column MonthKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c0cd092-e34a-43dc-aa61-473e64a47094
+		summarizeBy: count
+		sourceColumn: MonthKey
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Period = m
+		mode: import
+		source =
+				let
+				    CurrentDate = Date.From(DateTime.LocalNow()),
+				    CurrentYear = Date.Year(CurrentDate),
+				    CurrentQuarter = Date.QuarterOfYear(CurrentDate),
+				
+				    Years = {2018..CurrentYear},
+				    Quarters = {1..4},
+				
+				    TableList =
+				        List.Transform(
+				            Years,
+				            (y) =>
+				                List.Transform(
+				                    Quarters,
+				                    (q) => [
+				                        year = y,
+				                        quater = q
+				                    ]
+				                )
+				        ),
+				
+				    CombinedList = List.Combine(TableList),
+				    TableFromList = Table.FromRecords(CombinedList),
+				
+				    FilterCurrentQuarter =
+				        Table.SelectRows(
+				            TableFromList,
+				            each
+				                [year] < CurrentYear
+				                or (
+				                    [year] = CurrentYear
+				                    and [quater] <= CurrentQuarter
+				                )
+				        ),
+				
+				    AddQuarterKey =
+				        Table.AddColumn(
+				            FilterCurrentQuarter,
+				            "QuarterKey",
+				            each [year] * 10 + [quater],
+				            Int64.Type
+				        ),
+				
+				    AddNamQuy =
+				        Table.AddColumn(
+				            AddQuarterKey,
+				            "Năm - Quý",
+				            each Text.From([year]) & "-0" & Text.From([quater]),
+				            type text
+				        ),
+				
+				    AddQuarterName =
+				        Table.AddColumn(
+				            AddNamQuy,
+				            "Quarter_Name",
+				            each "Quý " & Text.From([quater]) & "/" & Text.From([year]),
+				            type text
+				        ),
+				
+				    AddQuarterStartDate =
+				        Table.AddColumn(
+				            AddQuarterName,
+				            "QuarterStartDate",
+				            each #date(
+				                [year],
+				                ([quater] - 1) * 3 + 1,
+				                1
+				            ),
+				            type date
+				        ),
+				
+				    AddMonthKey =
+				        Table.AddColumn(
+				            AddQuarterStartDate,
+				            "MonthKey",
+				            each
+				                Date.Year([QuarterStartDate]) * 100
+				                + Date.Month([QuarterStartDate]),
+				            Int64.Type
+				        ),
+				
+				    AddDateKey =
+				        Table.AddColumn(
+				            AddMonthKey,
+				            "DateKey",
+				            each
+				                Date.Year([QuarterStartDate]) * 10000
+				                + Date.Month([QuarterStartDate]) * 100
+				                + Date.Day([QuarterStartDate]),
+				            Int64.Type
+				        )
+				in
+				    AddDateKey
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/2.1.0/schema.json",
+  "displayName": "9-4",
+  "name": "023d15ff541e93066cb7",
+  "options": {
+    "targetVisualNames": [
+      "f4dba1f9e9dd7ca5bd1e"
+    ]
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "2beaaab1c43d0d94aeee",
+    "sections": {
+      "2beaaab1c43d0d94aeee": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "b1a7d47b94b28000c31e",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "i",
+                    "Entity": "ICS",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "i"
+                                }
+                              },
+                              "Property": "isViolation"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "true"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "ICS"
+                    }
+                  },
+                  "Property": "isViolation"
+                }
+              },
+              "howCreated": 1
+            }
+          ]
+        },
+        "visualContainers": {}
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "true"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

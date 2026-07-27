@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "GMS_HSPL"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "78e2c4f4-2c4d-402c-baae-f3cb0dd17322"
+  }
+}

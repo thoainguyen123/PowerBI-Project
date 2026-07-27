@@ -1,0 +1,394 @@
+table Parameter
+	lineageTag: 697926cb-9473-4f20-8966-b1e5b2b3821a
+
+	measure So_Loi_Thang_Truoc = ```
+			
+			CALCULATE(
+			    [Sự vụ (vi phạm)], 
+			    DATEADD('DateTable'[Date], -1, MONTH)
+			)
+			```
+		formatString: 0
+		lineageTag: c94e988e-28bf-4e0a-8e78-1d4860fa4309
+
+	measure Slope_Loi_Theo_Thang = ```
+			
+			VAR MaxDate = MAX('ICS'[violationDate]) 
+			VAR MinDate = EDATE(MaxDate, -12)
+			
+			-- 1. Gom dữ liệu lại theo từng THÁNG (Thay vì từng ngày)
+			VAR Tbl_Data = 
+			    ADDCOLUMNS(
+			        SUMMARIZE(
+			            FILTER(
+			                ALLSELECTED('DateTable'), 
+			                'DateTable'[Date] <= MaxDate && 'DateTable'[Date] > MinDate
+			            ),
+			            'DateTable'[Năm],
+			            'DateTable'[Tháng Số]
+			        ),
+			        -- Tạo Measure ảo tính tổng lỗi cho tháng đó
+			        "So_Loi", [Sự vụ (vi phạm)],
+			        
+			        -- Tạo trục X (Biến độc lập): Dùng công thức (Năm * 12 + Tháng) để tạo dãy số tăng dần liên tục
+			        -- Ví dụ: T12/2024 = 24300, T1/2025 = 24301. Khoảng cách luôn là 1 đơn vị.
+			        "Month_Index", ('DateTable'[Năm] * 12) + 'DateTable'[Tháng Số]
+			    )
+			
+			-- 2. Tính toán hồi quy tuyến tính: X là Month_Index, Y là So_Loi
+			VAR Result = LINESTX(Tbl_Data, [So_Loi], [Month_Index])
+			
+			-- 3. Lấy hệ số góc (Slope)
+			VAR Monthly_Slope = SELECTCOLUMNS(Result, "Slope", [Slope1])
+			
+			RETURN 
+			    Monthly_Slope
+			```
+		lineageTag: c0962709-2f6b-41a9-a2b1-8efcb7fefdc2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Icon_XuHuong =
+			
+			VAR Slope = [Slope_Loi_Theo_Thang] -- Gọi lại kết quả tính toán Slope
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        Slope > 0, "▲",  -- Nếu dương (Tăng lỗi) -> Mũi tên lên
+			        Slope < 0, "▼",  -- Nếu âm (Giảm lỗi) -> Mũi tên xuống
+			        "-"              -- Nếu bằng 0 -> Gạch ngang
+			    )
+		lineageTag: 5c685577-fd7d-4807-b93d-3482e3a53dbf
+
+	measure 'Số lượng hành vi' = CALCULATE(COUNT(ICS[behavior_name]),ISBLANK(ICS[behavior_name]) = FALSE())
+		formatString: 0
+		lineageTag: 2ddc21ce-5b0d-4ea0-8755-30c8d83bcd17
+
+	measure T-1 = ```
+			
+			-- 1. Lấy ngày hôm nay
+			VAR _HomNay = TODAY() 
+			
+			-- 2. Tính ra ngày đầu và ngày cuối của tháng trước
+			-- Ví dụ: Nay 20/01/2026 -> Cuối tháng trước là 31/12/2025
+			VAR _CuoiThangTruoc = EOMONTH(_HomNay, -1) 
+			-- Lùi về 2 tháng rồi cộng 1 ngày -> Ra ngày 01/12/2025
+			VAR _DauThangTruoc  = EOMONTH(_HomNay, -2) + 1 
+			
+			RETURN
+			    CALCULATE(
+			        [Sự vụ (vi phạm)],
+			        
+			        -- Điều kiện: Cột Date phải nằm trọn trong tháng trước
+			        'DateTable'[Date] >= _DauThangTruoc,
+			        'DateTable'[Date] <= _CuoiThangTruoc,
+			
+			        -- QUAN TRỌNG: Lệnh này giúp bỏ qua mọi Slicer ngày tháng bạn đang chọn
+			        -- Để nó luôn tính theo ngày hệ thống
+			        REMOVEFILTERS('DateTable') 
+			    )
+			```
+		formatString: 0
+		lineageTag: 7773b7c1-ed95-4677-8046-82c3218cbeb7
+
+	measure T = ```
+			
+			-- 1. Lấy ngày hôm nay
+			VAR _HomNay = TODAY() 
+			
+			-- 2. Tính ngày đầu và ngày cuối của tháng NÀY
+			-- Ví dụ: Nay 20/01/2026 -> Đầu tháng là 01/01/2026
+			VAR _DauThangNay = EOMONTH(_HomNay, -1) + 1
+			-- Cuối tháng là 31/01/2026
+			VAR _CuoiThangNay = EOMONTH(_HomNay, 0)
+			
+			RETURN
+			    CALCULATE(
+			        [Sự vụ (vi phạm)],
+			        
+			        -- Lọc dữ liệu nằm trong tháng này
+			        ICS[violationDate] >= _DauThangNay,
+			        ICS[violationDate] <= _CuoiThangNay,
+			
+			        -- Bỏ qua Slicer để luôn hiện số liệu tháng thực tế
+			        REMOVEFILTERS('DateTable') 
+			    )
+			```
+		formatString: 0
+		lineageTag: 79e49478-b028-4a33-8a9e-a54b8aec80ec
+
+	measure +- = [T] - [T-1]
+		formatString: 0
+		lineageTag: d559a4f4-d054-4181-a143-1816866aafb4
+
+	measure 'Xu hướng ico' =
+			
+			Var x = [T]
+			Var y = [T-1]
+			RETURN x-y
+		formatString: 0
+		lineageTag: 5d4ff698-276f-4984-9267-ce10f6e06262
+
+	measure So_Loi_Ngay_Hom_Nay = ```
+			
+			-- 1. Lấy ngày hôm nay
+			VAR _HomNay = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24))
+			
+			RETURN
+			    IF(ISBLANK(CALCULATE(
+			        [Sự vụ (vi phạm)],
+			        
+			        -- Lọc dữ liệu: Cột Date phải BẰNG chính xác ngày hôm nay
+			        'DateTable'[Date] = _HomNay,
+			
+			        -- Bỏ qua Slicer (để dù bạn đang chọn tháng trước, nó vẫn hiện số liệu hôm nay)
+			        REMOVEFILTERS('DateTable') 
+			    )),0,CALCULATE(
+			        [Sự vụ (vi phạm)],
+			        
+			        -- Lọc dữ liệu: Cột Date phải BẰNG chính xác ngày hôm nay
+			        'DateTable'[Date] = _HomNay,
+			
+			        -- Bỏ qua Slicer (để dù bạn đang chọn tháng trước, nó vẫn hiện số liệu hôm nay)
+			        REMOVEFILTERS('DateTable') 
+			    ))
+			```
+		formatString: 0
+		lineageTag: 1bb983e5-4679-4300-a41e-0feab8660960
+
+	measure So_Loi_Ngay_Hom_Qua =
+			
+			-- 1. Xác định thời điểm hiện tại theo giờ Việt Nam (UTC+7)
+			VAR _GioHienTai_VN = NOW() + 7/24
+			
+			-- 2. Tính ra ngày hôm qua (Lấy ngày của hiện tại trừ đi 1)
+			VAR _NgayHomQua_VN = DATE(YEAR(_GioHienTai_VN), MONTH(_GioHienTai_VN), DAY(_GioHienTai_VN)) - 1
+			
+			RETURN
+			    CALCULATE(
+			        [Sự vụ (vi phạm)],
+			
+			        -- Lọc dữ liệu bằng đúng ngày hôm qua
+			        'DateTable'[Date] = _NgayHomQua_VN,
+			
+			        -- Bỏ qua Slicer để luôn hiển thị đúng ngày hôm qua
+			        REMOVEFILTERS('DateTable')
+			    )
+		formatString: 0
+		lineageTag: cfc1e8c3-6e1d-4ea2-b17d-a6a517e2347e
+
+	measure '+-Hom qua' = [So_Loi_Ngay_Hom_Nay] - [So_Loi_Ngay_Hom_Qua]
+		formatString: 0
+		lineageTag: 2eab225e-5094-472e-9e1b-6cc08ea88dfa
+
+	measure So_Loi_Quy_Nay = ```
+			
+			-- 1. Xác định ngày hiện tại (UTC+7)
+			VAR _NgayHienTai = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24))
+			
+			-- 2. Tính toán ngày ĐẦU quý và CUỐI quý
+			VAR _ThangHienTai = MONTH(_NgayHienTai)
+			-- Công thức tìm tháng đầu tiên của quý (Ra kết quả: 1, 4, 7 hoặc 10)
+			VAR _ThangDauQuy = _ThangHienTai - MOD(_ThangHienTai - 1, 3) 
+			
+			VAR _NgayDauQuy = DATE(YEAR(_NgayHienTai), _ThangDauQuy, 1)
+			VAR _NgayCuoiQuy = EOMONTH(_NgayDauQuy, 2) -- Cộng thêm 2 tháng rồi lấy ngày cuối tháng
+			
+			-- 3. Tính toán số liệu
+			VAR _KetQua = CALCULATE(
+			    [Sự vụ (vi phạm)],
+			
+			    -- Lọc dữ liệu nằm trong khoảng từ đầu quý đến cuối quý
+			    'DateTable'[Date] >= _NgayDauQuy,
+			    'DateTable'[Date] <= _NgayCuoiQuy,
+			
+			    -- Bỏ qua Slicer để luôn hiện số liệu Quý thực tế
+			    REMOVEFILTERS('DateTable') 
+			)
+			
+			RETURN
+			    -- Trả về 0 nếu không có dữ liệu
+			    IF(ISBLANK(_KetQua), 0, _KetQua)
+			```
+		formatString: 0
+		lineageTag: cb2b4e57-7358-47f0-afa7-7d72f5069cb6
+
+	measure So_Loi_Quy_Nay_Hoan_Thanh = ```
+			
+			-- 1. Xác định ngày hiện tại (UTC+7)
+			VAR _NgayHienTai = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24))
+			
+			-- 2. Tính toán ngày ĐẦU quý và CUỐI quý
+			VAR _ThangHienTai = MONTH(_NgayHienTai)
+			-- Công thức tìm tháng đầu tiên của quý (Ra kết quả: 1, 4, 7 hoặc 10)
+			VAR _ThangDauQuy = _ThangHienTai - MOD(_ThangHienTai - 1, 3) 
+			
+			VAR _NgayDauQuy = DATE(YEAR(_NgayHienTai), _ThangDauQuy, 1)
+			VAR _NgayCuoiQuy = EOMONTH(_NgayDauQuy, 2) -- Cộng thêm 2 tháng rồi lấy ngày cuối tháng
+			
+			-- 3. Tính toán số liệu
+			VAR _KetQua = CALCULATE(
+			    [Violation (Hoàn thành)],
+			
+			    -- Lọc dữ liệu nằm trong khoảng từ đầu quý đến cuối quý
+			    'DateTable'[Date] >= _NgayDauQuy,
+			    'DateTable'[Date] <= _NgayCuoiQuy,
+			
+			    -- Bỏ qua Slicer để luôn hiện số liệu Quý thực tế
+			    REMOVEFILTERS('DateTable') 
+			)
+			
+			RETURN
+			    -- Trả về 0 nếu không có dữ liệu
+			    IF(ISBLANK(_KetQua), 0, _KetQua)
+			```
+		formatString: 0
+		lineageTag: ed8d5763-b9c0-45f0-b56c-4a730c48cb6f
+
+	measure KPI = DIVIDE([So_Loi_Quy_Nay_Hoan_Thanh],[So_Loi_Quy_Nay],0)
+		formatString: 0%;-0%;0%
+		lineageTag: 43d6b722-153d-491a-8ba2-e2ac8e5aca1a
+
+	measure 'Trì trệ' = DIVIDE([Violation (Chờ xử lý) trì trệ],[Sự vụ (vi phạm)])
+		formatString: 0%;-0%;0%
+		lineageTag: 28269163-5253-4fff-b298-eb2fc043dc9a
+
+	measure So_Loi_7_Ngay =
+			
+			VAR _HomNay = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24))
+			
+			RETURN IF(ISBLANK(CALCULATE(
+			    [Sự vụ (vi phạm)],
+			    DATESINPERIOD('DateTable'[Date], _HomNay, -7, DAY),
+			    REMOVEFILTERS('DateTable')
+			)),0,CALCULATE(
+			    [Sự vụ (vi phạm)],
+			    DATESINPERIOD('DateTable'[Date], _HomNay, -7, DAY),
+			    REMOVEFILTERS('DateTable')
+			))
+		formatString: 0
+		lineageTag: b23891f7-37b6-4072-8be9-30a95775647c
+
+	measure So_Loi_7_Ngay_truoc =
+			
+			VAR _HomNay = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24)) - 7
+			
+			RETURN CALCULATE(
+			    [Sự vụ (vi phạm)],
+			    DATESINPERIOD('DateTable'[Date], _HomNay, -14, DAY),
+			    REMOVEFILTERS('DateTable')
+			)
+		formatString: 0
+		lineageTag: 949a8425-4698-496d-ac86-3c5efb0501b3
+
+	measure 'Chu Ky Theo Doi' = ```
+			
+			VAR _SelectedDate = TODAY() // Hoặc dùng TODAY() nếu muốn luôn cố định theo ngày hiện tại
+			VAR _WeekdayNumber = WEEKDAY(_SelectedDate, 2) // Tham số 2: Thứ 2 = 1, Chủ Nhật = 7
+			VAR _StartOfWeek = _SelectedDate - _WeekdayNumber - 2
+			VAR _EndOfWeek = _SelectedDate - _WeekdayNumber + 5
+			RETURN 
+			    "Kỳ theo dõi :  " & FORMAT(_StartOfWeek, "dd/mm/yyyy") & 
+			    " đến " & FORMAT(_EndOfWeek, "dd/mm/yyyy")
+			```
+		lineageTag: fda65b48-a3ea-4aa4-8f7b-3447a8c8f113
+
+	measure 'Ngay Hom Nay' = ```
+			
+			VAR _Today = TODAY()
+			VAR _DayName = FORMAT(_Today, "dddd", "vi-VN") -- Trả về "Thứ Sáu"
+			VAR _DatePart = FORMAT(_Today, "\N\g\à\y d \t\h\á\n\g m, yyyy", "vi-VN") -- Trả về "Ngày 15 tháng 5, 2026"
+			RETURN 
+			    _DayName & ", " & _DatePart
+			```
+		lineageTag: ab35f2bc-815e-4ac3-a080-1cee34fcf42e
+
+	measure 'Sự vụ (vi phạm) _30 ngày' =
+			
+			CALCULATE(
+			    [Sự vụ (vi phạm)], -- Tái sử dụng lại measure gốc của bạn
+			    DATESINPERIOD(
+			        'ICS'[violationDate],    -- Cột chứa ngày chuẩn trong bảng Date của bạn
+			        MAX('ICS'[violationDate]), -- Lấy ngày lớn nhất trong filter context hiện tại
+			        -30,                  -- Lùi lại 30
+			        DAY                   -- Đơn vị là ngày
+			    )
+			)
+		formatString: 0
+		lineageTag: e8cd8ba5-4583-49a8-8624-84500648eace
+
+	column Parameter
+		lineageTag: 32dcd161-2dc2-425b-9322-aa9b9df99325
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Parameter Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Parameter Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Fields'
+		isHidden
+		lineageTag: ed790101-1447-4e6b-bb2c-6f4fef5ca162
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Parameter Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Parameter Order'
+		isHidden
+		formatString: 0
+		lineageTag: 5317833f-5ea2-4a6a-92c7-2f789b67909e
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	column So_Loi_Thang_Hien_Tai = ```
+			
+			-- 1. Lấy ngày hôm nay
+			VAR _HomNay = TODAY() 
+			
+			-- 2. Tính ngày đầu và ngày cuối của tháng NÀY
+			-- Ví dụ: Nay 20/01/2026 -> Đầu tháng là 01/01/2026
+			VAR _DauThangNay = EOMONTH(_HomNay, -1) + 1
+			-- Cuối tháng là 31/01/2026
+			VAR _CuoiThangNay = EOMONTH(_HomNay, 0)
+			
+			RETURN
+			    CALCULATE(
+			        [Sự vụ (vi phạm)],
+			        
+			        -- Lọc dữ liệu nằm trong tháng này
+			        'DateTable'[Date] >= _DauThangNay,
+			        'DateTable'[Date] <= _CuoiThangNay,
+			
+			        -- Bỏ qua Slicer để luôn hiện số liệu tháng thực tế
+			        REMOVEFILTERS('DateTable') 
+			    )
+			```
+		formatString: 0
+		lineageTag: 66c18ac5-bb04-4c1e-9f2c-7d6ece753752
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Parameter = calculated
+		mode: import
+		source =
+				{
+				    ("Tổng công ty", NAMEOF('ICS'[corporation_name]), 0),
+				    ("Công ty", NAMEOF('ICS'[company_name]), 1),
+				    ("Đơn vị", NAMEOF('ICS'[division_name]), 2)
+				}
+
+	annotation PBI_Id = d619d60704f749c8872580505f15bac5
+

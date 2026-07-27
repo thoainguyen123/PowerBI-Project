@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git
+.gitignore
+.env
+.venv
+venv
+ENV
+*.bak
+docker-compose.override.yml
+# Có thể bỏ qua db nếu muốn mount, nhưng tốt nhất cứ ignore env/cache

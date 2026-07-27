@@ -1,0 +1,81 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "270b42e5fa1dc811ac85",
+  "position": {
+    "x": 24,
+    "y": 928,
+    "z": 11000,
+    "width": 1120,
+    "height": 40,
+    "tabOrder": 11000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Nguồn: Danh mục đầu tư · E-office · Headcount  |  Số liệu tự cập nhật theo lần refresh semantic model gần nhất.",
+                    "textStyle": {
+                      "fontWeight": "normal",
+                      "fontSize": "8pt",
+                      "color": "#5B667A",
+                      "fontFamily": "Segoe UI"
+                    }
+                  }
+                ],
+                "horizontalTextAlignment": "left"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Nguồn: Danh mục đầu tư · E-office · Headcount  |  Số liệu tự cập nhật theo lần refresh semantic model gần nhất.'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

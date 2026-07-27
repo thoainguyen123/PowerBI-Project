@@ -1,0 +1,1432 @@
+table ICS
+	lineageTag: dd633b34-70f8-4b02-bb6d-ffa175b1fae6
+
+	column case_isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d2e6856c-ed94-4500-86cd-5c8bbae648e5
+		summarizeBy: none
+		sourceColumn: case_isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_id
+		dataType: string
+		lineageTag: fe383b35-0d91-471c-9715-7ac91818694d
+		summarizeBy: none
+		sourceColumn: case_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_createdAt
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: c779606a-fc0f-4e83-b69b-aadf8fae5429
+		summarizeBy: none
+		sourceColumn: case_createdAt
+
+		variation Variation
+			isDefault
+			relationship: 31af9c9c-3371-4f8b-802d-c4da9751dca6
+			defaultHierarchy: LocalDateTable_8b5e545a-3d34-4d36-8a9e-9562821a833f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column case_updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7febb559-086d-4777-99a2-aba7e8d57b83
+		summarizeBy: none
+		sourceColumn: case_updatedAt
+
+		variation Variation
+			isDefault
+			relationship: 84e4d5df-21b7-46ca-9a94-d74b8b7d4fc3
+			defaultHierarchy: LocalDateTable_1e40a880-3208-49f5-b7cf-ba43235964aa.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1d591c9c-8e86-4f86-a7be-a51315997968
+		summarizeBy: none
+		sourceColumn: case_deletedAt
+
+		variation Variation
+			isDefault
+			relationship: 91bb9727-202f-424a-8153-3937312d5f3d
+			defaultHierarchy: LocalDateTable_5745d8c5-8439-4fde-b3ca-46fc5c149e4f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_createdById
+		dataType: string
+		lineageTag: 5b519d94-1b2e-42ad-8f8d-c785ee6c8534
+		summarizeBy: none
+		sourceColumn: case_createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_updatedById
+		dataType: string
+		lineageTag: ab9a31bf-cd9e-4227-8e6d-0a6aff06e1e6
+		summarizeBy: none
+		sourceColumn: case_updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_deletedById
+		dataType: string
+		lineageTag: a23f7b38-2924-414b-9ef6-750d01cfb4ce
+		summarizeBy: none
+		sourceColumn: case_deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_code
+		dataType: string
+		lineageTag: d4a4cd97-5929-4033-bd96-da4dcfc4895b
+		summarizeBy: none
+		sourceColumn: case_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspectionDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 018cacd1-b97f-4f2b-a167-8586ee57edc3
+		summarizeBy: none
+		sourceColumn: inspectionDate
+
+		variation Variation
+			isDefault
+			relationship: 968ff12f-3209-421e-bcc5-70a6dc3c6aeb
+			defaultHierarchy: LocalDateTable_bcb9eaab-9d6c-4c04-b655-2e5a2bbf89c9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column case_statusId
+		dataType: string
+		lineageTag: 195821c7-c6c2-415d-8d90-d283b2deb513
+		summarizeBy: none
+		sourceColumn: case_statusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_remediationStatusId
+		dataType: string
+		lineageTag: f6684a5f-1cd8-4a52-9aa1-a22e4778075d
+		summarizeBy: none
+		sourceColumn: case_remediationStatusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_preventionStatusId
+		dataType: string
+		lineageTag: c977f2c3-f5b9-4e6a-9603-50577809086b
+		summarizeBy: none
+		sourceColumn: case_preventionStatusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column complianceDepartmentId
+		dataType: string
+		lineageTag: 2cb252d3-97f3-4035-ba23-15fdd9af0186
+		summarizeBy: none
+		sourceColumn: complianceDepartmentId
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspectionTypeId
+		dataType: string
+		lineageTag: 5cd54bed-d052-4e4e-9ee1-b74a09f6e0ff
+		summarizeBy: none
+		sourceColumn: inspectionTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspectionLocationId
+		dataType: string
+		lineageTag: 24406ccc-8445-484a-a678-0f91755dac30
+		summarizeBy: none
+		sourceColumn: inspectionLocationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_inspectorId
+		dataType: string
+		lineageTag: c8d782ee-a4d2-4463-9fd3-590f24df651e
+		summarizeBy: none
+		sourceColumn: case_inspectorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column corporationId
+		dataType: string
+		lineageTag: 8d6c0f22-0994-475d-9119-db001f53f650
+		summarizeBy: none
+		sourceColumn: corporationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column groupId
+		dataType: string
+		lineageTag: a1e55cdf-2736-4499-ab8e-71e6e300361c
+		summarizeBy: none
+		sourceColumn: groupId
+
+		annotation SummarizationSetBy = Automatic
+
+	column companyId
+		dataType: string
+		lineageTag: fb5178ac-2e8a-4899-afa9-3890f2aec49e
+		summarizeBy: none
+		sourceColumn: companyId
+
+		annotation SummarizationSetBy = Automatic
+
+	column branchId
+		dataType: string
+		lineageTag: 6c2de76c-5c6d-465b-8f0c-b0fef47abb19
+		summarizeBy: none
+		sourceColumn: branchId
+
+		annotation SummarizationSetBy = Automatic
+
+	column case_lastAction
+		dataType: string
+		lineageTag: 779005a0-edc6-46ed-b26a-25f15c0cb79a
+		summarizeBy: none
+		sourceColumn: case_lastAction
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspectionRecordId
+		dataType: string
+		lineageTag: 357eb435-ddb2-42ed-b492-7b16a3abdc57
+		summarizeBy: none
+		sourceColumn: inspectionRecordId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b668d28e-a675-4d4c-a055-e2cf3c520fe0
+		summarizeBy: none
+		sourceColumn: violation_isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_id
+		dataType: string
+		lineageTag: 30c8706a-5c2d-4f31-ac64-03c42459583b
+		summarizeBy: none
+		sourceColumn: violation_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b12823c7-3e67-45ff-a97d-23f8ff21874c
+		summarizeBy: none
+		sourceColumn: violation_createdAt
+
+		variation Variation
+			isDefault
+			relationship: 4b3d0fe9-2db5-4078-b1e2-2048aedfaa60
+			defaultHierarchy: LocalDateTable_00e8bcf4-10ba-43d1-b849-1f57009951b2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 21f7847e-11f0-4748-9f7c-9b0279c699b4
+		summarizeBy: none
+		sourceColumn: violation_updatedAt
+
+		variation Variation
+			isDefault
+			relationship: b2e7b463-5225-4284-a964-11626332416a
+			defaultHierarchy: LocalDateTable_0751499a-1c02-4d07-9628-f2c26034138e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 47a47c29-0665-494a-b60c-bd473c65512b
+		summarizeBy: none
+		sourceColumn: violation_deletedAt
+
+		variation Variation
+			isDefault
+			relationship: b8a5c4f9-7f7d-4957-80ec-38ac6d16bcbc
+			defaultHierarchy: LocalDateTable_779fc1cc-5a3c-4009-b178-f02bec963dd9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_createdById
+		dataType: string
+		lineageTag: cda210cb-14c6-4a77-b7f8-38dc43d770be
+		summarizeBy: none
+		sourceColumn: violation_createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_updatedById
+		dataType: string
+		lineageTag: cc3866f5-4519-4727-9e7b-f33948cf7a98
+		summarizeBy: none
+		sourceColumn: violation_updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_deletedById
+		dataType: string
+		lineageTag: 42ffa261-0a4d-44a3-9796-8248c9d1f753
+		summarizeBy: none
+		sourceColumn: violation_deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column isViolation
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 28a7084f-5c50-458e-a2cf-e637c745f7f0
+		summarizeBy: none
+		sourceColumn: isViolation
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_caseId
+		dataType: string
+		lineageTag: 66e95f6a-e44d-4aca-8255-5820350dcac8
+		summarizeBy: none
+		sourceColumn: violation_caseId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_code
+		dataType: string
+		lineageTag: 825e7431-4512-4931-86df-6a23e619e2c8
+		summarizeBy: none
+		sourceColumn: violation_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_summary
+		dataType: string
+		lineageTag: b39d2464-49d9-4cfc-be4d-a22f319e5c9d
+		summarizeBy: none
+		sourceColumn: violation_summary
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_content
+		dataType: string
+		lineageTag: 086062d9-8fd1-43bd-958e-bb075bc9fdd1
+		summarizeBy: none
+		sourceColumn: violation_content
+
+		annotation SummarizationSetBy = Automatic
+
+	column note
+		dataType: string
+		lineageTag: 9b5d2acc-2bd3-4db0-8b01-4a0b23301177
+		summarizeBy: none
+		sourceColumn: note
+
+		annotation SummarizationSetBy = Automatic
+
+	column recognizedDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: b9fd49e3-9393-4171-ab1c-8246b0677539
+		summarizeBy: none
+		sourceColumn: recognizedDate
+
+		variation Variation
+			isDefault
+			relationship: df22f355-0e9b-4105-b935-1dddc0ccee74
+			defaultHierarchy: LocalDateTable_e911d99a-7342-44e8-84bd-e78269f98e25.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column violationDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: ddfb1b90-0bfe-4726-9688-923991265e83
+		summarizeBy: none
+		sourceColumn: violationDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column departmentSentDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9a5abf53-8729-4ce1-aacf-888c83f1bdc8
+		summarizeBy: none
+		sourceColumn: departmentSentDate
+
+		variation Variation
+			isDefault
+			relationship: 6f686755-3913-4249-82d2-15badd7cc7e4
+			defaultHierarchy: LocalDateTable_99094f4d-d8a5-46eb-ad5e-b68c135c3a88.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrReceivedDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e9c81190-f60a-4ac8-bfe0-de4cbb3dffd5
+		summarizeBy: none
+		sourceColumn: hrReceivedDate
+
+		variation Variation
+			isDefault
+			relationship: cffd043d-663c-4ff0-b294-76133d8fb3a2
+			defaultHierarchy: LocalDateTable_8fd41554-016c-4a13-8c2f-6d88fbe22a54.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column processedDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ffb51686-c242-4373-b34a-56cce4c370f9
+		summarizeBy: none
+		sourceColumn: processedDate
+
+		variation Variation
+			isDefault
+			relationship: c2006cbc-ea5d-4215-9757-0f676e9f1b8d
+			defaultHierarchy: LocalDateTable_f9c097cf-9b52-480e-99bf-8d8875486baf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column frequency
+		dataType: double
+		formatString: 0
+		lineageTag: 8b96dd1f-fb20-4e80-83a8-58ba452a15b9
+		summarizeBy: sum
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column severityRecommendedId
+		dataType: string
+		lineageTag: 2496a5da-7897-4392-a794-0377999919af
+		summarizeBy: none
+		sourceColumn: severityRecommendedId
+
+		annotation SummarizationSetBy = Automatic
+
+	column severityId
+		dataType: string
+		lineageTag: c079eccd-9f59-4f6a-9c57-e8ed6fe40091
+		summarizeBy: none
+		sourceColumn: severityId
+
+		annotation SummarizationSetBy = Automatic
+
+	column laborRuleViolationSeverityId
+		dataType: string
+		lineageTag: be259d99-e3a9-4d80-a066-cf396988b396
+		summarizeBy: none
+		sourceColumn: laborRuleViolationSeverityId
+
+		annotation SummarizationSetBy = Automatic
+
+	column penalty
+		dataType: string
+		lineageTag: 6dc877a8-4e91-4967-908b-46ad07eb2663
+		summarizeBy: none
+		sourceColumn: penalty
+
+		annotation SummarizationSetBy = Automatic
+
+	column deductionOfPoints
+		dataType: double
+		lineageTag: 3ad18eb8-03d2-4f7f-86d4-a31c6a59c13e
+		summarizeBy: sum
+		sourceColumn: deductionOfPoints
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column deductionOfBonus
+		dataType: double
+		lineageTag: 7836ad6b-455b-4ba3-98c9-5d587746f10d
+		summarizeBy: sum
+		sourceColumn: deductionOfBonus
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column directManagerPenalty
+		dataType: string
+		lineageTag: 4635c560-2cc2-4bf2-8ff1-3a301db48d99
+		summarizeBy: none
+		sourceColumn: directManagerPenalty
+
+		annotation SummarizationSetBy = Automatic
+
+	column directManagerDeductionOfPoints
+		dataType: double
+		lineageTag: 351191cf-7ff5-4d31-ab1d-69ba28647486
+		summarizeBy: sum
+		sourceColumn: directManagerDeductionOfPoints
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column directManagerDeductionOfBonus
+		dataType: double
+		lineageTag: d08dc5dd-ca0f-438b-a18e-7cec4f39c817
+		summarizeBy: sum
+		sourceColumn: directManagerDeductionOfBonus
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column managerUp1Penalty
+		dataType: string
+		lineageTag: b24fd7b6-30d8-4ebd-8b3a-d8e00d5335c2
+		summarizeBy: none
+		sourceColumn: managerUp1Penalty
+
+		annotation SummarizationSetBy = Automatic
+
+	column managerUp1DeductionOfPoints
+		dataType: double
+		lineageTag: 950f0c3b-d1c8-4b3c-8d6d-fa7d485f99a8
+		summarizeBy: sum
+		sourceColumn: managerUp1DeductionOfPoints
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column managerUp1DeductionOfBonus
+		dataType: double
+		lineageTag: 9d2125b5-6961-4096-bcb9-8240e4f50cfd
+		summarizeBy: sum
+		sourceColumn: managerUp1DeductionOfBonus
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hrbpPenalty
+		dataType: string
+		lineageTag: 86edc17d-39d2-40ee-aee9-881b08ba991c
+		summarizeBy: none
+		sourceColumn: hrbpPenalty
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrbpDeductionOfPoints
+		dataType: double
+		lineageTag: 952d1f7a-ad6d-4ba3-b97e-e329fd9dfb38
+		summarizeBy: sum
+		sourceColumn: hrbpDeductionOfPoints
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hrbpDeductionOfBonus
+		dataType: double
+		lineageTag: a72fe980-d954-484e-9eaa-9fd3caec3637
+		summarizeBy: sum
+		sourceColumn: hrbpDeductionOfBonus
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column violation_statusId
+		dataType: string
+		lineageTag: 7b4b3322-f4c4-409e-b212-e4d34204e7d6
+		summarizeBy: none
+		sourceColumn: violation_statusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_remediationStatusId
+		dataType: string
+		lineageTag: 9ba69c95-3df5-4117-b5fa-f594f8c66d77
+		summarizeBy: none
+		sourceColumn: violation_remediationStatusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_preventionStatusId
+		dataType: string
+		lineageTag: 46189056-184c-47d5-81d6-fa50946c63f5
+		summarizeBy: none
+		sourceColumn: violation_preventionStatusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column behaviorDetailId
+		dataType: string
+		lineageTag: 91be3c6d-83fc-444a-ab3e-1e2a131ba8ab
+		summarizeBy: none
+		sourceColumn: behaviorDetailId
+
+		annotation SummarizationSetBy = Automatic
+
+	column causeId
+		dataType: string
+		lineageTag: 17feee44-32ee-4e80-9522-b40ea5a2e11d
+		summarizeBy: none
+		sourceColumn: causeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_inspectionTypeId
+		dataType: string
+		lineageTag: 12fad582-e272-4428-8b01-f4ef0e3e2157
+		summarizeBy: none
+		sourceColumn: violation_inspectionTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_inspectionLocationId
+		dataType: string
+		lineageTag: cc421944-8c2e-425c-967a-0453e102d203
+		summarizeBy: none
+		sourceColumn: violation_inspectionLocationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolutionMethodId
+		dataType: string
+		lineageTag: c0bb271b-3c65-4495-a557-aa8bbf1f73b0
+		summarizeBy: none
+		sourceColumn: resolutionMethodId
+
+		annotation SummarizationSetBy = Automatic
+
+	column isProbation
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 6992652b-98c2-4a62-a7d5-91116208ae2d
+		summarizeBy: none
+		sourceColumn: isProbation
+
+		annotation SummarizationSetBy = Automatic
+
+	column materialResponsibility
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 544ffe8a-e289-45fd-b36a-37ab7719b53d
+		summarizeBy: none
+		sourceColumn: materialResponsibility
+
+		annotation SummarizationSetBy = Automatic
+
+	column violatorId
+		dataType: string
+		lineageTag: 7ebfc3ee-0c15-43c1-87bd-fafd463aba9c
+		summarizeBy: none
+		sourceColumn: violatorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_departmentId
+		dataType: string
+		lineageTag: 39adafb5-a304-44b9-80b3-dc956d17ed06
+		summarizeBy: none
+		sourceColumn: violation_departmentId
+
+		annotation SummarizationSetBy = Automatic
+
+	column divisionId
+		dataType: string
+		lineageTag: 6e6e4744-30e2-4ee0-ac54-10c003a95d4c
+		summarizeBy: none
+		sourceColumn: divisionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column headOfDivisionId
+		dataType: string
+		lineageTag: bc14ccb0-4ee8-4eb6-966a-e4ee304d01f8
+		summarizeBy: none
+		sourceColumn: headOfDivisionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrbpId
+		dataType: string
+		lineageTag: b6962f64-11a9-403d-9b31-9110eba8ccbc
+		summarizeBy: none
+		sourceColumn: hrbpId
+
+		annotation SummarizationSetBy = Automatic
+
+	column cbId
+		dataType: string
+		lineageTag: c3cf576b-5d1d-49c7-af6b-548b6c4a1558
+		summarizeBy: none
+		sourceColumn: cbId
+
+		annotation SummarizationSetBy = Automatic
+
+	column directManagerId
+		dataType: string
+		lineageTag: a8fc7244-709a-46c6-b4dd-acb29895d81a
+		summarizeBy: none
+		sourceColumn: directManagerId
+
+		annotation SummarizationSetBy = Automatic
+
+	column managerUp1Id
+		dataType: string
+		lineageTag: 869e0b1b-55b7-4236-af64-4719bc01109f
+		summarizeBy: none
+		sourceColumn: managerUp1Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_inspectorId
+		dataType: string
+		lineageTag: 194c7e9e-88b3-4ad8-8492-b36c1881d728
+		summarizeBy: none
+		sourceColumn: violation_inspectorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column positionId
+		dataType: string
+		lineageTag: 0d1367b5-09e2-4584-97b4-063e11a63aee
+		summarizeBy: none
+		sourceColumn: positionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column levelId
+		dataType: string
+		lineageTag: d04e7304-1112-4783-8cc3-c0b68bb1220b
+		summarizeBy: none
+		sourceColumn: levelId
+
+		annotation SummarizationSetBy = Automatic
+
+	column cancelReason
+		dataType: string
+		lineageTag: c498fbd0-44c6-4f7d-953b-f042329852be
+		summarizeBy: none
+		sourceColumn: cancelReason
+
+		annotation SummarizationSetBy = Automatic
+
+	column includeDirectManager
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 569fcacf-ef21-40e7-8279-694bda4a057d
+		summarizeBy: none
+		sourceColumn: includeDirectManager
+
+		annotation SummarizationSetBy = Automatic
+
+	column includeManagerUp1
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2a73d31e-f871-46be-96bb-8162001b3776
+		summarizeBy: none
+		sourceColumn: includeManagerUp1
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_lastAction
+		dataType: string
+		lineageTag: d501ce68-e3f2-40d4-a297-db06ca35f92c
+		summarizeBy: none
+		sourceColumn: violation_lastAction
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: ccc24c44-abf1-414f-bace-6af7c33cc12b
+		summarizeBy: none
+		sourceColumn: action_isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_id
+		dataType: string
+		lineageTag: ca9c5b4f-3d77-46cd-9fc9-7ae57a6d2cba
+		summarizeBy: none
+		sourceColumn: action_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a5f56d41-895b-4f85-94cc-f4a564883539
+		summarizeBy: none
+		sourceColumn: action_createdAt
+
+		variation Variation
+			isDefault
+			relationship: d738df5b-dd81-4a07-9fc7-dd79b583e36d
+			defaultHierarchy: LocalDateTable_369d92bc-b8ad-45d5-940c-5049b5b5783f.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f3198033-a22b-4144-ae37-0e49945a7ded
+		summarizeBy: none
+		sourceColumn: action_updatedAt
+
+		variation Variation
+			isDefault
+			relationship: 37a30741-e7e5-4bbe-9b9e-7dd1661f830f
+			defaultHierarchy: LocalDateTable_8987d6cf-dcb2-4834-9f1f-74b28f23f07c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0a11c13d-6658-4f70-8f8d-c16efbcade59
+		summarizeBy: none
+		sourceColumn: action_deletedAt
+
+		variation Variation
+			isDefault
+			relationship: ba70e216-4e88-406a-a19b-9ec39a419ea0
+			defaultHierarchy: LocalDateTable_6a031dfc-b57d-4912-b489-689c1c7a634c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_createdById
+		dataType: string
+		lineageTag: f098e131-fdaf-4ee8-9446-1bb73597cfe2
+		summarizeBy: none
+		sourceColumn: action_createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_updatedById
+		dataType: string
+		lineageTag: f3fdcd6d-e888-42fd-bc1a-9534215d535b
+		summarizeBy: none
+		sourceColumn: action_updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_deletedById
+		dataType: string
+		lineageTag: 689ca7a0-18cc-416d-b8a7-f6896e238186
+		summarizeBy: none
+		sourceColumn: action_deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_code
+		dataType: string
+		lineageTag: 31dcf38d-8daf-4013-be5b-912024d17bd4
+		summarizeBy: none
+		sourceColumn: action_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_summary
+		dataType: string
+		lineageTag: 8f488dfc-8d7c-48a9-ada1-81caa470e437
+		summarizeBy: none
+		sourceColumn: action_summary
+
+		annotation SummarizationSetBy = Automatic
+
+	column startDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8fb145d8-e70a-4f38-b5af-39ba5c0ed2da
+		summarizeBy: none
+		sourceColumn: startDate
+
+		variation Variation
+			isDefault
+			relationship: dbbedcf1-7076-4d96-a4bc-58168e4ff91a
+			defaultHierarchy: LocalDateTable_daf5b83e-dbae-494b-b0a4-6d188790fe47.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column endDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: e11d66a7-79f3-4a80-8159-fe8ed0a17e1c
+		summarizeBy: none
+		sourceColumn: endDate
+
+		variation Variation
+			isDefault
+			relationship: 078e6553-5cfa-4075-9c31-408173ee10ff
+			defaultHierarchy: LocalDateTable_35ead473-2a23-423c-9c4a-cb7d01f266cc.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column assigneeId
+		dataType: string
+		lineageTag: 9c0644e6-f580-42da-aac6-99c72e8fade3
+		summarizeBy: none
+		sourceColumn: assigneeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_caseId
+		dataType: string
+		lineageTag: 5657de2a-3965-4b50-82f2-18095000c87d
+		summarizeBy: none
+		sourceColumn: action_caseId
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_statusId
+		dataType: string
+		lineageTag: d7b71021-02fd-4900-81a6-e4845586c2b9
+		summarizeBy: none
+		sourceColumn: action_statusId
+
+		annotation SummarizationSetBy = Automatic
+
+	column actionPlanGroupId
+		dataType: string
+		lineageTag: 1b39b4ff-5ee0-4f7d-a05f-107981bb9dff
+		summarizeBy: none
+		sourceColumn: actionPlanGroupId
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_departmentId
+		dataType: string
+		lineageTag: 55fc266d-df5e-41bf-96b3-2b3d64a5bad9
+		summarizeBy: none
+		sourceColumn: action_departmentId
+
+		annotation SummarizationSetBy = Automatic
+
+	column actualCompletionDate
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 548da4bc-9a94-4e8c-abbf-92134021ed7d
+		summarizeBy: none
+		sourceColumn: actualCompletionDate
+
+		variation Variation
+			isDefault
+			relationship: c8e47dd2-4e80-4720-ba57-75b06c267bd5
+			defaultHierarchy: LocalDateTable_acfd8b49-c3cb-4041-bdfa-79a2407baa79.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column action_lastAction
+		dataType: string
+		lineageTag: 78030d78-7f0c-4ec4-ba5d-c1b1c1849be9
+		summarizeBy: none
+		sourceColumn: action_lastAction
+
+		annotation SummarizationSetBy = Automatic
+
+	column alertedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: dfa24a37-7fb0-4d28-a5c9-c0d0cecb0b60
+		summarizeBy: none
+		sourceColumn: alertedAt
+
+		variation Variation
+			isDefault
+			relationship: 8d747af0-0b42-45dd-baf9-b5526bb4be5a
+			defaultHierarchy: LocalDateTable_ebabbc6a-27f8-4afc-b5e2-84d0df5f566d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_content
+		dataType: string
+		lineageTag: 13482896-ce97-4012-aad0-a9b60f41a426
+		summarizeBy: none
+		sourceColumn: action_content
+
+		annotation SummarizationSetBy = Automatic
+
+	column behavior_name
+		dataType: string
+		lineageTag: da80aea9-2d2a-4e41-9c34-8f7f01162a37
+		summarizeBy: none
+		sourceColumn: behavior_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column violation_status
+		dataType: string
+		lineageTag: 8303b1b9-f035-4a0e-83b0-de035c179441
+		summarizeBy: none
+		sourceColumn: violation_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_plant_status
+		dataType: string
+		lineageTag: 4eaf9af2-f2f3-4bae-ba51-4dac40461a3f
+		summarizeBy: none
+		sourceColumn: action_plant_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_plant_type
+		dataType: string
+		lineageTag: bf53600c-d8f0-4ec8-8620-7773194a397d
+		summarizeBy: none
+		sourceColumn: action_plant_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column severity_level
+		dataType: string
+		lineageTag: 96b27cdd-2449-404e-8e7e-631cc7d7d6e1
+		summarizeBy: none
+		sourceColumn: severity_level
+
+		annotation SummarizationSetBy = Automatic
+
+	column cause_name
+		dataType: string
+		lineageTag: 3a6ad129-f209-4756-b84c-9e7fe1bcf698
+		summarizeBy: none
+		sourceColumn: cause_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column cb_email
+		dataType: string
+		lineageTag: 6cd3eb85-7f1a-4a33-8525-5a7ddcedc3ef
+		summarizeBy: none
+		sourceColumn: cb_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column cb_fullname
+		dataType: string
+		lineageTag: 3abeec66-18c8-4f8b-8aa0-332d3cf15ac7
+		summarizeBy: none
+		sourceColumn: cb_fullname
+
+		annotation SummarizationSetBy = Automatic
+
+	column cb_pernumber
+		dataType: string
+		lineageTag: 568aa988-5a8a-4e1e-8893-13cfe5fedb13
+		summarizeBy: none
+		sourceColumn: cb_pernumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrbp_email
+		dataType: string
+		lineageTag: 0ad57bea-13df-4e36-8d98-f8b5704afbfe
+		summarizeBy: none
+		sourceColumn: hrbp_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrbp_fullname
+		dataType: string
+		lineageTag: d7feea07-cae5-4ff9-9a4d-c442d5f41eee
+		summarizeBy: none
+		sourceColumn: hrbp_fullname
+
+		annotation SummarizationSetBy = Automatic
+
+	column hrbp_pernumber
+		dataType: string
+		lineageTag: 2dcff9d5-6ae2-4171-881e-1f26bb696f35
+		summarizeBy: none
+		sourceColumn: hrbp_pernumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspector_email
+		dataType: string
+		lineageTag: 9c54dd88-fed4-4d39-a45f-570c9ed85581
+		summarizeBy: none
+		sourceColumn: inspector_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspector_fullname
+		dataType: string
+		lineageTag: e8a3225f-edcc-49e6-ab9f-c6b798fa569e
+		summarizeBy: none
+		sourceColumn: inspector_fullname
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspector_pernumber
+		dataType: string
+		lineageTag: f84915ed-1406-46f0-b932-bd682e9c876f
+		summarizeBy: none
+		sourceColumn: inspector_pernumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column assignee_email
+		dataType: string
+		lineageTag: d2437637-1415-46f0-9d21-f032234c26ce
+		summarizeBy: none
+		sourceColumn: assignee_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column assignee_fullname
+		dataType: string
+		lineageTag: 6f27e665-1847-4aca-8d51-a6e9adb710f2
+		summarizeBy: none
+		sourceColumn: assignee_fullname
+
+		annotation SummarizationSetBy = Automatic
+
+	column assignee_pernumber
+		dataType: string
+		lineageTag: 55238ade-6092-4452-a2ef-3023e3832880
+		summarizeBy: none
+		sourceColumn: assignee_pernumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column violator_email
+		dataType: string
+		lineageTag: 9900a577-7ffb-4f4c-830d-68e99dfbbd20
+		summarizeBy: none
+		sourceColumn: violator_email
+
+		annotation SummarizationSetBy = Automatic
+
+	column violator_fullname
+		dataType: string
+		lineageTag: 78d295a4-a8d0-459d-8345-eb5a33824ecc
+		summarizeBy: none
+		sourceColumn: violator_fullname
+
+		annotation SummarizationSetBy = Automatic
+
+	column violator_pernumber
+		dataType: string
+		lineageTag: 35c9630d-72b3-4dbb-8c2e-281aa20f2bd0
+		summarizeBy: none
+		sourceColumn: violator_pernumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspection_type
+		dataType: string
+		lineageTag: cd380902-775a-4218-8338-e56cae0c3cf0
+		summarizeBy: none
+		sourceColumn: inspection_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column position
+		dataType: string
+		lineageTag: 3cd42f6e-b70f-4bfc-bc75-859bde8eef8e
+		summarizeBy: none
+		sourceColumn: position
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_by
+		dataType: string
+		lineageTag: 72ee8499-2fb3-40db-96d6-771e31c7b04e
+		summarizeBy: none
+		sourceColumn: created_by
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'compliance_fullpath.1'
+		dataType: string
+		lineageTag: 5ccf86fa-2a8d-4d02-b374-2e19923ff0cc
+		summarizeBy: none
+		sourceColumn: compliance_fullpath.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'compliance_fullpath.2'
+		dataType: string
+		lineageTag: 6eedb7de-9b9d-4dc6-942f-08c9a47c5e86
+		summarizeBy: none
+		sourceColumn: compliance_fullpath.2
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'compliance_fullpath.3'
+		dataType: string
+		lineageTag: 7bd9d017-0fd4-4455-96d6-32f09dc27328
+		summarizeBy: none
+		sourceColumn: compliance_fullpath.3
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'compliance_fullpath.4'
+		dataType: string
+		lineageTag: c875abb6-7dbf-4484-969e-81373008de09
+		summarizeBy: none
+		sourceColumn: compliance_fullpath.4
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'compliance_fullpath.5'
+		dataType: string
+		lineageTag: 4581f301-d726-41b7-b937-387384d1340c
+		summarizeBy: none
+		sourceColumn: compliance_fullpath.5
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolution_name
+		dataType: string
+		lineageTag: b399d213-738c-4674-a933-f46c9a78d534
+		summarizeBy: none
+		sourceColumn: resolution_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column laborRuleViolationSeverity_name
+		dataType: string
+		lineageTag: 3e59e47a-f9ad-40db-8889-b3b1740ccd28
+		summarizeBy: none
+		sourceColumn: laborRuleViolationSeverity_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_status =
+			
+			VAR EndDate     = ICS[endDate]
+			VAR ActualDate  = ICS[actualCompletionDate]
+			VAR CurrentDate = TODAY()
+			VAR Label       = ICS[action_plant_status]
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(EndDate), "Trống",
+			    Label = "Hoàn thành",
+			        IF(EndDate >= ActualDate || ISBLANK(ActualDate) = True, "Đúng hạn", "Trễ hạn (Đã xử lý)"),
+			    Label = "Chờ thực hiện",
+			        IF(EndDate >= CurrentDate, "Chưa tới hạn (Chưa xử lý)", "Trễ hạn (Chưa xử lý)")
+			)
+		lineageTag: 3cd170b5-e1eb-4368-8841-ddae683e2f92
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ghi nhận /VP' = IF(ICS[isViolation] = TRUE, "Vi phạm", "Ghi nhận")
+		lineageTag: fe9f5ced-809c-4163-9aa2-c064e39b5f44
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column inspection_record_name
+		dataType: string
+		lineageTag: 50824ce8-af87-4325-b5d6-eccaa32a8617
+		summarizeBy: none
+		sourceColumn: inspection_record_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column link = "https://app.novaland.com.vn/ics/violation/update/"&ICS[case_id]
+		lineageTag: 54639ea2-8e1a-452f-bb35-53a0a9b16a81
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column link_label = "Xem chi tiết"
+		lineageTag: 2c590860-5201-4b7a-b0ba-c3569a8c64a2
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column corporation_name
+		dataType: string
+		lineageTag: 80aea750-30d6-45b5-9330-f77745bbd33c
+		summarizeBy: none
+		sourceColumn: corporation_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column group_co_name
+		dataType: string
+		lineageTag: ab4510e1-58f7-4f0d-9852-78b796c14a5b
+		summarizeBy: none
+		sourceColumn: group_co_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column company_name
+		dataType: string
+		lineageTag: aea79cb8-9132-4b5b-ae16-8f550362ecb2
+		summarizeBy: none
+		sourceColumn: company_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column branch_name
+		dataType: string
+		lineageTag: bdbf23d5-5d49-4573-9249-ef952e57828b
+		summarizeBy: none
+		sourceColumn: branch_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_fullpath
+		dataType: string
+		lineageTag: 5f9d5d5d-0295-4400-9073-1fe7d1d0ea2b
+		summarizeBy: none
+		sourceColumn: department_fullpath
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_name
+		dataType: string
+		lineageTag: e514ffe6-cfd8-4a6f-ab14-977aae280b48
+		summarizeBy: none
+		sourceColumn: department_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column division_name
+		dataType: string
+		lineageTag: 39fe98db-8d12-4c05-be94-3756931e5b0f
+		summarizeBy: none
+		sourceColumn: division_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column headOfDivision_name
+		dataType: string
+		lineageTag: 2a29a669-3da1-44e0-8799-793e0543d1ed
+		summarizeBy: none
+		sourceColumn: headOfDivision_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Format_violation = IF(ICS[isViolation] = TRUE(),"Vi phạm","Không")
+		lineageTag: ef3d37b4-abc4-4133-9235-3f5fd3ebb0ab
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Format_trehan = IF(ICS[action_status] = "Trễ hạn (Chưa xử lý)","Trễ hạn","Không")
+		lineageTag: 16835eea-823f-4d71-9864-450c880e1e49
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column behavior_group_name
+		dataType: string
+		lineageTag: c611a84a-14c4-46dd-9f36-dbdacf6a20a0
+		summarizeBy: none
+		sourceColumn: behavior_group_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column action_format = IF(ICS[action_status] = "Chưa tới hạn (Chưa xử lý)","Chờ xử lý",IF(ICS[action_status] = "Trễ hạn (Chưa xử lý)","Trễ hạn",""))
+		lineageTag: 96825519-5568-4f58-aa15-33434c9389fe
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sự_vụ_nè = "Sự vụ"
+		lineageTag: 38f62541-3ef2-4967-87c7-c968fad21001
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column compliance_department_name
+		dataType: string
+		lineageTag: 8cb68ca8-93c9-4f19-869a-d057fbdb6e5e
+		summarizeBy: none
+		sourceColumn: compliance_department_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column positionName
+		dataType: string
+		lineageTag: 4da2371a-4f3b-4581-b96f-f0ea7211729d
+		summarizeBy: none
+		sourceColumn: positionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Điểm = -ICS[deductionOfPoints]
+		dataType: int64
+		lineageTag: a180eb37-3b19-46a3-a4f9-9d9e6b2893b5
+		summarizeBy: sum
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'employee.perNumber'
+		dataType: string
+		lineageTag: 4b8e2ad9-235f-4dda-9ab1-aeb9c5d807f9
+		summarizeBy: none
+		sourceColumn: employee.perNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'employee.status'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8c7bb646-8ac1-4a6b-b6d9-da9728b03923
+		summarizeBy: sum
+		sourceColumn: employee.status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ICS = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("10.16.19.14", "VIOLATION_REPORT", [Query=";WITH all_cases AS (#(lf)    SELECT #(lf)        -- Case table columns#(lf)        t1.isDeactivated AS case_isDeactivated,#(lf)        t1.id AS case_id,#(lf)        t1.createdAt AS case_createdAt,#(lf)        t1.updatedAt AS case_updatedAt,#(lf)        t1.deletedAt AS case_deletedAt,#(lf)        t1.createdById AS case_createdById,#(lf)        t1.updatedById AS case_updatedById,#(lf)        t1.deletedById AS case_deletedById,#(lf)        t1.code AS case_code,#(lf)        t1.inspectionDate,#(lf)        t1.statusId AS case_statusId,#(lf)        t1.remediationStatusId AS case_remediationStatusId,#(lf)        t1.preventionStatusId AS case_preventionStatusId,#(lf)        t1.complianceDepartmentId,#(lf)        t1.inspectionTypeId,#(lf)        t1.inspectionLocationId,#(lf)        t1.inspectorId AS case_inspectorId,#(lf)        t1.corporationId,#(lf)        t1.groupId,#(lf)        t1.companyId,#(lf)        t1.branchId,#(lf)        t1.lastAction AS case_lastAction,#(lf)        t1.inspectionRecordId,#(lf)#(lf)        -- Violation table columns#(lf)        t2.isDeactivated AS violation_isDeactivated,#(lf)        t2.id AS violation_id,#(lf)        t2.createdAt AS violation_createdAt,#(lf)        t2.updatedAt AS violation_updatedAt,#(lf)        t2.deletedAt AS violation_deletedAt,#(lf)        t2.createdById AS violation_createdById,#(lf)        t2.updatedById AS violation_updatedById,#(lf)        t2.deletedById AS violation_deletedById,#(lf)        t2.isViolation,#(lf)        t2.caseId AS violation_caseId,#(lf)        t2.code AS violation_code,#(lf)        t2.summary AS violation_summary,#(lf)        t2.content AS violation_content,#(lf)        t2.note,#(lf)        t2.recognizedDate,#(lf)        t2.violationDate,#(lf)        t2.departmentSentDate,#(lf)        t2.hrReceivedDate,#(lf)        t2.processedDate,#(lf)        t2.frequency,#(lf)        t2.severityRecommendedId,#(lf)        t2.severityId,#(lf)        t2.laborRuleViolationSeverityId,#(lf)        t2.penalty,#(lf)        t2.deductionOfPoints,#(lf)        t2.deductionOfBonus,#(lf)        t2.directManagerPenalty,#(lf)        t2.directManagerDeductionOfPoints,#(lf)        t2.directManagerDeductionOfBonus,#(lf)        t2.managerUp1Penalty,#(lf)        t2.managerUp1DeductionOfPoints,#(lf)        t2.managerUp1DeductionOfBonus,#(lf)        t2.hrbpPenalty,#(lf)        t2.hrbpDeductionOfPoints,#(lf)        t2.hrbpDeductionOfBonus,#(lf)        t2.statusId AS violation_statusId,#(lf)        t2.remediationStatusId AS violation_remediationStatusId,#(lf)        t2.preventionStatusId AS violation_preventionStatusId,#(lf)        t2.behaviorDetailId,#(lf)        t2.causeId,#(lf)        t2.inspectionTypeId AS violation_inspectionTypeId,#(lf)        t2.inspectionLocationId AS violation_inspectionLocationId,#(lf)        t2.resolutionMethodId,#(lf)        t2.isProbation,#(lf)        t2.materialResponsibility,#(lf)        t2.violatorId,#(lf)        t2.departmentId AS violation_departmentId,#(lf)        t2.divisionId,#(lf)        t2.headOfDivisionId,#(lf)        t2.hrbpId,#(lf)        t2.cbId,#(lf)        t2.directManagerId,#(lf)        t2.managerUp1Id,#(lf)        t2.inspectorId AS violation_inspectorId,#(lf)        t2.positionId,#(lf)        t2.levelId,#(lf)        t2.cancelReason,#(lf)        t2.includeDirectManager,#(lf)        t2.includeManagerUp1,#(lf)        t2.lastAction AS violation_lastAction,#(lf)#(lf)        -- Action Plan table columns#(lf)        t3.isDeactivated AS action_isDeactivated,#(lf)        t3.id AS action_id,#(lf)        t3.createdAt AS action_createdAt,#(lf)        t3.updatedAt AS action_updatedAt,#(lf)        t3.deletedAt AS action_deletedAt,#(lf)        t3.createdById AS action_createdById,#(lf)        t3.updatedById AS action_updatedById,#(lf)        t3.deletedById AS action_deletedById,#(lf)        t3.code AS action_code,#(lf)        t3.summary AS action_summary,#(lf)        t3.startDate,#(lf)        t3.endDate,#(lf)        t3.assigneeId,#(lf)        t3.caseId AS action_caseId,#(lf)        t3.statusId AS action_statusId,#(lf)        t3.actionPlanGroupId,#(lf)        t3.departmentId AS action_departmentId,#(lf)        t3.actualCompletionDate,#(lf)        t3.lastAction AS action_lastAction,#(lf)        t3.alertedAt,#(lf)        t3.content AS action_content#(lf)#(lf)    FROM [dbo].[case] t1#(lf)    LEFT JOIN violation t2 #(lf)        ON t1.id = t2.caseId#(lf)    LEFT JOIN [dbo].[violation_action_plan] s ON t2.id = s.[violationId]#(lf)    LEFT JOIN action_plan t3 #(lf)        ON t1.id = t3.caseId AND s.[actionPlanId] = t3.[id] AND t3.deletedAt IS NULL AND t3.isDeactivated = 0#(lf)    WHERE t1.deletedAt IS NULL AND t1.isDeactivated = 0 AND t2.isDeactivated = 0 AND t2.deletedAt IS NULL #(lf)#(lf)),#(lf)org_tree AS (#(lf)    SELECT #(lf)        o.id,#(lf)        o.name,#(lf)        o.parentId,#(lf)        o.isDeactivated,#(lf)        o.createdAt,#(lf)        o.updatedAt,#(lf)        o.deletedAt,#(lf)        o.createdById,#(lf)        o.updatedById,#(lf)        o.deletedById,#(lf)        o.sourceId,#(lf)        o.parentSourceId,#(lf)        o.source,#(lf)        o.type,#(lf)        o.parentCode,#(lf)        o.startDate,#(lf)        o.endDate,#(lf)        o.head,#(lf)        o.status,#(lf)        o.note,#(lf)        o.path,#(lf)        o.level,#(lf)        o.groupCode,#(lf)        o.headId,#(lf)        o.isVirtual,#(lf)        o.virtualOrganizationId,#(lf)        o.lastAction,#(lf)        CAST(o.name AS NVARCHAR(MAX)) AS FullPath,#(lf)        1 AS LevelNum#(lf)    FROM [VIOLATION_REPORT].[dbo].[organization] o#(lf)    WHERE o.level = 1#(lf)#(lf)    UNION ALL#(lf)#(lf)    SELECT #(lf)        c.id,#(lf)        c.name,#(lf)        c.parentId,#(lf)        c.isDeactivated,#(lf)        c.createdAt,#(lf)        c.updatedAt,#(lf)        c.deletedAt,#(lf)        c.createdById,#(lf)        c.updatedById,#(lf)        c.deletedById,#(lf)        c.sourceId,#(lf)        c.parentSourceId,#(lf)        c.source,#(lf)        c.type,#(lf)        c.parentCode,#(lf)        c.startDate,#(lf)        c.endDate,#(lf)        c.head,#(lf)        c.status,#(lf)        c.note,#(lf)        c.path,#(lf)        c.level,#(lf)        c.groupCode,#(lf)        c.headId,#(lf)        c.isVirtual,#(lf)        c.virtualOrganizationId,#(lf)        c.lastAction,#(lf)        CAST(p.FullPath + N' → ' + c.name AS NVARCHAR(MAX)) AS FullPath,#(lf)        p.LevelNum + 1 AS LevelNum#(lf)    FROM [VIOLATION_REPORT].[dbo].[organization] c#(lf)    INNER JOIN org_tree p ON c.parentId = p.id#(lf))#(lf)SELECT #(lf)    A.*,#(lf)    B.name AS behavior_name,#(lf)    BE.name AS behavior_group_name,#(lf)    C.label AS violation_status,#(lf)    D.label AS action_plant_status,#(lf)    E.label AS action_plant_type,#(lf)    F.label AS severity_level,#(lf)    G.label AS cause_name,#(lf)    H.email AS cb_email,#(lf)    H.fullName AS cb_fullname,#(lf)    H.perNumber AS cb_pernumber,#(lf)    K.email AS hrbp_email,#(lf)    K.fullName AS hrbp_fullname,#(lf)    K.perNumber AS hrbp_pernumber,#(lf)    I.email AS inspector_email,#(lf)    I.fullName AS inspector_fullname,#(lf)    I.perNumber AS inspector_pernumber,#(lf)    J.email AS assignee_email,#(lf)    J.fullName AS assignee_fullname,#(lf)    J.perNumber AS assignee_pernumber,#(lf)    L.email AS violator_email,#(lf)    L.fullName AS violator_fullname,#(lf)    L.perNumber AS violator_pernumber,#(lf)    JB.name AS positionName,#(lf)    M.name AS inspection_type,#(lf)    N.name AS position,#(lf)    O.fullName AS created_by,#(lf)    P.FullPath AS compliance_fullpath,#(lf)    S.FullPath AS department_fullpath,#(lf)    DP.name AS department_name,#(lf)    DV.name AS division_name,#(lf)    HO.name AS headOfDivision_name,#(lf)    Q.label AS resolution_name,#(lf)    R.label AS laborRuleViolationSeverity_name,#(lf)    T.code AS inspection_record_name,#(lf)    Y.name AS corporation_name,#(lf)    U.name AS group_co_name,#(lf)    Z.name AS company_name,#(lf)    X.name AS branch_name,#(lf)    CD.name AS compliance_department_name#(lf)#(lf)FROM all_cases A#(lf)LEFT JOIN behavior_detail B #(lf)    ON A.behaviorDetailId = B.id#(lf)LEFT JOIN [behavior] BE ON B.behaviorId = BE.id#(lf)LEFT JOIN dropdown_option C #(lf)    ON A.violation_statusId = C.id AND C.dropdownCode = 'violation_status'#(lf)LEFT JOIN dropdown_option D #(lf)    ON A.action_statusId = D.id AND D.dropdownCode = 'action_plan_status'#(lf)LEFT JOIN dropdown_option E #(lf)    ON A.actionPlanGroupId = E.id AND E.dropdownCode = 'action_plan_group'#(lf)LEFT JOIN dropdown_option F #(lf)    ON A.severityRecommendedId = F.id AND F.dropdownCode = 'violation_severity'#(lf)LEFT JOIN dropdown_option G #(lf)    ON A.causeId = G.id AND G.dropdownCode = 'violation_cause'#(lf)LEFT JOIN employee H ON A.cbId = H.id#(lf)LEFT JOIN employee K ON A.hrbpId = K.id#(lf)LEFT JOIN employee I ON A.violation_inspectorId = I.id#(lf)LEFT JOIN employee J ON A.assigneeId = J.id#(lf)LEFT JOIN employee L ON A.violatorId  = L.id#(lf)LEFT JOIN inspection_type M ON A.inspectionTypeId = M.id#(lf)LEFT JOIN position N ON A.positionId = N.id#(lf)LEFT JOIN dbo.[user] O ON A.case_createdById = O.id#(lf)LEFT JOIN (SELECT * FROM org_tree WHERE LevelNum <= 5) P #(lf)    ON A.complianceDepartmentId = P.id#(lf)LEFT JOIN (SELECT * FROM org_tree WHERE LevelNum <= 5) S #(lf)    ON A.violation_departmentId = S.id#(lf)LEFT JOIN dropdown_option Q ON A.resolutionMethodId = Q.id#(lf)LEFT JOIN dropdown_option R ON A.laborRuleViolationSeverityId = R.id#(lf)LEFT JOIN inspection_record T ON A.inspectionRecordId = T.id#(lf)LEFT JOIN [dbo].[organization] Y ON A.corporationId = Y.id#(lf)LEFT JOIN [dbo].[organization] U ON A.groupId = U.id#(lf)LEFT JOIN [dbo].[organization] Z ON A.companyId = Z.id#(lf)LEFT JOIN [dbo].[organization] X ON A.branchId = X.id#(lf)LEFT JOIN [dbo].[organization] DP ON A.violation_departmentId = DP.id#(lf)LEFT JOIN [dbo].[organization] DV ON A.divisionId = DV.id#(lf)LEFT JOIN [dbo].[organization] HO ON A.divisionId = HO.id#(lf)LEFT JOIN [dbo].[organization] CD ON A.complianceDepartmentId = CD.id#(lf)LEFT JOIN [dbo].[position] JB  ON A.positionId = JB.id#(lf)#(lf)#(lf)#(lf)", CreateNavigationProperties=false]),
+				    #"Split Column by Delimiter1" = Table.SplitColumn(Source, "compliance_fullpath", Splitter.SplitTextByDelimiter("→", QuoteStyle.Csv), {"compliance_fullpath.1", "compliance_fullpath.2", "compliance_fullpath.3", "compliance_fullpath.4", "compliance_fullpath.5"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Split Column by Delimiter1",{{"compliance_fullpath.1", type text}, {"compliance_fullpath.2", type text}, {"compliance_fullpath.3", type text}, {"compliance_fullpath.4", type text}, {"compliance_fullpath.5", type text}}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Changed Type1", {{"division_name", each Text.Trim(Text.Replace(Text.From(_), "BAN ĐIỀU HÀNH DỰ ÁN", "")), type text}}),
+				    #"Merged Queries" = Table.NestedJoin(#"Trimmed Text", {"violator_pernumber"}, Employee, {"perNumber"}, "Employee", JoinKind.LeftOuter),
+				    #"Expanded Employee" = Table.ExpandTableColumn(#"Merged Queries", "Employee", {"perNumber", "status"}, {"employee.perNumber", "employee.status"})
+				in
+				    #"Expanded Employee"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

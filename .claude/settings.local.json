@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Read(//c/Users/Admin/.claude/**)",
+      "Read(//c/Users/Admin/AppData/Roaming/**)",
+      "Read(//c/Users/Admin/AppData/Local/**)",
+      "Read(//c/Users/Admin/**)",
+      "Bash(python3 -c ' *)",
+      "Bash(node -e ' *)",
+      "Bash(npm --version)",
+      "Bash(where claude *)"
+    ]
+  }
+}

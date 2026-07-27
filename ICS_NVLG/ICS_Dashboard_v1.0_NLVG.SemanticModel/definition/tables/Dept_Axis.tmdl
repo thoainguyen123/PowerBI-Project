@@ -1,0 +1,23 @@
+table Dept_Axis
+	lineageTag: f1d577e7-4dec-40eb-8c9b-7dfb42acbe43
+
+	column department_name
+		lineageTag: e2cc5523-11d4-4f52-b4f5-b86e4a32d777
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: ICS[department_name]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dept_Axis = calculated
+		mode: import
+		source =
+				
+				CALCULATETABLE(
+				    DISTINCT(ICS[department_name]),
+				    ICS[corporation_name] = "NOVA SERVICE GROUP" -- Điền chính xác tên cột Tập đoàn của bạn ở đây
+				    && ICS[company_name] = "NOVA SERVICE GROUP (NSG)"
+				)
+
+	annotation PBI_Id = 1627903c2e854c68a7c5808d4ddf24a8
+

@@ -1,0 +1,33 @@
+table SortBank
+	lineageTag: 3bc3cc5d-3065-43c5-9a26-608b7230c526
+
+	column Bank
+		dataType: string
+		lineageTag: e56f2f98-4c8d-4370-9118-51c12cc67b1d
+		summarizeBy: none
+		sourceColumn: Bank
+
+		annotation SummarizationSetBy = Automatic
+
+	column STT
+		dataType: int64
+		formatString: 0
+		lineageTag: dff115f9-6a6a-4b88-8477-6dc93755c616
+		summarizeBy: sum
+		sourceColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	partition SortBank = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCnN2UtJRMlSK1QGyM1NLMvOcEvOygUJGYCHH9KLMJIiAMVjAydMlDMgxAXNCwJpNwWxfENMMogksbA5me7iA2BYQ8wNAbEswOzgxOT8XarKhgVJsLAA=", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Bank = _t, STT = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Bank", type text}, {"STT", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

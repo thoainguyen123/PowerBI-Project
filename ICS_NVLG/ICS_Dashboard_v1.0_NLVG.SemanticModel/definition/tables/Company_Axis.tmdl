@@ -1,0 +1,17 @@
+table Company_Axis
+	lineageTag: e287b8b7-7b0b-4179-8dd4-219c24fc2303
+
+	column company_name
+		lineageTag: bf0da75c-646d-444e-89cc-ad271543a21e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: ICS[company_name]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Company_Axis = calculated
+		mode: import
+		source = DISTINCT(ICS[company_name])
+
+	annotation PBI_Id = 0d6af4271aee4666a53750766b3e597f
+

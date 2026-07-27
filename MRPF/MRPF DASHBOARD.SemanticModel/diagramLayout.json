@@ -1,0 +1,123 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 63,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1136,
+            "y": 0
+          },
+          "nodeIndex": "KTVM",
+          "nodeLineageTag": "430c215c-2d55-487c-a185-55f54ae74557",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 568,
+            "y": 0
+          },
+          "nodeIndex": "Project_BDS",
+          "nodeLineageTag": "760fbcf6-0a0b-49a5-a21c-59a70c347698",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 857,
+            "y": 0
+          },
+          "nodeIndex": "Product_Project_BDS",
+          "nodeLineageTag": "a29bbd88-b559-4fc5-a9e1-b0081cc033af",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 86
+          },
+          "nodeIndex": "SortBank",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 1420,
+            "y": 98
+          },
+          "nodeIndex": "Measure KTVM",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 86
+          },
+          "nodeIndex": "Measure_BDS",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 1136,
+            "y": 0
+          },
+          "nodeIndex": "Nguon_Cung_Du_kien",
+          "nodeLineageTag": "591d396c-60a0-45db-9ef9-6cccb83c62ec",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1128,
+            "y": 578
+          },
+          "nodeIndex": "Dim_Period",
+          "nodeLineageTag": "a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 8
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

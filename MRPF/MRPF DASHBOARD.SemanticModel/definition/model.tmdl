@@ -1,0 +1,43 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["KTVM","Measure KTVM","Project_BDS","Product_Project_BDS","SortBank","Measure_BDS","Nguon_Cung_Du_kien","Dim_Period"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+ref table KTVM
+ref table DateTableTemplate_9aa795b9-0850-471b-bc7f-2983ff1e120d
+ref table LocalDateTable_bc3ddc46-9fef-42a9-8eca-06b3fc5ab998
+ref table LocalDateTable_86f4df64-7bad-4440-83d7-912ce46951c2
+ref table LocalDateTable_7b61f81c-9fd1-46fc-b5a1-9fcc3f46e5cf
+ref table 'Measure KTVM'
+ref table Project_BDS
+ref table LocalDateTable_96807ef6-9353-455e-8175-309419793e59
+ref table LocalDateTable_fc34a9bc-2c86-4fd9-91e0-0e630d387fb5
+ref table LocalDateTable_3880ec27-6c9a-4d48-9b1e-790ec35c9a15
+ref table Product_Project_BDS
+ref table LocalDateTable_545eda0e-7b08-48fa-8229-1ae7cb4c67c6
+ref table LocalDateTable_92d6b5aa-4552-4102-bff4-a256ab38bd65
+ref table LocalDateTable_f4b72361-f382-44ca-8b5a-86da21b14bdd
+ref table SortBank
+ref table Measure_BDS
+ref table Nguon_Cung_Du_kien
+ref table LocalDateTable_78140768-7e57-4760-9259-a672863cb369
+ref table LocalDateTable_02c38a59-a2d1-4fe8-94cd-6a3eb4c61397
+ref table LocalDateTable_6790987d-ea22-4d40-b6ef-10bad477fa61
+ref table LocalDateTable_b101f860-42ec-4981-a7e8-188dd8586eb8
+ref table LocalDateTable_0fb0452a-2dfc-409d-8f42-64cb4f805f1d
+ref table LocalDateTable_9cdebaa8-cdbd-4c4d-9918-cc2dfdb2f775
+ref table LocalDateTable_a94ecec1-1b8f-421e-a412-a0441a3cb455
+ref table Dim_Period
+ref table LocalDateTable_c9caf710-4f0f-41ba-af0f-80a2d654e0c2
+
+ref cultureInfo en-US
+

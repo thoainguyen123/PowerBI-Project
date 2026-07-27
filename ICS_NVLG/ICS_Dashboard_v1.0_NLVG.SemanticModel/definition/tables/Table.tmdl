@@ -1,0 +1,34 @@
+table Table
+	lineageTag: 761e1686-63c6-4e29-a774-ae7748037a95
+
+	column 'Khoảng thời gian tuần'
+		dataType: string
+		lineageTag: 5d10e5e1-42b8-42be-b745-bb02404c319d
+		summarizeBy: none
+		sourceColumn: Khoảng thời gian tuần
+		sortByColumn: Rank
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rank
+		dataType: int64
+		formatString: 0
+		lineageTag: d084d69f-217d-4db9-a5ab-9d486f5851fa
+		summarizeBy: none
+		sourceColumn: Rank
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Table = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("TddbTiUxDATQraD7NSMx6sR5rwWx/21M0nFV+QvUB12DnXKan5/Pn5KebI/Vr39fqT0pP9b+fr4/+fP7vTX1+2jr/imqXc1FuqTlqiWqdWl1HdS0P9lcm9ct99HRJe1eN1Fzlw7XQbUinV636pN33eK6VLeoLjQnFS4qTM6qXFSZbCrtXFJg71fJqr0/vIK9YWncZ6d2Cewdy5V8Gk/2llkWj8DeM5vk/XUfBGdv2jkZzWvnwN61czTAU2zo2iJbC+xdO4fDeZ+I/ac7e9fOlLrzDOxdO2Nyzi2wd+2MydkssHftjAm8AnvXzpi6RjLAQyMZGgl5aiRDIyEvjWRoJOCSNBLncyonGMms99mpnQIjmlk8AnvXzpicrQZGOBu55MBI5362/Fcb99uXvWtnTM6nBWTks5EtB0ZATTwDo2tLtduz/3TfKokL6312F5YYCS3iFRgJTWTrgbHRBnmfysyNhoSW++wuDzESmsj7VIqx1AbZSmAktJJLCjw5kmwcScbSq4sjAe+RkFviSMCWA2eOhDwDG0fC2vXd6v1lJPReK92XBxkJNfEMjK4tsrXA2GudfE6lgZHQe7V0Xx5kdG2Rz6kkY691spm4I6FFH3539+Ws2kW1yabaRbXJRbWLapOraoNX4KbFhdrtXe2XO1PyPvNrnTyYEvIKPJkSsPXAiykBn8XVnAcSeu+X7ouLjIRm8QiMvTbJVgMjoY1ccuDKlJx93n1xdXBjSsBncZE7UwK2HHgwJeQZeDIlrN3e1X55aSRDIwHPpJEMjYScNZKhkZBNI3E+p3KCkdB7v3R/6yEjoYl8TiUZCR1kK4GR0EouKfDQWw9q93e1X0ZC7/3S/YolI6GVfFoAXkhoFo/A6Nok71N5VvtlJPTeL764xEioiWdgdG2RrQXGm0cnn92NvbaQ0Hu/+PIQY68t8tndZLx5dLJZYCS0iJc4p8TtweL93e3umUPJxqEEN04Fbil64VjoI3rlXODp/osxru/e/f4H", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Khoảng thời gian tuần" = _t, Rank = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Khoảng thời gian tuần", type text}, {"Rank", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "GMS_HSPL"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5cce88b2-0401-4424-8845-055e6a0e0c88"
+  }
+}

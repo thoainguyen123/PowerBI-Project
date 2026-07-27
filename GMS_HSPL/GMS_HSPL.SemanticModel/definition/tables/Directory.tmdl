@@ -1,0 +1,342 @@
+table Directory
+	lineageTag: 38f62cd9-e087-433d-add7-bab65c13fe10
+
+	column _id
+		dataType: string
+		lineageTag: 48989586-c39c-4c33-a762-ac6919625967
+		summarizeBy: none
+		sourceColumn: _id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Children
+		dataType: string
+		lineageTag: 0a51977f-4fcd-4ca5-bfe9-5c08ca93c3db
+		summarizeBy: none
+		sourceColumn: Children
+
+		annotation SummarizationSetBy = Automatic
+
+	column Level
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a10e6aa-293d-4b47-b885-73ac5a140f52
+		summarizeBy: none
+		sourceColumn: Level
+
+		annotation SummarizationSetBy = Automatic
+
+	column _users
+		dataType: string
+		lineageTag: 57db6cb2-562d-4c35-8906-62937541e2c7
+		summarizeBy: none
+		sourceColumn: _users
+
+		annotation SummarizationSetBy = Automatic
+
+	column _roles
+		dataType: string
+		lineageTag: fec2c3a2-2991-4c24-8608-2590d01dad2f
+		summarizeBy: none
+		sourceColumn: _roles
+
+		annotation SummarizationSetBy = Automatic
+
+	column Name
+		dataType: string
+		lineageTag: 5a8a71f2-ce18-4729-a828-e08c19ef3971
+		summarizeBy: none
+		sourceColumn: Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code
+		dataType: string
+		lineageTag: 02bc1c1a-5d72-4108-94a6-1886402a05e5
+		summarizeBy: none
+		sourceColumn: Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: double
+		lineageTag: 0692d43b-4d38-42bd-8fbd-e1b01e982d42
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column updatedAt
+		dataType: double
+		lineageTag: 69e84451-a01e-4dc3-823f-e45b1b6e22a6
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column createdBy
+		dataType: string
+		lineageTag: 1dbc007f-0e3f-4597-a74d-2ef4bc539ae3
+		summarizeBy: none
+		sourceColumn: createdBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedBy
+		dataType: string
+		lineageTag: 1f13188a-8296-4f51-ab9c-810d2a5f073e
+		summarizeBy: none
+		sourceColumn: updatedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column deleted
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0bdc3179-ab8e-4304-8491-664e048d1863
+		summarizeBy: none
+		sourceColumn: deleted
+
+		annotation SummarizationSetBy = Automatic
+
+	column __v
+		dataType: int64
+		formatString: 0
+		lineageTag: 92e29a5c-a296-4829-b730-79af1548d4ad
+		summarizeBy: none
+		sourceColumn: __v
+
+		annotation SummarizationSetBy = Automatic
+
+	column ParentId
+		dataType: string
+		lineageTag: b44f4934-68c7-4b06-8bee-c7176574f7bb
+		summarizeBy: none
+		sourceColumn: ParentId
+
+		annotation SummarizationSetBy = Automatic
+
+	column _permissions
+		dataType: string
+		lineageTag: 8449266b-a3fb-4922-a593-668cd38e6306
+		summarizeBy: none
+		sourceColumn: _permissions
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsMultiple
+		dataType: string
+		lineageTag: 36141cf4-c9c0-41fb-bbc4-e79279dd2550
+		summarizeBy: none
+		sourceColumn: IsMultiple
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Parent'
+		dataType: int64
+		formatString: 0
+		lineageTag: deab36a0-7219-450b-9a60-a012a0ae3b93
+		summarizeBy: none
+		sourceColumn: otherSP.Parent
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Children'
+		dataType: string
+		lineageTag: 8f6cd8b6-623f-4bfc-9bf1-5e00cb4492ad
+		summarizeBy: none
+		sourceColumn: otherSP.Children
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.UserAccessId'
+		dataType: string
+		lineageTag: b4a8f8ec-47c4-42b8-9797-56f0ce3efbb6
+		summarizeBy: none
+		sourceColumn: otherSP.UserAccessId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.GUID'
+		dataType: string
+		lineageTag: 8477127a-c270-4a58-bb67-9582fcb10ea2
+		summarizeBy: none
+		sourceColumn: otherSP.GUID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: b8b44ad2-0a2d-4be3-884c-47957501503b
+		summarizeBy: none
+		sourceColumn: otherSP.ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Active'
+		dataType: string
+		lineageTag: 091d8221-7138-422f-bcd0-d1d96e8cd6f8
+		summarizeBy: none
+		sourceColumn: otherSP.Active
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.L1Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: 46c21541-0025-450d-9e02-a3bcc044b793
+		summarizeBy: none
+		sourceColumn: otherSP.L1Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.L2Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b04754d-9174-40ce-b14a-5145204e41ec
+		summarizeBy: none
+		sourceColumn: otherSP.L2Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.L3Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: e44587e9-2980-479c-a90c-27fbc8ae40aa
+		summarizeBy: none
+		sourceColumn: otherSP.L3Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.L4Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: c4ee8de3-5cf3-4a2f-b587-48ff9009e700
+		summarizeBy: none
+		sourceColumn: otherSP.L4Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Level2'
+		dataType: string
+		lineageTag: 7f9f2851-aeba-4d29-93f3-f1a11d3773b8
+		summarizeBy: none
+		sourceColumn: otherSP.Level2
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Level3'
+		dataType: string
+		lineageTag: 6f6e75aa-e7e4-4bf1-98bb-e0631f19ee76
+		summarizeBy: none
+		sourceColumn: otherSP.Level3
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.Level4'
+		dataType: string
+		lineageTag: 3db31539-0604-447a-8d5d-cf46677c8630
+		summarizeBy: none
+		sourceColumn: otherSP.Level4
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProjectGroupId
+		dataType: string
+		lineageTag: 16454256-0938-43f5-b0a9-27ca4a4b816d
+		summarizeBy: none
+		sourceColumn: ProjectGroupId
+
+		annotation SummarizationSetBy = Automatic
+
+	column ClonedId
+		dataType: string
+		lineageTag: 7f909a91-8951-4759-9de2-e238aa1224cd
+		summarizeBy: none
+		sourceColumn: ClonedId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Hierachy_Path = PATH(Directory[_id],Directory[ParentId])
+		lineageTag: 3147b907-4abf-46f0-b381-7bf11f729831
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lv1_Name =
+			
+			VAR _Lv1_ID = PATHITEM(Directory[Hierachy_Path], 1, TEXT)
+			RETURN
+			    LOOKUPVALUE(Directory[name], Directory[_id], _Lv1_ID)
+		lineageTag: 74326d69-19ad-4a94-b1b5-4cb86fc20a21
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lv2_Name = ```
+			
+			VAR _Lv2_ID = PATHITEM(Directory[Hierachy_Path], 2, TEXT)
+			RETURN
+			    IF(
+			        ISBLANK(_Lv2_ID), 
+			        BLANK(), 
+			        LOOKUPVALUE(Directory[name], Directory[_id], _Lv2_ID)
+			    )
+			```
+		lineageTag: 303b8362-299d-4706-b1b2-60d0da30221f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lv3_Name = ```
+			
+			VAR _Lv3_ID = PATHITEM(Directory[Hierachy_Path], 3, TEXT)
+			RETURN
+			    IF(
+			        ISBLANK(_Lv3_ID), 
+			        BLANK(), 
+			        LOOKUPVALUE(Directory[name], Directory[_id], _Lv3_ID)
+			    )
+			```
+		lineageTag: fc5e8876-e0f8-4cef-8bfd-0e1b338370d1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Lv4_Name = ```
+			
+			VAR _Lv4_ID = PATHITEM(Directory[Hierachy_Path], 4, TEXT)
+			RETURN
+			    IF(
+			        ISBLANK(_Lv4_ID), 
+			        BLANK(), 
+			        LOOKUPVALUE(Directory[name], Directory[_id], _Lv4_ID)
+			    )
+			```
+		lineageTag: 8f6d2122-7767-4557-a23a-b902a27716d3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Directory = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Python\dms--directories.xlsx"), null, true),
+				    Data_Sheet = Source{[Item="Data",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Data_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"_id", type text}, {"Children", type text}, {"Level", Int64.Type}, {"_users", type text}, {"_roles", type text}, {"Name", type text}, {"Code", type text}, {"createdAt", type number}, {"updatedAt", type number}, {"createdBy", type text}, {"updatedBy", type text}, {"deleted", type logical}, {"__v", Int64.Type}, {"ParentId", type text}, {"_permissions", type text}, {"IsMultiple", type text}, {"otherSP.Parent", Int64.Type}, {"otherSP.Children", type text}, {"otherSP.UserAccessId", type text}, {"otherSP.GUID", type text}, {"otherSP.ID", Int64.Type}, {"otherSP.L1Id", Int64.Type}, {"otherSP.L2Id", Int64.Type}, {"otherSP.L3Id", Int64.Type}, {"otherSP.L4Id", Int64.Type}, {"otherSP.Level2", type text}, {"otherSP.Level3", type text}, {"otherSP.Level4", type text}, {"ProjectGroupId", type text}, {"ClonedId", type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type","nan",null,Replacer.ReplaceValue,{"ParentId"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","None",null,Replacer.ReplaceValue,{"ParentId"})
+				in
+				    #"Replaced Value1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

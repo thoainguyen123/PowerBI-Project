@@ -1,0 +1,222 @@
+table Product_Project_BDS
+	lineageTag: a29bbd88-b559-4fc5-a9e1-b0081cc033af
+
+	column isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 924809c1-f678-48cf-888d-269f43ded9f8
+		summarizeBy: none
+		sourceColumn: isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: d843e265-a355-48a7-85ce-1be22a689422
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5348ed7b-ead7-4ddd-a3aa-462093301a42
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		variation Variation
+			isDefault
+			relationship: f8d45f2b-99c6-416a-b265-413ad9c8371e
+			defaultHierarchy: LocalDateTable_545eda0e-7b08-48fa-8229-1ae7cb4c67c6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 63561d79-817f-4633-a657-d9ca54557ef5
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		variation Variation
+			isDefault
+			relationship: 4aa48a89-87f3-447d-8732-829f592d34e4
+			defaultHierarchy: LocalDateTable_92d6b5aa-4552-4102-bff4-a256ab38bd65.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: cd454c44-2faa-495d-a4f2-11013523cdfa
+		summarizeBy: none
+		sourceColumn: deletedAt
+
+		variation Variation
+			isDefault
+			relationship: 56042cb4-1597-4572-8d5d-189803133b93
+			defaultHierarchy: LocalDateTable_f4b72361-f382-44ca-8b5a-86da21b14bdd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdById
+		dataType: string
+		lineageTag: 9c0c1b9b-2181-47e6-a3e0-d99e919b8a27
+		summarizeBy: none
+		sourceColumn: createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedById
+		dataType: string
+		lineageTag: e181719e-dc0d-475f-82a0-0156bbf044bb
+		summarizeBy: none
+		sourceColumn: updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedById
+		dataType: string
+		lineageTag: 228b40a0-e9b0-4dc6-8354-c1e3e8151341
+		summarizeBy: none
+		sourceColumn: deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column code
+		dataType: string
+		lineageTag: b972e09d-7ce5-4b21-a016-9de2c216be49
+		summarizeBy: none
+		sourceColumn: code
+
+		annotation SummarizationSetBy = Automatic
+
+	column realEstateProjectTypeId
+		dataType: string
+		lineageTag: e258d482-8a02-44d0-9bfe-2c4021b6e1e8
+		summarizeBy: none
+		sourceColumn: realEstateProjectTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column productTypeId
+		dataType: string
+		lineageTag: 8368f7cc-19b8-4c97-b3cc-e70cca25edcd
+		summarizeBy: none
+		sourceColumn: productTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 3ff68569-3246-446a-8c10-28084ef13314
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column area
+		dataType: double
+		lineageTag: 3186f691-56cf-4324-91d8-e9910193dff7
+		summarizeBy: sum
+		sourceColumn: area
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column unitId
+		dataType: string
+		lineageTag: 5579efef-cf68-4291-a5b2-1153d168a565
+		summarizeBy: none
+		sourceColumn: unitId
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_name
+		dataType: string
+		lineageTag: e74f5642-e033-48fa-9c11-44bd182a5a68
+		summarizeBy: none
+		sourceColumn: project_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column phase_name
+		dataType: string
+		lineageTag: 52c4b6f1-bd3b-4093-b016-e106374f06b2
+		summarizeBy: none
+		sourceColumn: phase_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_type
+		dataType: string
+		lineageTag: 021631dc-de4e-4db6-a3aa-f2b75c8f8f3b
+		summarizeBy: none
+		sourceColumn: project_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: 704057da-ac59-4eab-9e52-c304a9123818
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: 8b6710d6-2961-4a94-b9d6-eee1a2ac70e0
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column city_type
+		dataType: string
+		lineageTag: a4e7534e-44cf-4322-a70e-c33b72629390
+		summarizeBy: none
+		sourceColumn: city_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column ward
+		dataType: string
+		lineageTag: 77e89520-81e1-480b-881b-fad24c75980d
+		summarizeBy: none
+		sourceColumn: ward
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 6a52e683-00b7-41db-8489-efe53b355ebb
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column leading_company
+		dataType: string
+		lineageTag: f12b9adf-3d25-4251-81d0-385526d250d5
+		summarizeBy: none
+		sourceColumn: leading_company
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Product_Project_BDS = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[code]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[productTypeId]#(lf)      ,A.[quantity]#(lf)      ,A.[area]#(lf)      ,A.[unitId]#(lf)      ,C.name AS project_name#(lf)      ,D.name AS phase_name#(lf)      ,F.label AS project_type#(lf)      ,E.label AS product_name#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,G.label AS category#(lf)      ,M.name AS leading_company#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_type] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_project C ON B.projectId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision D ON B.subdivisionId = D.id#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option E ON A.productTypeId = E.id#(lf)  LEFT JOIN city H ON C.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON C.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON C.wardId = L.id#(lf)  LEFT JOIN dropdown_option G ON C.projectCategoryId = G.id#(lf)    LEFT JOIN mr_leading_companies M ON C.leadingCompanyId = M.id#(lf)#(lf)"]),
+				    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

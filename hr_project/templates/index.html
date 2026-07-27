@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NVL Data Hub | Nhập liệu Nhân sự & Dự án</title>
+    <!-- Boxicons CSS for icons -->
+    <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
+    <!-- CSS stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css?v=5.2.3">
+    <!-- Chart.js -->
+    <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
+
+    <!-- Vietnamese-first typography: Be Vietnam Pro & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap&subset=vietnamese" rel="stylesheet">
+    </head>
+<body>
+    <div class="app-container">
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="bx bx-buildings"></i>
+                </div>
+                <div class="brand-title">
+                    <h1>NVL Data Hub</h1>
+                    <p>Operations Data Portal</p>
+                </div>
+                <button class="sidebar-close" onclick="closeSidebar()" aria-label="Đóng menu">
+                    <i class="bx bx-x"></i>
+                </button>
+            </div>
+
+            <nav>
+                <span class="nav-section-label">Điều hành</span>
+                <button class="nav-tab" onclick="switchTab('projects', this)">
+                    <i class="bx bx-building-house"></i>
+                    <span>Thông tin dự án</span>
+                </button>
+                <button class="nav-tab" onclick="switchTab('masterdata', this)">
+                    <i class="bx bx-spreadsheet"></i>
+                    <span>Master data dự án</span>
+                </button>
+
+                <span class="nav-section-label">Nhân sự</span>
+                <button class="nav-tab active" onclick="switchTab('allocations', this)">
+                    <i class="bx bx-group"></i>
+                    <span>Phân bổ dự án</span>
+                </button>
+                <button class="nav-tab" onclick="switchTab('common', this)">
+                    <i class="bx bx-network-chart"></i>
+                    <span>Nhân sự chung</span>
+                </button>
+                <button class="nav-tab" onclick="switchTab('profiles', this)">
+                    <i class="bx bx-id-card"></i>
+                    <span>Hồ sơ & đánh giá</span>
+                </button>
+                <button class="nav-tab" onclick="switchTab('dept-config', this)">
+                    <i class="bx bx-sitemap"></i>
+                    <span>Cấu hình phòng ban</span>
+                </button>
+
+                <span class="nav-section-label">Dữ liệu</span>
+                <button class="nav-tab" id="nav-sync" onclick="switchTab('sync', this)">
+                    <i class="bx bx-export"></i>
+                    <span>Xuất & đồng bộ</span>
+                </button>
+            </nav>
+
+            <div class="user-profile" id="header-user-profile" style="display: none;">
+                <div class="user-avatar" id="user-avatar">A</div>
+                <div class="user-info">
+                    <span class="user-name" id="user-display-name">Username</span>
+                    <span class="user-role" id="user-display-role">Role</span>
+                </div>
+                <button class="btn-logout" onclick="handleLogout()" title="Đăng xuất">
+                    <i class="bx bx-log-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <div class="sidebar-scrim" onclick="closeSidebar()"></div>
+
+        <div class="app-workspace">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Mở menu">
+                        <i class="bx bx-menu"></i>
+                    </button>
+                    <div class="topbar-title">
+                        <span id="page-kicker">Điều phối nhân sự</span>
+                        <h2 id="page-title">Phân bổ dự án</h2>
+                    </div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="system-state">
+                        <span></span>
+                        Hệ thống trực tuyến
+                    </div>
+                    <div class="topbar-date" id="topbar-date"></div>
+                    <button class="btn btn-secondary btn-print" type="button" onclick="printCurrentPage()" title="Lưu trang hiện tại thành PDF hoặc gửi tới máy in">
+                        <i class="bx bx-printer"></i>
+                        <span>In trang này</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main>
+            <!-- 1. DASHBOARD TAB -->
+            <section id="tab-dashboard" class="tab-content">
+                <!-- Active Filters Info -->
+                <div class="active-filters-bar" id="active-filters-bar" style="display: none;">
+                    <span><i class="bx bx-filter-alt"></i> Đang lọc dữ liệu theo:</span>
+                    <span id="active-filters-list" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></span>
+                    <button class="btn-clear-all" onclick="clearAllChartFilters()">Xóa tất cả bộ lọc</button>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid-charts">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <span class="chart-title">Phân Loại Bộ Phận</span>
+                                <div class="chart-subtitle">BĐH Dự án chính vs Các phòng ban còn lại</div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-classification"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <span class="chart-title">Nhân Sự theo Vùng</span>
+                                <div class="chart-subtitle">Phân bổ headcount theo vùng địa lý</div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-region"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <span class="chart-title">Top 10 Dự Án nhiều Nhân Sự nhất</span>
+                                <div class="chart-subtitle">Headcount thực tế trên từng dự án</div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-project"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <span class="chart-title">Nhân Sự theo Phòng Ban (Top OC)</span>
+                                <div class="chart-subtitle">Tỷ lệ headcount theo Cơ cấu tổ chức (OC)</div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <canvas id="chart-department"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Interactive Results Table -->
+                <div class="table-card">
+                    <div class="chart-header" style="padding: 1.5rem 1.5rem 0.5rem 1.5rem;">
+                        <h3 style="font-size: 1.1rem; font-weight: 600;"><i class="bx bx-list-ul"></i> Danh sách Nhân sự / Vị trí Phân bổ Dự án</h3>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);" id="dashboard-table-count">Đang hiển thị 0 hàng</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dự án</th>
+                                    <th>Họ tên</th>
+                                    <th>Mã NV</th>
+                                    <th>Vùng</th>
+                                    <th>Phòng ban (OC)</th>
+                                    <th>Chức danh</th>
+                                    <th>Trạng thái bộ phận</th>
+                                    <th>Trạng thái vai trò</th>
+                                    <th>Ghi chú</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-table-body">
+                                <tr>
+                                    <td colspan="9" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-pagination" id="dashboard-pagination">
+                        <div class="pagination-size">
+                            <label for="dashboard-page-size">Số dòng</label>
+                            <select id="dashboard-page-size" class="filter-select" onchange="changeDashboardPageSize(this.value)">
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                            </select>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="pagination-button" id="dashboard-page-prev" type="button" onclick="changeDashboardPage(-1)" aria-label="Trang trước">
+                                <i class="bx bx-chevron-left"></i>
+                            </button>
+                            <span id="dashboard-page-indicator">Trang 1 / 1</span>
+                            <button class="pagination-button" id="dashboard-page-next" type="button" onclick="changeDashboardPage(1)" aria-label="Trang sau">
+                                <i class="bx bx-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PROJECT OVERVIEW DATA ENTRY TAB -->
+            <section id="tab-projects" class="tab-content">
+                <div class="page-hero project-hero">
+                    <div>
+                        <span class="eyebrow">DANH MỤC DỰ ÁN</span>
+                        <h2>Thông tin dự án</h2>
+                        <p>Quản lý thông tin tổng quan và hồ sơ cơ bản của từng dự án.</p>
+                    </div>
+                    <div class="hero-actions">
+                        <a class="btn btn-secondary" href="/api/projects/export-overview">
+                            <i class="bx bx-download"></i> Xuất Excel
+                        </a>
+                        <button class="btn btn-primary" onclick="openProjectModal()">
+                            <i class="bx bx-plus"></i> Thêm dự án
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid-stats project-kpis">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bx bx-buildings"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="project-kpi-total">0</div>
+                            <div class="stat-label">Tổng dự án / phân khu</div>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><i class="bx bx-check-shield"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="project-kpi-complete">0</div>
+                            <div class="stat-label">Đủ thông tin</div>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon"><i class="bx bx-error-circle"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="project-kpi-incomplete">0</div>
+                            <div class="stat-label">Cần bổ sung thông tin</div>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><i class="bx bx-map-alt"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="project-kpi-regions">0</div>
+                            <div class="stat-label">Khu vực đang quản lý</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-bar project-controls">
+                    <div class="search-box">
+                        <i class="bx bx-search"></i>
+                        <input type="text" id="project-search-input" placeholder="Tìm mã, tên dự án, chủ đầu tư, địa điểm..." oninput="filterProjectOverview()">
+                    </div>
+                    <div class="filter-group">
+                        <select id="project-filter-region" class="filter-select" onchange="filterProjectOverview()">
+                            <option value="">Tất cả khu vực</option>
+                        </select>
+                        <select id="project-filter-status" class="filter-select" onchange="filterProjectOverview()">
+                            <option value="">Tất cả hiện trạng</option>
+                        </select>
+                        <select id="project-filter-quality" class="filter-select" onchange="filterProjectOverview()">
+                            <option value="">Tất cả chất lượng dữ liệu</option>
+                            <option value="complete">Đủ thông tin</option>
+                            <option value="incomplete">Cần bổ sung</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-card project-table-card">
+                    <div class="table-toolbar">
+                        <div>
+                            <h3>Danh mục thông tin dự án</h3>
+                            <p id="project-table-count">Đang hiển thị 0 dự án</p>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="project-table">
+                            <thead>
+                                <tr>
+                                    <th>Mã dự án</th>
+                                    <th>Dự án</th>
+                                    <th>Khu vực</th>
+                                    <th>Hiện trạng</th>
+                                    <th>Chủ đầu tư</th>
+                                    <th>Quy mô</th>
+                                    <th>Chất lượng dữ liệu</th>
+                                    <th class="action-column">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="project-overview-table-body">
+                                <tr>
+                                    <td colspan="8" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. MASTER DATA DEPARTMENT SHEETS -->
+            <section id="tab-masterdata" class="tab-content">
+                <div class="page-hero masterdata-hero">
+                    <div>
+                        <span class="eyebrow">DỮ LIỆU PHÒNG BAN</span>
+                        <h2>Master data dự án</h2>
+                        <p>Cập nhật thông tin HRC, FAC, PLP, DMD, PCD… theo từng dự án.</p>
+                    </div>
+                    <div class="hero-actions">
+                        <a class="btn btn-secondary" id="masterdata-export-excel" href="/api/masterdata/export-template">
+                            <i class="bx bx-file"></i> Xuất Excel 16 sheet
+                        </a>
+                        <a class="btn btn-primary" id="masterdata-export-csv" href="/api/masterdata/export-fact">
+                            <i class="bx bx-download"></i> Xuất CSV tổng hợp
+                        </a>
+                    </div>
+                </div>
+
+                <div class="masterdata-project-bar">
+                    <div>
+                        <label for="masterdata-project-select">Dự án đang nhập liệu</label>
+                        <select id="masterdata-project-select" class="filter-select" onchange="loadMasterdataProject()">
+                            <option value="">-- Chọn dự án --</option>
+                        </select>
+                    </div>
+                    <div class="masterdata-kpis">
+                        <span><strong id="masterdata-kpi-records">0</strong> bản ghi</span>
+                        <span><strong id="masterdata-kpi-modules">0/15</strong> sheet có dữ liệu</span>
+                        <span><strong id="masterdata-kpi-missing">15</strong> sheet chưa nhập</span>
+                    </div>
+                </div>
+
+                <div class="masterdata-workspace">
+                    <aside class="masterdata-modules">
+                        <div class="masterdata-modules-heading">
+                            <span>Nhóm dữ liệu</span>
+                        </div>
+                        <div id="masterdata-module-list"></div>
+                    </aside>
+                    <div class="table-card masterdata-panel">
+                        <div class="table-toolbar">
+                            <div>
+                                <h3 id="masterdata-active-title">9.1 HRC · Nhân sự</h3>
+                                <p id="masterdata-active-description">Chọn dự án để xem và nhập dữ liệu.</p>
+                            </div>
+                            <button class="btn btn-primary" id="masterdata-add-button" onclick="openMasterdataModal()" disabled>
+                                <i class="bx bx-plus"></i> Thêm dòng
+                            </button>
+                        </div>
+                        <div class="table-responsive masterdata-table-wrap">
+                            <table class="masterdata-table">
+                                <thead id="masterdata-table-head"></thead>
+                                <tbody id="masterdata-table-body">
+                                    <tr><td class="no-data">Vui lòng chọn một dự án.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. ALLOCATIONS TAB -->
+            <section id="tab-allocations" class="tab-content active">
+                <div class="grid-stats allocation-kpis" aria-label="Chỉ số phân bổ nhân sự">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="bx bx-user-check"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="kpi-headcount">0</div>
+                            <div class="stat-label">Tổng nhân sự hệ thống</div>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><i class="bx bx-briefcase-alt-2"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="kpi-projects">0</div>
+                            <div class="stat-label">Dự án đang quản lý</div>
+                        </div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon"><i class="bx bx-user-plus"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="kpi-open">0</div>
+                            <div class="stat-label">Chỉ tiêu tuyển dụng</div>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><i class="bx bx-refresh"></i></div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="kpi-concurrent">0</div>
+                            <div class="stat-label">Vai trò kiêm nhiệm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View Mode Toggle segment -->
+                <div class="view-mode-toggle-container" style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <button id="btn-alloc-mode-table" class="btn btn-primary" onclick="switchAllocationMode('table')">
+                        <i class="bx bx-list-ul"></i> Xem danh sách phân bổ
+                    </button>
+                    <button id="btn-alloc-mode-quick" class="btn" style="border-color: var(--border-color);" onclick="switchAllocationMode('quick')">
+                        <i class="bx bx-grid-horizontal"></i> Nhập nhanh theo Dự án
+                    </button>
+                </div>
+
+                <!-- Chế độ 1: Danh sách phân bổ (Mặc định) -->
+                <div id="alloc-table-view-section">
+                    <div class="control-bar">
+                        <div class="search-box">
+                            <i class="bx bx-search"></i>
+                            <input type="text" id="alloc-search-input" placeholder="Tìm theo tên, mã NV, chức danh, mã dự án..." oninput="filterAllocations()">
+                        </div>
+                        <div class="filter-group">
+                            <select id="alloc-filter-class" class="filter-select" onchange="filterAllocations()">
+                                <option value="">Tất cả Bộ phận</option>
+                                <option value="BAN_DIEU_HANH_CHINH">Ban điều hành chính (GMD, PMD, DMD...)</option>
+                                <option value="PHONG_BAN_KHAC">Các phòng ban còn lại</option>
+                            </select>
+                            <select id="alloc-filter-region" class="filter-select" onchange="filterAllocations()">
+                                <option value="">Tất cả Vùng</option>
+                            </select>
+                            <select id="alloc-filter-dept" class="filter-select" onchange="filterAllocations()">
+                                <option value="">Tất cả Phòng ban</option>
+                            </select>
+                            <select id="alloc-filter-status" class="filter-select" onchange="filterAllocations()">
+                                <option value="all">Tất cả trạng thái</option>
+                                <option value="employee">Đã có nhân sự</option>
+                                <option value="hiring">Vị trí kế hoạch tuyển dụng</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="openAddAllocationModal()">
+                                <i class="bx bx-plus"></i> Phân bổ mới
+                            </button>
+                            <button class="btn" onclick="openAddEmployeeModal()">
+                                <i class="bx bx-user-plus"></i> Tạo hồ sơ nhân sự
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mã dự án</th>
+                                        <th>Tên dự án</th>
+                                        <th>Nhân viên</th>
+                                        <th>Phòng ban (OC)</th>
+                                        <th>Chức năng bộ phận</th>
+                                        <th>Chức danh</th>
+                                        <th>Kiêm nhiệm</th>
+                                        <th>Vùng</th>
+                                        <th>Ghi chú</th>
+                                        <th style="width: 150px;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allocations-table-body">
+                                    <tr>
+                                        <td colspan="10" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chế độ 2: Nhập nhanh theo Dự án (Ẩn mặc định) -->
+                <div id="alloc-quick-entry-section" style="display: none;">
+                    <div class="control-bar">
+                        <div class="form-group" style="margin-bottom: 0; min-width: 350px;">
+                            <label for="quick-alloc-project-select" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; font-weight: 500;">Chọn dự án để bắt đầu nhập liệu:</label>
+                            <select id="quick-alloc-project-select" class="filter-select" style="width: 100%;" onchange="loadQuickEntryProjectData()">
+                                <!-- JS populated -->
+                            </select>
+                        </div>
+                        <div style="flex: 1; text-align: right; margin-top: 1.25rem;">
+                            <button class="btn btn-secondary" onclick="openAddEmployeeModal()">
+                                <i class="bx bx-user-plus"></i> Tạo hồ sơ nhân sự
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Department cards container -->
+                    <div id="quick-alloc-cards-container" class="quick-alloc-cards-grid">
+                        <div class="no-data">
+                            <i class="bx bx-select-multiple" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--text-muted);"></i>
+                            <p>Vui lòng chọn một dự án từ danh sách bên trên để hiển thị các bộ phận cần nhập liệu.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. COMMON ALLOCATIONS TAB (NS chung) -->
+            <section id="tab-common" class="tab-content">
+                <div class="control-bar">
+                    <div class="search-box">
+                        <i class="bx bx-search"></i>
+                        <input type="text" id="common-search-input" placeholder="Tìm theo tên, mã NV, phòng ban, chức danh chung..." oninput="filterCommonAllocations()">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-primary" onclick="openAddCommonAllocationModal()">
+                            <i class="bx bx-plus"></i> Thêm Vai Trò Chung
+                        </button>
+                        <button class="btn" onclick="openAddEmployeeModal()">
+                            <i class="bx bx-user-plus"></i> Tạo hồ sơ nhân sự
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Mã bộ phận (OC)</th>
+                                    <th>Tên phòng ban hệ thống (OC Name)</th>
+                                    <th>Nhân sự</th>
+                                    <th>Chức danh hệ thống</th>
+                                    <th>Kiêm nhiệm</th>
+                                    <th>Ghi chú</th>
+                                    <th style="width: 120px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="common-table-body">
+                                <tr>
+                                    <td colspan="7" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PROFILES & EVALUATIONS TAB -->
+            <section id="tab-profiles" class="tab-content">
+                <div class="split-layout">
+                    <!-- Left Sidebar Employee List -->
+                    <div class="sidebar-list">
+                        <div class="sidebar-search">
+                            <input type="text" id="profile-search-input" placeholder="Tìm nhân sự..." oninput="filterProfileList()">
+                        </div>
+                        <div class="list-items" id="profile-list-container">
+                            <!-- JS loaded list -->
+                        </div>
+                    </div>
+
+                    <!-- Right Detail Panel -->
+                    <div class="detail-view" id="profile-detail-container">
+                        <div class="no-data">
+                            <i class="bx bx-id-card"></i>
+                            Chọn một nhân viên từ danh sách bên trái để xem hồ sơ chi tiết, quá trình luân chuyển dự án và đánh giá cá nhân.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. DEPARTMENT CONFIGURATION TAB -->
+            <section id="tab-dept-config" class="tab-content">
+                <div class="control-bar" style="margin-bottom: 1.5rem;">
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; flex: 1;">
+                        <div class="form-group" style="margin-bottom: 0; min-width: 320px;">
+                            <label for="config-project-select" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.35rem; font-weight: 500;">Chọn dự án cần cấu hình phòng ban:</label>
+                            <select id="config-project-select" class="filter-select" style="width: 100%;" onchange="loadProjectDeptConfig()">
+                                <!-- JS populated -->
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openCopyConfigModal()" style="margin-top: 1.25rem;">
+                            <i class="bx bx-copy"></i> Sao chép cấu hình từ dự án mẫu
+                        </button>
+                    </div>
+                </div>
+
+                <div class="split-layout" style="grid-template-columns: 380px 1fr; gap: 1.5rem;">
+                    <!-- Left: Add Department Form -->
+                    <div class="sidebar-list" style="padding: 1.5rem; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--primary);"><i class="bx bx-plus-circle"></i> Thêm phòng ban cấu hình</h3>
+                        <form id="form-add-dept-config" onsubmit="addDeptToProjectConfig(event)">
+                            <div class="form-group">
+                                <label for="config-dept-source" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Chọn phòng ban hiện có:</label>
+                                <select id="config-dept-source" class="form-control" onchange="onConfigDeptSourceChange()">
+                                    <!-- JS populated -->
+                                </select>
+                            </div>
+                            
+                            <div style="text-align: center; color: var(--text-muted); font-size: 0.75rem; margin: 0.75rem 0;">— HOẶC nhập mới hoàn toàn —</div>
+
+                            <div class="form-group">
+                                <label for="config-oc-code-input" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Mã bộ phận mới (OC Code) *</label>
+                                <input type="text" id="config-oc-code-input" class="form-control" placeholder="Ví dụ: DMD, PMD...">
+                            </div>
+                            <div class="form-group">
+                                <label for="config-oc-name-input" style="font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Tên bộ phận mới (OC Name) *</label>
+                                <input type="text" id="config-oc-name-input" class="form-control" placeholder="Ví dụ: PHÒNG THIẾT KẾ">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">
+                                <i class="bx bx-plus"></i> Thêm vào cấu hình
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Configured departments list -->
+                    <div class="table-card">
+                        <div class="chart-header" style="padding: 1.5rem 1.5rem 0.5rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="font-size: 1.1rem; font-weight: 600;"><i class="bx bx-list-check"></i> Các bộ phận đã cấu hình</h3>
+                            <span id="config-dept-count" style="font-size: 0.8rem; color: var(--text-muted);">Đang hiển thị 0 phòng ban</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mã bộ phận (OC Code)</th>
+                                        <th>Tên phòng ban (OC Name)</th>
+                                        <th>Loại bộ phận</th>
+                                        <th style="width: 120px; text-align: center;">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="config-dept-table-body">
+                                    <tr>
+                                        <td colspan="4" class="no-data">Vui lòng chọn một dự án ở trên để xem cấu hình phòng ban.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DATA EXPORT TAB -->
+            <section id="tab-sync" class="tab-content">
+                <div class="page-hero">
+                    <div>
+                        <span class="eyebrow">DATA DELIVERY</span>
+                        <h2>Xuất & đồng bộ dữ liệu</h2>
+                        <p>Chuẩn hóa đầu ra cho hai luồng dữ liệu Nhân sự và Tổng quan dự án.</p>
+                    </div>
+                </div>
+                <div class="export-grid">
+                    <div class="sync-card export-card">
+                        <div class="sync-icon"><i class="bx bx-building-house"></i></div>
+                        <span class="source-note">MASTER DATA DỰ ÁN</span>
+                        <h2>Workbook dự án &amp; master data</h2>
+                        <p>Xuất một workbook gồm sheet “Tổng quan dự án” và toàn bộ 15 sheet master theo mẫu NVLG_PROJECT.</p>
+                        <a class="btn btn-primary" href="/api/masterdata/export-template">
+                            <i class="bx bx-download"></i> Tải workbook 16 sheet
+                        </a>
+                    </div>
+                    <div class="sync-card export-card">
+                        <div class="sync-icon"><i class="bx bx-group"></i></div>
+                        <span class="source-note">HR · ORG ALLOCATION</span>
+                        <h2>Dữ liệu nhân sự</h2>
+                        <p>Đồng bộ hồ sơ, phân bổ dự án, nhân sự chung và vai trò kiêm nhiệm về file Excel nguồn. Hệ thống tự tạo bản sao lưu trước khi ghi.</p>
+                        <button class="btn btn-secondary" onclick="syncToExcel()" id="btn-sync-action">
+                            <i class="bx bx-sync"></i> Đồng bộ file HR
+                        </button>
+                        <div id="sync-status-msg" style="margin-top: 1rem; font-weight: 500; font-size: 0.9rem;"></div>
+                    </div>
+                </div>
+            </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+        <span id="toast-message">Đồng bộ thành công!</span>
+    </div>
+
+    <!-- MODAL: MASTER DATA DEPARTMENT ROW -->
+    <div class="modal-overlay" id="modal-masterdata">
+        <div class="modal-content modal-masterdata-content">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow" id="masterdata-modal-kicker">MASTER DATA</span>
+                    <h3 id="masterdata-modal-title">Thêm dòng dữ liệu</h3>
+                </div>
+                <button class="modal-close" onclick="closeModal('modal-masterdata')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-masterdata" onsubmit="saveMasterdataEntry(event)">
+                    <input type="hidden" id="masterdata-entry-id">
+                    <div class="masterdata-modal-context">
+                        <span><i class="bx bx-building-house"></i> <strong id="masterdata-modal-project">—</strong></span>
+                        <span><i class="bx bx-table"></i> <strong id="masterdata-modal-sheet">—</strong></span>
+                    </div>
+                    <div id="masterdata-fields" class="masterdata-fields"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-masterdata')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bx bx-save"></i> Lưu dữ liệu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: PROJECT OVERVIEW -->
+    <div class="modal-overlay" id="modal-project">
+        <div class="modal-content modal-project-content">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow">MASTER DATA DỰ ÁN</span>
+                    <h3 id="modal-project-title">Thêm thông tin dự án</h3>
+                </div>
+                <button class="modal-close" onclick="closeModal('modal-project')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-project" onsubmit="saveProject(event)">
+                    <input type="hidden" id="project-edit-code">
+
+                    <div class="form-section">
+                        <div class="form-section-heading">
+                            <span>01</span>
+                            <div>
+                                <h4>Định danh & quản trị</h4>
+                                <p>Thông tin định danh và phân loại dự án.</p>
+                            </div>
+                        </div>
+                        <div class="form-grid-3">
+                            <div class="form-group">
+                                <label for="project-code-input">Mã dự án *</label>
+                                <input type="text" id="project-code-input" class="form-control" placeholder="Ví dụ: HCM.AQUA.01" required>
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="project-name-input">Tên dự án trong danh mục *</label>
+                                <input type="text" id="project-name-input" class="form-control" placeholder="Tên đang dùng trong danh mục đầu tư" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-region-input">Khu vực *</label>
+                                <input type="text" id="project-region-input" class="form-control" placeholder="Ví dụ: TP.HCM 1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-status-input">Hiện trạng đầu tư</label>
+                                <select id="project-status-input" class="form-control">
+                                    <option value="Đang nghiên cứu">Đang nghiên cứu</option>
+                                    <option value="Đã mua đang thiết kế">Đã mua, đang thiết kế</option>
+                                    <option value="Đang xây dựng">Đang xây dựng</option>
+                                    <option value="Thoái vốn">Thoái vốn</option>
+                                    <option value="Đang vận hành">Đang vận hành</option>
+                                    <option value="Đã bàn giao khách hàng">Đã bàn giao khách hàng</option>
+                                    <option value="Đóng cửa">Đóng cửa</option>
+                                    <option value="Chưa phân loại">Chưa phân loại</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-group-input">Nhóm dự án</label>
+                                <input type="text" id="project-group-input" class="form-control" placeholder="Nhóm / loại dự án">
+                            </div>
+                            <div class="form-group span-3">
+                                <label for="project-manager-input">Quản lý khu vực / Ban điều hành</label>
+                                <input type="text" id="project-manager-input" class="form-control" placeholder="Đơn vị hoặc người phụ trách">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-heading">
+                            <span>02</span>
+                            <div>
+                                <h4>Thông tin chi tiết</h4>
+                                <p>Các trường bên dưới khớp trực tiếp bảng “Tổng quan dự án”.</p>
+                            </div>
+                        </div>
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label for="project-legal-name-input">Tên pháp lý dự án</label>
+                                <input type="text" id="project-legal-name-input" class="form-control" placeholder="Tên theo hồ sơ pháp lý">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-commercial-name-input">Tên thương mại</label>
+                                <input type="text" id="project-commercial-name-input" class="form-control" placeholder="Tên truyền thông / thương mại">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-investor-input">Chủ đầu tư</label>
+                                <input type="text" id="project-investor-input" class="form-control" placeholder="Pháp nhân chủ đầu tư">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-origin-input">Nguồn gốc dự án</label>
+                                <input type="text" id="project-origin-input" class="form-control" placeholder="M&A, tự phát triển, hợp tác...">
+                            </div>
+                            <div class="form-group span-2">
+                                <label for="project-address-input">Địa điểm dự án</label>
+                                <textarea id="project-address-input" class="form-control" rows="2" placeholder="Địa chỉ / địa bàn triển khai"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-area-input">Tổng diện tích (ha)</label>
+                                <input type="number" id="project-area-input" class="form-control" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-products-input">Số lượng sản phẩm</label>
+                                <input type="number" id="project-products-input" class="form-control" min="0" step="1" placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer sticky-footer">
+                        <span class="form-hint"><i class="bx bx-info-circle"></i> Mã dự án không thể đổi sau khi tạo.</span>
+                        <div>
+                            <button type="button" class="btn" onclick="closeModal('modal-project')">Hủy</button>
+                            <button type="submit" class="btn btn-primary" id="project-save-button">
+                                <i class="bx bx-save"></i> Lưu dự án
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: ADD/EDIT ALLOCATION -->
+    <div class="modal-overlay" id="modal-allocation">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-alloc-title">Thêm Phân Bổ Nhân Sự / Vị Trí Mới</h3>
+                <button class="modal-close" onclick="closeModal('modal-allocation')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-allocation" onsubmit="saveAllocation(event)">
+                    <input type="hidden" id="alloc-id-input">
+                    
+                    <div class="form-group">
+                        <label for="alloc-project-input">Dự án *</label>
+                        <select id="alloc-project-input" class="form-control" onchange="onAllocProjectChange()" required>
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="alloc-employee-input">Nhân sự * (Để trống/Chọn 'Vị trí tuyển dụng' nếu là vị trí lập kế hoạch)</label>
+                        <select id="alloc-employee-input" class="form-control">
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="alloc-dept-select">Phòng ban (OC) *</label>
+                        <select id="alloc-dept-select" class="form-control" onchange="onAllocDeptSelectChange()" required>
+                            <!-- JS populated dynamically based on selected project -->
+                        </select>
+                    </div>
+
+                    <!-- Hidden fields revealed only when adding a new custom department -->
+                    <div id="new-dept-fields-container" style="display: none;" class="form-row">
+                        <div class="form-group">
+                            <label for="alloc-oc-code-input">Mã bộ phận mới (OC Code) *</label>
+                            <input type="text" id="alloc-oc-code-input" class="form-control" placeholder="Ví dụ: DMD, PMD...">
+                        </div>
+                        <div class="form-group">
+                            <label for="alloc-oc-name-input">Tên bộ phận mới (OC Name) *</label>
+                            <input type="text" id="alloc-oc-name-input" class="form-control" placeholder="Ví dụ: PHÒNG THIẾT KẾ">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="alloc-title-input">Chức danh phân bổ *</label>
+                            <input type="text" id="alloc-title-input" class="form-control" placeholder="Ví dụ: Giám đốc Ban Điều hành" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="alloc-region-input">Vùng *</label>
+                            <input type="text" id="alloc-region-input" class="form-control" placeholder="Ví dụ: Vùng Đồng Nai 1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label style="opacity: 0; pointer-events: none; user-select: none;">Kiêm nhiệm</label>
+                            <div style="height: 44px; display: flex; align-items: center;">
+                                <label class="custom-checkbox-container">
+                                    <input type="checkbox" id="alloc-status-input">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-label-text">Vai trò kiêm nhiệm (KN)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="alloc-notes-input">Ghi chú</label>
+                            <input type="text" id="alloc-notes-input" class="form-control" placeholder="Ví dụ: Tuyển mới trong Q1/2026">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-allocation')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CREATE EMPLOYEE PROFILE -->
+    <div class="modal-overlay" id="modal-employee">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tạo Hồ Sơ Nhân Sự Mới</h3>
+                <button class="modal-close" onclick="closeModal('modal-employee')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-employee" onsubmit="saveEmployee(event)">
+                    <div class="form-group">
+                        <label for="emp-id-input">Mã nhân viên * (Phải là duy nhất)</label>
+                        <input type="text" id="emp-id-input" class="form-control" placeholder="Ví dụ: 36540 hoặc NV098" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-name-input">Họ và tên *</label>
+                        <input type="text" id="emp-name-input" class="form-control" placeholder="Ví dụ: Nguyễn Văn A" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-email-input">Email</label>
+                        <input type="email" id="emp-email-input" class="form-control" placeholder="Ví dụ: a.nguyen@company.com">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emp-phone-input">Số điện thoại</label>
+                            <input type="text" id="emp-phone-input" class="form-control" placeholder="Ví dụ: 0901234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="emp-date-input">Ngày vào làm</label>
+                            <input type="date" id="emp-date-input" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-employee')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Tạo hồ sơ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: TRANSFER / ROTATION -->
+    <div class="modal-overlay" id="modal-transfer">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Luân Chuyển / Điều Chuyển Nhân Sự</h3>
+                <button class="modal-close" onclick="closeModal('modal-transfer')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-transfer" onsubmit="saveTransfer(event)">
+                    <input type="hidden" id="trans-alloc-id-input">
+                    <input type="hidden" id="trans-empid-input">
+                    
+                    <div class="form-group">
+                        <label>Nhân viên</label>
+                        <input type="text" id="trans-empname-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Dự án hiện tại</label>
+                            <input type="text" id="trans-old-proj-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                        </div>
+                        <div class="form-group">
+                            <label>Phòng ban hiện tại</label>
+                            <input type="text" id="trans-old-dept-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chức danh hiện tại</label>
+                        <input type="text" id="trans-old-title-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                    </div>
+
+                    <hr style="border: none; border-bottom: 1px solid var(--border-color); margin: 1.5rem 0;">
+                    <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 1rem; color: var(--secondary);">THÔNG TIN ĐIỂU CHUYỂN MỚI</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trans-new-proj-input">Dự án chuyển đến *</label>
+                            <select id="trans-new-proj-input" class="form-control" onchange="onTransProjectChange()" required>
+                                <!-- JS populated -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="trans-new-dept-select">Phòng ban mới *</label>
+                            <select id="trans-new-dept-select" class="form-control" onchange="onTransDeptSelectChange()" required>
+                                <!-- JS populated based on project -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Hidden field revealed only when adding a new department configuration for transfer destination -->
+                    <div id="new-trans-dept-container" style="display: none;" class="form-group">
+                        <label for="trans-new-dept-input">Tên phòng ban mới *</label>
+                        <input type="text" id="trans-new-dept-input" class="form-control" placeholder="Ví dụ: PHÒNG THIẾT KẾ MỚI">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trans-new-title-input">Chức danh mới *</label>
+                            <input type="text" id="trans-new-title-input" class="form-control" required placeholder="Ví dụ: Chuyên gia Thiết kế">
+                        </div>
+                        <div class="form-group">
+                            <label for="trans-date-input">Ngày luân chuyển *</label>
+                            <input type="date" id="trans-date-input" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trans-reason-input">Lý do điều chuyển</label>
+                        <input type="text" id="trans-reason-input" class="form-control" placeholder="Ví dụ: Yêu cầu tăng cường dự án lớn, bổ nhiệm mới...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="trans-notes-input">Ghi chú bổ sung</label>
+                        <input type="text" id="trans-notes-input" class="form-control" placeholder="Nhập ghi chú...">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-transfer')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận điều chuyển</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: EVALUATION FORM -->
+    <div class="modal-overlay" id="modal-evaluation">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đánh Giá Nhân Sự Chi Tiết</h3>
+                <button class="modal-close" onclick="closeModal('modal-evaluation')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-evaluation" onsubmit="saveEvaluation(event)">
+                    <input type="hidden" id="eval-empid-input">
+                    
+                    <div class="form-group">
+                        <label>Nhân viên được đánh giá</label>
+                        <input type="text" id="eval-empname-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eval-evaluator-input">Người đánh giá *</label>
+                            <input type="text" id="eval-evaluator-input" class="form-control" required placeholder="Ví dụ: Trần Thị Thanh Vân">
+                        </div>
+                        <div class="form-group">
+                            <label for="eval-date-input">Ngày đánh giá *</label>
+                            <input type="date" id="eval-date-input" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-score-input">Đánh giá hiệu suất chung (Điểm từ 1 - 5) *</label>
+                        <select id="eval-score-input" class="form-control" required>
+                            <option value="5">⭐⭐⭐⭐⭐ Xuất sắc (5/5)</option>
+                            <option value="4">⭐⭐⭐⭐ Tốt (4/5)</option>
+                            <option value="3" selected>⭐⭐⭐ Khá (3/5)</option>
+                            <option value="2">⭐⭐ Trung bình (2/5)</option>
+                            <option value="1">⭐ Kém (1/5)</option>
+                        </select>
+                    </div>
+
+                    <h4 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.75rem 0; color: var(--primary);">ĐIỂM NĂNG LỰC CHI TIẾT (Thang điểm 1 - 5)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eval-skill-prof">Chuyên môn / Kỹ thuật *</label>
+                            <input type="number" min="1" max="5" id="eval-skill-prof" class="form-control" value="3" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eval-skill-comm">Giao tiếp / Báo cáo *</label>
+                            <input type="number" min="1" max="5" id="eval-skill-comm" class="form-control" value="3" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="eval-skill-team">Làm việc nhóm *</label>
+                            <input type="number" min="1" max="5" id="eval-skill-team" class="form-control" value="3" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eval-skill-time">Tiến độ & Đúng hạn *</label>
+                            <input type="number" min="1" max="5" id="eval-skill-time" class="form-control" value="3" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="max-width: 50%;">
+                        <label for="eval-skill-init">Tính chủ động & Sáng tạo *</label>
+                        <input type="number" min="1" max="5" id="eval-skill-init" class="form-control" value="3" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-strength-input">Điểm mạnh nổi bật</label>
+                        <textarea id="eval-strength-input" class="form-control" placeholder="Nêu các điểm mạnh của nhân sự..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-weakness-input">Điểm cần cải thiện</label>
+                        <textarea id="eval-weakness-input" class="form-control" placeholder="Nêu các điểm yếu cần khắc phục..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="eval-feedback-input">Nhận xét chung & Định hướng phát triển</label>
+                        <textarea id="eval-feedback-input" class="form-control" placeholder="Nhập ý kiến đánh giá tổng quan..."></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-evaluation')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu đánh giá</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: ADD/EDIT COMMON ALLOCATION (NS chung) -->
+    <div class="modal-overlay" id="modal-common-allocation">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-common-alloc-title">Thêm Vai Trò Nhân Sự Hệ Thống</h3>
+                <button class="modal-close" onclick="closeModal('modal-common-allocation')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-common-allocation" onsubmit="saveCommonAllocation(event)">
+                    <input type="hidden" id="common-alloc-id-input">
+                    
+                    <div class="form-group">
+                        <label for="common-alloc-employee-input">Nhân sự * (Để trống/Chọn 'Vị trí tuyển dụng' nếu là vị trí kế hoạch)</label>
+                        <select id="common-alloc-employee-input" class="form-control">
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="common-alloc-oc-code-input">Mã OC (Bộ phận hệ thống)</label>
+                            <input type="text" id="common-alloc-oc-code-input" class="form-control" placeholder="Ví dụ: HRSC, FASC...">
+                        </div>
+                        <div class="form-group">
+                            <label for="common-alloc-oc-name-input">Tên phòng ban hệ thống *</label>
+                            <input type="text" id="common-alloc-oc-name-input" class="form-control" placeholder="Ví dụ: BAN HỆ THỐNG NHÂN SỰ" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="common-alloc-title-input">Chức danh chung *</label>
+                            <input type="text" id="common-alloc-title-input" class="form-control" placeholder="Ví dụ: Giám đốc Hệ thống" required>
+                        </div>
+                        <div class="form-group">
+                            <label style="opacity: 0; pointer-events: none; user-select: none;">Kiêm nhiệm</label>
+                            <div style="height: 44px; display: flex; align-items: center;">
+                                <label class="custom-checkbox-container">
+                                    <input type="checkbox" id="common-alloc-status-input">
+                                    <span class="checkmark"></span>
+                                    <span class="checkbox-label-text">Vai trò kiêm nhiệm (KN)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="common-alloc-notes-input">Ghi chú</label>
+                        <input type="text" id="common-alloc-notes-input" class="form-control" placeholder="Ghi chú thêm...">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-common-allocation')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thông tin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: COPY DEPT CONFIGURATION FROM ANOTHER PROJECT -->
+    <div class="modal-overlay" id="modal-copy-config">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Sao Chép Cấu Hỉnh Phòng Ban</h3>
+                <button class="modal-close" onclick="closeModal('modal-copy-config')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-copy-config" onsubmit="saveCopyConfig(event)">
+                    <div class="form-group">
+                        <label for="copy-from-project-select">Dự án nguồn (Dự án có cấu hình mẫu) *</label>
+                        <select id="copy-from-project-select" class="form-control" required>
+                            <!-- JS populated -->
+                        </select>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Gợi ý: Chọn dự án <strong>HCM.CHC.GMA</strong> vì dự án này có đầy đủ cấu trúc phòng ban mẫu.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="copy-to-project-display">Dự án đích (Dự án sao chép đến) *</label>
+                        <input type="text" id="copy-to-project-display" class="form-control" readonly style="background: rgba(255,255,255,0.03);">
+                        <input type="hidden" id="copy-to-project-id">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-copy-config')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận sao chép</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datalist for Quick Employee entry -->
+    <datalist id="quick-emp-datalist"></datalist>
+
+    <!-- Login Screen Overlay -->
+    <div id="login-screen" class="login-overlay" style="display: none;">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="bx bx-buildings login-logo"></i>
+                <h2>NVL Data Hub</h2>
+                <p>Cổng nhập liệu Nhân sự & Tổng quan dự án</p>
+            </div>
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group-login">
+                    <label for="login-username"><i class="bx bx-user"></i> Tên đăng nhập</label>
+                    <input type="text" id="login-username" required placeholder="Nhập tên đăng nhập...">
+                </div>
+                <div class="form-group-login">
+                    <label for="login-password"><i class="bx bx-lock-alt"></i> Mật khẩu</label>
+                    <input type="password" id="login-password" required placeholder="Nhập mật khẩu...">
+                </div>
+                <div id="login-error" class="login-error-msg" style="display: none;"></div>
+                <button type="submit" class="btn-login">
+                    <span>Đăng Nhập</span> <i class="bx bx-right-arrow-alt"></i>
+                </button>
+            </form>
+            <div class="login-footer">
+                <p>Tài khoản được phân quyền theo khu vực. Liên hệ quản trị hệ thống nếu bạn chưa được cấp quyền.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="/static/js/main.js?v=5.2.3"></script>
+</body>
+</html>

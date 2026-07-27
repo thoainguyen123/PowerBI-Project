@@ -1,0 +1,133 @@
+relationship 31af9c9c-3371-4f8b-802d-c4da9751dca6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.case_createdAt
+	toColumn: LocalDateTable_8b5e545a-3d34-4d36-8a9e-9562821a833f.Date
+
+relationship 84e4d5df-21b7-46ca-9a94-d74b8b7d4fc3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.case_updatedAt
+	toColumn: LocalDateTable_1e40a880-3208-49f5-b7cf-ba43235964aa.Date
+
+relationship 91bb9727-202f-424a-8153-3937312d5f3d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.case_deletedAt
+	toColumn: LocalDateTable_5745d8c5-8439-4fde-b3ca-46fc5c149e4f.Date
+
+relationship 968ff12f-3209-421e-bcc5-70a6dc3c6aeb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.inspectionDate
+	toColumn: LocalDateTable_bcb9eaab-9d6c-4c04-b655-2e5a2bbf89c9.Date
+
+relationship 4b3d0fe9-2db5-4078-b1e2-2048aedfaa60
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.violation_createdAt
+	toColumn: LocalDateTable_00e8bcf4-10ba-43d1-b849-1f57009951b2.Date
+
+relationship b2e7b463-5225-4284-a964-11626332416a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.violation_updatedAt
+	toColumn: LocalDateTable_0751499a-1c02-4d07-9628-f2c26034138e.Date
+
+relationship b8a5c4f9-7f7d-4957-80ec-38ac6d16bcbc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.violation_deletedAt
+	toColumn: LocalDateTable_779fc1cc-5a3c-4009-b178-f02bec963dd9.Date
+
+relationship df22f355-0e9b-4105-b935-1dddc0ccee74
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.recognizedDate
+	toColumn: LocalDateTable_e911d99a-7342-44e8-84bd-e78269f98e25.Date
+
+relationship 6f686755-3913-4249-82d2-15badd7cc7e4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.departmentSentDate
+	toColumn: LocalDateTable_99094f4d-d8a5-46eb-ad5e-b68c135c3a88.Date
+
+relationship cffd043d-663c-4ff0-b294-76133d8fb3a2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.hrReceivedDate
+	toColumn: LocalDateTable_8fd41554-016c-4a13-8c2f-6d88fbe22a54.Date
+
+relationship c2006cbc-ea5d-4215-9757-0f676e9f1b8d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.processedDate
+	toColumn: LocalDateTable_f9c097cf-9b52-480e-99bf-8d8875486baf.Date
+
+relationship d738df5b-dd81-4a07-9fc7-dd79b583e36d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.action_createdAt
+	toColumn: LocalDateTable_369d92bc-b8ad-45d5-940c-5049b5b5783f.Date
+
+relationship 37a30741-e7e5-4bbe-9b9e-7dd1661f830f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.action_updatedAt
+	toColumn: LocalDateTable_8987d6cf-dcb2-4834-9f1f-74b28f23f07c.Date
+
+relationship ba70e216-4e88-406a-a19b-9ec39a419ea0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.action_deletedAt
+	toColumn: LocalDateTable_6a031dfc-b57d-4912-b489-689c1c7a634c.Date
+
+relationship dbbedcf1-7076-4d96-a4bc-58168e4ff91a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.startDate
+	toColumn: LocalDateTable_daf5b83e-dbae-494b-b0a4-6d188790fe47.Date
+
+relationship 078e6553-5cfa-4075-9c31-408173ee10ff
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.endDate
+	toColumn: LocalDateTable_35ead473-2a23-423c-9c4a-cb7d01f266cc.Date
+
+relationship c8e47dd2-4e80-4720-ba57-75b06c267bd5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.actualCompletionDate
+	toColumn: LocalDateTable_acfd8b49-c3cb-4041-bdfa-79a2407baa79.Date
+
+relationship 8d747af0-0b42-45dd-baf9-b5526bb4be5a
+	joinOnDateBehavior: datePartOnly
+	fromColumn: ICS.alertedAt
+	toColumn: LocalDateTable_ebabbc6a-27f8-4afc-b5e2-84d0df5f566d.Date
+
+relationship 34cb7a32-f51d-43ea-ab55-b195d302f995
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Org.createdAt
+	toColumn: LocalDateTable_16fac2fd-ba7c-4ac0-96fe-ddd61c29ba2b.Date
+
+relationship adaadbc0-bfad-4992-819b-c58182f04f9f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Org.updatedAt
+	toColumn: LocalDateTable_7aae4c50-6586-4462-a169-cbff6d486065.Date
+
+relationship 13074f04-0891-4f7d-b9b6-146a2884874d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Org.deletedAt
+	toColumn: LocalDateTable_b83aeced-6296-4b05-a8d4-a5672527c5ff.Date
+
+relationship cf411163-91b0-42db-bc6c-779cd641bed0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Org.startDate
+	toColumn: LocalDateTable_a23990c5-3e06-4717-a82b-8e78cf2189bd.Date
+
+relationship a50e616c-b18e-4971-82d4-e88c5c073d7c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Org.endDate
+	toColumn: LocalDateTable_807de4a5-3059-4460-8afc-5dd79a44abdf.Date
+
+relationship ee21c274-da64-bb41-1132-a0753aa6b4f0
+	fromColumn: ICS.violation_departmentId
+	toColumn: Org.id
+
+relationship a8e79510-7004-4718-b758-9c1d70f5d405
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DateTable.Date
+	toColumn: LocalDateTable_6b43df35-2389-4fcd-97a9-e818b796a316.Date
+
+relationship 7afb25a7-c76b-7f89-af92-08394db7d5aa
+	crossFilteringBehavior: bothDirections
+	fromColumn: ICS.violationDate
+	toColumn: DateTable.Date
+
+relationship 63001e78-ea18-e715-ab4f-cc586122c398
+	fromColumn: DateTable.'Khoảng thời gian tuần'
+	toColumn: Table.'Khoảng thời gian tuần'
+

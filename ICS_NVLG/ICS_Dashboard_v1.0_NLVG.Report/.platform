@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "ICS_Dashboard_v1.0_NLVG"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d01b913c-db18-45ab-a1d5-4d3f0b6ff9f4"
+  }
+}

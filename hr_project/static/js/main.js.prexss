@@ -1,0 +1,2943 @@
+// Global State variables
+let state = {
+    allocations: [],
+    commonAllocations: [],
+    projects: [],
+    projectOverview: [],
+    employees: [],
+    regions: [],
+    departments: [],
+    titles: [],
+    allocationMode: 'table',
+    dashboardRows: [],
+    dashboardPage: 1,
+    dashboardPageSize: 50,
+    masterdataConfig: [],
+    masterdataEntries: [],
+    masterdataActiveSheet: 'HRC',
+    masterdataProjectCode: '',
+    
+    // Active filters from clicking charts
+    chartFilters: {
+        project: null,
+        region: null,
+        department: null,
+        title: null,
+        status: null,
+        classification: null
+    },
+    
+    // Active tab
+    activeTab: 'dashboard',
+    
+    // Currently selected employee for profile detail
+    selectedEmployeeId: null,
+    
+    // Chart instances
+    charts: {
+        region: null,
+        project: null,
+        department: null,
+        openTitle: null,
+        classification: null
+    }
+};
+
+// API base path
+const API_URL = '/api';
+
+// Global User variable
+let currentUser = null;
+
+const PAGE_META = {
+    dashboard: { kicker: 'Giám sát nguồn lực', title: 'Tổng quan nhân sự' },
+    projects: { kicker: 'Danh mục dự án', title: 'Thông tin dự án' },
+    masterdata: { kicker: '15 sheet phòng ban', title: 'Master data dự án' },
+    allocations: { kicker: 'Điều phối nhân sự', title: 'Phân bổ dự án' },
+    common: { kicker: 'Nguồn lực hệ thống', title: 'Nhân sự chung' },
+    profiles: { kicker: 'Vòng đời nhân sự', title: 'Hồ sơ & đánh giá' },
+    'dept-config': { kicker: 'Cơ cấu tổ chức', title: 'Cấu hình phòng ban' },
+    sync: { kicker: 'Data delivery', title: 'Xuất & đồng bộ dữ liệu' }
+};
+
+// Global Fetch Interceptor for Auth
+const originalFetch = window.fetch;
+window.fetch = async function(...args) {
+    try {
+        const response = await originalFetch(...args);
+        
+        // Handle unauthorized (401)
+        if (response.status === 401 && !args[0].toString().includes('/api/me') && !args[0].toString().includes('/api/login')) {
+            currentUser = null;
+            document.getElementById('login-screen').style.display = 'flex';
+            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('header-user-profile').style.display = 'none';
+            throw new Error('Chưa đăng nhập');
+        }
+        
+        // Handle all other error responses (>= 400)
+        if (!response.ok) {
+            let errorMsg = `Yêu cầu thất bại (HTTP ${response.status})`;
+            try {
+                const data = await response.clone().json();
+                errorMsg = data.error || errorMsg;
+            } catch (e) {}
+            
+            showToast(errorMsg, true);
+            throw new Error(errorMsg); // Throw to stop execution of subsequent .map() / .json() etc.
+        }
+        
+        return response;
+    } catch (err) {
+        if (err.message !== 'Chưa đăng nhập') {
+            // If it is a network error (TypeError), show connection message
+            if (err instanceof TypeError) {
+                showToast('Không thể kết nối đến máy chủ! Vui lòng kiểm tra lại đường truyền mạng.', true);
+            }
+        }
+        throw err;
+    }
+};
+
+async function checkLoginState() {
+    try {
+        const res = await originalFetch('/api/me');
+        const data = await res.json();
+        if (data.logged_in) {
+            currentUser = data;
+            document.getElementById('login-screen').style.display = 'none';
+            document.querySelector('.app-container').style.display = 'flex';
+            document.getElementById('header-user-profile').style.display = 'flex';
+            document.getElementById('user-display-name').innerText = data.display_name;
+            document.getElementById('user-display-role').innerText = data.role === 'admin' ? 'Admin Hệ thống' : 'Quản lý Vùng';
+            const avatar = document.getElementById('user-avatar');
+            if (avatar) {
+                avatar.innerText = (data.display_name || data.username || 'A').trim().charAt(0).toUpperCase();
+            }
+            
+            const syncNav = document.getElementById('nav-sync');
+            if (syncNav) {
+                syncNav.style.display = (data.role === 'admin') ? 'inline-flex' : 'none';
+            }
+            return true;
+        } else {
+            currentUser = null;
+            document.getElementById('login-screen').style.display = 'flex';
+            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('header-user-profile').style.display = 'none';
+            return false;
+        }
+    } catch (err) {
+        console.error('Lỗi khi kiểm tra session:', err);
+        return false;
+    }
+}
+
+async function handleLogin(event) {
+    if (event) event.preventDefault();
+    const usernameInput = document.getElementById('login-username');
+    const passwordInput = document.getElementById('login-password');
+    const errorDiv = document.getElementById('login-error');
+    
+    errorDiv.style.display = 'none';
+    
+    try {
+        const res = await originalFetch('/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput.value,
+                password: passwordInput.value
+            })
+        });
+        
+        if (res.ok) {
+            usernameInput.value = '';
+            passwordInput.value = '';
+            showToast('Đăng nhập thành công!');
+            await initApp();
+        } else {
+            const errData = await res.json();
+            errorDiv.innerText = errData.error || 'Đăng nhập thất bại!';
+            errorDiv.style.display = 'block';
+        }
+    } catch (err) {
+        console.error('Lỗi đăng nhập:', err);
+        errorDiv.innerText = 'Lỗi kết nối máy chủ!';
+        errorDiv.style.display = 'block';
+    }
+}
+
+async function handleLogout() {
+    try {
+        const res = await originalFetch('/api/logout', {
+            method: 'POST'
+        });
+        if (res.ok) {
+            showToast('Đã đăng xuất!');
+            await initApp();
+        }
+    } catch (err) {
+        console.error('Lỗi đăng xuất:', err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// Document Ready
+document.addEventListener('DOMContentLoaded', () => {
+    const dateElement = document.getElementById('topbar-date');
+    if (dateElement) {
+        dateElement.innerText = new Intl.DateTimeFormat('vi-VN', {
+            weekday: 'short',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(new Date());
+    }
+    initApp();
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeSidebar();
+});
+
+// App Initialization
+async function initApp() {
+    const today = new Date().toISOString().split('T')[0];
+    if (document.getElementById('trans-date-input')) document.getElementById('trans-date-input').value = today;
+    if (document.getElementById('eval-date-input')) document.getElementById('eval-date-input').value = today;
+    if (document.getElementById('emp-date-input')) document.getElementById('emp-date-input').value = today;
+
+    const loggedIn = await checkLoginState();
+    if (!loggedIn) {
+        return;
+    }
+
+    await loadInitialMetadata();
+    await loadMasterdataConfig();
+    await fetchProjectOverviewData();
+    await fetchDashboardData();
+    await fetchAllocationsData();
+    await fetchCommonAllocationsData();
+    await fetchProfilesData();
+}
+
+// Switch between tabs
+function switchTab(tabId, trigger = null) {
+    state.activeTab = tabId;
+    
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeTrigger = trigger || (window.event && window.event.currentTarget);
+    if (activeTrigger) activeTrigger.classList.add('active');
+    
+    document.querySelectorAll('.tab-content').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    document.getElementById(`tab-${tabId}`).classList.add('active');
+
+    const pageMeta = PAGE_META[tabId] || PAGE_META.dashboard;
+    document.getElementById('page-kicker').innerText = pageMeta.kicker;
+    document.getElementById('page-title').innerText = pageMeta.title;
+    document.title = `${pageMeta.title} | NVL Data Hub`;
+    closeSidebar();
+    
+    if (tabId === 'dashboard') {
+        fetchDashboardData();
+    } else if (tabId === 'projects') {
+        fetchProjectOverviewData();
+    } else if (tabId === 'masterdata') {
+        loadMasterdataProject();
+    } else if (tabId === 'allocations') {
+        if (state.allocationMode === 'quick') {
+            loadQuickEntryProjectData();
+        } else {
+            fetchAllocationsData();
+        }
+    } else if (tabId === 'common') {
+        fetchCommonAllocationsData();
+    } else if (tabId === 'dept-config') {
+        loadDeptConfigMetadata();
+        loadProjectDeptConfig();
+    } else if (tabId === 'profiles') {
+        fetchProfilesData();
+    }
+}
+
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-open');
+}
+
+function closeSidebar() {
+    document.body.classList.remove('sidebar-open');
+}
+
+// Toast notification helper
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    const toastMsg = document.getElementById('toast-message');
+    toastMsg.innerText = message;
+    
+    if (isError) {
+        toast.classList.add('error');
+    } else {
+        toast.classList.remove('error');
+    }
+    
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 4000);
+}
+
+// Modal management
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+    if (modalId === 'modal-allocation') {
+        document.getElementById('form-allocation').reset();
+        document.getElementById('alloc-id-input').value = '';
+        document.getElementById('new-dept-fields-container').style.display = 'none';
+    } else if (modalId === 'modal-employee') {
+        document.getElementById('form-employee').reset();
+    } else if (modalId === 'modal-transfer') {
+        document.getElementById('form-transfer').reset();
+        document.getElementById('new-trans-dept-container').style.display = 'none';
+    } else if (modalId === 'modal-evaluation') {
+        document.getElementById('form-evaluation').reset();
+    } else if (modalId === 'modal-common-allocation') {
+        document.getElementById('form-common-allocation').reset();
+        document.getElementById('common-alloc-id-input').value = '';
+    } else if (modalId === 'modal-copy-config') {
+        document.getElementById('form-copy-config').reset();
+    } else if (modalId === 'modal-project') {
+        document.getElementById('form-project').reset();
+        document.getElementById('project-edit-code').value = '';
+        document.getElementById('project-code-input').readOnly = false;
+    }
+}
+
+// Load metadata for dropdowns
+async function loadInitialMetadata() {
+    try {
+        const projRes = await fetch(`${API_URL}/projects`);
+        state.projects = await projRes.json();
+        
+        const empRes = await fetch(`${API_URL}/employees`);
+        state.employees = await empRes.json();
+        
+        const allocProjSelect = document.getElementById('alloc-project-input');
+        const transNewProjSelect = document.getElementById('trans-new-proj-input');
+        const configProjSelect = document.getElementById('config-project-select');
+        const quickAllocProjSelect = document.getElementById('quick-alloc-project-select');
+        const copyFromProjSelect = document.getElementById('copy-from-project-select');
+        const masterdataProjSelect = document.getElementById('masterdata-project-select');
+        
+        const projOptionsHTML = state.projects.map(p => 
+            `<option value="${p.ma_du_an}">${p.ten_du_an} (${p.ma_du_an})</option>`
+        ).join('');
+        
+        allocProjSelect.innerHTML = `<option value="">-- Chọn dự án --</option>` + projOptionsHTML;
+        transNewProjSelect.innerHTML = `<option value="">-- Chọn dự án mới --</option>` + projOptionsHTML;
+        if (configProjSelect) configProjSelect.innerHTML = `<option value="">-- Chọn dự án cần cấu hình --</option>` + projOptionsHTML;
+        if (quickAllocProjSelect) quickAllocProjSelect.innerHTML = `<option value="">-- Chọn dự án để nhập liệu --</option>` + projOptionsHTML;
+        if (copyFromProjSelect) copyFromProjSelect.innerHTML = `<option value="">-- Chọn dự án nguồn --</option>` + projOptionsHTML;
+        if (masterdataProjSelect) {
+            const selectedProject = state.masterdataProjectCode || masterdataProjSelect.value;
+            masterdataProjSelect.innerHTML = `<option value="">-- Chọn dự án cần nhập master data --</option>` + projOptionsHTML;
+            if (state.projects.some(project => project.ma_du_an === selectedProject)) {
+                masterdataProjSelect.value = selectedProject;
+            }
+        }
+        
+        const allocEmpSelect = document.getElementById('alloc-employee-input');
+        const commonAllocEmpSelect = document.getElementById('common-alloc-employee-input');
+        
+        const filteredEmployees = state.employees.filter(e => {
+            const name = e.ho_ten || '';
+            return !name.includes('Chưa có') && !name.startsWith('Nhân sự ');
+        });
+        
+        const empOptionsHTML = filteredEmployees.map(e => 
+            `<option value="${e.ma_nhan_vien}">${e.ho_ten} (${e.ma_nhan_vien})</option>`
+        ).join('');
+        
+        const dropdownHTML = `
+            <option value="Tuyển0">Vị trí kiêm nhiệm từ dự án khác (không tuyển chính)</option>
+            <option value="Tuyển">Vị trí đang tuyển chính</option>
+            <option value="Không tuyển">Vị trí không tuyển</option>
+            <optgroup label="Danh sách nhân viên">
+                ${empOptionsHTML}
+            </optgroup>
+        `;
+        
+        allocEmpSelect.innerHTML = dropdownHTML;
+        commonAllocEmpSelect.innerHTML = dropdownHTML;
+        
+        const datalist = document.getElementById('quick-emp-datalist');
+        if (datalist) {
+            datalist.innerHTML = `
+                <option value="Kiêm nhiệm từ dự án khác">Vị trí không tuyển chính</option>
+                <option value="Đang tuyển chính">Vị trí đang tuyển chính</option>
+                <option value="Không tuyển">Vị trí không tuyển</option>
+                <option value="Chưa tuyển">Chưa tuyển</option>
+            ` + filteredEmployees.map(e => 
+                `<option value="${e.ma_nhan_vien}">${e.ho_ten} (${e.ma_nhan_vien})</option>`
+            ).join('');
+        }
+    } catch (err) {
+        console.error('Lỗi khi tải metadata:', err);
+        showToast('Không thể tải thông tin dự án/nhân sự!', true);
+    }
+}
+
+// PROJECT OVERVIEW: Power BI master-data entry
+const PROJECT_OVERVIEW_FIELDS = [
+    'ten_phap_ly',
+    'ten_thuong_mai',
+    'chu_dau_tu',
+    'dia_diem_du_an',
+    'tong_dien_tich_ha',
+    'so_luong_san_pham',
+    'nguon_goc_du_an'
+];
+
+const PROJECT_STATUS_LABELS = {
+    'Đã mua đang thiết kế': 'Đã mua, đang thiết kế'
+};
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+/**
+ * Dùng cho tham số chuỗi nằm trong thuộc tính sự kiện, ví dụ onclick="fn(...)".
+ * escapeHtml KHÔNG đủ ở đây: trình duyệt giải mã thực thể trong thuộc tính TRƯỚC
+ * khi JS phân tích, nên &#039; lại thành ' và thoát được khỏi chuỗi.
+ * JSON.stringify tạo literal chuỗi JS hoàn chỉnh (đã có sẵn nháy kép), sau đó
+ * escapeHtml làm an toàn cho ngữ cảnh thuộc tính => dùng KHÔNG kèm nháy bao ngoài.
+ */
+function escapeJsArg(value) {
+    return escapeHtml(JSON.stringify(String(value ?? '')));
+}
+
+function normalizeSearch(value) {
+    return String(value ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+}
+
+function getProjectDataQuality(project) {
+    const missing = PROJECT_OVERVIEW_FIELDS.filter(
+        field => !String(project[field] ?? '').trim()
+    );
+    return {
+        complete: missing.length === 0,
+        missing,
+        score: PROJECT_OVERVIEW_FIELDS.length - missing.length
+    };
+}
+
+function setProjectFilterOptions(projects) {
+    const regionSelect = document.getElementById('project-filter-region');
+    const statusSelect = document.getElementById('project-filter-status');
+    if (!regionSelect || !statusSelect) return;
+
+    const selectedRegion = regionSelect.value;
+    const selectedStatus = statusSelect.value;
+    const regions = [...new Set(projects.map(p => p.khu_vuc).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'vi', { numeric: true }));
+    const statuses = [...new Set(projects.map(p => p.trang_thai).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, 'vi'));
+
+    regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' +
+        regions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join('');
+    statusSelect.innerHTML = '<option value="">Tất cả hiện trạng</option>' +
+        statuses.map(status => {
+            const label = PROJECT_STATUS_LABELS[status] || status;
+            return `<option value="${escapeHtml(status)}">${escapeHtml(label)}</option>`;
+        }).join('');
+
+    regionSelect.value = selectedRegion;
+    statusSelect.value = selectedStatus;
+}
+
+async function fetchProjectOverviewData() {
+    const tableBody = document.getElementById('project-overview-table-body');
+    if (!tableBody) return;
+
+    try {
+        const [projectsRes, statsRes] = await Promise.all([
+            fetch(`${API_URL}/projects`),
+            fetch(`${API_URL}/projects/overview-stats`)
+        ]);
+        state.projectOverview = await projectsRes.json();
+        state.projects = state.projectOverview;
+        const stats = await statsRes.json();
+
+        document.getElementById('project-kpi-total').innerText = stats.total.toLocaleString('vi-VN');
+        document.getElementById('project-kpi-complete').innerText = stats.complete.toLocaleString('vi-VN');
+        document.getElementById('project-kpi-incomplete').innerText = stats.incomplete.toLocaleString('vi-VN');
+        document.getElementById('project-kpi-regions').innerText = stats.regions.toLocaleString('vi-VN');
+
+        setProjectFilterOptions(state.projectOverview);
+        filterProjectOverview();
+    } catch (err) {
+        console.error('Lỗi khi tải tổng quan dự án:', err);
+        tableBody.innerHTML = '<tr><td colspan="8" class="no-data">Không thể tải dữ liệu dự án.</td></tr>';
+    }
+}
+
+function filterProjectOverview() {
+    const searchInput = document.getElementById('project-search-input');
+    if (!searchInput) return;
+
+    const query = normalizeSearch(searchInput.value);
+    const region = document.getElementById('project-filter-region').value;
+    const status = document.getElementById('project-filter-status').value;
+    const quality = document.getElementById('project-filter-quality').value;
+
+    const filtered = state.projectOverview.filter(project => {
+        const searchable = normalizeSearch([
+            project.ma_du_an,
+            project.ten_du_an,
+            project.ten_phap_ly,
+            project.ten_thuong_mai,
+            project.chu_dau_tu,
+            project.dia_diem_du_an
+        ].join(' '));
+        const dataQuality = getProjectDataQuality(project);
+        return (!query || searchable.includes(query))
+            && (!region || project.khu_vuc === region)
+            && (!status || project.trang_thai === status)
+            && (!quality || (quality === 'complete') === dataQuality.complete);
+    });
+
+    filtered.sort((a, b) => String(a.ma_du_an).localeCompare(
+        String(b.ma_du_an), 'vi', { numeric: true }
+    ));
+    renderProjectOverviewTable(filtered);
+}
+
+function renderProjectOverviewTable(projects) {
+    const tableBody = document.getElementById('project-overview-table-body');
+    const count = document.getElementById('project-table-count');
+    count.innerText = `Đang hiển thị ${projects.length.toLocaleString('vi-VN')} dự án`;
+
+    if (!projects.length) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="no-data">
+                    <i class="bx bx-search-alt"></i> Không có dự án phù hợp với bộ lọc.
+                </td>
+            </tr>`;
+        return;
+    }
+
+    tableBody.innerHTML = projects.map(project => {
+        const quality = getProjectDataQuality(project);
+        const statusLabel = PROJECT_STATUS_LABELS[project.trang_thai] || project.trang_thai || 'Chưa phân loại';
+        const displayName = project.ten_thuong_mai || project.ten_phap_ly || project.ten_du_an || 'Chưa có tên';
+        const legalName = project.ten_phap_ly && project.ten_phap_ly !== displayName
+            ? project.ten_phap_ly
+            : project.ten_du_an;
+        const scale = project.tong_dien_tich_ha
+            ? `${escapeHtml(project.tong_dien_tich_ha)} ha`
+            : '—';
+        const products = project.so_luong_san_pham
+            ? `${escapeHtml(project.so_luong_san_pham)} SP`
+            : 'Chưa nhập SP';
+        const qualityTitle = quality.complete
+            ? 'Đã đủ 7/7 trường thông tin'
+            : `Thiếu ${quality.missing.length} trường`;
+
+        return `
+            <tr>
+                <td><span class="code-pill">${escapeHtml(project.ma_du_an)}</span></td>
+                <td>
+                    <div class="project-identity">
+                        <strong>${escapeHtml(displayName)}</strong>
+                        <span>${escapeHtml(legalName || 'Chưa có tên pháp lý')}</span>
+                    </div>
+                </td>
+                <td>${escapeHtml(project.khu_vuc || '—')}</td>
+                <td><span class="status-pill">${escapeHtml(statusLabel)}</span></td>
+                <td>${escapeHtml(project.chu_dau_tu || '—')}</td>
+                <td>
+                    <strong>${scale}</strong>
+                    <div class="project-meta">${products}</div>
+                </td>
+                <td>
+                    <span class="quality-pill ${quality.complete ? 'complete' : 'incomplete'}" title="${escapeHtml(qualityTitle)}">
+                        <i class="bx ${quality.complete ? 'bx-check-circle' : 'bx-error-circle'}"></i>
+                        ${quality.complete ? 'Đủ dữ liệu' : `${quality.score}/7 trường`}
+                    </span>
+                </td>
+                <td class="action-column">
+                    <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa dự án">
+                        <i class="bx bx-edit-alt"></i>
+                    </button>
+                </td>
+            </tr>`;
+    }).join('');
+}
+
+function openProjectModal() {
+    const form = document.getElementById('form-project');
+    form.reset();
+    document.getElementById('project-edit-code').value = '';
+    document.getElementById('project-code-input').readOnly = false;
+    document.getElementById('modal-project-title').innerText = 'Thêm thông tin dự án';
+    document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu dự án';
+    openModal('modal-project');
+}
+
+async function editProjectOverview(projectCode) {
+    try {
+        const res = await fetch(`${API_URL}/projects/${encodeURIComponent(projectCode)}`);
+        const project = await res.json();
+        document.getElementById('project-edit-code').value = project.ma_du_an;
+        document.getElementById('project-code-input').value = project.ma_du_an || '';
+        document.getElementById('project-code-input').readOnly = true;
+        document.getElementById('project-name-input').value = project.ten_du_an || '';
+        document.getElementById('project-region-input').value = project.khu_vuc || '';
+        const statusSelect = document.getElementById('project-status-input');
+        const projectStatus = project.trang_thai || 'Chưa phân loại';
+        if (![...statusSelect.options].some(option => option.value === projectStatus)) {
+            statusSelect.add(new Option(projectStatus, projectStatus));
+        }
+        statusSelect.value = projectStatus;
+        document.getElementById('project-group-input').value = project.nhom || '';
+        document.getElementById('project-manager-input').value = project.quan_ly || '';
+        document.getElementById('project-legal-name-input').value = project.ten_phap_ly || '';
+        document.getElementById('project-commercial-name-input').value = project.ten_thuong_mai || '';
+        document.getElementById('project-investor-input').value = project.chu_dau_tu || '';
+        document.getElementById('project-address-input').value = project.dia_diem_du_an || '';
+        document.getElementById('project-area-input').value = project.tong_dien_tich_ha || '';
+        document.getElementById('project-products-input').value = project.so_luong_san_pham || '';
+        document.getElementById('project-origin-input').value = project.nguon_goc_du_an || '';
+        document.getElementById('modal-project-title').innerText = 'Cập nhật thông tin dự án';
+        document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu thay đổi';
+        openModal('modal-project');
+    } catch (err) {
+        console.error('Lỗi khi tải dự án:', err);
+    }
+}
+
+async function saveProject(event) {
+    event.preventDefault();
+    const editingCode = document.getElementById('project-edit-code').value;
+    const projectCode = document.getElementById('project-code-input').value.trim();
+    const payload = {
+        ma_du_an: projectCode,
+        ten_du_an: document.getElementById('project-name-input').value.trim(),
+        khu_vuc: document.getElementById('project-region-input').value.trim(),
+        trang_thai: document.getElementById('project-status-input').value,
+        nhom: document.getElementById('project-group-input').value.trim(),
+        quan_ly: document.getElementById('project-manager-input').value.trim(),
+        ten_phap_ly: document.getElementById('project-legal-name-input').value.trim(),
+        ten_thuong_mai: document.getElementById('project-commercial-name-input').value.trim(),
+        chu_dau_tu: document.getElementById('project-investor-input').value.trim(),
+        dia_diem_du_an: document.getElementById('project-address-input').value.trim(),
+        tong_dien_tich_ha: document.getElementById('project-area-input').value.trim(),
+        so_luong_san_pham: document.getElementById('project-products-input').value.trim(),
+        nguon_goc_du_an: document.getElementById('project-origin-input').value.trim()
+    };
+
+    try {
+        const url = editingCode
+            ? `${API_URL}/projects/${encodeURIComponent(editingCode)}`
+            : `${API_URL}/projects`;
+        await fetch(url, {
+            method: editingCode ? 'PUT' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        closeModal('modal-project');
+        showToast(editingCode ? 'Đã cập nhật thông tin dự án!' : 'Đã thêm dự án mới!');
+        await loadInitialMetadata();
+        await fetchProjectOverviewData();
+        await fetchDashboardData();
+    } catch (err) {
+        console.error('Lỗi khi lưu dự án:', err);
+    }
+}
+
+// MASTER DATA: nhập liệu theo đúng 15 sheet nguồn của Fact_MasterData
+async function loadMasterdataConfig() {
+    const moduleList = document.getElementById('masterdata-module-list');
+    if (!moduleList) return;
+    try {
+        const res = await fetch(`${API_URL}/masterdata/config`);
+        state.masterdataConfig = await res.json();
+        if (!state.masterdataConfig.some(item => item.sheet === state.masterdataActiveSheet)) {
+            state.masterdataActiveSheet = state.masterdataConfig[0]?.sheet || 'HRC';
+        }
+        renderMasterdataModules();
+        renderMasterdataTable();
+    } catch (err) {
+        console.error('Lỗi khi tải cấu hình master data:', err);
+        moduleList.innerHTML = '<div class="no-data">Không tải được cấu hình 15 sheet.</div>';
+    }
+}
+
+function getMasterdataActiveConfig() {
+    return state.masterdataConfig.find(item => item.sheet === state.masterdataActiveSheet);
+}
+
+async function loadMasterdataProject() {
+    const select = document.getElementById('masterdata-project-select');
+    if (!select) return;
+    state.masterdataProjectCode = select.value;
+    const addButton = document.getElementById('masterdata-add-button');
+    addButton.disabled = !state.masterdataProjectCode;
+
+    const query = state.masterdataProjectCode
+        ? `?project_code=${encodeURIComponent(state.masterdataProjectCode)}`
+        : '';
+    document.getElementById('masterdata-export-excel').href = `/api/masterdata/export-template${query}`;
+    document.getElementById('masterdata-export-csv').href = `/api/masterdata/export-fact${query}`;
+
+    if (!state.masterdataProjectCode) {
+        state.masterdataEntries = [];
+        updateMasterdataKpis();
+        renderMasterdataModules();
+        renderMasterdataTable();
+        return;
+    }
+
+    const tableBody = document.getElementById('masterdata-table-body');
+    tableBody.innerHTML = '<tr><td class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td></tr>';
+    try {
+        const res = await fetch(
+            `${API_URL}/masterdata/entries?project_code=${encodeURIComponent(state.masterdataProjectCode)}`
+        );
+        state.masterdataEntries = await res.json();
+        updateMasterdataKpis();
+        renderMasterdataModules();
+        renderMasterdataTable();
+    } catch (err) {
+        console.error('Lỗi khi tải master data dự án:', err);
+        tableBody.innerHTML = '<tr><td class="no-data">Không thể tải dữ liệu dự án.</td></tr>';
+    }
+}
+
+function updateMasterdataKpis() {
+    const sheetCount = new Set(state.masterdataEntries.map(entry => entry.source_sheet)).size;
+    document.getElementById('masterdata-kpi-records').innerText =
+        state.masterdataEntries.length.toLocaleString('vi-VN');
+    document.getElementById('masterdata-kpi-modules').innerText =
+        `${sheetCount}/${state.masterdataConfig.length || 15}`;
+    document.getElementById('masterdata-kpi-missing').innerText =
+        Math.max((state.masterdataConfig.length || 15) - sheetCount, 0);
+}
+
+function renderMasterdataModules() {
+    const container = document.getElementById('masterdata-module-list');
+    if (!container || !state.masterdataConfig.length) return;
+    const counts = state.masterdataEntries.reduce((result, entry) => {
+        result[entry.source_sheet] = (result[entry.source_sheet] || 0) + 1;
+        return result;
+    }, {});
+    container.innerHTML = state.masterdataConfig.map(config => `
+        <button class="masterdata-module ${config.sheet === state.masterdataActiveSheet ? 'active' : ''}"
+                data-sheet="${escapeHtml(config.sheet)}"
+                onclick="selectMasterdataSheet(this.dataset.sheet)">
+            <span class="masterdata-module-code">${escapeHtml(config.nhom)}</span>
+            <span class="masterdata-module-name">${escapeHtml(config.phan_nhom)}</span>
+            <span class="masterdata-module-count">${counts[config.sheet] || 0}</span>
+        </button>
+    `).join('');
+}
+
+function selectMasterdataSheet(sheetName) {
+    state.masterdataActiveSheet = sheetName;
+    renderMasterdataModules();
+    renderMasterdataTable();
+}
+
+function renderMasterdataTable() {
+    const config = getMasterdataActiveConfig();
+    const head = document.getElementById('masterdata-table-head');
+    const body = document.getElementById('masterdata-table-body');
+    if (!config || !head || !body) return;
+    document.getElementById('masterdata-active-title').innerText =
+        `${config.nhom} · ${config.phan_nhom}`;
+    const visibleHeaders = config.headers.filter(header => header !== 'Mã dự án');
+    const entries = state.masterdataEntries.filter(
+        entry => entry.source_sheet === config.sheet
+    );
+    document.getElementById('masterdata-active-description').innerText =
+        state.masterdataProjectCode
+            ? `${entries.length} dòng · Cấu trúc sheet ${config.sheet}`
+            : 'Chọn dự án để xem và nhập dữ liệu.';
+    head.innerHTML = `<tr>${visibleHeaders.map(header =>
+        `<th>${escapeHtml(header)}</th>`
+    ).join('')}<th class="action-column">Thao tác</th></tr>`;
+
+    if (!state.masterdataProjectCode) {
+        body.innerHTML = `<tr><td colspan="${visibleHeaders.length + 1}" class="no-data">
+            <i class="bx bx-select-multiple"></i> Vui lòng chọn một dự án.
+        </td></tr>`;
+        return;
+    }
+    if (!entries.length) {
+        body.innerHTML = `<tr><td colspan="${visibleHeaders.length + 1}" class="no-data">
+            <i class="bx bx-data"></i> Sheet ${escapeHtml(config.sheet)} chưa có dữ liệu.
+            Bấm “Thêm dòng” để nhập.
+        </td></tr>`;
+        return;
+    }
+    body.innerHTML = entries.map(entry => `
+        <tr>
+            ${visibleHeaders.map(header => {
+                const value = entry.values?.[header] || '';
+                return `<td><span class="masterdata-cell" title="${escapeHtml(value)}">${escapeHtml(value || '—')}</span></td>`;
+            }).join('')}
+            <td class="action-column">
+                <div class="row-actions">
+                    <button class="btn-icon" onclick="openMasterdataModal(${entry.id})" title="Chỉnh sửa">
+                        <i class="bx bx-edit-alt"></i>
+                    </button>
+                    <button class="btn-icon danger" onclick="deleteMasterdataEntry(${entry.id})" title="Xóa">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function openMasterdataModal(entryId = null) {
+    if (!state.masterdataProjectCode) {
+        showToast('Vui lòng chọn dự án trước khi nhập liệu!', true);
+        return;
+    }
+    const config = getMasterdataActiveConfig();
+    const entry = entryId
+        ? state.masterdataEntries.find(item => item.id === entryId)
+        : null;
+    document.getElementById('masterdata-entry-id').value = entry?.id || '';
+    document.getElementById('masterdata-modal-kicker').innerText =
+        `${config.nhom} · SHEET ${config.sheet}`;
+    document.getElementById('masterdata-modal-title').innerText =
+        entry ? 'Cập nhật dòng dữ liệu' : 'Thêm dòng dữ liệu';
+    document.getElementById('masterdata-modal-project').innerText = state.masterdataProjectCode;
+    document.getElementById('masterdata-modal-sheet').innerText =
+        `${config.sheet} — ${config.phan_nhom}`;
+
+    const textareaHeaders = new Set([
+        'Chi tiết', 'Ghi chú', 'Văn bản phê duyệt',
+        'Khó khăn/Vướng mắc', 'Hướng xử lý'
+    ]);
+    document.getElementById('masterdata-fields').innerHTML = config.headers
+        .filter(header => header !== 'Mã dự án')
+        .map((header, index) => {
+            const value = entry?.values?.[header] || '';
+            const isTextarea = textareaHeaders.has(header);
+            return `
+                <div class="form-group ${isTextarea ? 'masterdata-field-wide' : ''}">
+                    <label for="masterdata-field-${index}">${escapeHtml(header)}</label>
+                    ${isTextarea
+                        ? `<textarea id="masterdata-field-${index}" class="form-control masterdata-input"
+                                   data-header="${escapeHtml(header)}" rows="3">${escapeHtml(value)}</textarea>`
+                        : `<input id="masterdata-field-${index}" type="text" class="form-control masterdata-input"
+                                  data-header="${escapeHtml(header)}" value="${escapeHtml(value)}"
+                                  placeholder="Nhập ${escapeHtml(header.toLowerCase())}">`
+                    }
+                </div>`;
+        }).join('');
+    openModal('modal-masterdata');
+}
+
+async function saveMasterdataEntry(event) {
+    event.preventDefault();
+    const entryId = document.getElementById('masterdata-entry-id').value;
+    const values = {};
+    document.querySelectorAll('#masterdata-fields .masterdata-input').forEach(input => {
+        values[input.dataset.header] = input.value.trim();
+    });
+    const payload = {
+        project_code: state.masterdataProjectCode,
+        source_sheet: state.masterdataActiveSheet,
+        values
+    };
+    try {
+        await fetch(
+            entryId ? `${API_URL}/masterdata/entries/${entryId}` : `${API_URL}/masterdata/entries`,
+            {
+                method: entryId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }
+        );
+        closeModal('modal-masterdata');
+        showToast(entryId ? 'Đã cập nhật dòng master data!' : 'Đã thêm dòng master data!');
+        await loadMasterdataProject();
+    } catch (err) {
+        console.error('Lỗi khi lưu master data:', err);
+    }
+}
+
+async function deleteMasterdataEntry(entryId) {
+    if (!window.confirm('Xóa dòng dữ liệu này? Dòng này cũng sẽ không còn trong file CSV tổng hợp.')) {
+        return;
+    }
+    try {
+        await fetch(`${API_URL}/masterdata/entries/${entryId}`, { method: 'DELETE' });
+        showToast('Đã xóa dòng master data.');
+        await loadMasterdataProject();
+    } catch (err) {
+        console.error('Lỗi khi xóa master data:', err);
+    }
+}
+
+// DASHBOARD: Fetch data and render charts
+async function fetchDashboardData() {
+    try {
+        const res = await fetch(`${API_URL}/dashboard/stats`);
+        const stats = await res.json();
+        
+        document.getElementById('kpi-headcount').innerText = stats.total_headcount.toLocaleString();
+        document.getElementById('kpi-projects').innerText = stats.total_projects.toLocaleString();
+        document.getElementById('kpi-open').innerText = stats.total_open_positions.toLocaleString();
+        document.getElementById('kpi-concurrent').innerText = stats.total_concurrent.toLocaleString();
+        
+        renderClassificationChart(stats.headcount_by_classification);
+        renderRegionChart(stats.headcount_by_region);
+        renderProjectChart(stats.headcount_by_project);
+        renderDepartmentChart(stats.headcount_by_department);
+        
+        updateDashboardTable();
+    } catch (err) {
+        console.error('Lỗi khi tải dữ liệu dashboard:', err);
+        showToast('Không thể tải số liệu thống kê!', true);
+    }
+}
+
+// CHART 0: Department Classification (Doughnut)
+function renderClassificationChart(data) {
+    const ctx = document.getElementById('chart-classification').getContext('2d');
+    if (state.charts.classification) state.charts.classification.destroy();
+    
+    const labels = ['BĐH dự án chính', 'Phòng ban khác'];
+    const values = [data.BAN_DIEU_HANH_CHINH, data.PHONG_BAN_KHAC];
+    
+    state.charts.classification = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: ['#1e5a86', '#9bb2c4'],
+                hoverBackgroundColor: ['#174a70', '#849fb4'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            cutout: '68%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#5f7182', boxWidth: 11, usePointStyle: true, pointStyle: 'circle' }
+                }
+            },
+            onClick: (evt, activeElements) => {
+                if (activeElements.length > 0) {
+                    const idx = activeElements[0].index;
+                    const val = idx === 0 ? 'BAN_DIEU_HANH_CHINH' : 'PHONG_BAN_KHAC';
+                    setChartFilter('classification', val);
+                }
+            }
+        }
+    });
+}
+
+// CHART 1: Region Chart (Bar)
+function renderRegionChart(data) {
+    const ctx = document.getElementById('chart-region').getContext('2d');
+    if (state.charts.region) state.charts.region.destroy();
+    
+    const sorted = Object.entries(data).sort((a, b) => b[1] - a[1]);
+    const labels = sorted.map(item => item[0]);
+    const values = sorted.map(item => item[1]);
+    
+    state.charts.region = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Nhân sự thực tế',
+                data: values,
+                backgroundColor: 'rgba(42, 140, 130, 0.76)',
+                hoverBackgroundColor: '#237a72',
+                borderColor: '#2a8c82',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(15, 76, 129, 0.07)' },
+                    ticks: { color: '#657589', precision: 0 }
+                },
+                y: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#46576a',
+                        font: { size: 10 },
+                        autoSkip: false,
+                        callback(value) {
+                            const label = this.getLabelForValue(value);
+                            return label.length > 25 ? `${label.slice(0, 23)}…` : label;
+                        }
+                    }
+                }
+            },
+            onClick: (evt, activeElements) => {
+                if (activeElements.length > 0) {
+                    const idx = activeElements[0].index;
+                    setChartFilter('region', labels[idx]);
+                }
+            }
+        }
+    });
+}
+
+// CHART 2: Project Chart (Horizontal Bar)
+function renderProjectChart(data) {
+    const ctx = document.getElementById('chart-project').getContext('2d');
+    if (state.charts.project) state.charts.project.destroy();
+    
+    const sorted = Object.entries(data)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+        
+    const labels = sorted.map(x => x[0]);
+    const values = sorted.map(x => x[1]);
+    
+    state.charts.project = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Headcount',
+                data: values,
+                backgroundColor: 'rgba(75, 127, 168, 0.76)',
+                hoverBackgroundColor: '#3d6f97',
+                borderColor: '#4b7fa8',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: { grid: { color: 'rgba(30, 90, 134, 0.07)' }, ticks: { color: '#657589' } },
+                y: { grid: { display: false }, ticks: { color: '#46576a', font: { size: 9 } } }
+            },
+            onClick: (evt, activeElements) => {
+                if (activeElements.length > 0) {
+                    const idx = activeElements[0].index;
+                    setChartFilter('project', labels[idx]);
+                }
+            }
+        }
+    });
+}
+
+// CHART 3: Department Chart (Doughnut)
+function renderDepartmentChart(data) {
+    const ctx = document.getElementById('chart-department').getContext('2d');
+    if (state.charts.department) state.charts.department.destroy();
+    
+    const sorted = Object.entries(data)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8);
+        
+    const labels = sorted.map(x => x[0]);
+    const values = sorted.map(x => x[1]);
+    
+    state.charts.department = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: [
+                    '#1e5a86',
+                    '#2a8c82',
+                    '#4b7fa8',
+                    '#69a89e',
+                    '#7893aa',
+                    '#a87428',
+                    '#345f72',
+                    '#8aa6a2'
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            cutout: '62%',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: '#5f7182', boxWidth: 9, usePointStyle: true, pointStyle: 'circle', font: { size: 9 } }
+                }
+            },
+            onClick: (evt, activeElements) => {
+                if (activeElements.length > 0) {
+                    const idx = activeElements[0].index;
+                    setChartFilter('department', labels[idx]);
+                }
+            }
+        }
+    });
+}
+
+// Set a filter from clicking on chart
+function setChartFilter(key, value) {
+    state.chartFilters[key] = value;
+    updateFilterChips();
+    updateDashboardTable();
+}
+
+// Update filter chips in HTML
+function updateFilterChips() {
+    const bar = document.getElementById('active-filters-bar');
+    const list = document.getElementById('active-filters-list');
+    
+    let hasFilters = false;
+    let chipsHTML = '';
+    
+    const keysMap = {
+        project: 'Dự án',
+        region: 'Vùng',
+        department: 'Phòng ban',
+        title: 'Chức danh',
+        status: 'Trạng thái',
+        classification: 'Phân loại OC'
+    };
+    
+    for (const [key, val] of Object.entries(state.chartFilters)) {
+        if (val) {
+            hasFilters = true;
+            let displayVal = val;
+            if (key === 'status') {
+                displayVal = val === 'hiring' ? 'Vị trí lập kế hoạch' : 'Đã có nhân sự';
+            } else if (key === 'classification') {
+                displayVal = val === 'BAN_DIEU_HANH_CHINH' ? 'Ban điều hành chính' : 'Phòng ban còn lại';
+            }
+            chipsHTML += `
+                <div class="filter-chip">
+                    <span>${keysMap[key]}: ${displayVal}</span>
+                    <span class="filter-chip-clear" onclick="clearChartFilter('${key}')">&times;</span>
+                </div>
+            `;
+        }
+    }
+    
+    list.innerHTML = chipsHTML;
+    bar.style.display = hasFilters ? 'flex' : 'none';
+}
+
+// Clear a single chart filter
+function clearChartFilter(key) {
+    state.chartFilters[key] = null;
+    updateFilterChips();
+    updateDashboardTable();
+}
+
+// Clear all chart filters
+function clearAllChartFilters() {
+    state.chartFilters = {
+        project: null,
+        region: null,
+        department: null,
+        title: null,
+        status: null,
+        classification: null
+    };
+    updateFilterChips();
+    updateDashboardTable();
+}
+
+// Helper: Check if Employee ID is placeholder
+function isPlaceholder(id) {
+    if (!id) return true;
+    const lower = id.toString().toLowerCase().trim();
+    return ['tuyển0', 'tuyển1', 'tuyển', 'không tuyển', 'không tồn tại', 'chưa tuyển', 'tuyến1', 'nan', 'null'].includes(lower);
+}
+
+function getPlaceholderLabel(id) {
+    const key = String(id ?? '').toLowerCase().trim();
+    const labels = {
+        'tuyển0': 'Kiêm nhiệm từ dự án khác',
+        'tuyển1': 'Đang tuyển chính',
+        'tuyển': 'Đang tuyển chính',
+        'tuyến1': 'Đang tuyển chính',
+        'không tuyển': 'Không tuyển',
+        'chưa tuyển': 'Chưa tuyển',
+        'không tồn tại': 'Chưa xác định',
+        'nan': 'Chưa xác định',
+        'null': 'Chưa xác định',
+        '': 'Chưa xác định'
+    };
+    return labels[key] || String(id ?? '');
+}
+
+function getPlaceholderStatusLabel(id) {
+    const key = String(id ?? '').toLowerCase().trim();
+    if (['tuyển1', 'tuyển', 'tuyến1'].includes(key)) return 'Đang tuyển';
+    if (key === 'tuyển0') return 'Kiêm nhiệm';
+    if (key === 'không tuyển') return 'Không tuyển';
+    return 'Chưa tuyển';
+}
+
+function getPlaceholderPersonLabel(id) {
+    const key = String(id ?? '').toLowerCase().trim();
+    if (key === 'tuyển0') return 'Kiêm nhiệm chưa xác định';
+    if (['tuyển1', 'tuyển', 'tuyến1'].includes(key)) return 'Chưa tuyển';
+    if (key === 'không tuyển') return 'Không tuyển';
+    return 'Chưa xác định nhân sự';
+}
+
+function normalizePlaceholderInput(value) {
+    const key = normalizeSearch(value);
+    const mapping = {
+        'kiem nhiem tu du an khac': 'Tuyển0',
+        'vi tri kiem nhiem': 'Tuyển0',
+        'dang tuyen': 'Tuyển',
+        'dang tuyen chinh': 'Tuyển',
+        'vi tri dang tuyen': 'Tuyển',
+        'khong tuyen': 'Không tuyển',
+        'chua tuyen': 'Chưa tuyển'
+    };
+    return mapping[key] || '';
+}
+
+// Load and filter table under Dashboard based on active filters
+async function updateDashboardTable() {
+    const tbody = document.getElementById('dashboard-table-body');
+    tbody.innerHTML = `<tr><td colspan="9" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang cập nhật danh sách...</td></tr>`;
+    
+    try {
+        let queryParams = [];
+        if (state.chartFilters.project) queryParams.push(`project=${encodeURIComponent(state.chartFilters.project)}`);
+        if (state.chartFilters.region) queryParams.push(`region=${encodeURIComponent(state.chartFilters.region)}`);
+        if (state.chartFilters.department) queryParams.push(`department=${encodeURIComponent(state.chartFilters.department)}`);
+        if (state.chartFilters.title) queryParams.push(`title=${encodeURIComponent(state.chartFilters.title)}`);
+        if (state.chartFilters.status) queryParams.push(`status=${state.chartFilters.status}`);
+        if (state.chartFilters.classification) queryParams.push(`classification=${state.chartFilters.classification}`);
+        
+        const qStr = queryParams.length > 0 ? '?' + queryParams.join('&') : '';
+        const res = await fetch(`${API_URL}/allocations${qStr}`);
+        const data = await res.json();
+
+        state.dashboardRows = data;
+        state.dashboardPage = 1;
+        renderDashboardTablePage();
+    } catch (err) {
+        console.error('Lỗi khi tải bảng danh sách dashboard:', err);
+        tbody.innerHTML = `<tr><td colspan="9" class="no-data error"><i class="bx bx-error"></i> Lỗi khi tải dữ liệu!</td></tr>`;
+    }
+}
+
+function renderDashboardTablePage() {
+    const tbody = document.getElementById('dashboard-table-body');
+    const rows = state.dashboardRows || [];
+    const total = rows.length;
+    const pageSize = state.dashboardPageSize;
+    const pageCount = Math.max(1, Math.ceil(total / pageSize));
+    state.dashboardPage = Math.min(Math.max(1, state.dashboardPage), pageCount);
+
+    const start = (state.dashboardPage - 1) * pageSize;
+    const end = Math.min(start + pageSize, total);
+    const pageRows = rows.slice(start, end);
+    const countEl = document.getElementById('dashboard-table-count');
+    const indicator = document.getElementById('dashboard-page-indicator');
+    const prevButton = document.getElementById('dashboard-page-prev');
+    const nextButton = document.getElementById('dashboard-page-next');
+
+    countEl.innerText = total ? `Hiển thị ${start + 1}–${end} / ${total.toLocaleString('vi-VN')} dòng` : 'Không có dữ liệu';
+    indicator.innerText = `Trang ${state.dashboardPage} / ${pageCount}`;
+    prevButton.disabled = state.dashboardPage <= 1;
+    nextButton.disabled = state.dashboardPage >= pageCount;
+
+    if (total === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" class="no-data"><i class="bx bx-search-alt"></i> Không tìm thấy nhân sự phù hợp bộ lọc.</td></tr>`;
+            return;
+    }
+
+    tbody.innerHTML = pageRows.map(item => {
+            const isHiring = isPlaceholder(item.ma_nhan_vien);
+            const nameDisplay = isHiring ? `<span style="color: var(--text-muted); font-style: italic;">${getPlaceholderPersonLabel(item.ma_nhan_vien)}</span>` : (item.ho_ten || `Nhân sự ${item.ma_nhan_vien}`);
+            const codeDisplay = isHiring ? `<span class="badge badge-planning">${getPlaceholderLabel(item.ma_nhan_vien)}</span>` : item.ma_nhan_vien;
+            const projectDisplay = item.ten_du_an ? `${item.ten_du_an} (${item.ma_du_an})` : item.ma_du_an;
+            
+            let classBadge = '';
+            if (item.phan_loai_oc === 'BAN_DIEU_HANH_CHINH') {
+                classBadge = `<span class="badge badge-planning">Ban điều hành chính</span>`;
+            } else {
+                classBadge = `<span class="badge" style="background: #eef3f7; color: var(--text-muted);">Khác</span>`;
+            }
+            
+            let statusBadge = '';
+            if (isHiring) {
+                statusBadge = `<span class="badge badge-planning">${getPlaceholderStatusLabel(item.ma_nhan_vien)}</span>`;
+            } else if (item.tinh_trang && (item.tinh_trang.includes('KN') || item.tinh_trang.toLowerCase().includes('kiêm nhiệm'))) {
+                statusBadge = `<span class="badge badge-kiemnhiem">Kiêm nhiệm</span>`;
+            } else {
+                statusBadge = `<span class="badge badge-active">Chính thức</span>`;
+            }
+            
+            return `
+                <tr>
+                    <td><strong>${projectDisplay}</strong></td>
+                    <td>${nameDisplay}</td>
+                    <td>${codeDisplay}</td>
+                    <td>${item.vung || 'N/A'}</td>
+                    <td>${item.name_oc || 'N/A'}</td>
+                    <td>${item.chuc_danh || 'N/A'}</td>
+                    <td>${classBadge}</td>
+                    <td>${statusBadge}</td>
+                    <td style="font-size: 0.8rem; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.ghi_chu || ''}">${item.ghi_chu || ''}</td>
+                </tr>
+            `;
+    }).join('');
+}
+
+function changeDashboardPage(delta) {
+    state.dashboardPage += Number(delta);
+    renderDashboardTablePage();
+    document.getElementById('dashboard-pagination')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function changeDashboardPageSize(value) {
+    state.dashboardPageSize = Number(value) || 50;
+    state.dashboardPage = 1;
+    renderDashboardTablePage();
+}
+
+// ALLOCATIONS TAB: Fetch and Filter Allocations Table
+async function fetchAllocationsData() {
+    try {
+        const res = await fetch(`${API_URL}/allocations`);
+        state.allocations = await res.json();
+        
+        const regionSet = new Set();
+        const deptSet = new Set();
+        
+        state.allocations.forEach(a => {
+            if (a.vung) regionSet.add(a.vung);
+            if (a.name_oc) deptSet.add(a.name_oc);
+        });
+        
+        state.regions = Array.from(regionSet).sort();
+        state.departments = Array.from(deptSet).sort();
+        
+        const rgnSelect = document.getElementById('alloc-filter-region');
+        rgnSelect.innerHTML = '<option value="">Tất cả Vùng</option>' + 
+            state.regions.map(r => `<option value="${r}">${r}</option>`).join('');
+            
+        const deptSelect = document.getElementById('alloc-filter-dept');
+        deptSelect.innerHTML = '<option value="">Tất cả Phòng ban</option>' + 
+            state.departments.map(d => `<option value="${d}">${d}</option>`).join('');
+            
+        renderAllocationsTable(state.allocations);
+    } catch (err) {
+        console.error('Lỗi khi tải dữ liệu phân bổ:', err);
+        showToast('Lỗi khi tải danh sách phân bổ!', true);
+    }
+}
+
+// Render allocations list
+function renderAllocationsTable(data) {
+    const tbody = document.getElementById('allocations-table-body');
+    
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="10" class="no-data"><i class="bx bx-search-alt"></i> Không tìm thấy bản ghi phân bổ nào.</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = data.map(item => {
+        const isHiring = isPlaceholder(item.ma_nhan_vien);
+        const nameDisplay = isHiring ? `<span style="color: var(--text-muted); font-style: italic;">${getPlaceholderPersonLabel(item.ma_nhan_vien)}</span>` : (item.ho_ten || `Nhân sự ${item.ma_nhan_vien}`);
+        const codeDisplay = isHiring ? `<span class="badge badge-planning">${getPlaceholderLabel(item.ma_nhan_vien)}</span>` : item.ma_nhan_vien;
+        
+        let classBadge = '';
+        if (item.phan_loai_oc === 'BAN_DIEU_HANH_CHINH') {
+            classBadge = `<span class="badge badge-planning">Ban điều hành chính</span>`;
+        } else {
+            classBadge = `<span class="badge" style="background: #eef3f7; color: var(--text-muted);">Khác</span>`;
+        }
+        
+        let statusBadge = '';
+        if (isHiring) {
+            statusBadge = `<span class="badge badge-planning">${getPlaceholderStatusLabel(item.ma_nhan_vien)}</span>`;
+        } else if (item.tinh_trang && (item.tinh_trang.includes('KN') || item.tinh_trang.toLowerCase().includes('kiêm nhiệm'))) {
+            statusBadge = `<span class="badge badge-kiemnhiem">Kiêm nhiệm (${item.tinh_trang})</span>`;
+        } else {
+            statusBadge = `<span class="badge badge-active">Chính thức</span>`;
+        }
+        
+        let actionsHTML = '';
+        if (!isHiring) {
+            actionsHTML = `
+                <button class="btn-icon edit" onclick="editAllocation(${item.id})" title="Chỉnh sửa phân bổ"><i class="bx bx-edit"></i></button>
+                <button class="btn-icon transfer" onclick="openTransferModal(${item.id})" title="Luân chuyển dự án"><i class="bx bx-git-compare"></i></button>
+                <button class="btn-icon evaluate" onclick="openEvaluationModal('${item.ma_nhan_vien}', '${item.ho_ten}')" title="Đánh giá cá nhân"><i class="bx bx-check-shield"></i></button>
+                <button class="btn-icon delete" onclick="deleteAllocation(${item.id})" title="Xóa phân bổ"><i class="bx bx-trash"></i></button>
+            `;
+        } else {
+            actionsHTML = `
+                <button class="btn-icon edit" onclick="editAllocation(${item.id})" title="Chỉnh sửa chỉ tiêu tuyển dụng"><i class="bx bx-edit"></i></button>
+                <button class="btn-icon evaluate" onclick="hireEmployeeForSlot(${item.id})" style="color: var(--success);" title="Tuyển dụng vào vị trí này"><i class="bx bx-user-plus"></i></button>
+                <button class="btn-icon delete" onclick="deleteAllocation(${item.id})" title="Xóa chỉ tiêu tuyển dụng"><i class="bx bx-trash"></i></button>
+            `;
+        }
+        
+        return `
+            <tr>
+                <td><strong>${item.ma_du_an}</strong></td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.ten_du_an || ''}">${item.ten_du_an || 'N/A'}</td>
+                <td>
+                    <div style="font-weight: 500;">${nameDisplay}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">${codeDisplay}</div>
+                </td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.name_oc || ''}">${item.name_oc || 'N/A'}</td>
+                <td>${classBadge}</td>
+                <td>${item.chuc_danh || 'N/A'}</td>
+                <td>${statusBadge}</td>
+                <td>${item.vung || 'N/A'}</td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.ghi_chu || ''}">${item.ghi_chu || ''}</td>
+                <td>
+                    <div class="actions">
+                        ${actionsHTML}
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Filter Allocations Client Side
+function filterAllocations() {
+    const searchVal = document.getElementById('alloc-search-input').value.toLowerCase().trim();
+    const regionVal = document.getElementById('alloc-filter-region').value;
+    const deptVal = document.getElementById('alloc-filter-dept').value;
+    const statusVal = document.getElementById('alloc-filter-status').value;
+    const classVal = document.getElementById('alloc-filter-class').value;
+    
+    const filtered = state.allocations.filter(item => {
+        const matchSearch = !searchVal || 
+            (item.ma_nhan_vien && item.ma_nhan_vien.toString().toLowerCase().includes(searchVal)) ||
+            (item.ho_ten && item.ho_ten.toLowerCase().includes(searchVal)) ||
+            (item.chuc_danh && item.chuc_danh.toLowerCase().includes(searchVal)) ||
+            (item.ma_du_an && item.ma_du_an.toLowerCase().includes(searchVal)) ||
+            (item.ten_du_an && item.ten_du_an.toLowerCase().includes(searchVal));
+            
+        const matchRegion = !regionVal || item.vung === regionVal;
+        const matchDept = !deptVal || item.name_oc === deptVal;
+        const matchClass = !classVal || item.phan_loai_oc === classVal;
+        
+        let matchStatus = true;
+        const isHiring = isPlaceholder(item.ma_nhan_vien);
+        if (statusVal === 'employee') {
+            matchStatus = !isHiring;
+        } else if (statusVal === 'hiring') {
+            matchStatus = isHiring;
+        }
+        
+        return matchSearch && matchRegion && matchDept && matchStatus && matchClass;
+    });
+    
+    renderAllocationsTable(filtered);
+}
+
+// Triggered when selected project changes in Allocations Modal
+async function onAllocProjectChange() {
+    const projCode = document.getElementById('alloc-project-input').value;
+    const select = document.getElementById('alloc-dept-select');
+    const container = document.getElementById('new-dept-fields-container');
+    
+    container.style.display = 'none';
+    
+    if (!projCode) {
+        select.innerHTML = '<option value="">-- Chọn dự án trước --</option>';
+        return;
+    }
+    
+    select.innerHTML = '<option value="">-- Đang tải phòng ban... --</option>';
+    
+    try {
+        const res = await fetch(`${API_URL}/projects/${projCode}/departments`);
+        const depts = await res.json();
+        
+        let optionsHTML = depts.map(d => 
+            `<option value="${d.ma_oc}" data-name="${d.name_oc}">${d.name_oc} (${d.ma_oc})</option>`
+        ).join('');
+        
+        select.innerHTML = `
+            <option value="">-- Chọn phòng ban --</option>
+            ${optionsHTML}
+            <option value="NEW" style="color: var(--secondary); font-weight: 600;">+ Thêm phòng ban mới...</option>
+        `;
+    } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="NEW">+ Thêm phòng ban mới...</option>';
+    }
+}
+
+// Triggered when selected department changes in Allocations Modal
+function onAllocDeptSelectChange() {
+    const select = document.getElementById('alloc-dept-select');
+    const container = document.getElementById('new-dept-fields-container');
+    const codeInput = document.getElementById('alloc-oc-code-input');
+    const nameInput = document.getElementById('alloc-oc-name-input');
+    
+    if (select.value === 'NEW') {
+        container.style.display = 'flex';
+        codeInput.value = '';
+        nameInput.value = '';
+        codeInput.required = true;
+        nameInput.required = true;
+    } else {
+        container.style.display = 'none';
+        codeInput.required = false;
+        nameInput.required = false;
+        
+        if (select.value) {
+            const selectedOption = select.options[select.selectedIndex];
+            codeInput.value = select.value;
+            nameInput.value = selectedOption.getAttribute('data-name');
+        } else {
+            codeInput.value = '';
+            nameInput.value = '';
+        }
+    }
+}
+
+// Save Allocation modal submit
+async function saveAllocation(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('alloc-id-input').value;
+    const ma_du_an = document.getElementById('alloc-project-input').value;
+    const ma_nhan_vien = document.getElementById('alloc-employee-input').value;
+    const ma_oc = document.getElementById('alloc-oc-code-input').value.trim();
+    const name_oc = document.getElementById('alloc-oc-name-input').value.trim();
+    const chuc_danh = document.getElementById('alloc-title-input').value;
+    const tinh_trang = document.getElementById('alloc-status-input').checked ? 'KN' : '';
+    const ghi_chu = document.getElementById('alloc-notes-input').value;
+    const vung = document.getElementById('alloc-region-input').value;
+    
+    if (!ma_du_an || !chuc_danh || !name_oc || !vung) {
+        showToast('Vui lòng nhập đầy đủ các trường bắt buộc!', true);
+        return;
+    }
+    
+    const payload = {
+        ma_du_an,
+        ma_nhan_vien: ma_nhan_vien || 'Tuyển0',
+        ma_oc,
+        name_oc,
+        chuc_danh,
+        tinh_trang,
+        ghi_chu,
+        vung
+    };
+    
+    try {
+        let res;
+        if (id) {
+            res = await fetch(`${API_URL}/allocations/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } else {
+            res = await fetch(`${API_URL}/allocations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+        
+        const result = await res.json();
+        if (res.ok) {
+            showToast(id ? 'Cập nhật phân bổ thành công!' : 'Thêm phân bổ mới thành công!');
+            closeModal('modal-allocation');
+            await fetchAllocationsData();
+        } else {
+            showToast(result.error || 'Có lỗi xảy ra!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+function openAddAllocationModal() {
+    document.getElementById('modal-alloc-title').innerText = 'Thêm Phân Bổ Nhân Sự / Vị Trí Mới';
+    document.getElementById('alloc-id-input').value = '';
+    document.getElementById('alloc-project-input').value = '';
+    document.getElementById('alloc-dept-select').innerHTML = '<option value="">-- Chọn dự án trước --</option>';
+    document.getElementById('new-dept-fields-container').style.display = 'none';
+    openModal('modal-allocation');
+}
+
+// Edit Allocation Loader
+async function editAllocation(id) {
+    const alloc = state.allocations.find(a => a.id === id);
+    if (!alloc) return;
+    
+    document.getElementById('modal-alloc-title').innerText = 'Chỉnh Sửa Phân Bổ / Chỉ Tiêu Lập Kế Hoạch';
+    document.getElementById('alloc-id-input').value = alloc.id;
+    document.getElementById('alloc-project-input').value = alloc.ma_du_an;
+    document.getElementById('alloc-employee-input').value =
+        ['Tuyển1', 'Tuyến1'].includes(alloc.ma_nhan_vien) ? 'Tuyển' : (alloc.ma_nhan_vien || 'Tuyển0');
+    document.getElementById('alloc-title-input').value = alloc.chuc_danh || '';
+    document.getElementById('alloc-status-input').checked = !!(alloc.tinh_trang && (alloc.tinh_trang.includes('KN') || alloc.tinh_trang.toLowerCase().includes('kiêm nhiệm')));
+    document.getElementById('alloc-notes-input').value = alloc.ghi_chu || '';
+    document.getElementById('alloc-region-input').value = alloc.vung || '';
+    
+    // Load departments specifically for this project
+    const select = document.getElementById('alloc-dept-select');
+    select.innerHTML = '<option value="">-- Đang tải... --</option>';
+    
+    try {
+        const res = await fetch(`${API_URL}/projects/${alloc.ma_du_an}/departments`);
+        const depts = await res.json();
+        
+        let optionsHTML = depts.map(d => 
+            `<option value="${d.ma_oc}" data-name="${d.name_oc}">${d.name_oc} (${d.ma_oc})</option>`
+        ).join('');
+        
+        select.innerHTML = `
+            <option value="">-- Chọn phòng ban --</option>
+            ${optionsHTML}
+            <option value="NEW" style="color: var(--secondary); font-weight: 600;">+ Thêm phòng ban mới...</option>
+        `;
+        
+        // Find if this ma_oc is in the loaded list
+        const exists = depts.some(d => d.ma_oc === alloc.ma_oc);
+        if (exists && alloc.ma_oc) {
+            select.value = alloc.ma_oc;
+            document.getElementById('new-dept-fields-container').style.display = 'none';
+            document.getElementById('alloc-oc-code-input').value = alloc.ma_oc;
+            document.getElementById('alloc-oc-name-input').value = alloc.name_oc;
+        } else {
+            // Select custom
+            select.value = 'NEW';
+            document.getElementById('new-dept-fields-container').style.display = 'flex';
+            document.getElementById('alloc-oc-code-input').value = alloc.ma_oc || '';
+            document.getElementById('alloc-oc-name-input').value = alloc.name_oc || '';
+        }
+    } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="NEW">+ Thêm phòng ban mới...</option>';
+        select.value = 'NEW';
+        document.getElementById('new-dept-fields-container').style.display = 'flex';
+        document.getElementById('alloc-oc-code-input').value = alloc.ma_oc || '';
+        document.getElementById('alloc-oc-name-input').value = alloc.name_oc || '';
+    }
+    
+    openModal('modal-allocation');
+}
+
+function hireEmployeeForSlot(id) {
+    const alloc = state.allocations.find(a => a.id === id);
+    if (!alloc) return;
+    editAllocation(id);
+    document.getElementById('modal-alloc-title').innerText =
+        `Bố trí nhân sự cho vị trí: ${getPlaceholderLabel(alloc.ma_nhan_vien)}`;
+    document.getElementById('alloc-employee-input').focus();
+}
+
+async function deleteAllocation(id) {
+    if (!confirm('Bạn có chắc chắn muốn xóa bản ghi phân bổ này? Vị trí nhân sự này sẽ bị gỡ khỏi dự án.')) {
+        return;
+    }
+    try {
+        const res = await fetch(`${API_URL}/allocations/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast('Đã xóa phân bổ nhân sự thành công!');
+            await fetchAllocationsData();
+        } else {
+            showToast('Lỗi khi xóa phân bổ!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// COMMON ALLOCATIONS (NS chung) View CRUD
+async function fetchCommonAllocationsData() {
+    try {
+        const res = await fetch(`${API_URL}/common-allocations`);
+        state.commonAllocations = await res.json();
+        renderCommonAllocationsTable(state.commonAllocations);
+    } catch (err) {
+        console.error('Lỗi khi tải dữ liệu nhân sự chung:', err);
+        showToast('Lỗi khi tải danh sách nhân sự dùng chung!', true);
+    }
+}
+
+function renderCommonAllocationsTable(data) {
+    const tbody = document.getElementById('common-table-body');
+    if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="no-data"><i class="bx bx-search-alt"></i> Không tìm thấy nhân sự dùng chung nào.</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = data.map(item => {
+        const isHiring = isPlaceholder(item.ma_nhan_vien);
+        const nameDisplay = isHiring ? `<span style="color: var(--text-muted); font-style: italic;">${getPlaceholderPersonLabel(item.ma_nhan_vien)}</span>` : (item.ho_ten || `Nhân sự ${item.ma_nhan_vien}`);
+        const codeDisplay = isHiring ? `<span class="badge badge-planning">${getPlaceholderLabel(item.ma_nhan_vien)}</span>` : item.ma_nhan_vien;
+        
+        let statusBadge = '';
+        if (isHiring) {
+            statusBadge = `<span class="badge badge-planning">${getPlaceholderStatusLabel(item.ma_nhan_vien)}</span>`;
+        } else if (item.tinh_trang && (item.tinh_trang.includes('KN') || item.tinh_trang.toLowerCase().includes('kiêm nhiệm'))) {
+            statusBadge = `<span class="badge badge-kiemnhiem">Kiêm nhiệm (${item.tinh_trang})</span>`;
+        } else {
+            statusBadge = `<span class="badge badge-active">Chính thức</span>`;
+        }
+        
+        return `
+            <tr>
+                <td><strong>${item.ma_oc || 'N/A'}</strong></td>
+                <td><strong>${item.name_oc || 'N/A'}</strong></td>
+                <td>
+                    <div style="font-weight: 500;">${nameDisplay}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">${codeDisplay}</div>
+                </td>
+                <td>${item.chuc_danh || 'N/A'}</td>
+                <td>${statusBadge}</td>
+                <td>${item.ghi_chu || ''}</td>
+                <td>
+                    <div class="actions">
+                        <button class="btn-icon edit" onclick="editCommonAllocation(${item.id})" title="Chỉnh sửa"><i class="bx bx-edit"></i></button>
+                        <button class="btn-icon delete" onclick="deleteCommonAllocation(${item.id})" title="Xóa"><i class="bx bx-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function filterCommonAllocations() {
+    const query = document.getElementById('common-search-input').value.toLowerCase().trim();
+    const filtered = state.commonAllocations.filter(item => 
+        (item.ma_nhan_vien && item.ma_nhan_vien.toString().toLowerCase().includes(query)) ||
+        (item.ho_ten && item.ho_ten.toLowerCase().includes(query)) ||
+        (item.chuc_danh && item.chuc_danh.toLowerCase().includes(query)) ||
+        (item.name_oc && item.name_oc.toLowerCase().includes(query)) ||
+        (item.ma_oc && item.ma_oc.toLowerCase().includes(query))
+    );
+    renderCommonAllocationsTable(filtered);
+}
+
+function openAddCommonAllocationModal() {
+    document.getElementById('modal-common-alloc-title').innerText = 'Thêm Vai Trò Nhân Sự Hệ Thống';
+    document.getElementById('common-alloc-id-input').value = '';
+    openModal('modal-common-allocation');
+}
+
+function editCommonAllocation(id) {
+    const alloc = state.commonAllocations.find(a => a.id === id);
+    if (!alloc) return;
+    
+    document.getElementById('modal-common-alloc-title').innerText = 'Chỉnh Sửa Nhân Sự Dùng Chung';
+    document.getElementById('common-alloc-id-input').value = alloc.id;
+    document.getElementById('common-alloc-employee-input').value =
+        ['Tuyển1', 'Tuyến1'].includes(alloc.ma_nhan_vien) ? 'Tuyển' : (alloc.ma_nhan_vien || 'Tuyển0');
+    document.getElementById('common-alloc-oc-code-input').value = alloc.ma_oc || '';
+    document.getElementById('common-alloc-oc-name-input').value = alloc.name_oc || '';
+    document.getElementById('common-alloc-title-input').value = alloc.chuc_danh || '';
+    document.getElementById('common-alloc-status-input').checked = !!(alloc.tinh_trang && (alloc.tinh_trang.includes('KN') || alloc.tinh_trang.toLowerCase().includes('kiêm nhiệm')));
+    document.getElementById('common-alloc-notes-input').value = alloc.ghi_chu || '';
+    
+    openModal('modal-common-allocation');
+}
+
+async function saveCommonAllocation(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('common-alloc-id-input').value;
+    const ma_nhan_vien = document.getElementById('common-alloc-employee-input').value;
+    const ma_oc = document.getElementById('common-alloc-oc-code-input').value;
+    const name_oc = document.getElementById('common-alloc-oc-name-input').value;
+    const chuc_danh = document.getElementById('common-alloc-title-input').value;
+    const tinh_trang = document.getElementById('common-alloc-status-input').checked ? 'KN' : '';
+    const ghi_chu = document.getElementById('common-alloc-notes-input').value;
+    
+    if (!name_oc || !chuc_danh) {
+        showToast('Vui lòng nhập đầy đủ bộ phận và chức danh!', true);
+        return;
+    }
+    
+    const payload = {
+        ma_nhan_vien: ma_nhan_vien || 'Tuyển0',
+        ma_oc,
+        name_oc,
+        chuc_danh,
+        tinh_trang,
+        ghi_chu
+    };
+    
+    try {
+        let res;
+        if (id) {
+            res = await fetch(`${API_URL}/common-allocations/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } else {
+            res = await fetch(`${API_URL}/common-allocations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+        
+        const result = await res.json();
+        if (res.ok) {
+            showToast(id ? 'Cập nhật thành công!' : 'Thêm vai trò hệ thống thành công!');
+            closeModal('modal-common-allocation');
+            await fetchCommonAllocationsData();
+        } else {
+            showToast(result.error || 'Có lỗi xảy ra!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+async function deleteCommonAllocation(id) {
+    if (!confirm('Bạn có chắc chắn muốn xóa bản ghi nhân sự hệ thống này?')) {
+        return;
+    }
+    try {
+        const res = await fetch(`${API_URL}/common-allocations/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast('Đã xóa nhân sự dùng chung thành công!');
+            await fetchCommonAllocationsData();
+        } else {
+            showToast('Lỗi khi xóa bản ghi!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// EMPLOYEES CRUD: Add/Save New Employee Profile
+async function saveEmployee(e) {
+    e.preventDefault();
+    
+    const ma_nhan_vien = document.getElementById('emp-id-input').value.trim();
+    const ho_ten = document.getElementById('emp-name-input').value.trim();
+    const email = document.getElementById('emp-email-input').value.trim();
+    const so_dien_thoai = document.getElementById('emp-phone-input').value.trim();
+    const ngay_vao_lam = document.getElementById('emp-date-input').value;
+    
+    if (!ma_nhan_vien || !ho_ten) {
+        showToast('Vui lòng nhập Mã nhân sự và Họ tên!', true);
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_URL}/employees`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ma_nhan_vien,
+                ho_ten,
+                email,
+                so_dien_thoai,
+                ngay_vao_lam
+            })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Tạo hồ sơ nhân sự mới thành công!');
+            closeModal('modal-employee');
+            await loadInitialMetadata();
+            if (state.activeTab === 'profiles') {
+                await fetchProfilesData();
+            }
+        } else {
+            showToast(result.error || 'Có lỗi xảy ra!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Không thể kết nối máy chủ!', true);
+    }
+}
+
+function openAddEmployeeModal() {
+    document.getElementById('emp-id-input').readOnly = false;
+    document.getElementById('emp-id-input').style.background = 'var(--bg-main)';
+    openModal('modal-employee');
+}
+
+async function fetchProfilesData() {
+    try {
+        const res = await fetch(`${API_URL}/employees`);
+        state.employees = await res.json();
+        renderProfileList(state.employees);
+    } catch (err) {
+        console.error('Lỗi khi tải hồ sơ nhân viên:', err);
+    }
+}
+
+function renderProfileList(data) {
+    const listContainer = document.getElementById('profile-list-container');
+    if (data.length === 0) {
+        listContainer.innerHTML = '<div class="no-data" style="padding: 2rem;">Không tìm thấy nhân sự nào.</div>';
+        return;
+    }
+    
+    listContainer.innerHTML = data.map(emp => {
+        const activeClass = state.selectedEmployeeId === emp.ma_nhan_vien ? 'active' : '';
+        return `
+            <div class="list-item ${activeClass}" onclick="selectEmployeeProfile('${emp.ma_nhan_vien}')">
+                <div class="list-item-title">${emp.ho_ten}</div>
+                <div class="list-item-sub">Mã NV: ${emp.ma_nhan_vien} | SĐT: ${emp.so_dien_thoai || 'N/A'}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function filterProfileList() {
+    const query = document.getElementById('profile-search-input').value.toLowerCase().trim();
+    const filtered = state.employees.filter(emp => 
+        emp.ho_ten.toLowerCase().includes(query) ||
+        emp.ma_nhan_vien.toString().toLowerCase().includes(query) ||
+        (emp.email && emp.email.toLowerCase().includes(query))
+    );
+    renderProfileList(filtered);
+}
+
+// Select employee profile detail
+async function selectEmployeeProfile(empId) {
+    state.selectedEmployeeId = empId;
+    renderProfileList(state.employees);
+    
+    const detailContainer = document.getElementById('profile-detail-container');
+    detailContainer.innerHTML = `<div class="no-data"><i class="bx bx-loader-alt bx-spin" style="font-size: 2rem;"></i> Đang tải thông tin hồ sơ...</div>`;
+    
+    try {
+        const empRes = await fetch(`${API_URL}/employees/${empId}`);
+        const emp = await empRes.json();
+        
+        const transRes = await fetch(`${API_URL}/transfer/history/${empId}`);
+        const transfers = await transRes.json();
+        
+        const evalRes = await fetch(`${API_URL}/evaluations/${empId}`);
+        const evaluations = await evalRes.json();
+        
+        renderProfileDetail(emp, transfers, evaluations);
+    } catch (err) {
+        console.error(err);
+        detailContainer.innerHTML = `<div class="no-data error"><i class="bx bx-error"></i> Có lỗi xảy ra khi tải thông tin chi tiết!</div>`;
+    }
+}
+
+// Render profile detail pane
+function renderProfileDetail(emp, transfers, evaluations) {
+    const detailContainer = document.getElementById('profile-detail-container');
+    const initials = emp.ho_ten.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    
+    let allocsHTML = '';
+    if (!emp.allocations || emp.allocations.length === 0) {
+        allocsHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Nhân sự này hiện chưa được phân bổ vào dự án nào.</p>';
+    } else {
+        allocsHTML = emp.allocations.map(a => {
+            let badge = a.tinh_trang ? `<span class="badge badge-kiemnhiem">Kiêm nhiệm (${a.tinh_trang})</span>` : `<span class="badge badge-active">Chính thức</span>`;
+            let classText = a.phan_loai_oc === 'BAN_DIEU_HANH_CHINH' ? '<span style="color: var(--secondary); font-size: 0.75rem;">(BĐH dự án chính)</span>' : '';
+            return `
+                <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 600;">${a.ten_du_an || 'N/A'} (${a.ma_du_an}) ${classText}</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Phòng ban: ${a.name_oc || 'N/A'} | Chức danh: ${a.chuc_danh}</p>
+                        ${a.ghi_chu ? `<p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 0.2rem;">Ghi chú: ${a.ghi_chu}</p>` : ''}
+                    </div>
+                    <div>
+                        ${badge}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    let commonAllocsHTML = '';
+    if (!emp.common_allocations || emp.common_allocations.length === 0) {
+        commonAllocsHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">Nhân sự không giữ chức vụ dùng chung nào tại tổng công ty.</p>';
+    } else {
+        commonAllocsHTML = emp.common_allocations.map(ca => {
+            let badge = ca.tinh_trang ? `<span class="badge badge-kiemnhiem">Kiêm nhiệm (${ca.tinh_trang})</span>` : `<span class="badge badge-active">Chính thức</span>`;
+            return `
+                <div style="background: rgba(138,63,252,0.02); border: 1px solid rgba(138, 63, 252, 0.15); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="font-size: 0.95rem; font-weight: 600; color: #d0bfff;">${ca.name_oc || 'N/A'} (${ca.ma_oc || 'N/A'})</h4>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Chức danh hệ thống: <strong>${ca.chuc_danh}</strong></p>
+                        ${ca.ghi_chu ? `<p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 0.2rem;">Ghi chú: ${ca.ghi_chu}</p>` : ''}
+                    </div>
+                    <div>
+                        ${badge}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    let transfersHTML = '';
+    if (transfers.length === 0) {
+        transfersHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; padding-left: 0.5rem;">Không có lịch sử luân chuyển dự án.</p>';
+    } else {
+        transfersHTML = `
+            <div class="timeline">
+                ${transfers.map(t => `
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-date">${t.ngay_luan_chuyen}</div>
+                            <div class="timeline-title">${t.tu_du_an} &rarr; ${t.den_du_an}</div>
+                            <div class="timeline-desc">
+                                <strong>Chức danh:</strong> ${t.tu_chuc_danh || 'Chưa rõ'} &rarr; ${t.den_chuc_danh}<br>
+                                <strong>Bộ phận:</strong> ${t.tu_phong_ban || 'Chưa rõ'} &rarr; ${t.den_phong_ban}<br>
+                                ${t.ly_do ? `<strong>Lý do:</strong> ${t.ly_do}<br>` : ''}
+                                ${t.ghi_chu ? `<strong>Ghi chú:</strong> ${t.ghi_chu}` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    let evaluationsHTML = '';
+    if (evaluations.length === 0) {
+        evaluationsHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">Nhân sự chưa có đánh giá nào.</p>';
+    } else {
+        evaluationsHTML = evaluations.map(ev => {
+            const stars = '⭐'.repeat(ev.diem_so);
+            let skillProf = 0, skillComm = 0, skillTeam = 0, skillTime = 0, skillInit = 0;
+            try {
+                const skills = JSON.parse(ev.nang_luc);
+                skillProf = skills.chuyen_mon || 0;
+                skillComm = skills.giao_tiep || 0;
+                skillTeam = skills.lam_viec_nhom || 0;
+                skillTime = skills.tien_do || 0;
+                skillInit = skills.chu_dong || 0;
+            } catch(e) {}
+            
+            return `
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <div class="eval-meta">Đánh giá ngày: <strong>${ev.ngay_danh_gia}</strong> bởi <strong>${ev.nguoi_danh_gia}</strong></div>
+                        <div class="eval-stars">${stars} (${ev.diem_so}/5)</div>
+                    </div>
+                    <div class="eval-radar-grid">
+                        <div class="eval-radar-item">
+                            <div class="eval-radar-label">Chuyên môn</div>
+                            <div class="eval-radar-val">${skillProf}/5</div>
+                        </div>
+                        <div class="eval-radar-item">
+                            <div class="eval-radar-label">Giao tiếp</div>
+                            <div class="eval-radar-val">${skillComm}/5</div>
+                        </div>
+                        <div class="eval-radar-item">
+                            <div class="eval-radar-label">Làm nhóm</div>
+                            <div class="eval-radar-val">${skillTeam}/5</div>
+                        </div>
+                        <div class="eval-radar-item">
+                            <div class="eval-radar-label">Tiến độ</div>
+                            <div class="eval-radar-val">${skillTime}/5</div>
+                        </div>
+                        <div class="eval-radar-item">
+                            <div class="eval-radar-label">Chủ động</div>
+                            <div class="eval-radar-val">${skillInit}/5</div>
+                        </div>
+                    </div>
+                    <div class="eval-body">
+                        ${ev.uu_diem ? `<p><strong>Điểm mạnh:</strong> ${ev.uu_diem}</p>` : ''}
+                        ${ev.nhuoc_diem ? `<p><strong>Điểm cần cải thiện:</strong> ${ev.nhuoc_diem}</p>` : ''}
+                        ${ev.nhan_xet_chung ? `<p style="margin-top: 0.5rem; background: rgba(255,255,255,0.01); border-left: 3px solid var(--primary); padding-left: 0.5rem;"><strong>Nhận xét chung:</strong> ${ev.nhan_xet_chung}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    detailContainer.innerHTML = `
+        <div class="profile-summary">
+            <div class="profile-avatar">${initials}</div>
+            <div class="profile-title" style="flex: 1;">
+                <h2>${emp.ho_ten}</h2>
+                <p>Mã nhân viên: ${emp.ma_nhan_vien}</p>
+                
+                <div class="profile-meta">
+                    <div class="profile-meta-item">Email: <strong>${emp.email || 'N/A'}</strong></div>
+                    <div class="profile-meta-item">SĐT: <strong>${emp.so_dien_thoai || 'N/A'}</strong></div>
+                    <div class="profile-meta-item">Ngày vào làm: <strong>${emp.ngay_vao_lam || 'N/A'}</strong></div>
+                </div>
+            </div>
+            <div>
+                <button class="btn" style="border-color: var(--primary); color: var(--primary);" onclick="openEditEmployeeProfileModal('${emp.ma_nhan_vien}')">
+                    <i class="bx bx-user-pin"></i> Sửa hồ sơ
+                </button>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; border-left: 4px solid var(--primary); padding-left: 0.5rem; color: #d0bfff;">Chức vụ chung hệ thống (NS chung)</h3>
+            ${commonAllocsHTML}
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; border-left: 4px solid var(--secondary); padding-left: 0.5rem;">Phân bổ Dự án hiện tại</h3>
+            ${allocsHTML}
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; border-left: 4px solid var(--warning); padding-left: 0.5rem;">Lịch sử Luân chuyển Dự án (Vòng đời)</h3>
+            ${transfersHTML}
+        </div>
+
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 600; border-left: 4px solid var(--success); padding-left: 0.5rem;">Nhật ký Đánh giá Năng lực</h3>
+                <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="openAddEvaluationModal('${emp.ma_nhan_vien}', '${emp.ho_ten}')">
+                    <i class="bx bx-plus"></i> Viết đánh giá
+                </button>
+            </div>
+            ${evaluationsHTML}
+        </div>
+    `;
+}
+
+function openEditEmployeeProfileModal(empId) {
+    const emp = state.employees.find(e => e.ma_nhan_vien === empId);
+    if (!emp) return;
+    document.getElementById('emp-id-input').value = emp.ma_nhan_vien;
+    document.getElementById('emp-id-input').readOnly = true;
+    document.getElementById('emp-id-input').style.background = 'rgba(255,255,255,0.03)';
+    document.getElementById('emp-name-input').value = emp.ho_ten;
+    document.getElementById('emp-email-input').value = emp.email || '';
+    document.getElementById('emp-phone-input').value = emp.so_dien_thoai || '';
+    document.getElementById('emp-date-input').value = emp.ngay_vao_lam || '';
+    openModal('modal-employee');
+}
+
+// Triggered when selected project changes in Transfer Modal
+async function onTransProjectChange() {
+    const projCode = document.getElementById('trans-new-proj-input').value;
+    const select = document.getElementById('trans-new-dept-select');
+    const container = document.getElementById('new-trans-dept-container');
+    
+    container.style.display = 'none';
+    
+    if (!projCode) {
+        select.innerHTML = '<option value="">-- Chọn dự án trước --</option>';
+        return;
+    }
+    
+    select.innerHTML = '<option value="">-- Đang tải phòng ban... --</option>';
+    
+    try {
+        const res = await fetch(`${API_URL}/projects/${projCode}/departments`);
+        const depts = await res.json();
+        
+        let optionsHTML = depts.map(d => 
+            `<option value="${d.name_oc}" data-code="${d.ma_oc}">${d.name_oc} (${d.ma_oc})</option>`
+        ).join('');
+        
+        select.innerHTML = `
+            <option value="">-- Chọn phòng ban chuyển đến --</option>
+            ${optionsHTML}
+            <option value="NEW" style="color: var(--secondary); font-weight: 600;">+ Thêm phòng ban mới...</option>
+        `;
+    } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="NEW">+ Thêm phòng ban mới...</option>';
+    }
+}
+
+// Triggered when selected department changes in Transfer Modal
+function onTransDeptSelectChange() {
+    const select = document.getElementById('trans-new-dept-select');
+    const container = document.getElementById('new-trans-dept-container');
+    const textInput = document.getElementById('trans-new-dept-input');
+    
+    if (select.value === 'NEW') {
+        container.style.display = 'block';
+        textInput.value = '';
+        textInput.required = true;
+    } else {
+        container.style.display = 'none';
+        textInput.required = false;
+        textInput.value = select.value;
+    }
+}
+
+// Open Transfer Modal
+function openTransferModal(allocId) {
+    const alloc = state.allocations.find(a => a.id === allocId);
+    if (!alloc) return;
+    
+    document.getElementById('trans-alloc-id-input').value = alloc.id;
+    document.getElementById('trans-empid-input').value = alloc.ma_nhan_vien;
+    document.getElementById('trans-empname-display').value = `${alloc.ho_ten || 'Nhân viên'} (Mã: ${alloc.ma_nhan_vien})`;
+    document.getElementById('trans-old-proj-display').value = alloc.ma_du_an;
+    document.getElementById('trans-old-dept-display').value = alloc.name_oc || '';
+    document.getElementById('trans-old-title-display').value = alloc.chuc_danh || '';
+    
+    document.getElementById('trans-new-proj-input').value = '';
+    document.getElementById('trans-new-dept-select').innerHTML = '<option value="">-- Chọn dự án trước --</option>';
+    document.getElementById('new-trans-dept-container').style.display = 'none';
+    
+    openModal('modal-transfer');
+}
+
+// Submit Transfer
+async function saveTransfer(e) {
+    e.preventDefault();
+    
+    const allocation_id = document.getElementById('trans-alloc-id-input').value;
+    const ma_nhan_vien = document.getElementById('trans-empid-input').value;
+    const tu_du_an = document.getElementById('trans-old-proj-display').value;
+    const tu_phong_ban = document.getElementById('trans-old-dept-display').value;
+    const tu_chuc_danh = document.getElementById('trans-old-title-display').value;
+    
+    const den_du_an = document.getElementById('trans-new-proj-input').value;
+    const den_dept_select = document.getElementById('trans-new-dept-select');
+    
+    let den_phong_ban = '';
+    if (den_dept_select.value === 'NEW') {
+        den_phong_ban = document.getElementById('trans-new-dept-input').value.trim();
+    } else {
+        den_phong_ban = den_dept_select.value;
+    }
+    
+    const den_chuc_danh = document.getElementById('trans-new-title-input').value.trim();
+    const ngay_luan_chuyen = document.getElementById('trans-date-input').value;
+    const ly_do = document.getElementById('trans-reason-input').value.trim();
+    const ghi_chu = document.getElementById('trans-notes-input').value.trim();
+    
+    if (!den_du_an || !den_phong_ban || !den_chuc_danh || !ngay_luan_chuyen) {
+        showToast('Vui lòng nhập đầy đủ thông tin điều chuyển mới!', true);
+        return;
+    }
+    
+    const payload = {
+        allocation_id: allocation_id ? parseInt(allocation_id) : null,
+        ma_nhan_vien,
+        tu_du_an,
+        tu_phong_ban,
+        tu_chuc_danh,
+        den_du_an,
+        den_phong_ban,
+        den_chuc_danh,
+        ngay_luan_chuyen,
+        ly_do,
+        ghi_chu
+    };
+    
+    try {
+        const res = await fetch(`${API_URL}/transfer`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Điều chuyển nhân sự thành công!');
+            closeModal('modal-transfer');
+            await fetchAllocationsData();
+            if (state.selectedEmployeeId === ma_nhan_vien) {
+                await selectEmployeeProfile(ma_nhan_vien);
+            }
+        } else {
+            showToast(result.error || 'Lỗi khi luân chuyển!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+function openEvaluationModal(empId, empName) {
+    document.getElementById('eval-empid-input').value = empId;
+    document.getElementById('eval-empname-display').value = `${empName || 'Nhân sự'} (Mã: ${empId})`;
+    openModal('modal-evaluation');
+}
+
+function openAddEvaluationModal(empId, empName) {
+    openEvaluationModal(empId, empName);
+}
+
+async function saveEvaluation(e) {
+    e.preventDefault();
+    
+    const empId = document.getElementById('eval-empid-input').value;
+    const ngay_danh_gia = document.getElementById('eval-date-input').value;
+    const nguoi_danh_gia = document.getElementById('eval-evaluator-input').value.trim();
+    const diem_so = parseInt(document.getElementById('eval-score-input').value);
+    
+    const skillProf = parseInt(document.getElementById('eval-skill-prof').value);
+    const skillComm = parseInt(document.getElementById('eval-skill-comm').value);
+    const skillTeam = parseInt(document.getElementById('eval-skill-team').value);
+    const skillTime = parseInt(document.getElementById('eval-skill-time').value);
+    const skillInit = parseInt(document.getElementById('eval-skill-init').value);
+    
+    const uu_diem = document.getElementById('eval-strength-input').value.trim();
+    const nhuoc_diem = document.getElementById('eval-weakness-input').value.trim();
+    const nhan_xet_chung = document.getElementById('eval-feedback-input').value.trim();
+    
+    if (!nguoi_danh_gia || !ngay_danh_gia) {
+        showToast('Vui lòng nhập người đánh giá và ngày đánh giá!', true);
+        return;
+    }
+    
+    const payload = {
+        ngay_danh_gia,
+        nguoi_danh_gia,
+        diem_so,
+        nang_luc: {
+            chuyen_mon: skillProf,
+            giao_tiep: skillComm,
+            lam_viec_nhom: skillTeam,
+            tien_do: skillTime,
+            chu_dong: skillInit
+        },
+        uu_diem,
+        nhuoc_diem,
+        nhan_xet_chung
+    };
+    
+    try {
+        const res = await fetch(`${API_URL}/evaluations/${empId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Lưu đánh giá năng lực thành công!');
+            closeModal('modal-evaluation');
+            if (state.selectedEmployeeId === empId) {
+                await selectEmployeeProfile(empId);
+            }
+        } else {
+            showToast(result.error || 'Lỗi khi lưu đánh giá!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// EXCEL SYNC: Save database back to Excel file
+async function syncToExcel() {
+    const btn = document.getElementById('btn-sync-action');
+    const status = document.getElementById('sync-status-msg');
+    
+    btn.disabled = true;
+    btn.innerHTML = `<i class="bx bx-loader-alt bx-spin"></i> Đang đồng bộ hóa...`;
+    status.innerHTML = `<span style="color: var(--text-muted);">Hệ thống đang xuất dữ liệu SQLite và viết lại vào file Excel. Vui lòng chờ...</span>`;
+    
+    try {
+        const res = await fetch(`${API_URL}/excel/sync`, { method: 'POST' });
+        const result = await res.json();
+        
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bx bx-sync"></i> Thực hiện đồng bộ hóa`;
+        
+        if (res.ok) {
+            status.innerHTML = `<span style="color: var(--success);"><i class="bx bx-check-double"></i> ${result.message}</span>`;
+            showToast('Đồng bộ Excel hoàn tất!');
+        } else {
+            status.innerHTML = `<span style="color: var(--danger);"><i class="bx bx-error"></i> ${result.error}</span>`;
+            showToast('Lỗi đồng bộ Excel!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bx bx-sync"></i> Thực hiện đồng bộ hóa`;
+        status.innerHTML = `<span style="color: var(--danger);"><i class="bx bx-error"></i> Lỗi kết nối đến máy chủ!</span>`;
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// Allocation tab: Switch between Table view and Quick Entry view
+function switchAllocationMode(mode) {
+    state.allocationMode = mode;
+    
+    const btnTable = document.getElementById('btn-alloc-mode-table');
+    const btnQuick = document.getElementById('btn-alloc-mode-quick');
+    const tableView = document.getElementById('alloc-table-view-section');
+    const quickView = document.getElementById('alloc-quick-entry-section');
+    
+    if (mode === 'table') {
+        btnTable.classList.add('btn-primary');
+        btnQuick.classList.remove('btn-primary');
+        btnQuick.style.borderColor = 'var(--border-color)';
+        
+        tableView.style.display = 'block';
+        quickView.style.display = 'none';
+        
+        fetchAllocationsData();
+    } else {
+        btnQuick.classList.add('btn-primary');
+        btnTable.classList.remove('btn-primary');
+        btnTable.style.borderColor = 'var(--border-color)';
+        
+        tableView.style.display = 'none';
+        quickView.style.display = 'block';
+        
+        loadQuickEntryProjectData();
+    }
+}
+
+// ----------------------------------------------------
+// TAB: DEPARTMENT CONFIGURATION LOGIC
+// ----------------------------------------------------
+
+// Load metadata for department config dropdown
+async function loadDeptConfigMetadata() {
+    try {
+        const res = await fetch(`${API_URL}/departments/distinct`);
+        const distinctDepts = await res.json();
+        
+        const configDeptSource = document.getElementById('config-dept-source');
+        if (configDeptSource) {
+            let optionsHTML = distinctDepts.map(d => 
+                `<option value="${d.ma_oc}" data-name="${d.name_oc}">${d.name_oc} (${d.ma_oc})</option>`
+            ).join('');
+            configDeptSource.innerHTML = '<option value="">-- Chọn một phòng ban gợi ý --</option>' + optionsHTML;
+        }
+    } catch (err) {
+        console.error('Lỗi khi tải danh sách phòng ban gợi ý:', err);
+    }
+}
+
+// Automatically fill fields when select distinct department
+function onConfigDeptSourceChange() {
+    const select = document.getElementById('config-dept-source');
+    const codeInput = document.getElementById('config-oc-code-input');
+    const nameInput = document.getElementById('config-oc-name-input');
+    
+    if (select.value) {
+        const selectedOption = select.options[select.selectedIndex];
+        codeInput.value = select.value;
+        nameInput.value = selectedOption.getAttribute('data-name');
+    } else {
+        codeInput.value = '';
+        nameInput.value = '';
+    }
+}
+
+// Load department configurations for selected project
+async function loadProjectDeptConfig() {
+    const projCode = document.getElementById('config-project-select').value;
+    const tbody = document.getElementById('config-dept-table-body');
+    const countSpan = document.getElementById('config-dept-count');
+    
+    if (!projCode) {
+        tbody.innerHTML = '<tr><td colspan="4" class="no-data"><i class="bx bx-select-multiple"></i> Vui lòng chọn một dự án ở trên để xem cấu hình phòng ban.</td></tr>';
+        countSpan.innerText = 'Đang hiển thị 0 phòng ban';
+        return;
+    }
+    
+    tbody.innerHTML = '<tr><td colspan="4" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải cấu hình phòng ban...</td></tr>';
+    
+    try {
+        const res = await fetch(`${API_URL}/projects/${projCode}/departments`);
+        const depts = await res.json();
+        
+        countSpan.innerText = `Đang hiển thị ${depts.length} phòng ban`;
+        
+        if (depts.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="no-data"><i class="bx bx-info-circle"></i> Chưa cấu hình phòng ban nào cho dự án này. Hãy thêm phòng ban ở khung bên trái hoặc sao chép cấu hình từ dự án khác.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = depts.map(d => {
+            const isBDH = classifyOC(d.ma_oc) === 'BAN_DIEU_HANH_CHINH';
+            const badgeHTML = isBDH ? 
+                `<span class="badge" style="background: rgba(138, 63, 252, 0.15); color: #d0bfff;">Ban điều hành chính</span>` : 
+                `<span class="badge" style="background: rgba(255,255,255,0.03); color: var(--text-muted);">Khác</span>`;
+                
+            return `
+                <tr>
+                    <td><strong>${d.ma_oc}</strong></td>
+                    <td>${d.name_oc}</td>
+                    <td>${badgeHTML}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-icon delete" onclick="deleteDeptFromProjectConfig(${d.id})" title="Gỡ cấu hình phòng ban này"><i class="bx bx-trash"></i></button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML = '<tr><td colspan="4" class="no-data error"><i class="bx bx-error"></i> Lỗi khi tải dữ liệu!</td></tr>';
+    }
+}
+
+// Classify OC code (helper for frontend)
+function classifyOC(ma_oc) {
+    if (!ma_oc) return 'PHONG_BAN_KHAC';
+    const ma_oc_clean = ma_oc.toString().trim().toUpperCase();
+    const core_prefixes = ['GMD', 'PMD', 'PLP', 'DMD', 'PCD', 'PM'];
+    for (const pref of core_prefixes) {
+        if (ma_oc_clean === pref || ma_oc_clean.startsWith(pref) || ma_oc_clean.includes('.' + pref) || ma_oc_clean.includes(pref + '.')) {
+            return 'BAN_DIEU_HANH_CHINH';
+        }
+    }
+    return 'PHONG_BAN_KHAC';
+}
+
+// Add department to project configuration
+async function addDeptToProjectConfig(e) {
+    e.preventDefault();
+    
+    const projCode = document.getElementById('config-project-select').value;
+    const ma_oc = document.getElementById('config-oc-code-input').value.trim();
+    const name_oc = document.getElementById('config-oc-name-input').value.trim();
+    
+    if (!projCode) {
+        showToast('Vui lòng chọn một dự án trước khi lưu cấu hình!', true);
+        return;
+    }
+    
+    if (!ma_oc || !name_oc) {
+        showToast('Vui lòng nhập Mã và Tên phòng ban!', true);
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_URL}/project-departments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                ma_du_an: projCode,
+                ma_oc: ma_oc,
+                name_oc: name_oc
+            })
+        });
+        const result = await res.json();
+        
+        if (res.ok) {
+            showToast('Đã thêm phòng ban vào cấu hình dự án!');
+            document.getElementById('form-add-dept-config').reset();
+            await loadProjectDeptConfig();
+            await loadDeptConfigMetadata(); // Refresh options
+        } else {
+            showToast(result.error || 'Lỗi khi lưu cấu hình!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// Delete department config from project
+async function deleteDeptFromProjectConfig(id) {
+    if (!confirm('Bạn có chắc muốn gỡ phòng ban này khỏi cấu hình dự án? Việc này không xóa phân bổ nhân viên cũ nhưng phòng ban sẽ không hiện trong danh sách nhập liệu.')) {
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_URL}/project-departments/${id}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            showToast('Đã gỡ cấu hình phòng ban thành công!');
+            await loadProjectDeptConfig();
+        } else {
+            showToast('Lỗi khi gỡ cấu hình phòng ban!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// Open Copy Config Modal
+function openCopyConfigModal() {
+    const projCode = document.getElementById('config-project-select').value;
+    if (!projCode) {
+        showToast('Vui lòng chọn dự án đích cần cấu hình phòng ban trước!', true);
+        return;
+    }
+    
+    const proj = state.projects.find(p => p.ma_du_an === projCode);
+    
+    document.getElementById('copy-to-project-id').value = projCode;
+    document.getElementById('copy-to-project-display').value = `${proj.ten_du_an} (${projCode})`;
+    document.getElementById('copy-from-project-select').value = '';
+    
+    openModal('modal-copy-config');
+}
+
+// Save Copy Config action
+async function saveCopyConfig(e) {
+    e.preventDefault();
+    
+    const from_project = document.getElementById('copy-from-project-select').value;
+    const to_project = document.getElementById('copy-to-project-id').value;
+    
+    if (!from_project || !to_project) {
+        showToast('Vui lòng chọn đầy đủ dự án nguồn và dự án đích!', true);
+        return;
+    }
+    
+    if (from_project === to_project) {
+        showToast('Dự án nguồn và dự án đích không được trùng nhau!', true);
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_URL}/project-departments/copy`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ from_project, to_project })
+        });
+        const result = await res.json();
+        
+        if (res.ok) {
+            showToast('Đã sao chép cấu hình phòng ban thành công!');
+            closeModal('modal-copy-config');
+            await loadProjectDeptConfig();
+        } else {
+            showToast(result.error || 'Lỗi khi sao chép cấu hình!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+// ----------------------------------------------------
+// TAB: ALLOCATIONS - QUICK ENTRY BY PROJECT LOGIC
+// ----------------------------------------------------
+
+// Fetch departments and allocations, group and render quick cards
+async function loadQuickEntryProjectData() {
+    const projCode = document.getElementById('quick-alloc-project-select').value;
+    const container = document.getElementById('quick-alloc-cards-container');
+    
+    if (!projCode) {
+        container.innerHTML = `
+            <div class="no-data">
+                <i class="bx bx-select-multiple" style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--text-muted);"></i>
+                <p>Vui lòng chọn một dự án từ danh sách bên trên để hiển thị các bộ phận cần nhập liệu.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = `
+        <div class="no-data">
+            <i class="bx bx-loader-alt bx-spin" style="font-size: 2rem; color: var(--primary);"></i>
+            <p>Đang tải dữ liệu nhập liệu nhanh của dự án...</p>
+        </div>
+    `;
+    
+    try {
+        // Fetch project departments
+        const deptsRes = await fetch(`${API_URL}/projects/${projCode}/departments`);
+        const depts = await deptsRes.json();
+        
+        // Fetch current project info to retrieve default region
+        const proj = state.projects.find(p => p.ma_du_an === projCode);
+        const defaultRegion = proj ? (proj.khu_vuc || 'Vùng Đồng Nai 1') : 'Vùng Đồng Nai 1';
+        
+        // Fetch allocations for this project
+        const allocsRes = await fetch(`${API_URL}/allocations?project=${encodeURIComponent(projCode)}`);
+        const allocs = await allocsRes.json();
+        
+        if (depts.length === 0) {
+            container.innerHTML = `
+                <div class="no-data" style="padding: 3rem;">
+                    <i class="bx bx-cog" style="font-size: 2.5rem; color: var(--text-muted);"></i>
+                    <p>Dự án này chưa được cấu hình phòng ban hoạt động.</p>
+                    <button class="btn btn-primary" onclick="switchTab('dept-config'); document.getElementById('config-project-select').value = '${projCode}'; loadProjectDeptConfig();" style="margin-top: 1rem;">
+                        <i class="bx bx-cog"></i> Đi tới cấu hình phòng ban
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render cards
+        let cardsHTML = '';
+        
+        // Options for employee dropdown selection
+        const filteredEmployees = state.employees.filter(e => {
+            const name = e.ho_ten || '';
+            return !name.includes('Chưa có') && !name.startsWith('Nhân sự ');
+        });
+        const empOptionsHTML = filteredEmployees.map(e => 
+            `<option value="${e.ma_nhan_vien}">${e.ho_ten} (${e.ma_nhan_vien})</option>`
+        ).join('');
+        
+        const dropdownHTML = `
+            <option value="Tuyển0">Vị trí kiêm nhiệm từ dự án khác (không tuyển chính)</option>
+            <option value="Tuyển">Vị trí đang tuyển chính</option>
+            <option value="Không tuyển">Vị trí không tuyển</option>
+            <option value="Chưa tuyển">Chưa tuyển</option>
+            <optgroup label="Danh sách nhân viên">
+                ${empOptionsHTML}
+            </optgroup>
+        `;
+        
+        depts.forEach(dept => {
+            // Filter allocations belonging to this department
+            const deptAllocs = allocs.filter(a => a.ma_oc === dept.ma_oc || (a.name_oc === dept.name_oc && (!a.ma_oc || a.ma_oc === 'MISC' || a.ma_oc === '')));
+            
+            const isBDH = classifyOC(dept.ma_oc) === 'BAN_DIEU_HANH_CHINH';
+            const cardBadge = isBDH ? 
+                `<span class="badge" style="background: rgba(138, 63, 252, 0.15); color: #d0bfff; font-size: 0.7rem;">BĐH dự án chính</span>` : 
+                `<span class="badge" style="background: rgba(255,255,255,0.03); color: var(--text-muted); font-size: 0.7rem;">Phòng ban khác</span>`;
+                
+            let rowsHTML = '';
+            if (deptAllocs.length === 0) {
+                rowsHTML = `<tr><td colspan="5" class="no-data" style="padding: 1.5rem; font-size: 0.8rem;"><i class="bx bx-user-plus" style="font-size: 1.25rem; margin-bottom: 0.25rem;"></i>Chưa có nhân sự. Hãy nhập dòng dưới đây.</td></tr>`;
+            } else {
+                rowsHTML = deptAllocs.map(a => {
+                    const isHiring = isPlaceholder(a.ma_nhan_vien);
+                    const nameDisplay = isHiring ? `<span style="color: var(--text-muted); font-style: italic;">${getPlaceholderPersonLabel(a.ma_nhan_vien)}</span>` : (a.ho_ten || `Nhân sự ${a.ma_nhan_vien}`);
+                    const codeDisplay = isHiring ? `<span class="badge badge-planning">${getPlaceholderLabel(a.ma_nhan_vien)}</span>` : a.ma_nhan_vien;
+                    
+                    let statusBadge = '';
+                    if (isHiring) {
+                        statusBadge = `<span class="badge badge-planning">${getPlaceholderStatusLabel(a.ma_nhan_vien)}</span>`;
+                    } else if (a.tinh_trang && (a.tinh_trang.includes('KN') || a.tinh_trang.toLowerCase().includes('kiêm nhiệm'))) {
+                        statusBadge = `<span class="badge badge-kiemnhiem">Kiêm nhiệm</span>`;
+                    } else {
+                        statusBadge = `<span class="badge badge-active">Chính thức</span>`;
+                    }
+                    
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${nameDisplay}</strong>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">${codeDisplay}</div>
+                            </td>
+                            <td>${a.chuc_danh || 'N/A'}</td>
+                            <td>${statusBadge}</td>
+                            <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${a.ghi_chu || ''}">${a.ghi_chu || ''}</td>
+                            <td style="text-align: center;">
+                                <div class="actions" style="justify-content: center;">
+                                    ${!isHiring ? `<button class="btn-icon transfer" onclick="openTransferModal(${a.id})" title="Luân chuyển dự án"><i class="bx bx-git-compare"></i></button>` : ''}
+                                    <button class="btn-icon delete" onclick="deleteQuickAllocation(${a.id}, '${projCode}')" title="Xóa phân bổ"><i class="bx bx-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+            
+            cardsHTML += `
+                <div class="quick-alloc-card">
+                    <div class="quick-alloc-card-header">
+                        <div>
+                            <div class="quick-alloc-card-title">
+                                <i class="bx bx-hive" style="color: var(--primary);"></i>
+                                ${dept.name_oc}
+                            </div>
+                            <div class="quick-alloc-card-subtitle">Mã bộ phận: <strong>${dept.ma_oc}</strong></div>
+                        </div>
+                        <div>
+                            ${cardBadge}
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                        <table class="quick-alloc-table">
+                            <thead>
+                                <tr>
+                                    <th>Nhân viên</th>
+                                    <th>Chức danh</th>
+                                    <th>Vai trò</th>
+                                    <th>Ghi chú</th>
+                                    <th style="width: 80px; text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rowsHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Inline quick add form -->
+                    <div class="quick-input-row-form">
+                        <form onsubmit="saveQuickAllocation(event, '${projCode}', '${dept.ma_oc}', '${dept.name_oc}')">
+                            <input type="hidden" class="quick-region-val" value="${defaultRegion}">
+                            <div class="quick-input-fields">
+                                <input type="text" class="form-control quick-emp-input" list="quick-emp-datalist" placeholder="Mã NV (ví dụ: 2325, 35110)..." required>
+                                <input type="text" class="form-control quick-title-input" placeholder="Chức danh..." required>
+                                <div style="display: flex; align-items: center; justify-content: center; height: 34px;">
+                                    <label class="custom-checkbox-container" style="padding-left: 20px; height: 20px; font-size: 0.8rem; margin: 0;" title="Kiêm nhiệm (KN)">
+                                        <input type="checkbox" class="quick-status-input">
+                                        <span class="checkmark" style="height: 20px; width: 20px;"></span>
+                                        <span style="display: none;">KN</span>
+                                    </label>
+                                </div>
+                                <input type="text" class="form-control quick-notes-input" placeholder="Ghi chú...">
+                                <button type="submit" class="btn btn-primary btn-quick-add" title="Thêm nhân sự trực tiếp">
+                                    <i class="bx bx-plus"></i> Thêm
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = cardsHTML;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+            <div class="no-data error">
+                <i class="bx bx-error" style="font-size: 2.5rem; color: var(--danger);"></i>
+                <p>Đã xảy ra lỗi khi tải thẻ phòng ban nhập liệu!</p>
+            </div>
+        `;
+    }
+}
+
+// Save allocation from quick entry inline form
+async function saveQuickAllocation(e, ma_du_an, ma_oc, name_oc) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const ma_nhan_vien_raw = form.querySelector('.quick-emp-input').value.trim();
+    const chuc_danh = form.querySelector('.quick-title-input').value.trim();
+    const tinh_trang = form.querySelector('.quick-status-input').checked ? 'KN' : '';
+    const ghi_chu = form.querySelector('.quick-notes-input').value.trim();
+    const vung = form.querySelector('.quick-region-val').value;
+    
+    if (!ma_nhan_vien_raw || !chuc_danh) {
+        showToast('Vui lòng điền mã nhân viên và chức danh!', true);
+        return;
+    }
+    
+    // Split the input value by comma, semicolon or whitespace to handle multiple employee IDs
+    const placeholderCode = normalizePlaceholderInput(ma_nhan_vien_raw);
+    const empCodes = placeholderCode
+        ? [placeholderCode]
+        : ma_nhan_vien_raw.split(/[\s,;]+/).map(c => c.trim()).filter(c => c !== '');
+    if (empCodes.length === 0) {
+        showToast('Mã nhân viên không hợp lệ!', true);
+        return;
+    }
+    
+    let successCount = 0;
+    let errors = [];
+    
+    for (const code of empCodes) {
+        const payload = {
+            ma_du_an,
+            ma_nhan_vien: code,
+            ma_oc,
+            name_oc,
+            chuc_danh,
+            tinh_trang,
+            ghi_chu,
+            vung
+        };
+        
+        try {
+            const res = await fetch(`${API_URL}/allocations`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            
+            if (res.ok) {
+                successCount++;
+            } else {
+                errors.push(`${code}: ${result.error || 'Lỗi chưa xác định'}`);
+            }
+        } catch (err) {
+            console.error(err);
+            errors.push(`${code}: Lỗi kết nối`);
+        }
+    }
+    
+    if (successCount > 0) {
+        showToast(`Đã phân bổ thành công ${successCount} nhân sự!`);
+        form.querySelector('.quick-emp-input').value = '';
+        form.querySelector('.quick-title-input').value = '';
+        form.querySelector('.quick-status-input').checked = false;
+        form.querySelector('.quick-notes-input').value = '';
+        await loadQuickEntryProjectData();
+    }
+    
+    if (errors.length > 0) {
+        alert("Lỗi khi thêm một số nhân sự:\n" + errors.join("\n"));
+    }
+}
+
+// Delete allocation from quick entry
+async function deleteQuickAllocation(id, ma_du_an) {
+    if (!confirm('Bạn có chắc chắn muốn xóa bản ghi phân bổ này? Vị trí nhân sự này sẽ bị gỡ khỏi dự án.')) {
+        return;
+    }
+    try {
+        const res = await fetch(`${API_URL}/allocations/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            showToast('Đã xóa phân bổ nhân sự thành công!');
+            await loadQuickEntryProjectData();
+        } else {
+            showToast('Lỗi khi xóa phân bổ!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}

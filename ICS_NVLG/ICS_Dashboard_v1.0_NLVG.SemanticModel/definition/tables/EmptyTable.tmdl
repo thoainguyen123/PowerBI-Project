@@ -1,0 +1,532 @@
+table EmptyTable
+	lineageTag: ffba7df3-b6e0-4ba0-9da7-f24bffc54f6e
+
+	measure 'Vi phạm' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]),ICS[isViolation] = TRUE)
+		formatString: 0
+		lineageTag: 759d1795-0040-490f-a1d7-9975a8e5e642
+
+	measure 'Sự vụ' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[case_code]))
+		formatString: 0
+		lineageTag: 7d31d29c-1e44-4238-8060-a5b0e3c60408
+
+	measure action_count = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]))
+		formatString: 0
+		lineageTag: daf5ecf8-951f-463a-a2be-c8f1c1369c23
+
+	measure action_khac_phuc_count = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Khắc phục")
+		formatString: 0
+		lineageTag: d1a9b0b0-c149-4c05-8770-ffed4dfbe199
+
+	measure action_phong_ngua_count = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Ngăn ngừa")
+		formatString: 0
+		lineageTag: 56abb6da-f109-42eb-a491-39715a36e8cd
+
+	measure 'Sự vụ (ghi nhận)' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]), ICS[isViolation] = FALSE)
+		formatString: 0
+		lineageTag: e4206e19-4100-44ab-97cb-3e81ada0255d
+
+	measure 'Sự vụ (vi phạm)' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]), ICS[isViolation] = TRUE)
+		formatString: #,0
+		lineageTag: 32591c72-003e-4356-95b8-3e22eee5417b
+
+	measure '% Sự vụ Ghi nhận' = ```
+			DIVIDE([Sự vụ (ghi nhận)],DISTINCTCOUNTNOBLANK(ICS[violation_code]),"")
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2f1e7401-ee33-4eee-ac60-a87d36b9ce71
+
+	measure '% Sự vụ Vi Phạm' = 1 - [% Sự vụ Ghi nhận]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0200fc72-c908-45dc-a677-33e2e49fec4f
+
+	measure 'Violation (ghi nhận)' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]),ICS[violation_status] = "Ghi nhận" && ICS[isViolation] = TRUE)
+		formatString: 0
+		lineageTag: a3a44542-51ac-49de-8edc-6a18fdeed6ba
+
+	measure '% Violation (ghi nhận)' = DIVIDE([Violation (ghi nhận)],[Vi phạm],"")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 568e1052-8af2-4f51-b394-a86d17e9c1f6
+
+	measure 'Violation (Chờ xử lý)' =
+			
+			var x = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]), ICS[isViolation] = True, ICS[violation_status] = "Chờ xử lý")
+			 RETURN IF(ISBLANK(x),0,x)
+		formatString: 0
+		lineageTag: c0519a20-0c93-4283-89c1-2bd49cbf5c06
+
+	measure '% Violation (Chờ xử lý)' = DIVIDE([Violation (Chờ xử lý)],[Vi phạm],"")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 62982294-9995-47d1-8232-07e74dd3bcea
+
+	measure 'Violation (Hoàn thành)' = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[violation_code]),ICS[isViolation] = True, ICS[violation_status] = "Hoàn thành")
+		formatString: 0
+		lineageTag: 993880b1-80cd-432e-8fe9-35d4593e82cc
+
+	measure '% Violation (Hoàn thành)' = ```
+			1 - [% Violation (ghi nhận)] - [% Violation (Chờ xử lý)] 
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 4e7c9e7a-2761-461a-a408-aa213fa986b8
+
+	measure '% KHHD (Khắc phục)' = ```
+			DIVIDE([action_khac_phuc_count],[action_count],"") 
+			```
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: d18e7a17-4d60-4736-9027-4eae52b0f521
+
+	measure '% KHHD (Phòng ngừa)' = 1 - [% KHHD (Khắc phục)]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1cc56f08-9782-44d5-b1df-78d04d65e29a
+
+	measure action_fix_queue = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Khắc phục" && ICS[action_plant_status] = "Chờ thực hiện" && ICS[action_status] ="Chưa tới hạn (Chưa xử lý)")
+		formatString: 0
+		lineageTag: 6c90e5b2-90bf-4ac2-b27a-8fd4402a96c8
+
+	measure '% action_fix_queue' = DIVIDE([action_fix_queue],[action_khac_phuc_count],"")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f45eb3da-8da1-40b7-b04a-36ae22bd9b3d
+
+	measure action_fix_done = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Khắc phục" && ICS[action_plant_status] = "Hoàn thành")
+		formatString: 0
+		lineageTag: 0ff67e5a-b11b-42c1-b857-bd1b94056126
+
+	measure '% action_fix_done' = 1 - [% action_fix_queue] - [% action_trehan]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 17c7ee4b-fd77-48b8-8e18-9d57a4cbd839
+
+	measure action_protect_queue = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Ngăn ngừa" && ICS[action_plant_status] = "Chờ thực hiện" && ICS[action_status] ="Chưa tới hạn (Chưa xử lý)")
+		formatString: 0
+		lineageTag: 5a5b20ca-69c9-47e4-afc6-c59a2532997e
+
+	measure '% action_protect_queue' = DIVIDE([action_protect_queue],[action_phong_ngua_count],"")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 829f7446-ec3a-4fc9-ab8b-abc9425455bc
+
+	measure action_protect_done = [action_phong_ngua_count] - [action_protect_queue]
+		formatString: 0
+		lineageTag: ddbd25b2-636e-4e2d-bcab-105279732d76
+
+	measure '% action_protect_done' = 1 - [% action_protect_queue]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 2cab7f17-8928-49df-a58b-dc486d0c264d
+
+	measure action_tre_han = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Khắc phục" &&  ICS[action_status] ="Trễ hạn (Chưa xử lý)")
+		formatString: 0
+		lineageTag: cd00599d-a730-4132-9263-b2c6af11a877
+
+	measure '% action_trehan' = DIVIDE([action_tre_han],[action_khac_phuc_count],"")
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 50c4e291-c384-494d-9f42-2e6b6e7bebda
+
+	measure action_tre_han_ngan_ngua = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),ICS[action_plant_type] = "Ngăn ngừa" &&  ICS[action_status] ="Trễ hạn (Chưa xử lý)")
+		formatString: 0
+		lineageTag: 3c5a4368-c01d-4011-9bdb-7507e9fa12b6
+
+	measure '% action_protect_trehan' = DIVIDE([action_tre_han_ngan_ngua],[action_phong_ngua_count],"")
+		formatString: 0%;-0%;0%
+		lineageTag: 7934537e-6b51-464c-a4a1-d47a7cef3713
+
+	measure action_tre_han_total = CALCULATE(DISTINCTCOUNTNOBLANK(ICS[action_code]),  ICS[action_status] ="Trễ hạn (Chưa xử lý)")
+		formatString: 0
+		lineageTag: 43b6c853-0006-4657-b312-5802b6e199ab
+
+	measure 'Chờ ghi nhận' =
+			
+			var x = "(" & FORMAT( [% Violation (Chờ xử lý)], "0%" ) & ")"
+			RETURN IF([Violation (Chờ xử lý)] = 0 || ISBLANK(x) = TRUE,"",x)
+		lineageTag: 36cd1bee-a263-4f3e-abdb-8cde87376290
+
+	measure 'Violation (Chờ xử lý) trì trệ' = ```
+			
+			-- 1. Xác định ngày hôm nay (theo giờ Việt Nam)
+			VAR _HomNay = DATE(YEAR(NOW()+7/24), MONTH(NOW()+7/24), DAY(NOW()+7/24))
+			
+			-- 2. Tính ngày mốc (Lùi lại 3 tháng so với hôm nay)
+			-- Ví dụ: Hôm nay 27/01/2026 -> Mốc là 27/10/2025
+			VAR _NgayMoc = EDATE(_HomNay, -3)
+			
+			-- 3. Tính toán số lượng
+			VAR x = CALCULATE(
+			    DISTINCTCOUNTNOBLANK(ICS[violation_code]), 
+			    ICS[isViolation] = TRUE(), 
+			    ICS[violation_status] = "Chờ xử lý", 
+			    
+			    -- Lọc những ngày NHỎ HƠN ngày mốc (Tức là cũ hơn 3 tháng)
+			    'DateTable'[Date] < _NgayMoc
+			)
+			 
+			RETURN 
+			    IF(ISBLANK(x), 0, x)
+			```
+		formatString: 0
+		lineageTag: 77e9f1dc-699d-4357-b5ea-4e121fd0ae8a
+
+	measure 'KP-NN count' =
+			
+			var x = [action_count]
+			Return if(x>0,x,0)
+		formatString: 0
+		lineageTag: d010d47a-3570-4767-8574-6149df0c814c
+
+	measure Path_Moi_Nhat = ```
+			
+			MAXX(
+			    TOPN(
+			        1, 
+			        // BƯỚC 1: Lọc bỏ các dòng bị BLANK hoặc rỗng
+			        FILTER(
+			            'File', 
+			            NOT ISBLANK('File'[api]) && 'File'[api] <> ""
+			        ), 
+			        // BƯỚC 2: Sắp xếp lấy 1 dòng có ngày mới nhất
+			        'File'[Date], 
+			        DESC
+			    ),
+			    // BƯỚC 3: Trích xuất thẳng cột api từ dòng vừa tìm được
+			    'File'[api]
+			)
+			```
+		lineageTag: 14b43cde-2b58-4278-a594-4016d456a7bc
+		dataCategory: ImageUrl
+
+	measure Violation_lastest = ```
+			
+			MAXX(
+			    TOPN(
+			        1, 
+			        // BƯỚC 1: Lọc bỏ các dòng bị BLANK hoặc rỗng
+			        FILTER(
+			            'File', 
+			            NOT ISBLANK('File'[violationId]) && 'File'[violationId] <> ""
+			        ), 
+			        // BƯỚC 2: Sắp xếp lấy 1 dòng có ngày mới nhất
+			        'File'[Date], 
+			        DESC
+			    ),
+			    // BƯỚC 3: Trích xuất thẳng cột api từ dòng vừa tìm được
+			    'File'[code]
+			)
+			```
+		lineageTag: 1f03e883-c9c4-45c8-9596-a357fb6d5d4e
+
+	measure MucDoViPham_NangNhat = ```
+			
+			VAR MinSoThuTu = 
+			    MINX(
+			        'ICS', 
+			        -- Khai báo 2 cột đang xét trên dòng hiện tại
+			        VAR HinhThuc = 'ICS'[laborRuleViolationSeverity_name]
+			        VAR MucDo = 'ICS'[severity_level]
+			        
+			        RETURN
+			        -- Xét ưu tiên từ trên xuống dưới, trúng cái nào lấy số đó luôn
+			        SWITCH(
+			            TRUE(),
+			            HinhThuc = "Sa thải", 1,
+			            HinhThuc = "Chấm dứt HĐLĐ", 2,
+			            HinhThuc = "Cách chức", 3,
+			            HinhThuc = "Kéo dài thời hạn nâng lương", 4,
+			            HinhThuc = "Khiển trách", 5,
+			            
+			            -- Nếu 5 cái trên không có, bắt đầu xét qua cột severity_level
+			            MucDo = "Mức 3 - Cao", 6,
+			            MucDo = "Mức 2 - Trung bình", 7,
+			            MucDo = "Mức 1 - Thấp", 8,
+			            
+			            -- Nếu cả 2 cột đều trống hoặc không khớp chữ nào
+			            9
+			        )
+			    )
+			
+			-- Dịch số nhỏ nhất tìm được ra lại thành chữ để hiển thị
+			RETURN 
+			    SWITCH(
+			        MinSoThuTu,
+			        1, "Sa thải",
+			        2, "Chấm dứt HĐLĐ",
+			        3, "Cách chức",
+			        4, "Kéo dài thời hạn nâng lương",
+			        5, "Khiển trách",
+			        6, "Mức 3 - Cao",
+			        7, "Mức 2 - Trung bình",
+			        8, "Mức 1 - Thấp",
+			        "Không"
+			    )
+			```
+		lineageTag: 2f6d1d18-7e0e-4a00-9845-a2e380f54908
+
+	measure Divison_Vi_Pham_Nhieu_Nhat = ```
+			
+			VAR TopBranchTable = 
+			    TOPN(
+			        1, 
+			        ALLSELECTED('ICS'[division_name]), -- Quét qua tất cả chi nhánh đang được chọn lọc
+			        [Sự vụ (vi phạm)], -- Dựa trên số lượng vi phạm
+			        DESC -- Sắp xếp giảm dần để ông nhiều nhất lên đầu
+			    )
+			RETURN
+			    MAXX(TopBranchTable, 'ICS'[division_name])
+			```
+		lineageTag: 8356f031-53ac-4a76-a05b-1d95a347d649
+
+	measure So_Vu_Vi_Pham_Max = ```
+			
+			VAR TopBranchTable = 
+			    TOPN(
+			        1, 
+			        ALLSELECTED('ICS'[branch_name]), 
+			        [Sự vụ (vi phạm)], 
+			        DESC
+			    )
+			RETURN
+			    MAXX(TopBranchTable, [Sự vụ (vi phạm)])
+			```
+		formatString: 0
+		lineageTag: f1b94ca9-04cf-4d26-8f97-835f97f19c80
+
+	measure HTML_Top_Violation_Info =
+			
+			VAR TenBranch = [Divison_Vi_Pham_Nhieu_Nhat]
+			VAR SoVu = [So_Vu_Vi_Pham_Max]
+			RETURN
+			    IF(
+			        NOT(ISBLANK(SoVu)),
+			        "<div style='font-family: Segoe UI; font-size: 24px;'>
+			            <span style='color: #749892; font-weight: bold;'>" & TenBranch & "</span>
+			            <br/>
+			            <b style='color: #D62828; font-size: 18px;'>" & SoVu & " Vi phạm</b>
+			         </div>",
+			        "<span style='color: #749892;'>Không có ghi nhận vi phạm.</span>"
+			    )
+		lineageTag: 5934268b-9270-4d21-8c16-1791382c2364
+
+	measure action_tre_han_total_no_filter = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNTNOBLANK(ICS[action_code]), 
+			    ICS[action_status] = "Trễ hạn (Chưa xử lý)",
+			    ALL(ICS[company_name]) -- Điền chính xác tên cột chứa thông tin công ty của bạn vào đây
+			)
+			```
+		formatString: 0
+		lineageTag: a7f99f9f-d5fd-4355-9d54-053332616c7c
+
+	measure action_tre_han_total_no = ```
+			
+			VAR SelectedCompanyOnAxis = SELECTEDVALUE('Company_Axis'[company_name])
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNTNOBLANK(ICS[action_code]), 
+			        ICS[action_status] = "Trễ hạn (Chưa xử lý)",
+			        -- Xóa sạch bộ lọc trang đè lên bảng ICS
+			        ALL(ICS), 
+			        -- Ép tính toán theo đúng công ty đang hiển thị trên Trục
+			        ICS[company_name] = SelectedCompanyOnAxis ,
+			        KEEPFILTERS(VALUES(DateTable[Năm]))
+			    )
+			```
+		formatString: 0
+		lineageTag: ede87f9e-8197-40f7-aa9e-5db6be9d02c8
+
+	measure Text_Bao_Cao_Tinh_Hinh = ```
+			
+			VAR HR_Violation = [Violation (Ghi nhận)]
+			VAR DVCM_Violation = [Violation (Chờ xử lý)]
+			VAR Tre_Han_Total = [action_tre_han_total]
+			VAR Enter = UNICHAR(13) & UNICHAR(10) 
+			RETURN
+			"𝐓𝐢̀𝐧𝐡 𝐡𝐢̀𝐧𝐡 𝐗𝐮̛̉ 𝐥𝐲́ 𝐯𝐢 𝐩𝐡𝐚̣𝐦 - 𝐊𝐡𝐚̆́𝐜 𝐩𝐡𝐮̣𝐜 - 𝐍𝐠𝐚̆𝐧 𝐧𝐠𝐮̛̀𝐚:" 
+			    & Enter & "  • Vi phạm chờ tại HR: " & FORMAT(DVCM_Violation, "#,##0") 
+			    & Enter & "  • Vi phạm chờ tại ĐVCM KSTT: " & FORMAT(HR_Violation, "#,##0") 
+			    & Enter & "  • Kế hoạch KP-NN trễ hạn: " & FORMAT(Tre_Han_Total, "#,##0") 
+			```
+		lineageTag: 30b411bc-889d-4bc7-b08b-637780b88032
+
+	measure action_tre_han_total_branch = ```
+			
+			VAR SelectedBranchOnAxis = SELECTEDVALUE('Branch_Axis'[division_name])
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNTNOBLANK(ICS[action_code]), 
+			        ICS[action_status] = "Trễ hạn (Chưa xử lý)",
+			        -- Xóa sạch bộ lọc trang đè lên bảng ICS
+			        ALL(ICS), 
+			        -- Ép tính toán theo đúng Chi nhánh đang hiển thị trên Trục của biểu đồ
+			        ICS[division_name] = SelectedBranchOnAxis,
+			        KEEPFILTERS(VALUES(DateTable[Năm]))
+			    )
+			```
+		formatString: 0
+		lineageTag: 04d373a9-6f41-488b-b224-b4bce5bedcfd
+
+	measure Dept_Vi_Pham_Nhieu_Nhat = ```
+			
+			VAR TopBranchTable = 
+			    TOPN(
+			        1, 
+			        ALLSELECTED('ICS'[department_name]), -- Quét qua tất cả chi nhánh đang được chọn lọc
+			        [Sự vụ (vi phạm)], -- Dựa trên số lượng vi phạm
+			        DESC -- Sắp xếp giảm dần để ông nhiều nhất lên đầu
+			    )
+			RETURN
+			    MAXX(TopBranchTable, 'ICS'[department_name])
+			```
+		lineageTag: b2960251-deae-4ee4-8d6e-1a98eca60d78
+
+	measure Branch_Vi_Pham_Nhieu_Nhat = ```
+			
+			VAR TopBranchTable = 
+			    TOPN(
+			        1, 
+			        ALLSELECTED('ICS'[branch_name]), -- Quét qua tất cả chi nhánh đang được chọn lọc
+			        [Sự vụ (vi phạm)], -- Dựa trên số lượng vi phạm
+			        DESC -- Sắp xếp giảm dần để ông nhiều nhất lên đầu
+			    )
+			RETURN
+			    MAXX(TopBranchTable, 'ICS'[branch_name])
+			```
+		lineageTag: 67e986cd-c227-4772-9ccd-913665b67a33
+
+	measure action_tre_han_total_branc_HO = ```
+			
+			VAR SelectedBranchOnAxis = SELECTEDVALUE('HO_Axis'[division_name])
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNTNOBLANK(ICS[action_code]), 
+			        ICS[action_status] = "Trễ hạn (Chưa xử lý)",
+			        -- Xóa sạch bộ lọc trang đè lên bảng ICS
+			        ALL(ICS), 
+			        -- Ép tính toán theo đúng Chi nhánh đang hiển thị trên Trục của biểu đồ
+			        ICS[division_name] = SelectedBranchOnAxis,
+			        KEEPFILTERS(VALUES(DateTable[Năm]))
+			    )
+			```
+		formatString: 0
+		lineageTag: d1e364a0-902c-4191-805c-da5642851864
+
+	measure action_tre_han_total_DEPT = ```
+			
+			VAR SelectedCompanyOnAxis = SELECTEDVALUE(Dept_Axis[department_name])
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNTNOBLANK(ICS[action_code]), 
+			        ICS[action_status] = "Trễ hạn (Chưa xử lý)",
+			        -- Xóa sạch bộ lọc trang đè lên bảng ICS
+			        ALL(ICS), 
+			        -- Ép tính toán theo đúng công ty đang hiển thị trên Trục
+			        ICS[company_name] = SelectedCompanyOnAxis ,
+			        KEEPFILTERS(VALUES(DateTable[Năm]))
+			    )
+			```
+		formatString: 0
+		lineageTag: 85c7ddc2-ce72-449f-bde8-c1e5263c7a2d
+
+	measure So_Hanh_Vi_Lap_Lai =
+			VAR _Behaviors =
+			    FILTER(
+			        SUMMARIZE(
+			            ICS,
+			            ICS[behavior_name]
+			        ),
+			        NOT ISBLANK(ICS[behavior_name])
+			            && CALCULATE(DISTINCTCOUNTNOBLANK(ICS[case_code])) >= 2
+			    )
+			RETURN
+			    COUNTROWS(_Behaviors)
+		formatString: #,0
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948101
+
+	measure So_Vu_Lap_Lai =
+			VAR _RecurringBehaviors =
+			    FILTER(
+			        VALUES(ICS[behavior_name]),
+			        NOT ISBLANK(ICS[behavior_name])
+			            && CALCULATE(
+			                DISTINCTCOUNTNOBLANK(ICS[case_code]),
+			                ALLSELECTED(ICS[case_code]),
+			                ALLSELECTED(ICS[inspectionDate])
+			            ) >= 2
+			    )
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNTNOBLANK(ICS[case_code]),
+			        KEEPFILTERS(_RecurringBehaviors)
+			    )
+		formatString: #,0
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948102
+
+	measure Ty_Le_Lap_Lai_% = DIVIDE([So_Vu_Lap_Lai], [Sự vụ], 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948103
+
+	measure So_Vu_Tai_Dien_Sau_Ngan_Nguoc =
+			VAR _CurrentBehavior = SELECTEDVALUE(ICS[behavior_name])
+			VAR _CurrentDept = SELECTEDVALUE(ICS[department_name])
+			VAR _PreventionDoneDate =
+			    CALCULATE(
+			        MAX(ICS[actualCompletionDate]),
+			        ICS[action_plant_type] = "Ngăn ngừa",
+			        ICS[action_plant_status] = "Đã hoàn thành",
+			        REMOVEFILTERS(ICS[case_code])
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_PreventionDoneDate),
+			        0,
+			        CALCULATE(
+			            DISTINCTCOUNTNOBLANK(ICS[case_code]),
+			            ICS[recognizedDate] > _PreventionDoneDate
+			        )
+			    )
+		formatString: #,0
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948104
+
+	measure Trang_Thai_Tai_Dien_Label =
+			VAR _RecurrenceCount = [So_Vu_Tai_Dien_Sau_Ngan_Nguoc]
+			RETURN
+			    IF(
+			        _RecurrenceCount > 0,
+			        "⚠️ Tái diễn (" & _RecurrenceCount & " sự vụ sau ngăn ngừa)",
+			        "✅ Đã kiểm soát tốt"
+			    )
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948105
+
+	measure De_Xuat_Chot_Kiem_Soat =
+			VAR _Group = SELECTEDVALUE(ICS[behavior_group_name])
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        CONTAINSSTRING(_Group, "Quy trình") || CONTAINSSTRING(_Group, "Thủ tục"), "🔒 Thêm Chốt phê duyệt tự động trên hệ thống ERP/BPM trước khi ký duyệt.",
+			        CONTAINSSTRING(_Group, "Hồ sơ") || CONTAINSSTRING(_Group, "Chứng từ"), "📋 Thiết lập Checklist nghiệm thu/thanh toán bắt buộc trước khi chuyển Kế toán.",
+			        CONTAINSSTRING(_Group, "Nhân sự") || CONTAINSSTRING(_Group, "Chính sách"), "👨‍💼 Tăng cường Đào tạo lại Quy trình và Gắn KPI tuân thủ vào Đánh giá Hiệu quả.",
+			        CONTAINSSTRING(_Group, "Thi công") || CONTAINSSTRING(_Group, "Kỹ thuật"), "🔍 Kiểm tra Xác suất Đột xuất tại Công trường & Phạt Hợp đồng theo Chế tài.",
+			        CONTAINSSTRING(_Group, "Đấu thầu") || CONTAINSSTRING(_Group, "Mua sắm"), "⚖️ Thẩm định độc lập Danh mục Nhà thầu & So sánh Giá thị trường theo Quý.",
+			        "🛡️ Thiết lập Chốt Kiểm soát Khẩn cấp & Kiểm tra Tuân thủ Định kỳ Hàng tháng."
+			    )
+		lineageTag: a7b10294-4d8e-4f11-921a-3e8102948106
+
+	column Column1
+		lineageTag: 75f2df96-5b32-42d1-aabb-88be6cd4a135
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Column1]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition EmptyTable = calculated
+		mode: import
+		source = ```
+				
+				FILTER(
+				    DATATABLE(
+				        "Column1", STRING,
+				        { { "" } }  -- 1 dòng chứa giá trị rỗng
+				    ),
+				    FALSE         -- Lọc để không giữ lại dòng nào
+				)
+				
+				```
+
+	annotation PBI_Id = 9b1decbeecea405aacef391b719c9b13
+

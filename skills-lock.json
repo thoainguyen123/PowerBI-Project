@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "data-visualization": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "skillPath": "data/skills/data-visualization/SKILL.md",
+      "computedHash": "a238cd5981b2da6bd7ecc24cfb3d7238be993ee5a2ad97acb414f9758aba13dd"
+    },
+    "find-skills": {
+      "source": "vercel-labs/skills",
+      "sourceType": "github",
+      "skillPath": "skills/find-skills/SKILL.md",
+      "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
+    },
+    "power-bi-report-design-consultation": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/power-bi-report-design-consultation/SKILL.md",
+      "computedHash": "12dacbd64cd67369f810c094dc70427d4805788f4ec6b1257e17d8e6aed74cf1"
+    }
+  }
+}

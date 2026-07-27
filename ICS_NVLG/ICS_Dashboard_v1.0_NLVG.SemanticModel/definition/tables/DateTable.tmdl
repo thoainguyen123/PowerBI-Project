@@ -1,0 +1,157 @@
+table DateTable
+	lineageTag: 4cb74e44-75c8-4c60-8932-6669c3ae7464
+
+	column Date
+		formatString: General Date
+		lineageTag: 905d4efc-a065-4fd0-841d-f8093ffc31a5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: a8e79510-7004-4718-b758-9c1d70f5d405
+			defaultHierarchy: LocalDateTable_6b43df35-2389-4fcd-97a9-e818b796a316.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Năm
+		formatString: 0
+		lineageTag: d97b8025-6ee8-40e8-9462-307b696f057e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Năm]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tháng Số'
+		formatString: 0
+		lineageTag: 951d001b-c8cf-4599-a11c-034e730bc76f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Tháng Số]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tên Tháng'
+		lineageTag: ba336d7d-688a-43a6-b335-18bcc3c62c48
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tên Tháng]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tên Tháng Ngắn'
+		lineageTag: 1ab0dd94-b25b-4439-8f15-9c41b83bdcf2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tên Tháng Ngắn]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quý
+		lineageTag: 582746b6-42f4-4ccc-979c-11eb174254b3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quý]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tuần
+		lineageTag: d81eb776-0879-442f-8d04-dde5b7b6a3ce
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tuần]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngày trong tuần'
+		formatString: 0
+		lineageTag: d6ba9e87-6939-40c6-812a-1dbb01f42934
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Ngày trong tuần]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Năm - Tháng'
+		lineageTag: 6b7822af-a3aa-41f5-9600-e7bdd39dcc7b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Năm - Tháng]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week num'
+		formatString: 0
+		lineageTag: 505df6dd-5ae2-41c1-827a-884721d29bb8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Week num]
+
+		annotation SummarizationSetBy = Automatic
+
+	column YearWeekSort
+		formatString: 0
+		lineageTag: 3a3c3732-e22f-40e5-b39b-e4ade15e45de
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [YearWeekSort]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Khoảng thời gian tuần'
+		lineageTag: 61a708c1-dc99-439b-a26d-1fff6fbd0c8f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Khoảng thời gian tuần]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Rank =
+			
+			RANKX(
+			    ALL(DateTable),
+			    DateTable[YearWeekSort],
+			    ,
+			    ASC,
+			    DENSE
+			)
+		formatString: 0
+		lineageTag: e2187e67-e9d9-4fd2-a920-4ac71ae21265
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DateTable = calculated
+		mode: import
+		source = ```
+				
+				VAR StartDate = DATE(2025, 1, 1) -- Ngày bắt đầu: 01/01/2025
+				VAR EndDate = DATE(2026, 12, 31)   -- Ngày kết thúc: 31/12/2026
+				VAR BaseCalendar = CALENDAR(StartDate, EndDate) 
+				
+				RETURN
+				    ADDCOLUMNS (
+				        BaseCalendar,
+				        "Năm", YEAR([Date]),
+				        "Tháng Số", MONTH([Date]),
+				        "Tên Tháng", "Tháng " & MONTH([Date]), -- Hiển thị: Tháng 1, Tháng 2...
+				        "Tên Tháng Ngắn", FORMAT([Date], "mmm"), -- Hiển thị: Jan, Feb...
+				        "Quý", "Quý " & QUARTER([Date]), -- Hiển thị: Quý 1, Quý 2...
+				        "Tuần", "Tuần " & WEEKNUM([Date], 2), -- Số 2 là tính Thứ 2 là đầu tuần
+				        "Ngày trong tuần", WEEKDAY([Date], 2), -- 1 là Thứ 2, 7 là CN
+				        "Năm - Tháng", FORMAT([Date], "yyyy-MM"),
+				        "Week num", WEEKNUM([Date], 2),
+				        "YearWeekSort", YEAR([Date]) * 100 + WEEKNUM([Date], 2), -- Dùng để sắp xếp biểu đồ
+				        
+				        -- CỘT THÊM MỚI: Khoảng thời gian của tuần (Thứ 2 - Chủ Nhật)
+				        "Khoảng thời gian tuần", 
+				            VAR StartOfWeek = [Date] - WEEKDAY([Date], 2) + 1
+				            VAR EndOfWeek = [Date] - WEEKDAY([Date], 2) + 7
+				            RETURN "(" & FORMAT(StartOfWeek, "dd/MM/yy") & " - " & FORMAT(EndOfWeek, "dd/MM/yy") & ")"
+				    )
+				```
+
+	annotation PBI_Id = e72fe8db2c414bc1a834861f0e037d85
+

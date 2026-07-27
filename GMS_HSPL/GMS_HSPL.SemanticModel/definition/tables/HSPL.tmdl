@@ -1,0 +1,700 @@
+table HSPL
+	lineageTag: 5b329b9e-30c7-4df8-b3a6-aa0d9b2ac64e
+
+	measure 'SL HSPL' =
+			
+			Var x = DISTINCTCOUNTNOBLANK(HSPL[Content])
+			RETURN IF(x > 0, x,0)
+		formatString: 0
+		lineageTag: 0f458294-1fb8-47b6-a4ff-a94c1d7b8b37
+
+	column _id
+		dataType: string
+		lineageTag: 0cd5601b-2e03-4818-89a1-1ae6d03ccde9
+		summarizeBy: none
+		sourceColumn: _id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Content
+		dataType: string
+		lineageTag: b11c8233-a0ff-453c-9780-65e757290ccc
+		summarizeBy: none
+		sourceColumn: Content
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsConfidentialContent
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: d4e78baf-7525-443e-a680-3599a8b853b0
+		summarizeBy: none
+		sourceColumn: IsConfidentialContent
+
+		annotation SummarizationSetBy = Automatic
+
+	column Directory
+		dataType: string
+		lineageTag: 92afb81c-ca68-42e0-a8ae-e6af31813864
+		summarizeBy: none
+		sourceColumn: Directory
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateIssued
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: d38741be-48f5-48ad-9f6c-b164bc9b4c57
+		summarizeBy: none
+		sourceColumn: DateIssued
+
+		variation Variation
+			isDefault
+			relationship: 2d5bbe86-9290-46c4-b658-d7b4e2b39687
+			defaultHierarchy: LocalDateTable_399d9ff5-4799-46e7-9e80-5e8a51515b5d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column AgencyIssued
+		dataType: string
+		lineageTag: 6ddaa760-dcdc-49c8-9bf3-df860e0047c3
+		summarizeBy: none
+		sourceColumn: AgencyIssued
+
+		annotation SummarizationSetBy = Automatic
+
+	column Original
+		dataType: string
+		lineageTag: 1f0b421f-233f-431c-861f-ff93a3481e9f
+		summarizeBy: none
+		sourceColumn: Original
+
+		annotation SummarizationSetBy = Automatic
+
+	column DocumentaryType
+		dataType: string
+		lineageTag: c0b95fac-7423-416c-9698-847c124da02d
+		summarizeBy: none
+		sourceColumn: DocumentaryType
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArchiveType
+		dataType: string
+		lineageTag: 268ed7d7-1ff4-4dc8-aa14-49782b132bd7
+		summarizeBy: none
+		sourceColumn: ArchiveType
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2b1a516c-5259-4060-8d45-1018bbcbb243
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		variation Variation
+			isDefault
+			relationship: 57abe013-2955-4e88-8b89-db5f9c1cc715
+			defaultHierarchy: LocalDateTable_f38d7c23-12fc-41c2-a89c-43e8745b3667.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column updatedAt
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5c7072af-bfa7-4f37-adfe-274176aa8ffd
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		variation Variation
+			isDefault
+			relationship: 9938b9c0-b2b4-4d82-b9c1-4a5fdc2304b7
+			defaultHierarchy: LocalDateTable_f6858f0b-9309-4d84-9201-2158a48c5878.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column createdBy
+		dataType: string
+		lineageTag: 7eccb4ee-8f37-4417-97bc-050148cca78a
+		summarizeBy: none
+		sourceColumn: createdBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedBy
+		dataType: string
+		lineageTag: 8d867902-d2c1-4a27-b25a-9e452366a6e4
+		summarizeBy: none
+		sourceColumn: updatedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column deleted
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 9063109d-be75-4ff9-80d0-ba33c5dfa559
+		summarizeBy: none
+		sourceColumn: deleted
+
+		annotation SummarizationSetBy = Automatic
+
+	column __v
+		dataType: int64
+		formatString: 0
+		lineageTag: 1d461c23-e941-4bda-820b-966a4751beee
+		summarizeBy: sum
+		sourceColumn: __v
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsSync
+		dataType: string
+		lineageTag: 7d6bd3b4-ecae-4e03-b959-f75964274173
+		summarizeBy: none
+		sourceColumn: IsSync
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.createdAt'
+		dataType: string
+		lineageTag: 8081c272-7dc4-4445-82c5-646ea32ab61f
+		summarizeBy: none
+		sourceColumn: Attachment.createdAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.updatedAt'
+		dataType: string
+		lineageTag: 46d42915-178b-45a2-842c-a350852fb7c7
+		summarizeBy: none
+		sourceColumn: Attachment.updatedAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.createdBy'
+		dataType: string
+		lineageTag: d20e9ff0-af1c-4985-a26c-179b197b7be3
+		summarizeBy: none
+		sourceColumn: Attachment.createdBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.updatedBy'
+		dataType: string
+		lineageTag: 55438ec6-3a4e-4e1d-9b32-26f5d29ef5e4
+		summarizeBy: none
+		sourceColumn: Attachment.updatedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment._id'
+		dataType: string
+		lineageTag: 1ea584f4-eb34-4f13-906e-5c3029057990
+		summarizeBy: none
+		sourceColumn: Attachment._id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.deleted'
+		dataType: string
+		lineageTag: bd355c05-d710-411b-bedb-1462d563b063
+		summarizeBy: none
+		sourceColumn: Attachment.deleted
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.Category'
+		dataType: string
+		lineageTag: d270ec33-b9c8-4707-a66f-73fdda63d36c
+		summarizeBy: none
+		sourceColumn: Attachment.Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.FileName'
+		dataType: string
+		lineageTag: a1c148bc-9752-4feb-8a0b-e003effa657a
+		summarizeBy: none
+		sourceColumn: Attachment.FileName
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.RelativePath'
+		dataType: string
+		lineageTag: c734819a-5627-45e0-a5ec-6d5ead45a4eb
+		summarizeBy: none
+		sourceColumn: Attachment.RelativePath
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.Uid'
+		dataType: string
+		lineageTag: 71480a5d-62fb-4985-bc3b-48c97faaaa95
+		summarizeBy: none
+		sourceColumn: Attachment.Uid
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.IsTemp'
+		dataType: string
+		lineageTag: 1e00357d-b480-4666-a7a6-75b9b64534e3
+		summarizeBy: none
+		sourceColumn: Attachment.IsTemp
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.__v'
+		dataType: int64
+		formatString: 0
+		lineageTag: 966bdd41-a1a9-475d-bb89-f2a02e491bf7
+		summarizeBy: sum
+		sourceColumn: Attachment.__v
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.id'
+		dataType: string
+		lineageTag: 8d2afdb1-2c64-4651-9a89-9c89e511b90f
+		summarizeBy: none
+		sourceColumn: Attachment.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.link'
+		dataType: string
+		lineageTag: f5333ff1-c9d4-4eb2-98ec-f68f86881561
+		summarizeBy: none
+		sourceColumn: Attachment.link
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 70e2b11b-8753-47a6-9443-7cfca1107ab4
+		summarizeBy: count
+		sourceColumn: otherSP.ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.GUID'
+		dataType: string
+		lineageTag: 5eb7d51d-c573-4d39-9890-d11fad6933ad
+		summarizeBy: none
+		sourceColumn: otherSP.GUID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.BookNo'
+		dataType: string
+		lineageTag: 6023d192-5b8c-4bb9-83b6-1ba5ba73ee5d
+		summarizeBy: none
+		sourceColumn: otherSP.BookNo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ContentTypeId'
+		dataType: string
+		lineageTag: 9fd0a8de-42ec-48ea-a4ee-d36ed69ef28b
+		summarizeBy: none
+		sourceColumn: otherSP.ContentTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.AuthorId'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7fc5ec11-ffed-48d7-80f2-b77cfba80288
+		summarizeBy: count
+		sourceColumn: otherSP.AuthorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.EditorId'
+		dataType: int64
+		formatString: 0
+		lineageTag: 4b1209f5-aa79-4f8b-a7ed-0e9c9719e1ac
+		summarizeBy: count
+		sourceColumn: otherSP.EditorId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.AuthorityId'
+		dataType: int64
+		formatString: 0
+		lineageTag: e9a54f32-68b0-4122-8713-f1a76e31ce9e
+		summarizeBy: count
+		sourceColumn: otherSP.AuthorityId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ComplianceAssetId'
+		dataType: string
+		lineageTag: a2fb86ba-5870-47da-83b8-235d3ee4b3d7
+		summarizeBy: none
+		sourceColumn: otherSP.ComplianceAssetId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.SentIssue'
+		dataType: string
+		lineageTag: cca700ca-22e8-4ae6-a569-2706f3791ef9
+		summarizeBy: none
+		sourceColumn: otherSP.SentIssue
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ServerRedirectedEmbedUri'
+		dataType: string
+		lineageTag: c8ad0084-c810-4d3d-86a5-33bfb1cd7d7b
+		summarizeBy: none
+		sourceColumn: otherSP.ServerRedirectedEmbedUri
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.ServerRedirectedEmbedUrl'
+		dataType: string
+		lineageTag: 72239c44-7dda-41d0-9214-93f1f7b56dd7
+		summarizeBy: none
+		sourceColumn: otherSP.ServerRedirectedEmbedUrl
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.DirectoryLevel1Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: 653079e4-8593-4edc-bc69-68b1453b4bd3
+		summarizeBy: count
+		sourceColumn: otherSP.DirectoryLevel1Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.DirectoryLevel2Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: 0631fc11-3291-42e8-9af9-3b4f21ed7492
+		summarizeBy: count
+		sourceColumn: otherSP.DirectoryLevel2Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.DirectoryLevel3Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: f1fc86bf-1882-4227-8e30-94704439f6d6
+		summarizeBy: count
+		sourceColumn: otherSP.DirectoryLevel3Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.DirectoryLevel4Id'
+		dataType: int64
+		formatString: 0
+		lineageTag: bbd794ef-d3f5-4ae4-b76f-5918f01b5033
+		summarizeBy: count
+		sourceColumn: otherSP.DirectoryLevel4Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.DocumentTypeId'
+		dataType: int64
+		formatString: 0
+		lineageTag: 767e477a-210e-4200-b0f4-8a4a787434bc
+		summarizeBy: count
+		sourceColumn: otherSP.DocumentTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'otherSP.FileSystemObjectType'
+		dataType: int64
+		formatString: 0
+		lineageTag: dae67258-ad6f-47a7-b1b8-3cb158e378ab
+		summarizeBy: sum
+		sourceColumn: otherSP.FileSystemObjectType
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.createdAt'
+		dataType: string
+		lineageTag: 98fc0113-afdc-49cf-860c-71680339daef
+		summarizeBy: none
+		sourceColumn: SyncInfo.createdAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.updatedAt'
+		dataType: string
+		lineageTag: f791fa62-f170-40a1-9112-33f1c383f5ae
+		summarizeBy: none
+		sourceColumn: SyncInfo.updatedAt
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.createdBy'
+		dataType: string
+		lineageTag: 2f396ba7-8f71-4749-9464-6382fdc9beff
+		summarizeBy: none
+		sourceColumn: SyncInfo.createdBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.updatedBy'
+		dataType: string
+		lineageTag: 303f1ad1-3ba6-4970-9d8e-09714020e639
+		summarizeBy: none
+		sourceColumn: SyncInfo.updatedBy
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo._id'
+		dataType: string
+		lineageTag: f4fb0423-cce8-42bf-b287-d6991eb460c0
+		summarizeBy: none
+		sourceColumn: SyncInfo._id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.deleted'
+		dataType: string
+		lineageTag: e9bc3645-b2cc-4ce4-8544-d58a641fbc1f
+		summarizeBy: none
+		sourceColumn: SyncInfo.deleted
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.Category'
+		dataType: string
+		lineageTag: d9814eea-091e-4d78-b2a7-6b108032450b
+		summarizeBy: none
+		sourceColumn: SyncInfo.Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.FileName'
+		dataType: string
+		lineageTag: 25bac3c7-8cc4-4d59-b0b9-056c98c7fd07
+		summarizeBy: none
+		sourceColumn: SyncInfo.FileName
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.RelativePath'
+		dataType: string
+		lineageTag: 4bf85d95-d20b-48ff-83ae-7046a8b04071
+		summarizeBy: none
+		sourceColumn: SyncInfo.RelativePath
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.Uid'
+		dataType: string
+		lineageTag: a0bc96bd-e17b-426b-a875-7e688d212e5d
+		summarizeBy: none
+		sourceColumn: SyncInfo.Uid
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.IsTemp'
+		dataType: string
+		lineageTag: 7c936005-5f6b-4a30-882e-44c1ef103bdd
+		summarizeBy: none
+		sourceColumn: SyncInfo.IsTemp
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.__v'
+		dataType: int64
+		formatString: 0
+		lineageTag: dbe4a1aa-845e-46b8-acf2-e0664d552a6a
+		summarizeBy: sum
+		sourceColumn: SyncInfo.__v
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.id'
+		dataType: string
+		lineageTag: ea08b9e1-a868-466b-b986-27523fd71e41
+		summarizeBy: none
+		sourceColumn: SyncInfo.id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.link'
+		dataType: string
+		lineageTag: 71c6de4c-b4b8-4dff-bf00-a2df0f7be134
+		summarizeBy: none
+		sourceColumn: SyncInfo.link
+
+		annotation SummarizationSetBy = Automatic
+
+	column BorrowAttachmentList
+		dataType: string
+		lineageTag: 099f0584-0e02-42f2-a356-655a68c4eb62
+		summarizeBy: none
+		sourceColumn: BorrowAttachmentList
+
+		annotation SummarizationSetBy = Automatic
+
+	column BorrowStatus
+		dataType: string
+		lineageTag: e2baa0d4-69dd-428f-92af-603bd815e0d2
+		summarizeBy: none
+		sourceColumn: BorrowStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column Attachment
+		dataType: string
+		lineageTag: a65d7245-c59d-4851-a8db-cbdf34ff6fec
+		summarizeBy: none
+		sourceColumn: Attachment
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SyncInfo.message'
+		dataType: string
+		lineageTag: a95109dc-9573-4877-a347-63bce8604b95
+		summarizeBy: none
+		sourceColumn: SyncInfo.message
+
+		annotation SummarizationSetBy = Automatic
+
+	column FileTypes
+		dataType: string
+		lineageTag: 9e62aa11-3c33-44d3-b6fb-808673d89590
+		summarizeBy: none
+		sourceColumn: FileTypes
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsMultiple
+		dataType: string
+		lineageTag: 9895259b-b2fb-4796-b5d4-437eba903e61
+		summarizeBy: none
+		sourceColumn: IsMultiple
+
+		annotation SummarizationSetBy = Automatic
+
+	column MentionFiles
+		dataType: string
+		lineageTag: f1a8d386-3464-4e01-803c-638b254b7395
+		summarizeBy: none
+		sourceColumn: MentionFiles
+
+		annotation SummarizationSetBy = Automatic
+
+	column RelativeFiles
+		dataType: string
+		lineageTag: 7ee9f33f-176b-4854-8126-7e0b9fcfd4cc
+		summarizeBy: none
+		sourceColumn: RelativeFiles
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.FileInfo.Size'
+		dataType: string
+		lineageTag: 8afe168d-44a3-474b-9126-b146d695ad62
+		summarizeBy: none
+		sourceColumn: Attachment.FileInfo.Size
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.FileInfo.MimeType'
+		dataType: string
+		lineageTag: 792d541e-27d4-41c3-9152-e101a50384fa
+		summarizeBy: none
+		sourceColumn: Attachment.FileInfo.MimeType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Note
+		dataType: string
+		lineageTag: aafa90fb-99a1-4f9c-92a4-4effb16c5bde
+		summarizeBy: none
+		sourceColumn: Note
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.uid.1'
+		dataType: string
+		lineageTag: 57cfd9fc-18a3-4ec8-8b4b-7138ee8a65ee
+		summarizeBy: none
+		sourceColumn: Attachment.uid.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.status'
+		dataType: string
+		lineageTag: a10db07b-e497-4d7e-9860-813b8ca0cba7
+		summarizeBy: none
+		sourceColumn: Attachment.status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.percent'
+		dataType: string
+		lineageTag: 5a7244d4-5f5b-4caa-9f23-84e1faaa0564
+		summarizeBy: none
+		sourceColumn: Attachment.percent
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Attachment.url'
+		dataType: string
+		lineageTag: e56535b4-465c-413e-9183-9aa59070e93c
+		summarizeBy: none
+		sourceColumn: Attachment.url
+
+		annotation SummarizationSetBy = Automatic
+
+	column IssueNotes
+		dataType: string
+		lineageTag: 1441e338-ddbf-4bbe-93fd-541ff9bdcd92
+		summarizeBy: none
+		sourceColumn: IssueNotes
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateDiff = DATEDIFF(HSPL[DateIssued],HSPL[createdAt],DAY)
+		formatString: 0
+		lineageTag: 766f3a3e-4ef4-4a51-9597-dea0f788908f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column check_not_attachment = IF(HSPL[Attachment.FileName] in {BLANK(),"nan","None","none","null","[]","0","."," " } ,0,1)
+		formatString: 0
+		lineageTag: 7545b6d5-9e40-44ef-aa06-09152763eaf1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition HSPL = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Python\dms--hspls.xlsx"), null, true),
+				    Data_Sheet = Source{[Item="Data",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Data_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"IsSync", type text}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Changed Type1",{{"_id", type text}, {"Content", type text}, {"IsConfidentialContent", type logical}, {"Directory", type text}, {"DateIssued", type datetime}, {"AgencyIssued", type text}, {"Original", type text}, {"DocumentaryType", type text}, {"ArchiveType", type text}, {"createdAt", type number}, {"updatedAt", type number}, {"createdBy", type text}, {"updatedBy", type text}, {"deleted", type logical}, {"__v", Int64.Type}, {"Attachment.createdAt", type text}, {"Attachment.updatedAt", type text}, {"Attachment.createdBy", type text}, {"Attachment.updatedBy", type text}, {"Attachment._id", type text}, {"Attachment.deleted", type text}, {"Attachment.Category", type text}, {"Attachment.FileName", type text}, {"Attachment.RelativePath", type text}, {"Attachment.Uid", type text}, {"Attachment.IsTemp", type text}, {"Attachment.__v", Int64.Type}, {"Attachment.id", type text}, {"Attachment.link", type text}, {"otherSP.ID", Int64.Type}, {"otherSP.GUID", type text}, {"otherSP.BookNo", type any}, {"otherSP.ContentTypeId", type text}, {"otherSP.AuthorId", Int64.Type}, {"otherSP.EditorId", Int64.Type}, {"otherSP.AuthorityId", Int64.Type}, {"otherSP.ComplianceAssetId", type any}, {"otherSP.SentIssue", type text}, {"otherSP.ServerRedirectedEmbedUri", type any}, {"otherSP.ServerRedirectedEmbedUrl", type any}, {"otherSP.DirectoryLevel1Id", Int64.Type}, {"otherSP.DirectoryLevel2Id", Int64.Type}, {"otherSP.DirectoryLevel3Id", Int64.Type}, {"otherSP.DirectoryLevel4Id", Int64.Type}, {"otherSP.DocumentTypeId", Int64.Type}, {"otherSP.FileSystemObjectType", Int64.Type}, {"SyncInfo.createdAt", type text}, {"SyncInfo.updatedAt", type text}, {"SyncInfo.createdBy", type text}, {"SyncInfo.updatedBy", type text}, {"SyncInfo._id", type text}, {"SyncInfo.deleted", type text}, {"SyncInfo.Category", type text}, {"SyncInfo.FileName", type text}, {"SyncInfo.RelativePath", type text}, {"SyncInfo.Uid", type text}, {"SyncInfo.IsTemp", type text}, {"SyncInfo.__v", Int64.Type}, {"SyncInfo.id", type text}, {"SyncInfo.link", type text}, {"BorrowAttachmentList", type text}, {"BorrowStatus", type text}, {"Attachment", type text}, {"SyncInfo.message", type text}, {"FileTypes", type text}, {"IsMultiple", type text}, {"MentionFiles", type text}, {"RelativeFiles", type text}, {"Attachment.FileInfo.Size", type any}, {"Attachment.FileInfo.MimeType", type text}, {"Note", type text}, {"Attachment.uid", type text}, {"Attachment.status", type text}, {"Attachment.percent", type any}, {"Attachment.url", type text}, {"IssueNotes", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type",{{"Attachment.uid", "Attachment.uid.1"}}),
+				    #"Replaced Errors" = Table.ReplaceErrorValues(#"Renamed Columns", {{"DateIssued", null}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Replaced Errors", each ([deleted] = false))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

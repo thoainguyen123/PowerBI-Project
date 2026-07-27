@@ -1,0 +1,41 @@
+table Employee
+	lineageTag: ba58cddc-a158-45cd-88bf-d8a9db13c22e
+
+	column source
+		dataType: string
+		lineageTag: 35b0ca33-19c8-41e0-b8bb-042e85ad0d6a
+		summarizeBy: none
+		sourceColumn: source
+
+		annotation SummarizationSetBy = Automatic
+
+	column perNumber
+		dataType: string
+		lineageTag: dcf52692-cc31-4ba9-bba1-23de3a4e66ac
+		summarizeBy: none
+		sourceColumn: perNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: int64
+		formatString: 0
+		lineageTag: 16e365eb-f519-4b3c-8af0-c794cd053ac5
+		summarizeBy: sum
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Employee = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("10.16.19.14", "VIOLATION_REPORT", [Query="SELECT DISTINCT [source]#(lf)      ,[perNumber]#(lf), [status]#(lf)#(lf) FROM [VIOLATION_REPORT].[dbo].[employee]#(lf)WHERE isDeactivated = 0 and source = 'NVL'", CreateNavigationProperties=false]),
+				    #"Filtered Rows" = Table.SelectRows(Source, each ([status] = 1))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

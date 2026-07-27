@@ -1,0 +1,203 @@
+{
+  "version": 1,
+  "skills": {
+    "a11y-audit": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/a11y-audit/SKILL.md",
+      "computedHash": "492bac2d757132578566e2ff75be5f5a70a48807ffcbe47fddb75e3497a80f1b"
+    },
+    "apply-aesthetic": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/apply-aesthetic/SKILL.md",
+      "computedHash": "f25d8b748299fdc1706edb408b4c38d7bbd662077902ff1dde261f74b2a7e863"
+    },
+    "banner-design": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/banner-design/SKILL.md",
+      "computedHash": "f859a951ded1109a38bcc7f18faf4581f9adbf0550df7a11c013e77a5b229541"
+    },
+    "brand": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/brand/SKILL.md",
+      "computedHash": "bd65dbd8de679805d1ad740c74a41b4f831d08ff0240390a7ed2947c62a896b9"
+    },
+    "brandkit": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/brandkit/SKILL.md",
+      "computedHash": "c784fa47f2ca475815a3832363d2e07752a5143f00a25f126878c6eb002da825"
+    },
+    "deploy-to-vercel": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/deploy-to-vercel/SKILL.md",
+      "computedHash": "03e0eaaa9bf13ba1e7ffa387f5893de6f324c0868c627001f179395a8feaa7c9"
+    },
+    "design": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design/SKILL.md",
+      "computedHash": "bb2e3ffee4b7b69e5a38ce08f6010ca79381d9f53b9dfadb33aee1ece6f1679a"
+    },
+    "design-code": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-code/SKILL.md",
+      "computedHash": "29041b86933fea510368d3b9313ef62faee895995b79c2ea9c27e3bba64e8548"
+    },
+    "design-component": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-component/SKILL.md",
+      "computedHash": "a9512ad51a4debf86271c6420c9fe10f99e55da0d1ed58127d269a2cce52eaf5"
+    },
+    "design-qa": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-qa/SKILL.md",
+      "computedHash": "9456be6dd9a96c0d5d4beab7902ef0a43da238562b3d660121351a3f7e5dde2d"
+    },
+    "design-review": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-review/SKILL.md",
+      "computedHash": "bdb387f43844e0a548d274752c0035d1f0fdb6c67576501fae6837c7cffee07e"
+    },
+    "design-system": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-system/SKILL.md",
+      "computedHash": "5a3dbae4a3c2ad9f96323d9bfae926b3c21bb1e3b066aa067906f577a2ff2545"
+    },
+    "design-tokens": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/design-tokens/SKILL.md",
+      "computedHash": "0b8bcd9f45f0a2aa4f3d8b3f59cfac0222c79d3d64f737dc47ef8f9fc3477b30"
+    },
+    "figma-integration": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/figma-integration/SKILL.md",
+      "computedHash": "7521a1423c1f42db07573344e010829386017bb9803dbc6da5569805fe64e16e"
+    },
+    "governance": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/governance/SKILL.md",
+      "computedHash": "eb2c06ae699948ce4b4e40f134e00404af2d1e5e0bbe58b2731efe7dcba3a059"
+    },
+    "image-to-code": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/image-to-code/SKILL.md",
+      "computedHash": "d71c840549ef62b31c70abfe4df813615b940448be0a718b11ddcc8fa51f71e1"
+    },
+    "migrate-design-system": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/migrate-design-system/SKILL.md",
+      "computedHash": "cda2fa0d6c4a2b7b1676c5f5687aaa390abc725aa61718a58af023e2ff8d5017"
+    },
+    "performance": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/performance/SKILL.md",
+      "computedHash": "74567e6e0f3f3b4e027ba5f107254d3c8726ee1ab9368abae52f7354585799fe"
+    },
+    "prototype": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/prototype/SKILL.md",
+      "computedHash": "08c5b09df439558601519322b271e45bf25a1b545819157b19f0cf6aa83c388f"
+    },
+    "redesign": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/redesign/SKILL.md",
+      "computedHash": "35dab6f05075820f92fb275d92b37db63683c80461bb607742919aa0f6dc7176"
+    },
+    "slides": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/slides/SKILL.md",
+      "computedHash": "a2b3559b58afc484548e1eb359e20495d11cf12b90da7c1fbba50efed9a70340"
+    },
+    "token-build": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/token-build/SKILL.md",
+      "computedHash": "b15c3e37c1cf94e352c573d9618326e3116622d652f473798f2006597d0b9dff"
+    },
+    "ui-styling": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-styling/SKILL.md",
+      "computedHash": "e10b225db04fdfd893fdda2b9ed893c315f9dee5693494743d57b02066e96a51"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "ce0af583006d2fd4731663adc50c0a5df1121f0d49a5bb9c308eca4ee295c60a"
+    },
+    "ux-writing": {
+      "source": "plugin87/ux-ui-agent-skills",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/ux-writing/SKILL.md",
+      "computedHash": "0d014dc96b225b5252ddebbdf2b65ef8d1e650f816c8f694963108d5a8347124"
+    },
+    "vercel-cli-with-tokens": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vercel-cli-with-tokens/SKILL.md",
+      "computedHash": "eb16b20dcbe6ce51e0372083d624e0847af1b09487ec99249227d5a8eddebfc0"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "computedHash": "575757e3e25761c8c562d6e395d29f0b76c98b1273c0bd72d88e6ab1bc9c7d42"
+    },
+    "vercel-optimize": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/vercel-optimize/SKILL.md",
+      "computedHash": "ad0ef9c5c980f824e2ec19cba5c45426aba923a17e71fbaf6d1830574b62cc44"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
+    },
+    "vercel-react-native-skills": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-native-skills/SKILL.md",
+      "computedHash": "41d24eafa7c3d82e270439808f7cfbc4d51aeb2d14f2809a2267c16275784d06"
+    },
+    "vercel-react-view-transitions": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-view-transitions/SKILL.md",
+      "computedHash": "c8952fc9127fa0564d0cb71dccb4215a5608ac933b5831104f09173a97a46f85"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/web-design-guidelines/SKILL.md",
+      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
+    },
+    "writing-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/writing-guidelines/SKILL.md",
+      "computedHash": "25aa3a33a97bddbcb1847ce4a6169106ec25e5b19b15b99c66e75ab383866ef2"
+    }
+  }
+}

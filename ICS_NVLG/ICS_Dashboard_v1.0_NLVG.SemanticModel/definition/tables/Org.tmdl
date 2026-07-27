@@ -1,0 +1,316 @@
+table Org
+	lineageTag: 4e4f0b23-6cb0-44ca-a04b-a56abd5b9c5c
+
+	column id
+		dataType: string
+		lineageTag: e484151f-1c27-4883-a6a0-577d24463e09
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		lineageTag: ff1210bb-709d-41d0-ac89-4e9a793e76eb
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column parentId
+		dataType: string
+		lineageTag: 55e587b7-a89f-4e57-b627-9b34996520bd
+		summarizeBy: none
+		sourceColumn: parentId
+
+		annotation SummarizationSetBy = Automatic
+
+	column isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: dfd879c1-efe3-471d-8754-4917b2579b5c
+		summarizeBy: none
+		sourceColumn: isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 9b2793e0-d81b-42d7-9e99-292e8bfb332b
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		variation Variation
+			isDefault
+			relationship: 34cb7a32-f51d-43ea-ab55-b195d302f995
+			defaultHierarchy: LocalDateTable_16fac2fd-ba7c-4ac0-96fe-ddd61c29ba2b.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 64f6d0d6-ef9f-4a78-afcf-e44b7022a25e
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		variation Variation
+			isDefault
+			relationship: adaadbc0-bfad-4992-819b-c58182f04f9f
+			defaultHierarchy: LocalDateTable_7aae4c50-6586-4462-a169-cbff6d486065.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 15a9dd09-1677-4352-93f7-5768597d6fb1
+		summarizeBy: none
+		sourceColumn: deletedAt
+
+		variation Variation
+			isDefault
+			relationship: 13074f04-0891-4f7d-b9b6-146a2884874d
+			defaultHierarchy: LocalDateTable_b83aeced-6296-4b05-a8d4-a5672527c5ff.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdById
+		dataType: string
+		lineageTag: 3bd03542-690e-43bc-9e83-76e538626e87
+		summarizeBy: none
+		sourceColumn: createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedById
+		dataType: string
+		lineageTag: 84abb2c2-bab4-4bd0-9ce8-323d6ad32c94
+		summarizeBy: none
+		sourceColumn: updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedById
+		dataType: string
+		lineageTag: 48991c06-42ef-4cc8-9021-dd5675c5c48d
+		summarizeBy: none
+		sourceColumn: deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column sourceId
+		dataType: string
+		lineageTag: 7bdbd8bb-0d07-4319-9efb-036af2ea220d
+		summarizeBy: none
+		sourceColumn: sourceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column parentSourceId
+		dataType: string
+		lineageTag: ed3ef545-6839-4a43-979a-298f6dc818ab
+		summarizeBy: none
+		sourceColumn: parentSourceId
+
+		annotation SummarizationSetBy = Automatic
+
+	column source
+		dataType: string
+		lineageTag: 5c718f20-5855-4986-8891-ce7879d959e3
+		summarizeBy: none
+		sourceColumn: source
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		lineageTag: fbfc561a-5c14-45a1-8fb5-1bd41353ca66
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column parentCode
+		dataType: string
+		lineageTag: e0d3dd3c-4339-4f30-8e5d-6563ae1fe368
+		summarizeBy: none
+		sourceColumn: parentCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column startDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 69c1a9ac-46d6-4a70-89c2-2be4aa3e80a9
+		summarizeBy: none
+		sourceColumn: startDate
+
+		variation Variation
+			isDefault
+			relationship: cf411163-91b0-42db-bc6c-779cd641bed0
+			defaultHierarchy: LocalDateTable_a23990c5-3e06-4717-a82b-8e78cf2189bd.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column endDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 63255c48-847b-40ba-9bb6-64961524e591
+		summarizeBy: none
+		sourceColumn: endDate
+
+		variation Variation
+			isDefault
+			relationship: a50e616c-b18e-4971-82d4-e88c5c073d7c
+			defaultHierarchy: LocalDateTable_807de4a5-3059-4460-8afc-5dd79a44abdf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column head
+		dataType: string
+		lineageTag: 75c3e66f-65bd-475b-af46-67f2f6c2b66f
+		summarizeBy: none
+		sourceColumn: head
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: int64
+		formatString: 0
+		lineageTag: bc62a2ac-b2be-491d-8361-3f91e4de81c3
+		summarizeBy: sum
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column note
+		dataType: string
+		lineageTag: df2f554c-43bb-4446-be1e-b69887c5547f
+		summarizeBy: none
+		sourceColumn: note
+
+		annotation SummarizationSetBy = Automatic
+
+	column path
+		dataType: string
+		lineageTag: 037660b0-8684-4454-aaa1-520b69acebe4
+		summarizeBy: none
+		sourceColumn: path
+
+		annotation SummarizationSetBy = Automatic
+
+	column level
+		dataType: int64
+		formatString: 0
+		lineageTag: 46fb35eb-b766-473a-8409-ce430a0d368e
+		summarizeBy: sum
+		sourceColumn: level
+
+		annotation SummarizationSetBy = Automatic
+
+	column groupCode
+		dataType: string
+		lineageTag: c59ad5ec-4cbc-4303-9bb1-6769ba0e1fcd
+		summarizeBy: none
+		sourceColumn: groupCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column headId
+		dataType: string
+		lineageTag: 0fb5b2ef-fbe6-4645-90f6-f5a8eaf05713
+		summarizeBy: none
+		sourceColumn: headId
+
+		annotation SummarizationSetBy = Automatic
+
+	column isVirtual
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 0433d7fc-a859-4b36-b32b-34e7b1c0502f
+		summarizeBy: none
+		sourceColumn: isVirtual
+
+		annotation SummarizationSetBy = Automatic
+
+	column virtualOrganizationId
+		dataType: string
+		lineageTag: 5131c90b-eef5-4319-88e0-74f58fe6e4f3
+		summarizeBy: none
+		sourceColumn: virtualOrganizationId
+
+		annotation SummarizationSetBy = Automatic
+
+	column lastAction
+		dataType: string
+		lineageTag: 77d7cd0d-b2d0-4dd0-894b-0c134d48ab75
+		summarizeBy: none
+		sourceColumn: lastAction
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FullPath.1'
+		dataType: string
+		lineageTag: 8090e464-a801-4c56-a9e6-c71d6e46d227
+		summarizeBy: none
+		sourceColumn: FullPath.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FullPath.2'
+		dataType: string
+		lineageTag: 43df9149-493a-43e3-a0da-4af5ef49489d
+		summarizeBy: none
+		sourceColumn: FullPath.2
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FullPath.3'
+		dataType: string
+		lineageTag: 7a0da794-3177-42e6-9b53-d0d1f0b4b962
+		summarizeBy: none
+		sourceColumn: FullPath.3
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FullPath.4'
+		dataType: string
+		lineageTag: d51e7c2a-51e0-47f3-91e5-217c1b41ad94
+		summarizeBy: none
+		sourceColumn: FullPath.4
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'FullPath.5'
+		dataType: string
+		lineageTag: f336aa96-eace-43e6-ad8b-5f7aa0f464e5
+		summarizeBy: none
+		sourceColumn: FullPath.5
+
+		annotation SummarizationSetBy = Automatic
+
+	column LevelNum
+		dataType: int64
+		formatString: 0
+		lineageTag: 67431f14-8b4f-4825-ab91-67a7f48ef6fd
+		summarizeBy: sum
+		sourceColumn: LevelNum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Org = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("10.16.19.14", "VIOLATION_REPORT", [Query="With org_tree AS (#(lf)    SELECT #(lf)        o.id,#(lf)        o.name,#(lf)        o.parentId,#(lf)        o.isDeactivated,#(lf)        o.createdAt,#(lf)        o.updatedAt,#(lf)        o.deletedAt,#(lf)        o.createdById,#(lf)        o.updatedById,#(lf)        o.deletedById,#(lf)        o.sourceId,#(lf)        o.parentSourceId,#(lf)        o.source,#(lf)        o.type,#(lf)        o.parentCode,#(lf)        o.startDate,#(lf)        o.endDate,#(lf)        o.head,#(lf)        o.status,#(lf)        o.note,#(lf)        o.path,#(lf)        o.level,#(lf)        o.groupCode,#(lf)        o.headId,#(lf)        o.isVirtual,#(lf)        o.virtualOrganizationId,#(lf)        o.lastAction,#(lf)        CAST(o.name AS NVARCHAR(MAX)) AS FullPath,#(lf)        1 AS LevelNum#(lf)    FROM [VIOLATION_REPORT].[dbo].[organization] o#(lf)    WHERE o.level = 1#(lf)#(lf)    UNION ALL#(lf)#(lf)    SELECT #(lf)        c.id,#(lf)        c.name,#(lf)        c.parentId,#(lf)        c.isDeactivated,#(lf)        c.createdAt,#(lf)        c.updatedAt,#(lf)        c.deletedAt,#(lf)        c.createdById,#(lf)        c.updatedById,#(lf)        c.deletedById,#(lf)        c.sourceId,#(lf)        c.parentSourceId,#(lf)        c.source,#(lf)        c.type,#(lf)        c.parentCode,#(lf)        c.startDate,#(lf)        c.endDate,#(lf)        c.head,#(lf)        c.status,#(lf)        c.note,#(lf)        c.path,#(lf)        c.level,#(lf)        c.groupCode,#(lf)        c.headId,#(lf)        c.isVirtual,#(lf)        c.virtualOrganizationId,#(lf)        c.lastAction,#(lf)        CAST(p.FullPath + N' → ' + c.name AS NVARCHAR(MAX)) AS FullPath,#(lf)        p.LevelNum + 1 AS LevelNum#(lf)    FROM [VIOLATION_REPORT].[dbo].[organization] c#(lf)    INNER JOIN org_tree p ON c.parentId = p.id#(lf))#(lf)SELECT * FROM org_tree", CreateNavigationProperties=false]),
+				    #"Split Column by Delimiter" = Table.SplitColumn(Source, "FullPath", Splitter.SplitTextByDelimiter("→", QuoteStyle.Csv), {"FullPath.1", "FullPath.2", "FullPath.3", "FullPath.4", "FullPath.5"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"FullPath.1", type text}, {"FullPath.2", type text}, {"FullPath.3", type text}, {"FullPath.4", type text}, {"FullPath.5", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

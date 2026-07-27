@@ -1,0 +1,53 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["ICS","Org","Table","Employee"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table ICS
+ref table DateTableTemplate_4ca002c2-5c6e-4f02-a347-b3617b145381
+ref table LocalDateTable_8b5e545a-3d34-4d36-8a9e-9562821a833f
+ref table LocalDateTable_1e40a880-3208-49f5-b7cf-ba43235964aa
+ref table LocalDateTable_5745d8c5-8439-4fde-b3ca-46fc5c149e4f
+ref table LocalDateTable_bcb9eaab-9d6c-4c04-b655-2e5a2bbf89c9
+ref table LocalDateTable_00e8bcf4-10ba-43d1-b849-1f57009951b2
+ref table LocalDateTable_0751499a-1c02-4d07-9628-f2c26034138e
+ref table LocalDateTable_779fc1cc-5a3c-4009-b178-f02bec963dd9
+ref table LocalDateTable_e911d99a-7342-44e8-84bd-e78269f98e25
+ref table LocalDateTable_99094f4d-d8a5-46eb-ad5e-b68c135c3a88
+ref table LocalDateTable_8fd41554-016c-4a13-8c2f-6d88fbe22a54
+ref table LocalDateTable_f9c097cf-9b52-480e-99bf-8d8875486baf
+ref table LocalDateTable_369d92bc-b8ad-45d5-940c-5049b5b5783f
+ref table LocalDateTable_8987d6cf-dcb2-4834-9f1f-74b28f23f07c
+ref table LocalDateTable_6a031dfc-b57d-4912-b489-689c1c7a634c
+ref table LocalDateTable_daf5b83e-dbae-494b-b0a4-6d188790fe47
+ref table LocalDateTable_35ead473-2a23-423c-9c4a-cb7d01f266cc
+ref table LocalDateTable_acfd8b49-c3cb-4041-bdfa-79a2407baa79
+ref table LocalDateTable_ebabbc6a-27f8-4afc-b5e2-84d0df5f566d
+ref table EmptyTable
+ref table Parameter
+ref table DateTable
+ref table Org
+ref table LocalDateTable_16fac2fd-ba7c-4ac0-96fe-ddd61c29ba2b
+ref table LocalDateTable_7aae4c50-6586-4462-a169-cbff6d486065
+ref table LocalDateTable_b83aeced-6296-4b05-a8d4-a5672527c5ff
+ref table LocalDateTable_a23990c5-3e06-4717-a82b-8e78cf2189bd
+ref table LocalDateTable_807de4a5-3059-4460-8afc-5dd79a44abdf
+ref table LocalDateTable_6b43df35-2389-4fcd-97a9-e818b796a316
+ref table Table
+ref table Company_Axis
+ref table Branch_Axis
+ref table Employee
+ref table HO_Axis
+ref table Dept_Axis
+
+ref cultureInfo en-US
+

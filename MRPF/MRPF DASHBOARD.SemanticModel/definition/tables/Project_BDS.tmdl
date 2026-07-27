@@ -1,0 +1,701 @@
+table Project_BDS
+	lineageTag: 760fbcf6-0a0b-49a5-a21c-59a70c347698
+
+	column isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: e5674470-1320-4dc6-99a1-19a0d64a284c
+		summarizeBy: none
+		sourceColumn: isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: a5a195d3-4553-4fb2-a1fb-660149167476
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 4f5b3382-6689-418c-a7ee-ac933d137e71
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		variation Variation
+			isDefault
+			relationship: fbfaa127-7f14-4cc1-baee-f8ec177344b2
+			defaultHierarchy: LocalDateTable_96807ef6-9353-455e-8175-309419793e59.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2feb8f6a-e7f9-4534-80e2-2f758d053873
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		variation Variation
+			isDefault
+			relationship: fe684b3e-1431-4422-a2b8-7e05bc02f284
+			defaultHierarchy: LocalDateTable_fc34a9bc-2c86-4fd9-91e0-0e630d387fb5.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: e60bd011-168f-4b0e-a4ea-59e00645c41f
+		summarizeBy: none
+		sourceColumn: deletedAt
+
+		variation Variation
+			isDefault
+			relationship: 0a14aab8-4605-4f39-8e6b-23de1be1943b
+			defaultHierarchy: LocalDateTable_3880ec27-6c9a-4d48-9b1e-790ec35c9a15.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdById
+		dataType: string
+		lineageTag: 868db42c-d4fb-4546-9c0e-be5e0f1c88a1
+		summarizeBy: none
+		sourceColumn: createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedById
+		dataType: string
+		lineageTag: 14dbccec-604c-4852-989d-a30361bc748b
+		summarizeBy: none
+		sourceColumn: updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedById
+		dataType: string
+		lineageTag: 7b21087f-91c0-4d78-9eff-b4ec4775df52
+		summarizeBy: none
+		sourceColumn: deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column realEstateProjectTypeId
+		dataType: string
+		lineageTag: 4539c890-54ee-4303-b9db-8faa7cfdb541
+		summarizeBy: none
+		sourceColumn: realEstateProjectTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column projectReportingFrequencyId
+		dataType: string
+		lineageTag: b9e0d386-3fd4-42e8-b576-1db064f9a7fd
+		summarizeBy: none
+		sourceColumn: projectReportingFrequencyId
+
+		annotation SummarizationSetBy = Automatic
+
+	column period
+		dataType: int64
+		formatString: 0
+		lineageTag: 6941a2d6-336b-4b00-aa21-eeb6046bb87c
+		summarizeBy: sum
+		sourceColumn: period
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 7e9c5d8a-f9ab-45e4-b6fd-f5a41e2da423
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity
+		dataType: int64
+		formatString: 0
+		lineageTag: eb6bd851-63df-4965-ae05-e1f59c299523
+		summarizeBy: sum
+		sourceColumn: quantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column percent
+		dataType: double
+		lineageTag: 75c9d472-d3df-409e-8e0b-fe3bc492277c
+		summarizeBy: sum
+		sourceColumn: percent
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column amount
+		dataType: double
+		formatString: 0
+		lineageTag: 75495c39-0bc2-43eb-a267-8c6ac9de718b
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+	column unitId
+		dataType: string
+		lineageTag: a522ad55-0698-4017-a07a-573daac9a75b
+		summarizeBy: none
+		sourceColumn: unitId
+
+		annotation SummarizationSetBy = Automatic
+
+	column salesOpeningQuantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 227279ae-c9d2-4f04-9f89-23f768334744
+		summarizeBy: sum
+		sourceColumn: salesOpeningQuantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column totalProducts
+		dataType: int64
+		formatString: 0
+		lineageTag: 72620635-c432-4d08-8b99-f9a780b14f31
+		summarizeBy: sum
+		sourceColumn: totalProducts
+
+		annotation SummarizationSetBy = Automatic
+
+	column areaNFA
+		dataType: double
+		lineageTag: 76f8b6e1-f727-4ad7-ba26-c333133eca5b
+		summarizeBy: sum
+		sourceColumn: areaNFA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column areaGFA
+		dataType: double
+		lineageTag: 9ab8feb3-7586-4f0f-85cf-0d6762411277
+		summarizeBy: sum
+		sourceColumn: areaGFA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column project_type_code
+		dataType: string
+		lineageTag: 5de92039-685c-4fea-9e18-5219875604b0
+		summarizeBy: none
+		sourceColumn: project_type_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column scale
+		dataType: double
+		lineageTag: 7a8de256-3bb8-4ce5-a983-a95a1a1b38f7
+		summarizeBy: sum
+		sourceColumn: scale
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column phase_name
+		dataType: string
+		lineageTag: a88819a6-ccba-4a0f-9be6-55997265aea4
+		summarizeBy: none
+		sourceColumn: phase_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_name
+		dataType: string
+		lineageTag: 91fc856c-ee51-43d2-8023-1726068f2b9f
+		summarizeBy: none
+		sourceColumn: project_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_type
+		dataType: string
+		lineageTag: ad7e8593-fc17-4944-93dc-c4a74cbe08ef
+		summarizeBy: none
+		sourceColumn: project_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 65d913b2-c38b-4afd-8bd7-b44d386ba16f
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: 2edc9184-c1c2-442e-a0dd-7c1a1904e71c
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column city_type
+		dataType: string
+		lineageTag: bf17bdd8-1c1f-4a45-866a-4055cb4d2119
+		summarizeBy: none
+		sourceColumn: city_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column ward
+		dataType: string
+		lineageTag: e480df4d-b2e3-4849-a63c-74895cf1ac1e
+		summarizeBy: none
+		sourceColumn: ward
+
+		annotation SummarizationSetBy = Automatic
+
+	column leading_company
+		dataType: string
+		lineageTag: b8528350-b694-4439-ada2-f81b1385a8b7
+		summarizeBy: none
+		sourceColumn: leading_company
+
+		annotation SummarizationSetBy = Automatic
+
+	column frequency
+		dataType: string
+		lineageTag: 01f525d0-1de5-4c0f-be18-f3df4a2ddec2
+		summarizeBy: none
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+
+	column Nhóm =
+			SWITCH(
+			    TRUE(),
+			    CONTAINSSTRING(Project_BDS[project_type],"Nhà ở"),"Nhà ở",
+			    CONTAINSSTRING(Project_BDS[project_type],"Nghỉ dưỡng"),"Nghỉ dưỡng",
+			    CONTAINSSTRING(Project_BDS[project_type],"Khu công nghiệp"),"Khu công nghiệp",
+			    "Bất động sản thương mại")
+		lineageTag: ee658bca-24b8-4541-b776-bb9592c60d42
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column quater = IF(Project_BDS[frequency] = "Tháng",IF(Project_BDS[period] >= 1 && Project_BDS[period] <= 3,1,IF(Project_BDS[period] >= 4 && Project_BDS[period] <= 6,2,IF(Project_BDS[period] >= 7 && Project_BDS[period] <= 9,3,IF(Project_BDS[period] >= 10 && Project_BDS[period] <= 12,4,Project_BDS[period])))),Project_BDS[period])
+		formatString: 0
+		lineageTag: 60402b80-ac09-4adb-8168-1adcd500c592
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Năm - Quý' = Project_BDS[year]&"-0"&Project_BDS[quater]
+		lineageTag: 8da8a352-6cfc-4cb7-aa9b-2f3ede771298
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Latitude
+		dataType: double
+		lineageTag: 1a91500a-590a-4c2d-9be1-7a926d58ba87
+		summarizeBy: sum
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longtitude
+		dataType: double
+		lineageTag: ab93822f-ce4c-472d-b172-cddb1f2b924d
+		summarizeBy: sum
+		sourceColumn: longtitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'phase_status.1'
+		dataType: string
+		lineageTag: 4869c8cd-2231-4847-8938-dba5fe90e9fd
+		summarizeBy: none
+		sourceColumn: phase_status.1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'phase_status.2'
+		dataType: string
+		lineageTag: 0f5440d6-dc0a-4e96-9a6e-421715fcf88f
+		summarizeBy: none
+		sourceColumn: phase_status.2
+
+		annotation SummarizationSetBy = Automatic
+
+	column Khoang_Gia_So = ```
+			
+			VAR _LoaiHinh = Project_BDS[project_type]
+			VAR _Gia = Project_BDS[amount] 
+			
+			RETURN SWITCH( TRUE(),
+			
+			    -- NHÓM 1: Nhà ở Xã hội
+			    CONTAINSSTRING(_LoaiHinh, "Nhà ở xã hội"),
+			        SWITCH( TRUE(),
+			            _Gia < 15, "< 15",
+			            _Gia < 30, "15 - 30",
+			            _Gia < 50, "30 - 50",
+			            _Gia < 70, "50 - 70",
+			            "> 70"
+			        ),
+			
+			    -- NHÓM 2: Nhà ở Thương mại - Thấp tầng
+			    _LoaiHinh = "Nhà ở thương mại – Thấp tầng",
+			        SWITCH( TRUE(),
+			            _Gia < 100, "< 100",
+			            _Gia < 200, "100 - 200",
+			            _Gia < 300, "200 - 300",
+			            _Gia < 400, "300 - 400",
+			            "> 400"
+			        ),
+			
+			    -- NHÓM 3: Các loại còn lại (TM Cao tầng, Nghỉ dưỡng...)
+			    SWITCH( TRUE(),
+			        _Gia < 50,  "< 50",
+			        _Gia < 70,  "50 - 70",
+			        _Gia < 100, "70 - 100",
+			        _Gia < 120, "100 - 120",
+			        "> 120"
+			    )
+			)
+			```
+		lineageTag: 06b81337-1e0f-4627-91ac-9b31017d7be6
+		summarizeBy: none
+		sortByColumn: Khoang_Gia_Order
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Khoang_Gia_Order = ```
+			
+			VAR _LoaiHinh = Project_BDS[project_type]
+			VAR _Gia = Project_BDS[amount] 
+			
+			RETURN SWITCH( TRUE(),
+			
+			    -- NHÓM 1: Nhà ở Xã hội (Đánh số 1 -> 5)
+			    CONTAINSSTRING(_LoaiHinh, "Nhà ở xã hội"),
+			        SWITCH( TRUE(),
+			            _Gia < 15, 1,
+			            _Gia < 30, 2,
+			            _Gia < 50, 3,
+			            _Gia < 70, 4,
+			            5 -- > 70
+			        ),
+			
+			    -- NHÓM 2: Nhà ở Thương mại - Thấp tầng (Đánh số 6 -> 10)
+			    _LoaiHinh = "Nhà ở thương mại – Thấp tầng",
+			        SWITCH( TRUE(),
+			            _Gia < 100, 6,
+			            _Gia < 200, 7,
+			            _Gia < 300, 8,
+			            _Gia < 400, 9,
+			            10 -- > 400
+			        ),
+			
+			    -- NHÓM 3: Các loại còn lại (Đánh số 11 -> 15)
+			    SWITCH( TRUE(),
+			        _Gia < 50,  11,
+			        _Gia < 70,  12,
+			        _Gia < 100, 13,
+			        _Gia < 120, 14,
+			        15 -- > 120
+			    )
+			)
+			```
+		formatString: 0
+		lineageTag: 683ef27a-99f0-4695-b756-1537b62c744f
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column code
+		dataType: string
+		lineageTag: 30dc15d4-8e22-4563-a02c-6c4383c10a99
+		summarizeBy: none
+		sourceColumn: code
+
+		annotation SummarizationSetBy = Automatic
+
+	column projectId
+		dataType: string
+		lineageTag: 44fb45dc-cf73-4eee-bd2a-0727a3a30bf4
+		summarizeBy: none
+		sourceColumn: projectId
+
+		annotation SummarizationSetBy = Automatic
+
+	column subdivisionId
+		dataType: string
+		lineageTag: 56beb1a8-c718-47c1-acf5-c5161b2048e9
+		summarizeBy: none
+		sourceColumn: subdivisionId
+
+		annotation SummarizationSetBy = Automatic
+
+	column projectTypeId
+		dataType: string
+		lineageTag: c54a0465-27b7-409f-b6ac-d8f534dfefaf
+		summarizeBy: none
+		sourceColumn: projectTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column mrAreaUnitId
+		dataType: string
+		lineageTag: 9ce21799-3b98-4d66-891d-1caf64f9117c
+		summarizeBy: none
+		sourceColumn: mrAreaUnitId
+
+		annotation SummarizationSetBy = Automatic
+
+	column salesOpeningDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 36a6406c-a7dc-4f4f-8878-6c2c8d4bad8e
+		summarizeBy: none
+		sourceColumn: salesOpeningDate
+
+		variation Variation
+			isDefault
+			relationship: a31ab059-bd9e-45f7-8413-165e3747dc72
+			defaultHierarchy: LocalDateTable_9cdebaa8-cdbd-4c4d-9918-cc2dfdb2f775.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column endDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 470334a2-0a31-40c4-91d2-0cd8b81ac0f1
+		summarizeBy: none
+		sourceColumn: endDate
+
+		variation Variation
+			isDefault
+			relationship: 9d375431-11d7-4841-9e8e-f233113182b7
+			defaultHierarchy: LocalDateTable_a94ecec1-1b8f-421e-a412-a0441a3cb455.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column priorityIndustry
+		dataType: string
+		lineageTag: e30d2b95-f83d-4798-aa83-6ea2b2673a09
+		summarizeBy: none
+		sourceColumn: priorityIndustry
+
+		annotation SummarizationSetBy = Automatic
+
+	column basementFloors
+		dataType: int64
+		formatString: 0
+		lineageTag: 679c5e99-8434-453b-bc28-a5135c4d43c3
+		summarizeBy: sum
+		sourceColumn: basementFloors
+
+		annotation SummarizationSetBy = Automatic
+
+	column floors
+		dataType: int64
+		formatString: 0
+		lineageTag: 60be3974-fc62-41be-af7d-c22ce3bb9576
+		summarizeBy: sum
+		sourceColumn: floors
+
+		annotation SummarizationSetBy = Automatic
+
+	column blocks
+		dataType: int64
+		formatString: 0
+		lineageTag: 0a7b98df-d9e0-4f20-8fd5-977de50e5c54
+		summarizeBy: sum
+		sourceColumn: blocks
+
+		annotation SummarizationSetBy = Automatic
+
+	column priorityLevelId
+		dataType: string
+		lineageTag: 8ee202b9-9fff-437d-946e-597746a708fa
+		summarizeBy: none
+		sourceColumn: priorityLevelId
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tháng = IF(Project_BDS[frequency] ="Tháng",Project_BDS[period],BLANK())
+		formatString: 0
+		lineageTag: f4f00f79-7ae8-4110-b8e8-5763dc9cb987
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column quantity_this_period =
+			
+			VAR _CurrentEntity = Project_BDS[realEstateProjectTypeId]
+			VAR _CurrentProject = Project_BDS[project_name]
+			VAR _CurrentPhase = Project_BDS[phase_name]
+			VAR _CurrentType = Project_BDS[project_type]
+			VAR _CurrentYear = Project_BDS[year]
+			VAR _CurrentPeriod = Project_BDS[period]
+			VAR _CurrentFreq = Project_BDS[frequency]
+			
+			-- Quy đổi toàn bộ Tháng và Quý về cùng một Trục thời gian Tháng tuyệt đối (Absolute Month Key)
+			VAR _CurrentTimeKey =
+			    IF(
+			        _CurrentFreq = "Quý",
+			        _CurrentYear * 12 + (_CurrentPeriod * 3),
+			        _CurrentYear * 12 + _CurrentPeriod
+			    )
+			VAR _CurrentQuantity = Project_BDS[quantity]
+			
+			VAR _PrevRows =
+			    FILTER(
+			        Project_BDS,
+			        (
+			            (NOT ISBLANK(_CurrentEntity) && Project_BDS[realEstateProjectTypeId] = _CurrentEntity)
+			                || (
+			                    ISBLANK(_CurrentEntity)
+			                        && Project_BDS[project_name] = _CurrentProject
+			                        && Project_BDS[phase_name] = _CurrentPhase
+			                        && Project_BDS[project_type] = _CurrentType
+			                )
+			        )
+			            && (
+			                IF(
+			                    Project_BDS[frequency] = "Quý",
+			                    Project_BDS[year] * 12 + (Project_BDS[period] * 3),
+			                    Project_BDS[year] * 12 + Project_BDS[period]
+			                ) < _CurrentTimeKey
+			            )
+			            && NOT ISBLANK(Project_BDS[quantity])
+			    )
+			VAR _PrevQuantity =
+			    MAXX(
+			        TOPN(
+			            1,
+			            _PrevRows,
+			            IF(
+			                Project_BDS[frequency] = "Quý",
+			                Project_BDS[year] * 12 + (Project_BDS[period] * 3),
+			                Project_BDS[year] * 12 + Project_BDS[period]
+			            ), DESC,
+			            Project_BDS[updatedAt], DESC
+			        ),
+			        Project_BDS[quantity]
+			    )
+			RETURN
+			    IF(
+			        ISBLANK(_CurrentQuantity),
+			        BLANK(),
+			        _CurrentQuantity - COALESCE(_PrevQuantity, 0)
+			    )
+		formatString: #,##0
+		lineageTag: e81b2903-82a1-460d-9b1e-7f4192038101
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Order =
+			
+			VAR _CurrentEntity = Project_BDS[realEstateProjectTypeId]
+			VAR _CurrentProject = Project_BDS[project_name]
+			VAR _CurrentPhase = Project_BDS[phase_name]
+			VAR _CurrentType = Project_BDS[project_type]
+			VAR _CurrentYear = Project_BDS[year]
+			VAR _CurrentPeriod = Project_BDS[period]
+			VAR _CurrentFreq = Project_BDS[frequency]
+			VAR _CurrentID = Project_BDS[id]
+			
+			-- Mốc thời gian tuyệt đối của bản ghi hiện tại
+			VAR _CurrentTimeKey =
+			    IF(
+			        _CurrentFreq = "Quý",
+			        _CurrentYear * 12 + (_CurrentPeriod * 3),
+			        _CurrentYear * 12 + _CurrentPeriod
+			    )
+			
+			-- Tất cả bản ghi thuộc cùng 1 đối tượng dự án
+			VAR _SameEntityRows =
+			    FILTER(
+			        Project_BDS,
+			        (
+			            (NOT ISBLANK(_CurrentEntity) && Project_BDS[realEstateProjectTypeId] = _CurrentEntity)
+			                || (
+			                    ISBLANK(_CurrentEntity)
+			                        && Project_BDS[project_name] = _CurrentProject
+			                        && Project_BDS[phase_name] = _CurrentPhase
+			                        && Project_BDS[project_type] = _CurrentType
+			                )
+			        )
+			    )
+			
+			-- Đếm số lượng bản ghi xảy ra trước hoặc bằng bản ghi hiện tại (đánh số 1 -> n)
+			RETURN
+			    COUNTROWS(
+			        FILTER(
+			            _SameEntityRows,
+			            VAR _RowTimeKey =
+			                IF(
+			                    Project_BDS[frequency] = "Quý",
+			                    Project_BDS[year] * 12 + (Project_BDS[period] * 3),
+			                    Project_BDS[year] * 12 + Project_BDS[period]
+			                )
+			            RETURN
+			                _RowTimeKey < _CurrentTimeKey
+			                    || (_RowTimeKey = _CurrentTimeKey && Project_BDS[id] <= _CurrentID)
+			        )
+			    )
+		formatString: 0
+		lineageTag: f91a2803-82a1-460d-9b1e-7f4192038102
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Khoá dùng để liên kết với Dim_Period[QuarterKey] (year*10+quater), phục vụ slicer thời gian dùng chung giữa BĐS và KTVM.
+	column QuarterKey = Project_BDS[year] * 10 + Project_BDS[quater]
+		isHidden
+		formatString: 0
+		displayFolder: Thời gian
+		lineageTag: e9c11958-dbd0-4460-8f0c-cb1c00f3722a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Project_BDS = m
+		mode: import
+		source =
+				let
+					    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)"]),
+					    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false)),
+					    #"Split Column by Delimiter" = Table.SplitColumn(#"Filtered Rows", "phase_status", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"phase_status.1", "phase_status.2"}),
+					    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"phase_status.1", type text}, {"phase_status.2", type text}}),
+					    #"Appended Query" = Table.Combine({#"Changed Type", Nguon_Cung_Du_kien}),
+				    #"Add Qtr" = Table.AddColumn(#"Appended Query", "calc_qtr", each if [frequency] = "Tháng" then Number.IntegerDivide([period] - 1, 3) + 1 else [period], Int64.Type),
+				    #"Add QuarterKey" = Table.AddColumn(#"Add Qtr", "QuarterKey", each [year] * 10 + [calc_qtr], Int64.Type)
+					in
+					    #"Appended Query"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

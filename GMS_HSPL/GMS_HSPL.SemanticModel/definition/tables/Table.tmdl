@@ -1,0 +1,54 @@
+table Table
+	lineageTag: c74539cb-4b18-4ebb-904e-dd7ef40057f1
+
+	measure 'Ngay Hom Nay' = ```
+			
+			VAR _Today = TODAY()
+			RETURN 
+			    FORMAT(_Today, "dd/mm/yyyy")
+			```
+		lineageTag: e7e804a3-6737-4f8d-a44f-fe0c8b36ba21
+
+	measure 'SL khong co file att' = CALCULATE(DISTINCTCOUNTNOBLANK(HSPL[_id]),HSPL[check_not_attachment] = 0)
+		formatString: 0
+		lineageTag: 618d7ade-ffa1-49bf-ba9f-3ee289b13ed8
+
+	measure 'Tre TB (Ngay)' = AVERAGE(HSPL[DateDiff])
+		lineageTag: f0aa087c-7d69-4185-8248-291d7452768e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Luy_Ke_Distinct_ID =
+			
+			VAR _MaxDate = MAX(HSPL[createdAt])
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNT(HSPL[_id]),
+			        FILTER(
+			            ALLSELECTED(HSPL),
+			            HSPL[createdAt] <= _MaxDate
+			        )
+			    )
+		formatString: 0
+		lineageTag: e2ec9f35-af53-4e34-a623-abf6f2e98d35
+
+	column Column1
+		dataType: int64
+		formatString: 0
+		lineageTag: e9b9aae1-4e0d-420f-bdfa-4492d21fe780
+		summarizeBy: sum
+		sourceColumn: Column1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Table = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlSKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

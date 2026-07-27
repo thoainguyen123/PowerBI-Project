@@ -1,0 +1,1574 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "md00000000000000000c",
+  "position": {
+    "x": 15.555555555555555,
+    "y": 502.22222222222223,
+    "z": 1000,
+    "height": 327.77777777777777,
+    "width": 1475.5555555555554,
+    "tabOrder": 1000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Columns": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FactMasterData_Columns"
+                    }
+                  },
+                  "Property": "Col_Header"
+                }
+              },
+              "queryRef": "FactMasterData_Columns.Col_Header",
+              "nativeQueryRef": "Chi tiet",
+              "active": true,
+              "displayName": "Chi tiet"
+            }
+          ]
+        },
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_MasterData"
+                    }
+                  },
+                  "Property": "phan_nhom"
+                }
+              },
+              "queryRef": "Fact_MasterData.phan_nhom",
+              "nativeQueryRef": "Mục",
+              "active": true,
+              "displayName": "Mục"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_MasterData"
+                    }
+                  },
+                  "Property": "hang_muc"
+                }
+              },
+              "queryRef": "Fact_MasterData.hang_muc",
+              "nativeQueryRef": "Nội dung",
+              "active": true,
+              "displayName": "Nội dung"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_MasterData"
+                    }
+                  },
+                  "Property": "MasterData Dynamic Value"
+                }
+              },
+              "queryRef": "Fact_MasterData.MasterData Dynamic Value",
+              "nativeQueryRef": "Gia tri"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Fact_MasterData"
+                  }
+                },
+                "Property": "sort_colum"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Fact_MasterData.phan_nhom"
+            ],
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Fact_MasterData"
+                    }
+                  },
+                  "Property": "phan_nhom"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Fact_MasterData.hang_muc"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {}
+      }
+    ],
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'fitToContent'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#CBDEEF'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": -0.5
+                    }
+                  }
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "layout": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tabular'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.3
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "297.14285714285717D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Văn bản phê duyệt'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "224D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hướng xử lý'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "250.57142444990612D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Khó khăn / Vướng mắc'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "154.45615635825632D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Ngày hoàn thành'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "289D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Fact_MasterData.hang_muc"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80.69865069889543D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Chi tiết'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "156D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Fact_MasterData.phan_nhom"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "164.57143240409317D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Có thực hiện BT/GPMB'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "331.42857142857144D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đã bán'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "142.71426337912138D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đã bàn giao'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "163D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đã có PA an ninh'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "297D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng / Đã có TBTD'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "168D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hien trang ho so'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "259.0742663609143D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng hồ sơ'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "142D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng KH CƯĐT'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "155.71428571428572D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng MTL'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "145D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng ngân sách'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "277.4866621548277D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hiện trạng thi công (%)'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "156.57141375290234D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Sale kit'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "159.85712562807518D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Tổng định biên'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "113.80231120413276D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Chưa bán'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "154.40235140505598D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Chưa bàn giao'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "134D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Chưa có PA an ninh'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "168.63033340541173D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đang làm việc'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "79D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Dieu chinh'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "180D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Điều chỉnh / Chưa có TBTD'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "137.58265946240792D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Điều chỉnh'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "143.71428999608995D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Ngày hoàn thànhh'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "85.57141108911739D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Chi tiet'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "388.02929220802986D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Ghi chú'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "222.42856743709694D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Không thực hiện BT/GPMB'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "152.00002564503677D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Sẽ tuyển dụng'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "129.42854679937182D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Dự kiến bán'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "195.6604765738834D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Sự kiện'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "144.5714638638915D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "FactMasterData_Columns"
+                          }
+                        },
+                        "Property": "Col_Header"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Ngày tổ chức'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "07e8e447e0960be8aac5",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FactMasterData_Columns"
+              }
+            },
+            "Property": "Col_Header"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "e5fb72757d96f1757d7d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_MasterData"
+              }
+            },
+            "Property": "phan_nhom"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b3433b89de4d0f7ca9f1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_MasterData"
+              }
+            },
+            "Property": "hang_muc"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6e88a0f603a6b1476796",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Fact_MasterData"
+              }
+            },
+            "Property": "MasterData Dynamic Value"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

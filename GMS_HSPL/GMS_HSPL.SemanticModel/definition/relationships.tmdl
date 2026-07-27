@@ -1,0 +1,19 @@
+relationship 2d5bbe86-9290-46c4-b658-d7b4e2b39687
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HSPL.DateIssued
+	toColumn: LocalDateTable_399d9ff5-4799-46e7-9e80-5e8a51515b5d.Date
+
+relationship AutoDetected_2f8c2c45-fa23-4642-a78c-7a216b3ad3cf
+	fromColumn: HSPL.Directory
+	toColumn: Directory._id
+
+relationship 57abe013-2955-4e88-8b89-db5f9c1cc715
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HSPL.createdAt
+	toColumn: LocalDateTable_f38d7c23-12fc-41c2-a89c-43e8745b3667.Date
+
+relationship 9938b9c0-b2b4-4d82-b9c1-4a5fdc2304b7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: HSPL.updatedAt
+	toColumn: LocalDateTable_f6858f0b-9309-4d84-9201-2158a48c5878.Date
+

@@ -1,0 +1,99 @@
+relationship ff9cedc6-d438-440b-bb3a-0131dfecca93
+	joinOnDateBehavior: datePartOnly
+	fromColumn: KTVM.createdAt
+	toColumn: LocalDateTable_bc3ddc46-9fef-42a9-8eca-06b3fc5ab998.Date
+
+relationship 599e07d1-afc9-46d2-9864-47319993fe15
+	joinOnDateBehavior: datePartOnly
+	fromColumn: KTVM.updatedAt
+	toColumn: LocalDateTable_86f4df64-7bad-4440-83d7-912ce46951c2.Date
+
+relationship ada5a3ff-a8a0-4f43-8937-b9f5af20b93c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: KTVM.deletedAt
+	toColumn: LocalDateTable_7b61f81c-9fd1-46fc-b5a1-9fcc3f46e5cf.Date
+
+relationship fbfaa127-7f14-4cc1-baee-f8ec177344b2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Project_BDS.createdAt
+	toColumn: LocalDateTable_96807ef6-9353-455e-8175-309419793e59.Date
+
+relationship fe684b3e-1431-4422-a2b8-7e05bc02f284
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Project_BDS.updatedAt
+	toColumn: LocalDateTable_fc34a9bc-2c86-4fd9-91e0-0e630d387fb5.Date
+
+relationship 0a14aab8-4605-4f39-8e6b-23de1be1943b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Project_BDS.deletedAt
+	toColumn: LocalDateTable_3880ec27-6c9a-4d48-9b1e-790ec35c9a15.Date
+
+relationship f8d45f2b-99c6-416a-b265-413ad9c8371e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Product_Project_BDS.createdAt
+	toColumn: LocalDateTable_545eda0e-7b08-48fa-8229-1ae7cb4c67c6.Date
+
+relationship 4aa48a89-87f3-447d-8732-829f592d34e4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Product_Project_BDS.updatedAt
+	toColumn: LocalDateTable_92d6b5aa-4552-4102-bff4-a256ab38bd65.Date
+
+relationship 56042cb4-1597-4572-8d5d-189803133b93
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Product_Project_BDS.deletedAt
+	toColumn: LocalDateTable_f4b72361-f382-44ca-8b5a-86da21b14bdd.Date
+
+relationship 2e7e8dc7-e93d-87b5-5bc4-a1f20b6cc9b2
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: Project_BDS.project_name
+	toColumn: Product_Project_BDS.project_name
+
+relationship 8247b456-467d-43af-af57-7f801925fe76
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Nguon_Cung_Du_kien.createdAt
+	toColumn: LocalDateTable_78140768-7e57-4760-9259-a672863cb369.Date
+
+relationship a238206b-7bec-4794-8c11-f55faaad9e40
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Nguon_Cung_Du_kien.updatedAt
+	toColumn: LocalDateTable_02c38a59-a2d1-4fe8-94cd-6a3eb4c61397.Date
+
+relationship 0017f346-dff3-4961-8ce3-6a5f98c43d7d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Nguon_Cung_Du_kien.deletedAt
+	toColumn: LocalDateTable_6790987d-ea22-4d40-b6ef-10bad477fa61.Date
+
+relationship aca713f7-8363-4875-ad49-63b88ab768c3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Nguon_Cung_Du_kien.salesOpeningDate
+	toColumn: LocalDateTable_b101f860-42ec-4981-a7e8-188dd8586eb8.Date
+
+relationship 0c30a3cf-1227-4502-8918-ade19bf8d184
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Nguon_Cung_Du_kien.endDate
+	toColumn: LocalDateTable_0fb0452a-2dfc-409d-8f42-64cb4f805f1d.Date
+
+relationship a31ab059-bd9e-45f7-8413-165e3747dc72
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Project_BDS.salesOpeningDate
+	toColumn: LocalDateTable_9cdebaa8-cdbd-4c4d-9918-cc2dfdb2f775.Date
+
+relationship 9d375431-11d7-4841-9e8e-f233113182b7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Project_BDS.endDate
+	toColumn: LocalDateTable_a94ecec1-1b8f-421e-a412-a0441a3cb455.Date
+
+relationship rel_Dim_Period_KTVM
+	fromColumn: Dim_Period.QuarterKey
+	toColumn: KTVM.QuarterKey
+
+relationship 0822cbb7-cdb4-4549-8a6c-eeb70c3cbcdc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Dim_Period.QuarterStartDate
+	toColumn: LocalDateTable_c9caf710-4f0f-41ba-af0f-80a2d654e0c2.Date
+
+relationship rel_Dim_Period_Project_BDS
+	fromColumn: Project_BDS.QuarterKey
+	toColumn: Dim_Period.QuarterKey
+

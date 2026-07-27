@@ -1,0 +1,23 @@
+table Branch_Axis
+	lineageTag: 19df73bb-c456-4dc8-9c1e-b7f223fea598
+
+	column division_name
+		lineageTag: 8eea6702-a32c-472c-b99e-2777d68b3fab
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: ICS[division_name]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Branch_Axis = calculated
+		mode: import
+		source =
+				
+				CALCULATETABLE(
+				    DISTINCT(ICS[division_name]),
+				    ICS[corporation_name] = "NOVALAND GROUP" -- Điền chính xác tên cột Tập đoàn của bạn ở đây
+				    && ICS[company_name] = "CỤM DỰ ÁN (GMD-NVLG)"
+				)
+
+	annotation PBI_Id = 80198e70a4784833b0b9438a69891c40
+

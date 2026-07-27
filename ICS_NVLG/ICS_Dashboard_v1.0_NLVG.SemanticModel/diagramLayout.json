@@ -1,0 +1,161 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 281.86662944777896,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 329.50582977864764,
+            "y": 239.58663503061211
+          },
+          "nodeIndex": "ICS",
+          "nodeLineageTag": "dd633b34-70f8-4b02-bb6d-ffa175b1fae6",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1356.0487596796513,
+            "y": 0
+          },
+          "nodeIndex": "EmptyTable",
+          "nodeLineageTag": "ffba7df3-b6e0-4ba0-9da7-f24bffc54f6e",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1078.1785993004798,
+            "y": 0
+          },
+          "nodeIndex": "Parameter",
+          "nodeLineageTag": "697926cb-9473-4f20-8966-b1e5b2b3821a",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 440.98394756968111,
+            "y": 0
+          },
+          "nodeIndex": "DateTable",
+          "nodeLineageTag": "4cb74e44-75c8-4c60-8932-6669c3ae7464",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 14.093331472388996
+          },
+          "nodeIndex": "Org",
+          "nodeLineageTag": "4e4f0b23-6cb0-44ca-a04b-a56abd5b9c5c",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 752.16883390971316,
+            "y": 95.865332030672278
+          },
+          "nodeIndex": "Table",
+          "nodeLineageTag": "761e1686-63c6-4e29-a774-ae7748037a95",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1640.0487596796513,
+            "y": 169.79331751530606
+          },
+          "nodeIndex": "Company_Axis",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1924.0487596796513,
+            "y": 169.79331751530606
+          },
+          "nodeIndex": "Branch_Axis",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2208.0487596796511,
+            "y": 193.79331751530606
+          },
+          "nodeIndex": "Employee",
+          "nodeLineageTag": "ba58cddc-a158-45cd-88bf-d8a9db13c22e",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2492.0487596796511,
+            "y": 169.79331751530606
+          },
+          "nodeIndex": "HO_Axis",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2776.0487596796511,
+            "y": 169.79331751530606
+          },
+          "nodeIndex": "Dept_Axis",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 70.955543900968848,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

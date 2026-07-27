@@ -1,0 +1,24 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["HSPL","Directory","Table"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table HSPL
+ref table DateTableTemplate_f8176a49-1ac6-4c16-87bc-bafad6b6ecf6
+ref table LocalDateTable_399d9ff5-4799-46e7-9e80-5e8a51515b5d
+ref table Directory
+ref table Table
+ref table LocalDateTable_f38d7c23-12fc-41c2-a89c-43e8745b3667
+ref table LocalDateTable_f6858f0b-9309-4d84-9201-2158a48c5878
+
+ref cultureInfo en-US
+

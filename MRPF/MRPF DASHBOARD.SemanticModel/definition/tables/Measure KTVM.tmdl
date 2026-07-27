@@ -1,0 +1,202 @@
+table 'Measure KTVM'
+	lineageTag: 43f15d0d-06c0-4f5f-8f0b-285705912d8e
+
+	measure marco_economic_latest =
+			
+			VAR Latest =
+			    CALCULATE(
+			        MAXX( KTVM, KTVM[year])
+			    )
+			RETURN
+			    IF(SELECTEDVALUE(KTVM[macro_economic_unit]) = "%",   CALCULATE(
+			        SUM(KTVM[amount]),
+			        KTVM[year] = Latest
+			    )/100,CALCULATE(
+			        SUM(KTVM[amount]),
+			        KTVM[year] = Latest
+			    )
+			)
+		lineageTag: 01cc2434-6df0-4dbb-b52e-2c15f841ab89
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Latest_Period = ```
+			
+			VAR x = MAX(KTVM[period])
+			VAR y =
+			    CALCULATE(
+			        MAX(KTVM[period]),
+			        KTVM[year] = MAX(KTVM[year]),
+			        ALL(KTVM)
+			    )
+			
+			RETURN x-y
+			
+			
+			```
+		formatString: 0
+		lineageTag: 6aa20322-0c6d-4bba-a211-1e44cdee5937
+
+		changedProperty = IsHidden
+
+	measure PrevYear_Value_SameQuarter = ```
+			
+			VAR LatestYear =
+			    CALCULATE(
+			        MAX(KTVM[year]),
+			        ALL(KTVM)
+			    )
+			VAR LatestQuarter = 
+			    CALCULATE(
+			        MAX(KTVM[period]),
+			        KTVM[year] = LatestYear)
+			
+			VAR PrevYear = LatestYear - 1
+			RETURN
+			CALCULATE(
+			    SUM(KTVM[amount]),
+			    KTVM[year] = PrevYear,
+			    KTVM[period] <= LatestQuarter
+			)
+			
+			```
+		lineageTag: b02ff0c7-c4c7-4545-b55c-f4a9f7edfbb1
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure pre_year_marco_economic =
+			
+			VAR Latest =
+			    CALCULATE(
+			        MAXX( KTVM, KTVM[year])
+			    )
+			RETURN
+			    IF(SELECTEDVALUE(KTVM[macro_economic_unit]) = "%",   CALCULATE(
+			        SUM(KTVM[amount]),
+			        KTVM[year] = Latest - 1
+			    )/100,CALCULATE(
+			        SUM(KTVM[amount]),
+			        KTVM[year] = Latest - 1
+			    )
+			)
+		lineageTag: 5b87b61d-0c0b-41ff-8774-57e652235682
+
+		changedProperty = IsHidden
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure PrevYear_Value_SameMonth = ```
+			
+			VAR LatestYear =
+			    CALCULATE(
+			        MAX(KTVM[year]),
+			        ALL(KTVM)
+			    )
+			VAR LatestMonth =
+			    CALCULATE(
+			        MAX(KTVM[period]),
+			        KTVM[year] = LatestYear
+			    )
+			VAR PrevYear = LatestYear - 1
+			RETURN
+			CALCULATE(
+			    SUM(KTVM[amount]),
+			    KTVM[year] = PrevYear,
+			    KTVM[period] <= LatestMonth
+			)
+			
+			```
+		lineageTag: 9ebaafe8-ac03-46b7-909d-f3b9b08ec1bb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure YoY_Growth_% = ```
+			
+			VAR CurrentYear = SELECTEDVALUE(KTVM[year])
+			VAR CurrentYearValue =
+			    CALCULATE(SUM(KTVM[amount]))
+			VAR PrevYearValue =
+			    CALCULATE(
+			        SUM(KTVM[amount]),
+			        KTVM[year] = CurrentYear - 1
+			    )
+			RETURN
+			DIVIDE(CurrentYearValue - PrevYearValue, PrevYearValue)
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 04020b87-b396-4282-adea-21da23baa6d8
+
+	measure marco_economic_10^6 = ```
+			'Measure KTVM'[marco_economic_latest]/10^6 
+			```
+		lineageTag: 93bebbf7-d0f8-4431-b1ed-171aa386a8ea
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Same Q) Prevyear_marco_economic_10^6' = ```
+			'Measure KTVM'[PrevYear_Value_SameQuarter]/10^6 
+			```
+		lineageTag: 51f894b1-188b-4a88-bfe6-d6e69446ed0c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure marco_economic_10^3 = 'Measure KTVM'[marco_economic_latest]/10^3
+		lineageTag: c945179e-5fa8-4998-9d0f-9f1c7e255a28
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(Same Q) Prevyear_marco_economic_10^3' = 'Measure KTVM'[PrevYear_Value_SameQuarter]/10^3
+		lineageTag: 90ef7c5d-4d20-459c-91d1-4ce2810e08ce
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vốn thực hiên' = CALCULATE('Measure KTVM'[marco_economic_latest]/10^3,KTVM[macroeconomiccate_lv2] = "Tổng vốn thực hiện")
+		lineageTag: 08ad356c-8dbd-418c-b6e6-3c2754a3a5fa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Vốn đăng ký' = CALCULATE('Measure KTVM'[marco_economic_latest]/10^3,KTVM[macroeconomiccate_lv2] = "Tổng vốn đăng ký") - [Vốn thực hiên]
+		lineageTag: 35b93578-f2b0-4f54-a3e6-217c9dba3cd5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(same Y) pre_year_economic_10^6' = [pre_year_marco_economic]/10^6
+		lineageTag: 8edb3698-7115-441f-9526-31ab2c81845c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '(same Y) pre_year_economic_10^3' = [pre_year_marco_economic]/10^3
+		lineageTag: 1cbf1d7e-58eb-46ef-be93-e29f67f41d2b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column1
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 599b1a56-4e89-429a-96f8-ce71303e579e
+		summarizeBy: sum
+		sourceColumn: Column1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measure KTVM' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlSKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	changedProperty = IsHidden
+
+	annotation PBI_ResultType = Table
+

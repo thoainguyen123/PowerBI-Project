@@ -1,0 +1,23 @@
+table HO_Axis
+	lineageTag: b11fe9c1-df38-4627-ad95-78abd7a038ea
+
+	column division_name
+		lineageTag: a3b8d309-c89e-4e00-9a8e-b4740930dabe
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: ICS[division_name]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition HO_Axis = calculated
+		mode: import
+		source =
+				
+				CALCULATETABLE(
+				    DISTINCT(ICS[division_name]),
+				    ICS[corporation_name] = "NOVALAND GROUP" -- Điền chính xác tên cột Tập đoàn của bạn ở đây
+				    && ICS[company_name] = "HEAD OFFICE (HO-NVLG)"
+				)
+
+	annotation PBI_Id = 5cf5a2ef77d34ca9ac588cb1091a485d
+

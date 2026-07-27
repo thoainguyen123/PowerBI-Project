@@ -1,0 +1,294 @@
+table KTVM
+	lineageTag: 430c215c-2d55-487c-a185-55f54ae74557
+
+	column isDeactivated
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 4dff611c-a751-40e7-8dc9-72a94bfd5a60
+		summarizeBy: none
+		sourceColumn: isDeactivated
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: string
+		lineageTag: 2b3087b5-f1e0-4b17-9e23-480e1a7aa2f3
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 6ad0ea16-dd9f-444a-b9d3-a2ab2a0dcc53
+		summarizeBy: none
+		sourceColumn: createdAt
+
+		variation Variation
+			isDefault
+			relationship: ff9cedc6-d438-440b-bb3a-0131dfecca93
+			defaultHierarchy: LocalDateTable_bc3ddc46-9fef-42a9-8eca-06b3fc5ab998.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7a15ce6c-ca4f-4925-937b-43b22bd50caa
+		summarizeBy: none
+		sourceColumn: updatedAt
+
+		variation Variation
+			isDefault
+			relationship: 599e07d1-afc9-46d2-9864-47319993fe15
+			defaultHierarchy: LocalDateTable_86f4df64-7bad-4440-83d7-912ce46951c2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedAt
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 51043490-a035-478b-bf7d-b5623f92eec6
+		summarizeBy: none
+		sourceColumn: deletedAt
+
+		variation Variation
+			isDefault
+			relationship: ada5a3ff-a8a0-4f43-8937-b9f5af20b93c
+			defaultHierarchy: LocalDateTable_7b61f81c-9fd1-46fc-b5a1-9fcc3f46e5cf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column createdById
+		dataType: string
+		lineageTag: fbe789ec-7ec7-42b5-a32e-c73f10f7d7f7
+		summarizeBy: none
+		sourceColumn: createdById
+
+		annotation SummarizationSetBy = Automatic
+
+	column updatedById
+		dataType: string
+		lineageTag: c1b91995-0c5c-45c6-b35d-e1bf0e7f9ddc
+		summarizeBy: none
+		sourceColumn: updatedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column deletedById
+		dataType: string
+		lineageTag: eddb6bba-d4ae-4851-b6a8-fd0acaf9386e
+		summarizeBy: none
+		sourceColumn: deletedById
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomicCategory1Id
+		dataType: string
+		lineageTag: 323a8a88-6ff4-4092-9a33-027d2ec05fda
+		summarizeBy: none
+		sourceColumn: macroeconomicCategory1Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomicCategory2Id
+		dataType: string
+		lineageTag: 366e5c16-3800-4351-bec4-4ccf4e7d1626
+		summarizeBy: none
+		sourceColumn: macroeconomicCategory2Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomicCategory3Id
+		dataType: string
+		lineageTag: 60a887fd-bf43-4320-bcea-3a062fe63053
+		summarizeBy: none
+		sourceColumn: macroeconomicCategory3Id
+
+		annotation SummarizationSetBy = Automatic
+
+	column reportingFrequencyId
+		dataType: string
+		lineageTag: 512355b6-9b40-464f-a8d6-0851621c23cc
+		summarizeBy: none
+		sourceColumn: reportingFrequencyId
+
+		annotation SummarizationSetBy = Automatic
+
+	column period
+		dataType: int64
+		formatString: 0
+		lineageTag: ea0f4b89-606a-432d-add4-fac28b963069
+		summarizeBy: sum
+		sourceColumn: period
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 4e00473a-ffc0-4dc8-94ff-a272a5f03fdb
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column levelId
+		dataType: string
+		lineageTag: 2cc2e536-6902-4c0c-b8b3-14d3122ee565
+		summarizeBy: none
+		sourceColumn: levelId
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroEconomicUnitId
+		dataType: string
+		lineageTag: 35e032f1-63fd-46bd-a3f1-0b7307f3a0de
+		summarizeBy: none
+		sourceColumn: macroEconomicUnitId
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount
+		dataType: double
+		lineageTag: 375c5929-7feb-48c1-bbc5-8a1ed4236f71
+		summarizeBy: sum
+		sourceColumn: amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column cityTypeId
+		dataType: string
+		lineageTag: 38671ede-8105-4e08-845d-70ed93f0a733
+		summarizeBy: none
+		sourceColumn: cityTypeId
+
+		annotation SummarizationSetBy = Automatic
+
+	column cityId
+		dataType: string
+		lineageTag: cdb5cf18-b398-4b2d-b6f8-7da970a8d64c
+		summarizeBy: none
+		sourceColumn: cityId
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomiccate_lv1
+		dataType: string
+		lineageTag: 0fce4c68-a501-424d-8e2f-486033e8c879
+		summarizeBy: none
+		sourceColumn: macroeconomiccate_lv1
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomiccate_lv2
+		dataType: string
+		lineageTag: fcc5ccb6-8c2b-4808-abc3-e80971d58e30
+		summarizeBy: none
+		sourceColumn: macroeconomiccate_lv2
+
+		annotation SummarizationSetBy = Automatic
+
+	column macroeconomiccate_lv3
+		dataType: string
+		lineageTag: 44e3a5bd-cc49-4eb1-a2b1-81f6a863e548
+		summarizeBy: none
+		sourceColumn: macroeconomiccate_lv3
+		sortByColumn: SortBank
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column level_static
+		dataType: string
+		lineageTag: 48ed6036-383b-461c-811a-028ce9708db3
+		summarizeBy: none
+		sourceColumn: level_static
+
+		annotation SummarizationSetBy = Automatic
+
+	column macro_economic_unit
+		dataType: string
+		lineageTag: 44d5ed1e-e763-495b-a957-93b33c0189e1
+		summarizeBy: none
+		sourceColumn: macro_economic_unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column frequency
+		dataType: string
+		lineageTag: fef09608-50d0-420e-94e2-4d60f4bfa6f6
+		summarizeBy: none
+		sourceColumn: frequency
+
+		annotation SummarizationSetBy = Automatic
+
+	column amount_% = KTVM[amount]/100
+		lineageTag: 26020364-396d-40d6-8f0b-309f44e11470
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Year-period = KTVM[year]&"-"&RIGHT("0"&KTVM[period],2)
+		dataType: string
+		lineageTag: 1ad0f573-f07c-4483-b863-d459176284bf
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Format_region =
+			
+			SWITCH(
+			    TRUE(),
+			    CONTAINSSTRING(KTVM[macroeconomiccate_lv3], "Châu Á"), "Châu Á",
+			    CONTAINSSTRING(KTVM[macroeconomiccate_lv3], "Châu Âu"), "Châu Âu",
+			    CONTAINSSTRING(KTVM[macroeconomiccate_lv3], "Châu Mỹ"), "Châu Mỹ",
+			    CONTAINSSTRING(KTVM[macroeconomiccate_lv3], "Châu Úc"), "Châu Úc",
+			    CONTAINSSTRING(KTVM[macroeconomiccate_lv3], "Châu Phi"), "Châu Phi",
+			    BLANK() // Trả về BLANK nếu không chứa cả "Châu Á" hay "Châu Âu"
+			)
+		lineageTag: 0a3f17d0-5d35-4200-a223-4442b5d06b73
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column SortBank
+		dataType: int64
+		formatString: 0
+		lineageTag: 2800433f-a2fd-444f-8681-de9d517a330f
+		summarizeBy: sum
+		sourceColumn: SortBank
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuarterKey = KTVM[year] * 10 + KTVM[quater]
+		formatString: 0
+		lineageTag: b8c9d0e1-f2a3-44b5-c6d7-e8f9a0b1c2d3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KTVM = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[macroeconomicCategory1Id]#(lf)      ,A.[macroeconomicCategory2Id]#(lf)      ,A.[macroeconomicCategory3Id]#(lf)      ,A.[reportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[levelId]#(lf)      ,A.[macroEconomicUnitId]#(lf)      ,A.[amount]#(lf)      ,A.[cityTypeId]#(lf)      ,A.[cityId]#(lf)      ,B.name AS macroeconomiccate_lv1#(lf)      ,C.name AS macroeconomiccate_lv2#(lf)      ,D.name AS macroeconomiccate_lv3#(lf)      ,E.label AS level_static#(lf)      ,F.label AS macro_economic_unit#(lf)      ,G.label AS frequency#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_macroeconomic_data] A#(lf)  LEFT JOIN mr_macroeconomic_category_l1 B ON A.macroeconomicCategory1Id = B.id#(lf)  LEFT JOIN mr_macroeconomic_category_l2 C ON A.macroeconomicCategory2Id = C.id#(lf)  LEFT JOIN mr_macroeconomic_category_l3 D ON A.macroeconomicCategory3Id = D.id#(lf)  LEFT JOIN dropdown_option E ON A.levelId = E.id AND E.dropdownCode = 'mr_business_level_type'#(lf)  LEFT JOIN dropdown_option F ON A.macroEconomicUnitId = F.id and F.dropdownCode = 'mr_macro_economic_unit'#(lf)  LEFT JOIN dropdown_option G ON A.reportingFrequencyId = G.id AND G.dropdownCode = 'mr_frequency_type'"]),
+				    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false)),
+				    #"Merged Queries" = Table.NestedJoin(#"Filtered Rows", {"macroeconomiccate_lv3"}, SortBank, {"Bank"}, "SortBank", JoinKind.LeftOuter),
+				    #"Expanded SortBank" = Table.ExpandTableColumn(#"Merged Queries", "SortBank", {"STT"}, {"STT"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Expanded SortBank",{{"STT", "SortBank"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

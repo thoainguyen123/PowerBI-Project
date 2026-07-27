@@ -1,0 +1,58 @@
+services:
+  web:
+    build: .
+    container_name: hr_project_nexus
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      # Không còn mặc định "123456": thiếu DB_PASSWORD thì compose báo lỗi ngay
+      DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD chua duoc dat, hay tao .env tu .env.example}"
+      DB_NAME: hr_management_system
+      USE_POSTGRES: "true"
+      MASTERDATA_TEMPLATE_PATH: /app/masterdata_template.xlsx
+    volumes:
+      # Dùng cú pháp dài vì đường dẫn có khoảng trắng và dấu ngoặc đơn
+      # File SQLite chỉ dùng khi USE_POSTGRES=false, giữ lại để chạy thử cục bộ
+      - type: bind
+        source: "./hr_management.db"
+        target: "/app/hr_management.db"
+      - type: bind
+        source: "./Data_structure_v1 (5).xlsx"
+        target: "/app/Data_structure_v1 (5).xlsx"
+      - type: bind
+        source: "../NVLG_PROJECT/Template_Nhap_Lieu_Master_Data_Du_An.xlsx"
+        target: "/app/masterdata_template.xlsx"
+        read_only: true
+    restart: always
+    depends_on:
+      db:
+        # Đợi Postgres thật sự nhận kết nối. Trước đây web khởi động trước db,
+        # kết nối fail và app âm thầm ghi dữ liệu sang SQLite trong container.
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    container_name: hr_project_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD chua duoc dat, hay tao .env tu .env.example}"
+      POSTGRES_DB: hr_management_system
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d hr_management_system"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: always
+
+volumes:
+  pgdata:

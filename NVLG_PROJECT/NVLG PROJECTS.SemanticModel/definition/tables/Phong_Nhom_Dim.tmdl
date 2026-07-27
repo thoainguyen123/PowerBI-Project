@@ -1,0 +1,27 @@
+table Phong_Nhom_Dim
+	lineageTag: de61d706-1703-45c9-bf97-12630c5a84aa
+
+	column Phong_Nhom
+		lineageTag: ad7dce19-e9a3-4532-93ae-47c005da2cf7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: Eoffice_TD[Phong_Nhom]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Phong_Nhom_Dim = calculated
+		mode: import
+		source =
+				
+				DISTINCT(
+				    UNION(
+				        FILTER(
+				            VALUES(Eoffice_TD[Phong_Nhom]),
+				            NOT(ISBLANK(Eoffice_TD[Phong_Nhom]))
+				        ),
+				        ROW("Phong_Nhom", "4.0 PMD")
+				    )
+				)
+
+	annotation PBI_Id = a8a471d6acf94fee8e748d5d354d55c9
+

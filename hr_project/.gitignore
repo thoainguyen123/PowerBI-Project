@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+# Database thật (README dặn không commit, trước đây chỉ chặn *.test.db)
+*.db
+*.test.db
+*.bak
+.pytest_cache/

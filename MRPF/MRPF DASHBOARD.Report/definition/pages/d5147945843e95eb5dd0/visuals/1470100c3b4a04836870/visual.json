@@ -1,0 +1,240 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "1470100c3b4a04836870",
+  "position": {
+    "x": 0,
+    "y": 39.901477832512313,
+    "z": 0,
+    "height": 466.4039408866995,
+    "width": 960.29556650246309,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Product_Project_BDS"
+                    }
+                  },
+                  "Property": "project_name"
+                }
+              },
+              "queryRef": "Product_Project_BDS.project_name",
+              "nativeQueryRef": "Dự án",
+              "displayName": "Dự án"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Product_Project_BDS"
+                    }
+                  },
+                  "Property": "phase_name"
+                }
+              },
+              "queryRef": "Product_Project_BDS.phase_name",
+              "nativeQueryRef": "Phân khu",
+              "displayName": "Phân khu"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Product_Project_BDS"
+                    }
+                  },
+                  "Property": "project_type"
+                }
+              },
+              "queryRef": "Product_Project_BDS.project_type",
+              "nativeQueryRef": "Loại hình dự án",
+              "displayName": "Loại hình dự án"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Product_Project_BDS"
+                    }
+                  },
+                  "Property": "product_name"
+                }
+              },
+              "queryRef": "Product_Project_BDS.product_name",
+              "nativeQueryRef": "Loại hình sản phẩm",
+              "displayName": "Loại hình sản phẩm"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Product_Project_BDS"
+                        }
+                      },
+                      "Property": "quantity"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(Product_Project_BDS.quantity)",
+              "nativeQueryRef": "Số lượng",
+              "displayName": "Số lượng"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Product_Project_BDS"
+                        }
+                      },
+                      "Property": "area"
+                    }
+                  },
+                  "Function": 1
+                }
+              },
+              "queryRef": "Sum(Product_Project_BDS.area)",
+              "nativeQueryRef": "Average of area",
+              "displayName": "Diện tích bình quân"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "118.0887024759843D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Product_Project_BDS.quantity)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "156.47223485803113D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Product_Project_BDS.product_name"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "158.37836838673078D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Product_Project_BDS.project_type"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "190.63053894551894D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Product_Project_BDS.project_name"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "160.82759125661923D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Product_Project_BDS.phase_name"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "138.41380590027163D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(Product_Project_BDS.area)"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'BoldHeader'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

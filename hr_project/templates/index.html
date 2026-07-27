@@ -38,10 +38,7 @@
                     <i class="bx bx-building-house"></i>
                     <span>Thông tin dự án</span>
                 </button>
-                <button class="nav-tab" onclick="switchTab('masterdata', this)">
-                    <i class="bx bx-spreadsheet"></i>
-                    <span>Master data dự án</span>
-                </button>
+                <!-- Standalone Master Data Nav item integrated into Project Info tab -->
 
                 <span class="nav-section-label">Nhân sự</span>
                 <button class="nav-tab active" onclick="switchTab('allocations', this)">
@@ -1247,5 +1244,69 @@
 
     <!-- JS Scripts -->
     <script src="/static/js/main.js?v=5.2.3"></script>
+
+    <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
+    <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">
+        <div class="modal-container masterdata-modal-container" style="max-width: 1200px; width: 95vw; max-height: 92vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <div>
+                    <span class="eyebrow" style="color: var(--secondary);">MASTER DATA DỰ ÁN</span>
+                    <h3 id="modal-masterdata-project-title">Master Data Dự Án</h3>
+                </div>
+                <button class="modal-close" onclick="closeProjectMasterDataModal()" aria-label="Đóng">&times;</button>
+            </div>
+            
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 1rem 1.5rem;">
+                <div class="masterdata-project-bar" style="margin-bottom: 1rem; background: rgba(13, 148, 136, 0.06); padding: 0.8rem 1.25rem; border-radius: var(--radius-md);">
+                    <div class="masterdata-kpis" style="width: 100%; justify-content: space-between;">
+                        <span><strong id="modal-masterdata-kpi-records">0</strong> bản ghi tổng hợp</span>
+                        <span><strong id="modal-masterdata-kpi-modules">0/15</strong> sheet đã nhập</span>
+                        <span><strong id="modal-masterdata-kpi-missing">15</strong> sheet chưa nhập</span>
+                    </div>
+                </div>
+
+                <div class="masterdata-workspace" style="display: flex; gap: 1rem; min-height: 500px;">
+                    <aside class="masterdata-modules" style="width: 240px; flex: 0 0 240px;">
+                        <div class="masterdata-modules-heading">
+                            <span>15 Nhóm Dữ Liệu</span>
+                        </div>
+                        <div id="modal-masterdata-module-list" class="masterdata-module-list"></div>
+                    </aside>
+                    <div class="table-card masterdata-panel" style="flex: 1; margin-top: 0;">
+                        <div class="table-toolbar">
+                            <div>
+                                <h3 id="modal-masterdata-active-title">9.1 HRC · Nhân sự</h3>
+                                <p id="modal-masterdata-active-description">Đang tải dữ liệu...</p>
+                            </div>
+                            <button class="btn btn-primary" id="modal-masterdata-add-button" onclick="openMasterdataModal()">
+                                <i class="bx bx-plus"></i> Thêm dòng
+                            </button>
+                        </div>
+                        <div class="table-responsive masterdata-table-wrap">
+                            <table class="masterdata-table">
+                                <thead id="modal-masterdata-table-head"></thead>
+                                <tbody id="modal-masterdata-table-body">
+                                    <tr><td class="no-data">Vui lòng chọn một nhóm dữ liệu.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer" style="display: flex; justify-content: space-between; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);">
+                <div style="display: flex; gap: 0.5rem;">
+                    <a class="btn btn-secondary" id="modal-masterdata-export-excel" href="/api/masterdata/export-template">
+                        <i class="bx bx-file"></i> Tải Mẫu Excel 16 Sheet
+                    </a>
+                    <a class="btn btn-secondary" id="modal-masterdata-export-csv" href="/api/masterdata/export-fact">
+                        <i class="bx bx-download"></i> Xuất CSV
+                    </a>
+                </div>
+                <button class="btn btn-primary" onclick="closeProjectMasterDataModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

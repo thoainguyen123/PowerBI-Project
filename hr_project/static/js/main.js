@@ -603,8 +603,11 @@ function renderProjectOverviewTable(projects) {
                     </span>
                 </td>
                 <td class="action-column">
-                    <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa dự án">
+                    <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa hồ sơ dự án">
                         <i class="bx bx-edit-alt"></i>
+                    </button>
+                    <button class="btn-icon" style="color: var(--secondary); border-color: rgba(13, 148, 136, 0.3);" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="openProjectMasterDataModal(this.dataset.projectCode)" title="Xem/Nhập Master Data dự án">
+                        <i class="bx bx-spreadsheet"></i>
                     </button>
                 </td>
             </tr>`;

@@ -606,7 +606,7 @@ function renderProjectOverviewTable(projects) {
                     <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa hồ sơ dự án">
                         <i class="bx bx-edit-alt"></i>
                     </button>
-                    <button class="btn-icon" style="color: var(--secondary); border-color: rgba(13, 148, 136, 0.3);" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="openProjectMasterDataModal(this.dataset.projectCode)" title="Xem/Nhập Master Data dự án">
+                    <button class="btn-icon" style="color: var(--secondary); border-color: rgba(13, 148, 136, 0.4);" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="switchProjectSubTab('masterdata', this.dataset.projectCode)" title="Xem/Nhập Master Data dự án này">
                         <i class="bx bx-spreadsheet"></i>
                     </button>
                 </td>
@@ -2995,5 +2995,46 @@ async function deleteQuickAllocation(id, ma_du_an) {
     } catch (err) {
         console.error(err);
         showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+
+/* UNIFIED PROJECT SUBTAB SWITCHER */
+function switchProjectSubTab(mode, selectedProjectCode = null) {
+    const btnList = document.getElementById('btn-subtab-project-list');
+    const btnMaster = document.getElementById('btn-subtab-project-masterdata');
+    const viewList = document.getElementById('project-subview-list');
+    const viewMaster = document.getElementById('project-subview-masterdata');
+
+    if (mode === 'masterdata') {
+        if (btnList) {
+            btnList.className = 'btn';
+            btnList.style.border = '1px solid var(--border-color)';
+        }
+        if (btnMaster) {
+            btnMaster.className = 'btn btn-primary';
+            btnMaster.style.border = 'none';
+        }
+        if (viewList) viewList.style.display = 'none';
+        if (viewMaster) viewMaster.style.display = 'block';
+
+        if (selectedProjectCode) {
+            const select = document.getElementById('masterdata-project-select');
+            if (select) {
+                select.value = selectedProjectCode;
+                loadMasterdataProject();
+            }
+        }
+    } else {
+        if (btnList) {
+            btnList.className = 'btn btn-primary';
+            btnList.style.border = 'none';
+        }
+        if (btnMaster) {
+            btnMaster.className = 'btn';
+            btnMaster.style.border = '1px solid var(--border-color)';
+        }
+        if (viewList) viewList.style.display = 'block';
+        if (viewMaster) viewMaster.style.display = 'none';
     }
 }

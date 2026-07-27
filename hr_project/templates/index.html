@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=6.0.0">
+    <link rel="stylesheet" href="/static/css/style.css?v=7.0.0">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -215,17 +215,20 @@
                 </div>
             </section>
 
-            <!-- 2. PROJECT OVERVIEW DATA ENTRY TAB -->
+                        <!-- 2. PROJECT OVERVIEW & MASTER DATA TAB (UNIFIED) -->
             <section id="tab-projects" class="tab-content">
                 <div class="page-hero project-hero">
                     <div>
-                        <span class="eyebrow">DANH MỤC DỰ ÁN</span>
+                        <span class="eyebrow">DANH MỤC & DỮ LIỆU DỰ ÁN</span>
                         <h2>Thông tin dự án</h2>
-                        <p>Quản lý thông tin tổng quan và hồ sơ cơ bản của từng dự án.</p>
+                        <p>Quản lý thông tin tổng quan hồ sơ dự án và nhập liệu Master Data chi tiết (HRC, FAC, PLP, DMD, PCD...)</p>
                     </div>
                     <div class="hero-actions">
                         <a class="btn btn-secondary" href="/api/projects/export-overview">
-                            <i class="bx bx-download"></i> Xuất Excel
+                            <i class="bx bx-download"></i> Xuất Excel Hồ Sơ
+                        </a>
+                        <a class="btn btn-secondary" id="masterdata-export-excel" href="/api/masterdata/export-template">
+                            <i class="bx bx-file"></i> Tải Mẫu Excel 16 Sheet
                         </a>
                         <button class="btn btn-primary" onclick="openProjectModal()">
                             <i class="bx bx-plus"></i> Thêm dự án
@@ -233,144 +236,141 @@
                     </div>
                 </div>
 
-                <div class="grid-stats project-kpis">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="bx bx-buildings"></i></div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="project-kpi-total">0</div>
-                            <div class="stat-label">Tổng dự án / phân khu</div>
-                        </div>
-                    </div>
-                    <div class="stat-card green">
-                        <div class="stat-icon"><i class="bx bx-check-shield"></i></div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="project-kpi-complete">0</div>
-                            <div class="stat-label">Đủ thông tin</div>
-                        </div>
-                    </div>
-                    <div class="stat-card orange">
-                        <div class="stat-icon"><i class="bx bx-error-circle"></i></div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="project-kpi-incomplete">0</div>
-                            <div class="stat-label">Cần bổ sung thông tin</div>
-                        </div>
-                    </div>
-                    <div class="stat-card blue">
-                        <div class="stat-icon"><i class="bx bx-map-alt"></i></div>
-                        <div class="stat-info">
-                            <div class="stat-value" id="project-kpi-regions">0</div>
-                            <div class="stat-label">Khu vực đang quản lý</div>
-                        </div>
-                    </div>
+                <!-- Sub-Tab Toggle Buttons inside Thông tin dự án -->
+                <div class="project-subtab-container" style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                    <button id="btn-subtab-project-list" class="btn btn-primary" onclick="switchProjectSubTab('list')">
+                        <i class="bx bx-buildings"></i> 1. Danh mục tổng quan dự án
+                    </button>
+                    <button id="btn-subtab-project-masterdata" class="btn" style="border: 1px solid var(--border-color);" onclick="switchProjectSubTab('masterdata')">
+                        <i class="bx bx-spreadsheet"></i> 2. Master Data chi tiết (15 Sheet phòng ban)
+                    </button>
                 </div>
 
-                <div class="control-bar project-controls">
-                    <div class="search-box">
-                        <i class="bx bx-search"></i>
-                        <input type="text" id="project-search-input" placeholder="Tìm mã, tên dự án, chủ đầu tư, địa điểm..." oninput="filterProjectOverview()">
-                    </div>
-                    <div class="filter-group">
-                        <select id="project-filter-region" class="filter-select" onchange="filterProjectOverview()">
-                            <option value="">Tất cả khu vực</option>
-                        </select>
-                        <select id="project-filter-status" class="filter-select" onchange="filterProjectOverview()">
-                            <option value="">Tất cả hiện trạng</option>
-                        </select>
-                        <select id="project-filter-quality" class="filter-select" onchange="filterProjectOverview()">
-                            <option value="">Tất cả chất lượng dữ liệu</option>
-                            <option value="complete">Đủ thông tin</option>
-                            <option value="incomplete">Cần bổ sung</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="table-card project-table-card">
-                    <div class="table-toolbar">
-                        <div>
-                            <h3>Danh mục thông tin dự án</h3>
-                            <p id="project-table-count">Đang hiển thị 0 dự án</p>
+                <!-- SUB-VIEW 1: DANH MỤC TỔNG QUAN DỰ ÁN -->
+                <div id="project-subview-list">
+                    <div class="grid-stats project-kpis">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bx bx-buildings"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="project-kpi-total">0</div>
+                                <div class="stat-label">Tổng dự án / phân khu</div>
+                            </div>
+                        </div>
+                        <div class="stat-card green">
+                            <div class="stat-icon"><i class="bx bx-check-shield"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="project-kpi-complete">0</div>
+                                <div class="stat-label">Đủ thông tin</div>
+                            </div>
+                        </div>
+                        <div class="stat-card orange">
+                            <div class="stat-icon"><i class="bx bx-error-circle"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="project-kpi-incomplete">0</div>
+                                <div class="stat-label">Cần bổ sung thông tin</div>
+                            </div>
+                        </div>
+                        <div class="stat-card blue">
+                            <div class="stat-icon"><i class="bx bx-map-alt"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="project-kpi-regions">0</div>
+                                <div class="stat-label">Khu vực đang quản lý</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="project-table">
-                            <thead>
-                                <tr>
-                                    <th>Mã dự án</th>
-                                    <th>Dự án</th>
-                                    <th>Khu vực</th>
-                                    <th>Hiện trạng</th>
-                                    <th>Chủ đầu tư</th>
-                                    <th>Quy mô</th>
-                                    <th>Chất lượng dữ liệu</th>
-                                    <th class="action-column">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="project-overview-table-body">
-                                <tr>
-                                    <td colspan="8" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
 
-            <!-- 3. MASTER DATA DEPARTMENT SHEETS -->
-            <section id="tab-masterdata" class="tab-content">
-                <div class="page-hero masterdata-hero">
-                    <div>
-                        <span class="eyebrow">DỮ LIỆU PHÒNG BAN</span>
-                        <h2>Master data dự án</h2>
-                        <p>Cập nhật thông tin HRC, FAC, PLP, DMD, PCD… theo từng dự án.</p>
-                    </div>
-                    <div class="hero-actions">
-                        <a class="btn btn-secondary" id="masterdata-export-excel" href="/api/masterdata/export-template">
-                            <i class="bx bx-file"></i> Xuất Excel 16 sheet
-                        </a>
-                        <a class="btn btn-primary" id="masterdata-export-csv" href="/api/masterdata/export-fact">
-                            <i class="bx bx-download"></i> Xuất CSV tổng hợp
-                        </a>
-                    </div>
-                </div>
-
-                <div class="masterdata-project-bar">
-                    <div>
-                        <label for="masterdata-project-select">Dự án đang nhập liệu</label>
-                        <select id="masterdata-project-select" class="filter-select" onchange="loadMasterdataProject()">
-                            <option value="">-- Chọn dự án --</option>
-                        </select>
-                    </div>
-                    <div class="masterdata-kpis">
-                        <span><strong id="masterdata-kpi-records">0</strong> bản ghi</span>
-                        <span><strong id="masterdata-kpi-modules">0/15</strong> sheet có dữ liệu</span>
-                        <span><strong id="masterdata-kpi-missing">15</strong> sheet chưa nhập</span>
-                    </div>
-                </div>
-
-                <div class="masterdata-workspace">
-                    <aside class="masterdata-modules">
-                        <div class="masterdata-modules-heading">
-                            <span>Nhóm dữ liệu</span>
+                    <div class="control-bar project-controls">
+                        <div class="search-box">
+                            <i class="bx bx-search"></i>
+                            <input type="text" id="project-search-input" placeholder="Tìm mã, tên dự án, chủ đầu tư, địa điểm..." oninput="filterProjectOverview()">
                         </div>
-                        <div id="masterdata-module-list"></div>
-                    </aside>
-                    <div class="table-card masterdata-panel">
+                        <div class="filter-group">
+                            <select id="project-filter-region" class="filter-select" onchange="filterProjectOverview()">
+                                <option value="">Tất cả khu vực</option>
+                            </select>
+                            <select id="project-filter-status" class="filter-select" onchange="filterProjectOverview()">
+                                <option value="">Tất cả hiện trạng</option>
+                            </select>
+                            <select id="project-filter-quality" class="filter-select" onchange="filterProjectOverview()">
+                                <option value="">Tất cả chất lượng dữ liệu</option>
+                                <option value="complete">Đủ thông tin</option>
+                                <option value="incomplete">Cần bổ sung</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-card project-table-card">
                         <div class="table-toolbar">
                             <div>
-                                <h3 id="masterdata-active-title">9.1 HRC · Nhân sự</h3>
-                                <p id="masterdata-active-description">Chọn dự án để xem và nhập dữ liệu.</p>
+                                <h3>Danh mục thông tin dự án</h3>
+                                <p id="project-table-count">Đang hiển thị 0 dự án</p>
                             </div>
-                            <button class="btn btn-primary" id="masterdata-add-button" onclick="openMasterdataModal()" disabled>
-                                <i class="bx bx-plus"></i> Thêm dòng
-                            </button>
                         </div>
-                        <div class="table-responsive masterdata-table-wrap">
-                            <table class="masterdata-table">
-                                <thead id="masterdata-table-head"></thead>
-                                <tbody id="masterdata-table-body">
-                                    <tr><td class="no-data">Vui lòng chọn một dự án.</td></tr>
+                        <div class="table-responsive">
+                            <table class="project-table">
+                                <thead>
+                                    <tr>
+                                        <th>Mã dự án</th>
+                                        <th>Dự án</th>
+                                        <th>Khu vực</th>
+                                        <th>Hiện trạng</th>
+                                        <th>Chủ đầu tư</th>
+                                        <th>Quy mô</th>
+                                        <th>Chất lượng dữ liệu</th>
+                                        <th class="action-column">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="project-overview-table-body">
+                                    <tr>
+                                        <td colspan="8" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td>
+                                    </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-VIEW 2: MASTER DATA CHI TIẾT NẮM TRONG THÔNG TIN DỰ ÁN -->
+                <div id="project-subview-masterdata" style="display: none;">
+                    <div class="masterdata-project-bar">
+                        <div>
+                            <label for="masterdata-project-select">Dự án đang nhập liệu Master Data</label>
+                            <select id="masterdata-project-select" class="filter-select" onchange="loadMasterdataProject()">
+                                <option value="">-- Chọn dự án --</option>
+                            </select>
+                        </div>
+                        <div class="masterdata-kpis">
+                            <span><strong id="masterdata-kpi-records">0</strong> bản ghi</span>
+                            <span><strong id="masterdata-kpi-modules">0/15</strong> sheet có dữ liệu</span>
+                            <span><strong id="masterdata-kpi-missing">15</strong> sheet chưa nhập</span>
+                        </div>
+                    </div>
+
+                    <div class="masterdata-workspace">
+                        <aside class="masterdata-modules">
+                            <div class="masterdata-modules-heading">
+                                <span>Nhóm dữ liệu</span>
+                            </div>
+                            <div id="masterdata-module-list"></div>
+                        </aside>
+                        <div class="table-card masterdata-panel">
+                            <div class="table-toolbar">
+                                <div>
+                                    <h3 id="masterdata-active-title">9.1 HRC · Nhân sự</h3>
+                                    <p id="masterdata-active-description">Chọn dự án để xem và nhập dữ liệu.</p>
+                                </div>
+                                <button class="btn btn-primary" id="masterdata-add-button" onclick="openMasterdataModal()" disabled>
+                                    <i class="bx bx-plus"></i> Thêm dòng
+                                </button>
+                            </div>
+                            <div class="table-responsive masterdata-table-wrap">
+                                <table class="masterdata-table">
+                                    <thead id="masterdata-table-head"></thead>
+                                    <tbody id="masterdata-table-body">
+                                        <tr><td class="no-data">Vui lòng chọn một dự án.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1243,7 +1243,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=6.0.0"></script>
+    <script src="/static/js/main.js?v=7.0.0"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">

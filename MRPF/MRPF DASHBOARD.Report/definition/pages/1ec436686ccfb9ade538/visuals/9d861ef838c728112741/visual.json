@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "9d861ef838c728112741",
   "position": {
     "x": 197.20588235294119,
@@ -42,11 +42,43 @@
                       "Entity": "Measure_BDS"
                     }
                   },
-                  "Property": "Tổng sản phẩm"
+                  "Property": "Số căn đã bán lũy kế all status"
                 }
               },
-              "queryRef": "Measure_BDS.Tổng sản phẩm",
-              "nativeQueryRef": "Tổng sản phẩm"
+              "queryRef": "Measure_BDS.Số căn đã bán lũy kế all status",
+              "nativeQueryRef": "Số căn đã bán",
+              "displayName": "Số căn đã bán",
+              "format": "#,0"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measure_BDS"
+                    }
+                  },
+                  "Property": "Tồn chưa mở bán"
+                }
+              },
+              "queryRef": "Measure_BDS.Tồn chưa mở bán",
+              "nativeQueryRef": "Số căn chưa mở bán",
+              "displayName": "Số căn chưa mở bán"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measure_BDS"
+                    }
+                  },
+                  "Property": "Tồn của quý này all status"
+                }
+              },
+              "queryRef": "Measure_BDS.Tồn của quý này all status",
+              "nativeQueryRef": "Số căn chưa bán",
+              "displayName": "Số căn chưa bán"
             }
           ]
         }
@@ -61,7 +93,7 @@
                     "Entity": "Measure_BDS"
                   }
                 },
-                "Property": "Tổng sản phẩm"
+                "Property": "Số căn đã bán lũy kế all status"
               }
             },
             "direction": "Descending"
@@ -120,6 +152,63 @@
               }
             }
           }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": -0.5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Tồn chưa mở bán"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 9,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Tồn của quý này all status"
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 2,
+                      "Percent": -0.25
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Số căn đã bán lũy kế all status"
+          }
         }
       ],
       "labels": [
@@ -177,6 +266,19 @@
               "expr": {
                 "Literal": {
                   "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "totals": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }
@@ -249,53 +351,63 @@
           }
         },
         "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "p",
-              "Entity": "Project_BDS",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "phase_status.2"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Đã bán hết'"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Đang mở bán'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        },
         "howCreated": "User"
+      },
+      {
+        "name": "d4d18a5c000c82ea5024",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "project_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "97470c48b10a655d58d7",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Tồn chưa mở bán"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "fd6f5f39e9dcecd37238",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Số căn đã bán lũy kế all status"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "cec9c50b712ad8262e07",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Tồn của quý này all status"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

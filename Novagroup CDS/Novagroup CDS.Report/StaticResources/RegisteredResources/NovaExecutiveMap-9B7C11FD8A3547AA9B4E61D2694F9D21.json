@@ -1,0 +1,137 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.153.json",
+  "name": "NovaExecutiveMap-9B7C11FD8A3547AA9B4E61D2694F9D21.json",
+  "dataColors": [
+    "#2F80ED",
+    "#27B3C5",
+    "#0F4C81",
+    "#14B87A",
+    "#F5A623",
+    "#7A6FF0",
+    "#E04F5F",
+    "#6B7C93"
+  ],
+  "good": "#14B87A",
+  "neutral": "#F5A623",
+  "bad": "#E04F5F",
+  "maximum": "#2F80ED",
+  "center": "#27B3C5",
+  "minimum": "#DCEAF6",
+  "null": "#94A3B8",
+  "foreground": "#102A43",
+  "foregroundNeutralSecondary": "#5B7083",
+  "foregroundNeutralTertiary": "#829AB1",
+  "backgroundLight": "#F4F7FB",
+  "backgroundNeutral": "#D7E2EC",
+  "background": "#FFFFFF",
+  "tableAccent": "#0F4C81",
+  "textClasses": {
+    "callout": {
+      "fontSize": 28,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F2B46"
+    },
+    "title": {
+      "fontSize": 14,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F2B46"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#102A43"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#102A43"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "cardVisual": {
+      "*": {
+        "cardCalloutArea": [
+          {
+            "paddingUniform": 0
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "columnHeaders": [
+          {
+            "autoSizeColumnWidth": true,
+            "columnAdjustment": "growToFit",
+            "backColor": {
+              "solid": {
+                "color": "#0F4C81"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "values": [
+          {
+            "backColorPrimary": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": "#F7FAFC"
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": "#102A43"
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": "#102A43"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

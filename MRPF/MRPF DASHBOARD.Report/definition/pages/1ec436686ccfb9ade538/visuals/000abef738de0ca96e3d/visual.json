@@ -23,12 +23,12 @@
                       "Entity": "Measure_BDS"
                     }
                   },
-                  "Property": "Tồn của quý trước"
+                  "Property": "Tổng mở bán tính tới quý đó"
                 }
               },
-              "queryRef": "Measure_BDS.Tồn của quý trước",
-              "nativeQueryRef": "Tồn lũy kế",
-              "displayName": "Tồn lũy kế"
+              "queryRef": "Measure_BDS.Tổng mở bán tính tới quý đó",
+              "nativeQueryRef": "Tổng mở bán lũy kế",
+              "displayName": "Tổng mở bán lũy kế"
             }
           ]
         }
@@ -43,7 +43,7 @@
                     "Entity": "Measure_BDS"
                   }
                 },
-                "Property": "Tồn của quý trước"
+                "Property": "Tổng mở bán tính tới quý đó"
               }
             },
             "direction": "Descending"

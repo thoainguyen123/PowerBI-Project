@@ -109,15 +109,25 @@ async function checkLoginState() {
             document.querySelector('.app-container').style.display = 'flex';
             document.getElementById('header-user-profile').style.display = 'flex';
             document.getElementById('user-display-name').innerText = data.display_name;
-            document.getElementById('user-display-role').innerText = data.role === 'admin' ? 'Admin Hệ thống' : 'Quản lý Vùng';
+            const roleLabels = { admin: 'Admin Hệ thống', hr: 'Quản lý Nhân sự', manager: 'Quản lý Vùng' };
+            document.getElementById('user-display-role').innerText = roleLabels[data.role] || 'Quản lý Vùng';
             const avatar = document.getElementById('user-avatar');
             if (avatar) {
                 avatar.innerText = (data.display_name || data.username || 'A').trim().charAt(0).toUpperCase();
             }
-            
+
             const syncNav = document.getElementById('nav-sync');
             if (syncNav) {
                 syncNav.style.display = (data.role === 'admin') ? 'inline-flex' : 'none';
+            }
+            // Vai trò Nhân sự không có quyền vào "Thông tin dự án" (Master data
+            // phòng ban là sub-view bên trong tab này nên ẩn luôn cả 2). Tab mặc
+            // định khi tải trang luôn là "allocations" (đánh dấu active sẵn trong
+            // HTML, không có cơ chế khôi phục tab từ URL/localStorage) nên không
+            // cần xử lý trường hợp hr đang đứng ở tab projects.
+            const projectsNav = document.getElementById('nav-projects');
+            if (projectsNav) {
+                projectsNav.style.display = (data.role === 'hr') ? 'none' : 'inline-flex';
             }
             return true;
         } else {
@@ -606,9 +616,6 @@ function renderProjectOverviewTable(projects) {
                     <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa hồ sơ dự án">
                         <i class="bx bx-edit-alt"></i>
                     </button>
-                    <button class="btn-icon" style="color: var(--secondary); border-color: rgba(13, 148, 136, 0.4);" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="switchProjectSubTab('masterdata', this.dataset.projectCode)" title="Xem/Nhập Master Data dự án này">
-                        <i class="bx bx-spreadsheet"></i>
-                    </button>
                 </td>
             </tr>`;
     }).join('');
@@ -617,14 +624,18 @@ function renderProjectOverviewTable(projects) {
 function openProjectModal() {
     const form = document.getElementById('form-project');
     form.reset();
+    state.masterdataProjectCode = '';
+    state.masterdataEntries = [];
+    updateMasterdataKpis();
+    renderMasterdataAllSections();
     document.getElementById('project-edit-code').value = '';
     document.getElementById('project-code-input').readOnly = false;
     document.getElementById('modal-project-title').innerText = 'Thêm thông tin dự án';
-    document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu dự án';
+    document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu toàn bộ hồ sơ';
     openModal('modal-project');
 }
 
-async function editProjectOverview(projectCode) {
+async function editProjectOverview(projectCode, focusMasterdata = false) {
     try {
         const res = await fetch(`${API_URL}/projects/${encodeURIComponent(projectCode)}`);
         const project = await res.json();
@@ -649,8 +660,15 @@ async function editProjectOverview(projectCode) {
         document.getElementById('project-products-input').value = project.so_luong_san_pham || '';
         document.getElementById('project-origin-input').value = project.nguon_goc_du_an || '';
         document.getElementById('modal-project-title').innerText = 'Cập nhật thông tin dự án';
-        document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu thay đổi';
+        document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu toàn bộ hồ sơ';
         openModal('modal-project');
+        await loadMasterdataProject(project.ma_du_an);
+        if (focusMasterdata) {
+            document.getElementById('project-modal-masterdata-section')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
     } catch (err) {
         console.error('Lỗi khi tải dự án:', err);
     }
@@ -659,6 +677,7 @@ async function editProjectOverview(projectCode) {
 async function saveProject(event) {
     event.preventDefault();
     const editingCode = document.getElementById('project-edit-code').value;
+    const isNewProject = !editingCode;
     const projectCode = document.getElementById('project-code-input').value.trim();
     const payload = {
         ma_du_an: projectCode,
@@ -686,11 +705,30 @@ async function saveProject(event) {
             body: JSON.stringify(payload)
         });
 
-        closeModal('modal-project');
-        showToast(editingCode ? 'Đã cập nhật thông tin dự án!' : 'Đã thêm dự án mới!');
+        if (state.masterdataProjectCode === projectCode) {
+            await saveAllProjectMasterdata(projectCode);
+        }
+
         await loadInitialMetadata();
         await fetchProjectOverviewData();
         await fetchDashboardData();
+
+        if (isNewProject) {
+            document.getElementById('project-edit-code').value = projectCode;
+            document.getElementById('project-code-input').readOnly = true;
+            document.getElementById('modal-project-title').innerText = 'Cập nhật thông tin dự án';
+            document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu toàn bộ hồ sơ';
+            await loadMasterdataProject(projectCode);
+            showToast('Đã tạo dự án. Tiếp tục nhập mục 03 rồi bấm cùng nút Lưu toàn bộ hồ sơ.');
+            document.getElementById('project-modal-masterdata-section')?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            return;
+        }
+
+        closeModal('modal-project');
+        showToast('Đã cập nhật toàn bộ hồ sơ dự án!');
     } catch (err) {
         console.error('Lỗi khi lưu dự án:', err);
     }
@@ -698,19 +736,18 @@ async function saveProject(event) {
 
 // MASTER DATA: nhập liệu theo các danh mục master data của Fact_MasterData
 async function loadMasterdataConfig() {
-    const moduleList = document.getElementById('masterdata-module-list');
-    if (!moduleList) return;
+    const container = document.getElementById('masterdata-all-sections');
+    if (!container) return;
     try {
         const res = await fetch(`${API_URL}/masterdata/config`);
         state.masterdataConfig = await res.json();
         if (!state.masterdataConfig.some(item => item.sheet === state.masterdataActiveSheet)) {
             state.masterdataActiveSheet = state.masterdataConfig[0]?.sheet || 'HRC';
         }
-        renderMasterdataModules();
-        renderMasterdataTable();
+        renderMasterdataAllSections();
     } catch (err) {
         console.error('Lỗi khi tải cấu hình master data:', err);
-        moduleList.innerHTML = '<div class="no-data">Không tải được cấu hình master data.</div>';
+        container.innerHTML = '<div class="no-data">Không tải được cấu hình master data.</div>';
     }
 }
 
@@ -718,133 +755,190 @@ function getMasterdataActiveConfig() {
     return state.masterdataConfig.find(item => item.sheet === state.masterdataActiveSheet);
 }
 
-async function loadMasterdataProject() {
+async function loadMasterdataProject(projectCode = null) {
     const select = document.getElementById('masterdata-project-select');
-    if (!select) return;
-    state.masterdataProjectCode = select.value;
-    const addButton = document.getElementById('masterdata-add-button');
-    addButton.disabled = !state.masterdataProjectCode;
+    state.masterdataProjectCode = projectCode || select?.value || state.masterdataProjectCode || '';
 
     const query = state.masterdataProjectCode
         ? `?project_code=${encodeURIComponent(state.masterdataProjectCode)}`
         : '';
-    document.getElementById('masterdata-export-excel').href = `/api/masterdata/export-template${query}`;
-    document.getElementById('masterdata-export-csv').href = `/api/masterdata/export-fact${query}`;
+    const exportExcel = document.getElementById('masterdata-export-excel');
+    const exportCsv = document.getElementById('masterdata-export-csv');
+    if (exportExcel) exportExcel.href = `/api/masterdata/export-template${query}`;
+    if (exportCsv) exportCsv.href = `/api/masterdata/export-fact${query}`;
 
     if (!state.masterdataProjectCode) {
         state.masterdataEntries = [];
         updateMasterdataKpis();
-        renderMasterdataModules();
-        renderMasterdataTable();
+        renderMasterdataAllSections();
         return;
     }
 
-    const tableBody = document.getElementById('masterdata-table-body');
-    tableBody.innerHTML = '<tr><td class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải dữ liệu...</td></tr>';
+    const container = document.getElementById('masterdata-all-sections');
+    if (!container) return;
+    container.innerHTML = '<div class="masterdata-empty-state"><i class="bx bx-loader-alt bx-spin"></i><h4>Đang tải hồ sơ dự án...</h4></div>';
     try {
         const res = await fetch(
             `${API_URL}/masterdata/entries?project_code=${encodeURIComponent(state.masterdataProjectCode)}`
         );
         state.masterdataEntries = await res.json();
         updateMasterdataKpis();
-        renderMasterdataModules();
-        renderMasterdataTable();
+        renderMasterdataAllSections();
     } catch (err) {
         console.error('Lỗi khi tải master data dự án:', err);
-        tableBody.innerHTML = '<tr><td class="no-data">Không thể tải dữ liệu dự án.</td></tr>';
+        container.innerHTML = '<div class="no-data">Không thể tải dữ liệu dự án.</div>';
     }
 }
 
 function updateMasterdataKpis() {
     const sheetCount = new Set(state.masterdataEntries.map(entry => entry.source_sheet)).size;
-    document.getElementById('masterdata-kpi-records').innerText =
-        state.masterdataEntries.length.toLocaleString('vi-VN');
-    document.getElementById('masterdata-kpi-modules').innerText =
-        `${sheetCount}/${state.masterdataConfig.length || 15}`;
-    document.getElementById('masterdata-kpi-missing').innerText =
-        Math.max((state.masterdataConfig.length || 15) - sheetCount, 0);
+    const records = document.getElementById('masterdata-kpi-records');
+    const modules = document.getElementById('masterdata-kpi-modules');
+    const missing = document.getElementById('masterdata-kpi-missing');
+    if (records) records.innerText = sheetCount.toLocaleString('vi-VN');
+    if (modules) modules.innerText = `${sheetCount}/${state.masterdataConfig.length || 15}`;
+    if (missing) missing.innerText = Math.max((state.masterdataConfig.length || 15) - sheetCount, 0);
 }
 
 function renderMasterdataModules() {
-    const container = document.getElementById('masterdata-module-list');
-    if (!container || !state.masterdataConfig.length) return;
-    const counts = state.masterdataEntries.reduce((result, entry) => {
-        result[entry.source_sheet] = (result[entry.source_sheet] || 0) + 1;
-        return result;
-    }, {});
-    container.innerHTML = state.masterdataConfig.map(config => `
-        <button class="masterdata-module ${config.sheet === state.masterdataActiveSheet ? 'active' : ''}"
-                data-sheet="${escapeHtml(config.sheet)}"
-                onclick="selectMasterdataSheet(this.dataset.sheet)">
-            <span class="masterdata-module-code">${escapeHtml(config.nhom)}</span>
-            <span class="masterdata-module-name">${escapeHtml(config.phan_nhom)}</span>
-            <span class="masterdata-module-count">${counts[config.sheet] || 0}</span>
-        </button>
-    `).join('');
+    renderMasterdataAllSections();
 }
 
 function selectMasterdataSheet(sheetName) {
     state.masterdataActiveSheet = sheetName;
-    renderMasterdataModules();
-    renderMasterdataTable();
+    document.getElementById(`masterdata-section-${sheetName}`)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }
 
 function renderMasterdataTable() {
-    const config = getMasterdataActiveConfig();
-    const head = document.getElementById('masterdata-table-head');
-    const body = document.getElementById('masterdata-table-body');
-    if (!config || !head || !body) return;
-    document.getElementById('masterdata-active-title').innerText =
-        `${escapeHtml(config.nhom)} · ${escapeHtml(config.phan_nhom)}`;
-    const visibleHeaders = config.headers.filter(header => header !== 'Mã dự án');
-    const entries = state.masterdataEntries.filter(
-        entry => entry.source_sheet === config.sheet
-    );
-    document.getElementById('masterdata-active-description').innerText =
-        state.masterdataProjectCode
-            ? `${entries.length} dòng · Cấu trúc sheet ${escapeHtml(config.sheet)}`
-            : 'Chọn dự án để xem và nhập dữ liệu.';
-    head.innerHTML = `<tr>${visibleHeaders.map(header =>
-        `<th>${escapeHtml(header)}</th>`
-    ).join('')}<th class="action-column">Thao tác</th></tr>`;
-
-    if (!state.masterdataProjectCode) {
-        body.innerHTML = `<tr><td colspan="${visibleHeaders.length + 1}" class="no-data">
-            <i class="bx bx-select-multiple"></i> Vui lòng chọn một dự án.
-        </td></tr>`;
-        return;
-    }
-    if (!entries.length) {
-        body.innerHTML = `<tr><td colspan="${visibleHeaders.length + 1}" class="no-data">
-            <i class="bx bx-data"></i> Sheet ${escapeHtml(config.sheet)} chưa có dữ liệu.
-            Bấm “Thêm dòng” để nhập.
-        </td></tr>`;
-        return;
-    }
-    body.innerHTML = entries.map(entry => `
-        <tr>
-            ${visibleHeaders.map(header => {
-                const value = entry.values?.[header] || '';
-                return `<td><span class="masterdata-cell" title="${escapeHtml(value)}">${escapeHtml(value || '—')}</span></td>`;
-            }).join('')}
-            <td class="action-column">
-                <div class="row-actions">
-                    <button class="btn-icon" onclick="openMasterdataModal(${entry.id})" title="Chỉnh sửa">
-                        <i class="bx bx-edit-alt"></i>
-                    </button>
-                    <button class="btn-icon danger" onclick="deleteMasterdataEntry(${entry.id})" title="Xóa">
-                        <i class="bx bx-trash"></i>
-                    </button>
-                </div>
-            </td>
-        </tr>
-    `).join('');
+    renderMasterdataAllSections();
 }
 
-function openMasterdataModal(entryId = null) {
+function renderMasterdataAllSections() {
+    const container = document.getElementById('masterdata-all-sections');
+    if (!container) return;
+
+    if (!state.masterdataConfig.length) {
+        container.innerHTML = '<div class="masterdata-empty-state"><i class="bx bx-loader-alt bx-spin"></i><h4>Đang tải cấu trúc dữ liệu...</h4></div>';
+        return;
+    }
+
+    if (!state.masterdataProjectCode) {
+        container.innerHTML = `
+            <div class="masterdata-empty-state">
+                <i class="bx bx-save"></i>
+                <h4>Lưu thông tin chung để nhập dữ liệu chi tiết</h4>
+                <p>Dự án mới cần có mã dự án trước khi thêm dữ liệu vào ${state.masterdataConfig.length} nhóm.</p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = state.masterdataConfig.map((config, index) => {
+        const entries = state.masterdataEntries.filter(entry => entry.source_sheet === config.sheet);
+        const entry = entries[0] || null;
+
+        return `
+            <section id="masterdata-section-${escapeHtml(config.sheet)}"
+                     class="masterdata-section-card project-masterdata-form-section"
+                     data-sheet="${escapeHtml(config.sheet)}">
+                <div class="masterdata-section-header">
+                    <div class="masterdata-section-index">${String(index + 1).padStart(2, '0')}</div>
+                    <div class="masterdata-section-title">
+                        <span>${escapeHtml(config.nhom)} · SHEET ${escapeHtml(config.sheet)}</span>
+                        <h4>${escapeHtml(config.phan_nhom)}</h4>
+                    </div>
+                    <span class="masterdata-section-count ${entry ? 'has-data' : ''}">
+                        ${entry ? 'Đã có dữ liệu' : 'Chưa nhập'}
+                    </span>
+                </div>
+                <div class="project-masterdata-rows" data-sheet="${escapeHtml(config.sheet)}">
+                    ${renderProjectMasterdataInlineRow(config, entry)}
+                </div>
+            </section>`;
+    }).join('');
+}
+
+const PROJECT_MASTERDATA_TEXTAREAS = new Set([
+    'Chi tiết', 'Ghi chú', 'Văn bản phê duyệt',
+    'Khó khăn/Vướng mắc', 'Hướng xử lý'
+]);
+
+function renderProjectMasterdataInlineRow(config, entry = null) {
+    const visibleHeaders = config.headers.filter(header => header !== 'Mã dự án');
+    const rowToken = entry?.id || `fixed-${config.sheet}`;
+    return `
+        <div class="project-masterdata-row"
+             data-sheet="${escapeHtml(config.sheet)}"
+             data-entry-id="${entry?.id || ''}">
+            <div class="project-masterdata-fields">
+                ${visibleHeaders.map((header, fieldIndex) => {
+                    const value = entry?.values?.[header] || '';
+                    const isTextarea = PROJECT_MASTERDATA_TEXTAREAS.has(header);
+                    const fieldId = `project-md-${config.sheet}-${rowToken}-${fieldIndex}`;
+                    return `
+                        <div class="form-group ${isTextarea ? 'project-masterdata-field-wide' : ''}">
+                            <label for="${escapeHtml(fieldId)}">${escapeHtml(header)}</label>
+                            ${isTextarea
+                                ? `<textarea id="${escapeHtml(fieldId)}" class="form-control project-masterdata-input"
+                                           data-header="${escapeHtml(header)}" rows="2"
+                                           placeholder="Nhập ${escapeHtml(header.toLowerCase())}">${escapeHtml(value)}</textarea>`
+                                : `<input id="${escapeHtml(fieldId)}" type="text"
+                                          class="form-control project-masterdata-input"
+                                          data-header="${escapeHtml(header)}"
+                                          value="${escapeHtml(value)}"
+                                          placeholder="Nhập ${escapeHtml(header.toLowerCase())}">`
+                            }
+                        </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+}
+
+async function saveAllProjectMasterdata(projectCode) {
+    if (!projectCode) return;
+    const rows = [...document.querySelectorAll('#project-modal-masterdata-section .project-masterdata-row')];
+    const requests = [];
+
+    rows.forEach(row => {
+        const values = {};
+        row.querySelectorAll('.project-masterdata-input').forEach(input => {
+            values[input.dataset.header] = input.value.trim();
+        });
+        const hasData = Object.values(values).some(Boolean);
+        if (!hasData) return;
+
+        const entryId = row.dataset.entryId;
+        requests.push(fetch(
+            entryId ? `${API_URL}/masterdata/entries/${entryId}` : `${API_URL}/masterdata/entries`,
+            {
+                method: entryId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    project_code: projectCode,
+                    source_sheet: row.dataset.sheet,
+                    values
+                })
+            }
+        ));
+    });
+
+    if (requests.length) {
+        await Promise.all(requests);
+    }
+}
+
+function openMasterdataModal(entryId = null, sheetName = null) {
     if (!state.masterdataProjectCode) {
         showToast('Vui lòng chọn dự án trước khi nhập liệu!', true);
         return;
+    }
+    if (sheetName) {
+        state.masterdataActiveSheet = sheetName;
+    } else if (entryId) {
+        state.masterdataActiveSheet = state.masterdataEntries.find(item => item.id === entryId)?.source_sheet
+            || state.masterdataActiveSheet;
     }
     const config = getMasterdataActiveConfig();
     const entry = entryId
@@ -2999,42 +3093,19 @@ async function deleteQuickAllocation(id, ma_du_an) {
 }
 
 
-/* UNIFIED PROJECT SUBTAB SWITCHER */
+async function openProjectDataEntry(projectCode) {
+    if (!projectCode) return;
+    await editProjectOverview(projectCode, true);
+}
+
+/* Giữ tương thích với các nút/link cũ: dữ liệu chi tiết giờ nằm trong form dự án. */
 function switchProjectSubTab(mode, selectedProjectCode = null) {
-    const btnList = document.getElementById('btn-subtab-project-list');
-    const btnMaster = document.getElementById('btn-subtab-project-masterdata');
-    const viewList = document.getElementById('project-subview-list');
-    const viewMaster = document.getElementById('project-subview-masterdata');
-
     if (mode === 'masterdata') {
-        if (btnList) {
-            btnList.className = 'btn';
-            btnList.style.border = '1px solid var(--border-color)';
-        }
-        if (btnMaster) {
-            btnMaster.className = 'btn btn-primary';
-            btnMaster.style.border = 'none';
-        }
-        if (viewList) viewList.style.display = 'none';
-        if (viewMaster) viewMaster.style.display = 'block';
-
-        if (selectedProjectCode) {
-            const select = document.getElementById('masterdata-project-select');
-            if (select) {
-                select.value = selectedProjectCode;
-                loadMasterdataProject();
-            }
-        }
-    } else {
-        if (btnList) {
-            btnList.className = 'btn btn-primary';
-            btnList.style.border = 'none';
-        }
-        if (btnMaster) {
-            btnMaster.className = 'btn';
-            btnMaster.style.border = '1px solid var(--border-color)';
-        }
-        if (viewList) viewList.style.display = 'block';
-        if (viewMaster) viewMaster.style.display = 'none';
+        openProjectDataEntry(selectedProjectCode);
+        return;
     }
+    document.getElementById('project-subview-list')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }

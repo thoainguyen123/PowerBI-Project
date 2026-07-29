@@ -198,5 +198,7 @@ table 'Measure KTVM'
 
 	changedProperty = IsHidden
 
+	changedProperty = Name
+
 	annotation PBI_ResultType = Table
 

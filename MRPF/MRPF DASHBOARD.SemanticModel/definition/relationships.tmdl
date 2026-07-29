@@ -84,16 +84,3 @@ relationship 9d375431-11d7-4841-9e8e-f233113182b7
 	fromColumn: Project_BDS.endDate
 	toColumn: LocalDateTable_a94ecec1-1b8f-421e-a412-a0441a3cb455.Date
 
-relationship rel_Dim_Period_KTVM
-	fromColumn: Dim_Period.QuarterKey
-	toColumn: KTVM.QuarterKey
-
-relationship 0822cbb7-cdb4-4549-8a6c-eeb70c3cbcdc
-	joinOnDateBehavior: datePartOnly
-	fromColumn: Dim_Period.QuarterStartDate
-	toColumn: LocalDateTable_c9caf710-4f0f-41ba-af0f-80a2d654e0c2.Date
-
-relationship rel_Dim_Period_Project_BDS
-	fromColumn: Project_BDS.QuarterKey
-	toColumn: Dim_Period.QuarterKey
-

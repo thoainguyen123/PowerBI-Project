@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "2aa330469dc80e70d8d1",
   "position": {
-    "x": 14.558823529411764,
-    "y": 341.47058823529414,
+    "x": 13.717950886499031,
+    "y": 468.83331678540043,
     "z": 10000,
-    "height": 68.82352941176471,
-    "width": 170.73529411764707,
+    "height": 68.589754432495155,
+    "width": 170.84710159979161,
     "tabOrder": 9000
   },
   "visual": {
@@ -27,8 +27,7 @@
                 }
               },
               "queryRef": "Measure_BDS.Số căn đã bán quý này",
-              "nativeQueryRef": "Số căn đã bán trong kỳ",
-              "displayName": "Số căn đã bán trong kỳ"
+              "nativeQueryRef": "Số căn đã bán quý này"
             }
           ]
         }
@@ -103,6 +102,19 @@
               }
             },
             "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "wordWrap": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "true"
@@ -193,13 +205,6 @@
                     [
                       {
                         "Literal": {
-                          "Value": "'Đã bán hết'"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Literal": {
                           "Value": "'Đang mở bán'"
                         }
                       }
@@ -211,6 +216,20 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "ba19e68b9ea538e22a9b",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Số căn đã bán quý này"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

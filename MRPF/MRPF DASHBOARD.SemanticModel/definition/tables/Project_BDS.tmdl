@@ -138,7 +138,7 @@ table Project_BDS
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column amount
-		dataType: double
+		dataType: int64
 		formatString: 0
 		lineageTag: 75495c39-0bc2-43eb-a267-8c6ac9de718b
 		summarizeBy: sum
@@ -549,151 +549,17 @@ table Project_BDS
 
 		annotation SummarizationSetBy = Automatic
 
-	column quantity_this_period =
-			
-			VAR _CurrentEntity = Project_BDS[realEstateProjectTypeId]
-			VAR _CurrentProject = Project_BDS[project_name]
-			VAR _CurrentPhase = Project_BDS[phase_name]
-			VAR _CurrentType = Project_BDS[project_type]
-			VAR _CurrentYear = Project_BDS[year]
-			VAR _CurrentPeriod = Project_BDS[period]
-			VAR _CurrentFreq = Project_BDS[frequency]
-			
-			-- Quy đổi toàn bộ Tháng và Quý về cùng một Trục thời gian Tháng tuyệt đối (Absolute Month Key)
-			VAR _CurrentTimeKey =
-			    IF(
-			        _CurrentFreq = "Quý",
-			        _CurrentYear * 12 + (_CurrentPeriod * 3),
-			        _CurrentYear * 12 + _CurrentPeriod
-			    )
-			VAR _CurrentQuantity = Project_BDS[quantity]
-			
-			VAR _PrevRows =
-			    FILTER(
-			        Project_BDS,
-			        (
-			            (NOT ISBLANK(_CurrentEntity) && Project_BDS[realEstateProjectTypeId] = _CurrentEntity)
-			                || (
-			                    ISBLANK(_CurrentEntity)
-			                        && Project_BDS[project_name] = _CurrentProject
-			                        && Project_BDS[phase_name] = _CurrentPhase
-			                        && Project_BDS[project_type] = _CurrentType
-			                )
-			        )
-			            && (
-			                IF(
-			                    Project_BDS[frequency] = "Quý",
-			                    Project_BDS[year] * 12 + (Project_BDS[period] * 3),
-			                    Project_BDS[year] * 12 + Project_BDS[period]
-			                ) < _CurrentTimeKey
-			            )
-			            && NOT ISBLANK(Project_BDS[quantity])
-			    )
-			VAR _PrevQuantity =
-			    MAXX(
-			        TOPN(
-			            1,
-			            _PrevRows,
-			            IF(
-			                Project_BDS[frequency] = "Quý",
-			                Project_BDS[year] * 12 + (Project_BDS[period] * 3),
-			                Project_BDS[year] * 12 + Project_BDS[period]
-			            ), DESC,
-			            Project_BDS[updatedAt], DESC
-			        ),
-			        Project_BDS[quantity]
-			    )
-			RETURN
-			    IF(
-			        ISBLANK(_CurrentQuantity),
-			        BLANK(),
-			        _CurrentQuantity - COALESCE(_PrevQuantity, 0)
-			    )
-		formatString: #,##0
-		lineageTag: e81b2903-82a1-460d-9b1e-7f4192038101
-		summarizeBy: sum
-
-		annotation SummarizationSetBy = Automatic
-
-	column Order =
-			
-			VAR _CurrentEntity = Project_BDS[realEstateProjectTypeId]
-			VAR _CurrentProject = Project_BDS[project_name]
-			VAR _CurrentPhase = Project_BDS[phase_name]
-			VAR _CurrentType = Project_BDS[project_type]
-			VAR _CurrentYear = Project_BDS[year]
-			VAR _CurrentPeriod = Project_BDS[period]
-			VAR _CurrentFreq = Project_BDS[frequency]
-			VAR _CurrentID = Project_BDS[id]
-			
-			-- Mốc thời gian tuyệt đối của bản ghi hiện tại
-			VAR _CurrentTimeKey =
-			    IF(
-			        _CurrentFreq = "Quý",
-			        _CurrentYear * 12 + (_CurrentPeriod * 3),
-			        _CurrentYear * 12 + _CurrentPeriod
-			    )
-			
-			-- Tất cả bản ghi thuộc cùng 1 đối tượng dự án
-			VAR _SameEntityRows =
-			    FILTER(
-			        Project_BDS,
-			        (
-			            (NOT ISBLANK(_CurrentEntity) && Project_BDS[realEstateProjectTypeId] = _CurrentEntity)
-			                || (
-			                    ISBLANK(_CurrentEntity)
-			                        && Project_BDS[project_name] = _CurrentProject
-			                        && Project_BDS[phase_name] = _CurrentPhase
-			                        && Project_BDS[project_type] = _CurrentType
-			                )
-			        )
-			    )
-			
-			-- Đếm số lượng bản ghi xảy ra trước hoặc bằng bản ghi hiện tại (đánh số 1 -> n)
-			RETURN
-			    COUNTROWS(
-			        FILTER(
-			            _SameEntityRows,
-			            VAR _RowTimeKey =
-			                IF(
-			                    Project_BDS[frequency] = "Quý",
-			                    Project_BDS[year] * 12 + (Project_BDS[period] * 3),
-			                    Project_BDS[year] * 12 + Project_BDS[period]
-			                )
-			            RETURN
-			                _RowTimeKey < _CurrentTimeKey
-			                    || (_RowTimeKey = _CurrentTimeKey && Project_BDS[id] <= _CurrentID)
-			        )
-			    )
-		formatString: 0
-		lineageTag: f91a2803-82a1-460d-9b1e-7f4192038102
-		summarizeBy: sum
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Khoá dùng để liên kết với Dim_Period[QuarterKey] (year*10+quater), phục vụ slicer thời gian dùng chung giữa BĐS và KTVM.
-	column QuarterKey = Project_BDS[year] * 10 + Project_BDS[quater]
-		isHidden
-		formatString: 0
-		displayFolder: Thời gian
-		lineageTag: e9c11958-dbd0-4460-8f0c-cb1c00f3722a
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
 	partition Project_BDS = m
 		mode: import
 		source =
 				let
-					    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)"]),
-					    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false)),
-					    #"Split Column by Delimiter" = Table.SplitColumn(#"Filtered Rows", "phase_status", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"phase_status.1", "phase_status.2"}),
-					    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"phase_status.1", type text}, {"phase_status.2", type text}}),
-					    #"Appended Query" = Table.Combine({#"Changed Type", Nguon_Cung_Du_kien}),
-				    #"Add Qtr" = Table.AddColumn(#"Appended Query", "calc_qtr", each if [frequency] = "Tháng" then Number.IntegerDivide([period] - 1, 3) + 1 else [period], Int64.Type),
-				    #"Add QuarterKey" = Table.AddColumn(#"Add Qtr", "QuarterKey", each [year] * 10 + [calc_qtr], Int64.Type)
-					in
-					    #"Appended Query"
+				    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)"]),
+				    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false)),
+				    #"Split Column by Delimiter" = Table.SplitColumn(#"Filtered Rows", "phase_status", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"phase_status.1", "phase_status.2"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"phase_status.1", type text}, {"phase_status.2", type text}}),
+				    #"Appended Query" = Table.Combine({#"Changed Type", Nguon_Cung_Du_kien})
+				in
+				    #"Appended Query"
 
 	annotation PBI_NavigationStepName = Navigation
 

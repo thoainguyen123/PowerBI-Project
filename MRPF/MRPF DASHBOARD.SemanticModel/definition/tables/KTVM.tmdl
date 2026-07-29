@@ -269,13 +269,6 @@ table KTVM
 
 		annotation SummarizationSetBy = Automatic
 
-	column QuarterKey = KTVM[year] * 10 + KTVM[quater]
-		formatString: 0
-		lineageTag: b8c9d0e1-f2a3-44b5-c6d7-e8f9a0b1c2d3
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
 	partition KTVM = m
 		mode: import
 		source =

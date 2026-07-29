@@ -1,0 +1,711 @@
+table 'Deep lv 1'
+	lineageTag: 35289fc5-9e53-4bcd-b29d-34284c4dd469
+
+	measure 'Measure 2' = ```
+			
+			VAR x = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "Số Hóa") && Project[deep_level] = "Cấp 1")
+			VAR y = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "AI") && Project[deep_level] = "Cấp 1")
+			
+			RETURN 
+			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) & 
+			    "AI: " & FORMAT(y, "0%")
+			```
+		lineageTag: 809c05f5-f9cc-40e0-918a-8f98a844dc63
+
+	column ID
+		dataType: string
+		lineageTag: 4f422e89-4919-4570-b1a6-0385eab28f3b
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column code
+		dataType: string
+		lineageTag: 83adf478-399c-4b7b-811d-1806af386c6a
+		summarizeBy: none
+		sourceColumn: code
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 436b0c1d-6b47-46be-852a-71b47ae8f4af
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_code
+		dataType: string
+		lineageTag: 80fcbfe5-03e9-4ca6-bf5d-978f68f21df1
+		summarizeBy: none
+		sourceColumn: project_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_title
+		dataType: string
+		lineageTag: 30a5cf94-e09c-433c-900c-6f20ad58f015
+		summarizeBy: none
+		sourceColumn: project_title
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_id
+		dataType: string
+		lineageTag: ee368b28-9bc4-458d-9e78-9067aff1d712
+		summarizeBy: none
+		sourceColumn: project_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column assign_ids
+		dataType: string
+		lineageTag: 5893b8f6-e389-4553-ae74-735ea997f6a9
+		summarizeBy: none
+		sourceColumn: assign_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_0
+		dataType: string
+		lineageTag: 920d3584-115d-42c7-b660-762fa81566db
+		summarizeBy: none
+		sourceColumn: department_0
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_1
+		dataType: string
+		lineageTag: 21c8342e-e26c-48f3-93ae-43c6139e274a
+		summarizeBy: none
+		sourceColumn: department_1
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_2
+		dataType: string
+		lineageTag: 94c94b21-5433-4bf6-9f4c-8c75518cbdae
+		summarizeBy: none
+		sourceColumn: department_2
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_3
+		dataType: string
+		lineageTag: 7c8e242a-053c-43c7-b556-e24d8ed203ec
+		summarizeBy: none
+		sourceColumn: department_3
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_4
+		dataType: string
+		lineageTag: 9d569d67-f101-4708-b6eb-72c76c17b28d
+		summarizeBy: none
+		sourceColumn: department_4
+
+		annotation SummarizationSetBy = Automatic
+
+	column follower_ids
+		dataType: string
+		lineageTag: 0055aefe-3268-4f9b-ab1c-deed7f480b5f
+		summarizeBy: none
+		sourceColumn: follower_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_plan
+		dataType: string
+		lineageTag: fb954d9e-7350-4ece-8a97-7b3fba61fe18
+		summarizeBy: none
+		sourceColumn: start_plan
+
+		annotation SummarizationSetBy = Automatic
+
+	column end_plan
+		dataType: string
+		lineageTag: e51aec58-ccca-4207-81df-7ce20efe59fd
+		summarizeBy: none
+		sourceColumn: end_plan
+
+		annotation SummarizationSetBy = Automatic
+
+	column rating_point
+		dataType: string
+		lineageTag: 656bd822-2e03-4a7c-95b1-e43e5d88d6fb
+		summarizeBy: none
+		sourceColumn: rating_point
+
+		annotation SummarizationSetBy = Automatic
+
+	column rating_score
+		dataType: string
+		lineageTag: 0741915b-b670-41b5-ba73-49d31566a523
+		summarizeBy: none
+		sourceColumn: rating_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column rating_percent
+		dataType: string
+		lineageTag: 357d2181-c020-43f5-8ca5-396c0c515d71
+		summarizeBy: none
+		sourceColumn: rating_percent
+
+		annotation SummarizationSetBy = Automatic
+
+	column rating_desc
+		dataType: string
+		lineageTag: 352d9052-89ec-47ae-b8e5-3013d39bb5f5
+		summarizeBy: none
+		sourceColumn: rating_desc
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_assign_hour
+		dataType: string
+		lineageTag: d41db94f-0bd1-418d-8930-4a9bb1b2894e
+		summarizeBy: none
+		sourceColumn: is_assign_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column no_allow_file_on_success
+		dataType: string
+		lineageTag: f827c0fd-b36c-44f3-b8e1-d34eedbf114c
+		summarizeBy: none
+		sourceColumn: no_allow_file_on_success
+
+		annotation SummarizationSetBy = Automatic
+
+	column time_plan
+		dataType: string
+		lineageTag: 2478976c-772a-4ee2-8a57-2b6a6d470f2e
+		summarizeBy: none
+		sourceColumn: time_plan
+
+		annotation SummarizationSetBy = Automatic
+
+	column time_real
+		dataType: string
+		lineageTag: fc2fdd56-b060-456a-a6ff-b87e097dd4d3
+		summarizeBy: none
+		sourceColumn: time_real
+
+		annotation SummarizationSetBy = Automatic
+
+	column start
+		dataType: string
+		lineageTag: e426730b-ea6c-4210-b396-09019879b801
+		summarizeBy: none
+		sourceColumn: start
+
+		annotation SummarizationSetBy = Automatic
+
+	column end
+		dataType: string
+		lineageTag: 48c6cb17-0c77-42b4-8825-54f348af7627
+		summarizeBy: none
+		sourceColumn: end
+
+		annotation SummarizationSetBy = Automatic
+
+	column out_date
+		dataType: string
+		lineageTag: 2c83ed31-b917-4d4a-9f59-50689460fb20
+		summarizeBy: none
+		sourceColumn: out_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column out_date_completed
+		dataType: string
+		lineageTag: 0614b5eb-753b-40c1-8835-50d775a84d9b
+		summarizeBy: none
+		sourceColumn: out_date_completed
+
+		annotation SummarizationSetBy = Automatic
+
+	column priority
+		dataType: string
+		lineageTag: ee5a400a-0e54-4648-9880-94a7ba94c4da
+		summarizeBy: none
+		sourceColumn: priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_created
+		dataType: string
+		lineageTag: 6c171e52-fed7-4682-b49f-f4b6c776416d
+		summarizeBy: none
+		sourceColumn: date_created
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_updated
+		dataType: string
+		lineageTag: b248d1bf-4c12-42f4-91c2-f96ec45dc45f
+		summarizeBy: none
+		sourceColumn: date_updated
+
+		annotation SummarizationSetBy = Automatic
+
+	column desc
+		dataType: string
+		lineageTag: 2fcccffa-72ea-47d8-b481-0042552c5962
+		summarizeBy: none
+		sourceColumn: desc
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_ids
+		dataType: string
+		lineageTag: f969a60d-47b2-497f-ad10-475a1f393422
+		summarizeBy: none
+		sourceColumn: department_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column percent
+		dataType: double
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 1a6d3c44-0321-466d-9e4d-245a63e2f246
+		summarizeBy: sum
+		sourceColumn: percent
+
+		annotation SummarizationSetBy = Automatic
+
+	column parent_id
+		dataType: string
+		lineageTag: 1458f3c7-581b-4874-b113-d8c69b994d15
+		summarizeBy: none
+		sourceColumn: parent_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column parent_title
+		dataType: string
+		lineageTag: 1ec52ad3-d6c5-468f-ba83-2d50a15c3be0
+		summarizeBy: none
+		sourceColumn: parent_title
+
+		annotation SummarizationSetBy = Automatic
+
+	column parent_code
+		dataType: string
+		lineageTag: f2188466-86f0-4d6e-b268-ca6eeeaf87c0
+		summarizeBy: none
+		sourceColumn: parent_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column type_id
+		dataType: string
+		lineageTag: 17ac5c90-3637-4539-accf-3803e794dbd0
+		summarizeBy: none
+		sourceColumn: type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_sub
+		dataType: string
+		lineageTag: e7c7b842-c314-47d3-b0f9-960a67de7e26
+		summarizeBy: none
+		sourceColumn: is_sub
+
+		annotation SummarizationSetBy = Automatic
+
+	column deep_level
+		dataType: string
+		lineageTag: a3e34459-5322-4c60-98df-74c5f1e8ccd1
+		summarizeBy: none
+		sourceColumn: deep_level
+
+		annotation SummarizationSetBy = Automatic
+
+	column method
+		dataType: string
+		lineageTag: e80e1cec-8193-47f6-8e69-4ffba3305d21
+		summarizeBy: none
+		sourceColumn: method
+
+		annotation SummarizationSetBy = Automatic
+
+	column process_type_id
+		dataType: string
+		lineageTag: f7e9415b-6ac9-4dda-86c6-f0ad3f8125ae
+		summarizeBy: none
+		sourceColumn: process_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column process_name
+		dataType: string
+		lineageTag: 2f0eb937-0d76-4e4c-8daa-6ff88f55053a
+		summarizeBy: none
+		sourceColumn: process_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column owner_ids
+		dataType: string
+		lineageTag: 41935f76-d22c-43e6-976c-acd8496658f9
+		summarizeBy: none
+		sourceColumn: owner_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column owner_id
+		dataType: string
+		lineageTag: d99432bf-6e4e-4061-a75a-3f8e26f5d006
+		summarizeBy: none
+		sourceColumn: owner_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasklist_id
+		dataType: string
+		lineageTag: 5fd5f715-8b98-4abe-b751-23c4a49710a8
+		summarizeBy: none
+		sourceColumn: tasklist_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column parent_group
+		dataType: string
+		lineageTag: 7c1d74aa-7d82-42bb-b2d9-aa36a0242969
+		summarizeBy: none
+		sourceColumn: parent_group
+
+		annotation SummarizationSetBy = Automatic
+
+	column gettask_ids
+		dataType: string
+		lineageTag: 07e06155-4c82-4faa-a06a-648bb9e6f18a
+		summarizeBy: none
+		sourceColumn: gettask_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress_type
+		dataType: string
+		lineageTag: d25a928c-7afa-405e-b328-af21bbe762ee
+		summarizeBy: none
+		sourceColumn: progress_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress_number
+		dataType: string
+		lineageTag: 3c58780e-9bef-4c8d-ad77-3489eac6d9c8
+		summarizeBy: none
+		sourceColumn: progress_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress_total
+		dataType: string
+		lineageTag: 34cfafca-779e-43df-90b2-83bfad913524
+		summarizeBy: none
+		sourceColumn: progress_total
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress_unit
+		dataType: string
+		lineageTag: e4617d1f-1f1a-4212-baf6-9012a02e27ab
+		summarizeBy: none
+		sourceColumn: progress_unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column department_created_id
+		dataType: string
+		lineageTag: 999c595f-bb98-4995-8f9c-2b1ee48a5a17
+		summarizeBy: none
+		sourceColumn: department_created_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_time
+		dataType: string
+		lineageTag: 4a84f643-4c8a-4983-9439-76474bc9026b
+		summarizeBy: none
+		sourceColumn: duration_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column process_node_id
+		dataType: string
+		lineageTag: 34688603-08c2-4bf9-8741-744695d20c97
+		summarizeBy: none
+		sourceColumn: process_node_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column repeat_template_id
+		dataType: string
+		lineageTag: dbc56b1a-d051-4166-bf5f-91065487c7e7
+		summarizeBy: none
+		sourceColumn: repeat_template_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column phase_id
+		dataType: string
+		lineageTag: 8493cba9-8b0e-4e88-9989-e59dd6f9cc92
+		summarizeBy: none
+		sourceColumn: phase_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress_note
+		dataType: string
+		lineageTag: 0b79f219-7823-48e7-9c98-5b284a57eb1f
+		summarizeBy: none
+		sourceColumn: progress_note
+
+		annotation SummarizationSetBy = Automatic
+
+	column proportion
+		dataType: string
+		lineageTag: 0c3b8495-42b5-4795-ba58-331d844e5adc
+		summarizeBy: none
+		sourceColumn: proportion
+
+		annotation SummarizationSetBy = Automatic
+
+	column created_by_id
+		dataType: string
+		lineageTag: d4cf85a8-34ba-4f11-99cf-faa32c723689
+		summarizeBy: none
+		sourceColumn: created_by_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column process_node_doings
+		dataType: string
+		lineageTag: c24f3ee7-d069-4f29-9cb0-45bff158c142
+		summarizeBy: none
+		sourceColumn: process_node_doings
+
+		annotation SummarizationSetBy = Automatic
+
+	column deadline_list
+		dataType: string
+		lineageTag: df320070-ff0d-4c46-b472-94ab497514fc
+		summarizeBy: none
+		sourceColumn: deadline_list
+
+		annotation SummarizationSetBy = Automatic
+
+	column diploma_id
+		dataType: string
+		lineageTag: 23720a50-26bf-4514-b4f2-adb7c863156d
+		summarizeBy: none
+		sourceColumn: diploma_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column workflow_type
+		dataType: string
+		lineageTag: 73be2c6b-ef83-4db9-8deb-ccc106dc7d48
+		summarizeBy: none
+		sourceColumn: workflow_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_overdue_task
+		dataType: string
+		lineageTag: 351ba501-6cd2-447a-9a92-33b7a4ee6bb7
+		summarizeBy: none
+		sourceColumn: is_overdue_task
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_pause_end
+		dataType: string
+		lineageTag: b706cc92-14df-40fb-a8a7-a2d2598b385d
+		summarizeBy: none
+		sourceColumn: date_pause_end
+
+		annotation SummarizationSetBy = Automatic
+
+	column rating_num_fail
+		dataType: string
+		lineageTag: a7e53353-5e7e-4179-94e4-c65bf5a52908
+		summarizeBy: none
+		sourceColumn: rating_num_fail
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_after_report
+		dataType: string
+		lineageTag: 911aae79-9f41-4617-8f88-36b6adc4daf1
+		summarizeBy: none
+		sourceColumn: status_after_report
+
+		annotation SummarizationSetBy = Automatic
+
+	column tag_ids
+		dataType: string
+		lineageTag: 140e45a4-cf78-4dbf-a7a3-0635d0f7f98b
+		summarizeBy: none
+		sourceColumn: tag_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column process_step
+		dataType: string
+		lineageTag: 92b53a3c-8c5b-4859-ab8e-dc3826333147
+		summarizeBy: none
+		sourceColumn: process_step
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_comments
+		dataType: string
+		lineageTag: 1b343a8f-09c3-4607-a67b-8f97e732d0b0
+		summarizeBy: none
+		sourceColumn: last_comments
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_file
+		dataType: string
+		lineageTag: ec198836-98e2-448a-91d6-65a0ec78b841
+		summarizeBy: none
+		sourceColumn: num_file
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf7
+		dataType: string
+		lineageTag: d994886b-e186-43e5-b86d-f6f61721652d
+		summarizeBy: none
+		sourceColumn: cf7
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf10
+		dataType: string
+		lineageTag: 8631ff63-46f5-443b-9df4-83ade4563ba2
+		summarizeBy: none
+		sourceColumn: cf10
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf13
+		dataType: string
+		lineageTag: 41f2a9a2-4468-4239-863f-6f7d390e8b61
+		summarizeBy: none
+		sourceColumn: cf13
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf16
+		dataType: string
+		lineageTag: 3949c7be-7399-438f-928d-a746cd8ab9fd
+		summarizeBy: none
+		sourceColumn: cf16
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf19
+		dataType: string
+		lineageTag: fd6c7ce0-d433-42ba-963c-ed4fe38c8bd3
+		summarizeBy: none
+		sourceColumn: cf19
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf22
+		dataType: string
+		lineageTag: 0b12ad70-a150-4084-bf03-098742531a42
+		summarizeBy: none
+		sourceColumn: cf22
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf25
+		dataType: string
+		lineageTag: 6822b463-0b3f-480b-8bf5-d6993c3061dd
+		summarizeBy: none
+		sourceColumn: cf25
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf26
+		dataType: string
+		lineageTag: d9d0b436-910f-45df-a720-3fdd27c0bbb7
+		summarizeBy: none
+		sourceColumn: cf26
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf82
+		dataType: string
+		lineageTag: 08247636-98bf-4212-b43b-4f8dbf53ffb2
+		summarizeBy: none
+		sourceColumn: cf82
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf91
+		dataType: string
+		lineageTag: 5261622b-2623-4c09-8588-7b62db08472c
+		summarizeBy: none
+		sourceColumn: cf91
+
+		annotation SummarizationSetBy = Automatic
+
+	column title
+		dataType: string
+		lineageTag: 9c3b169d-aea2-4dcf-b349-949b3f006fe1
+		summarizeBy: none
+		sourceColumn: title
+
+		annotation SummarizationSetBy = Automatic
+
+	column Index
+		dataType: int64
+		formatString: 0
+		lineageTag: 95f6b8dc-04e2-48b7-abd7-8da27079ac61
+		summarizeBy: sum
+		sourceColumn: Index
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Xem chi tiết' = "Xem chi tiết"
+		lineageTag: 792fe970-3853-47dc-a813-06964eaed469
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Deep lv 1' = m
+		mode: import
+		source =
+				let
+				    Source = Web.BrowserContents("https://eoffice.novagroup.vn/api/work/normal/gets?access_token=16655039326889cbf95481c783467981&filters=%5B%7B%22project_id%22%3A%227054%22%7D%5D&limit=6000"),
+				    #"Extracted Table From Html" = Html.Table(Source, {{"Column1", "BODY"}}),
+				    Column1 = #"Extracted Table From Html"[Column1]{0},
+				    #"Parsed JSON" = Json.Document(Column1),
+				    #"Converted to Table" = Record.ToTable(#"Parsed JSON"),
+				    Value = #"Converted to Table"{3}[Value],
+				    #"Converted to Table1" = Table.FromList(Value, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table1", "Column1", {"ID", "code", "title", "status", "project_code", "project_title", "project_id", "assign_ids", "department_0", "department_1", "department_2", "department_3", "department_4", "follower_ids", "start_plan", "end_plan", "rating_point", "rating_score", "rating_percent", "rating_desc", "is_assign_hour", "no_allow_file_on_success", "time_plan", "time_real", "start", "end", "out_date", "out_date_completed", "priority", "date_created", "date_updated", "desc", "department_ids", "percent", "parent_id", "parent_title", "parent_code", "type_id", "is_sub", "deep_level", "method", "process_type_id", "process_name", "owner_ids", "owner_id", "tasklist_id", "parent_group", "gettask_ids", "progress_type", "progress_number", "progress_total", "progress_unit", "department_created_id", "duration_time", "process_node_id", "repeat_template_id", "phase_id", "progress_note", "proportion", "created_by_id", "process_node_doings", "deadline_list", "diploma_id", "workflow_type", "is_overdue_task", "date_pause_end", "rating_num_fail", "status_after_report", "tag_ids", "process_step", "last_comments", "num_file", "cf7", "cf10", "cf13", "cf16", "cf19", "cf22", "cf25", "cf26", "cf82", "cf91"}, {"ID", "code", "title", "status", "project_code", "project_title", "project_id", "assign_ids", "department_0", "department_1", "department_2", "department_3", "department_4", "follower_ids", "start_plan", "end_plan", "rating_point", "rating_score", "rating_percent", "rating_desc", "is_assign_hour", "no_allow_file_on_success", "time_plan", "time_real", "start", "end", "out_date", "out_date_completed", "priority", "date_created", "date_updated", "desc", "department_ids", "percent", "parent_id", "parent_title", "parent_code", "type_id", "is_sub", "deep_level", "method", "process_type_id", "process_name", "owner_ids", "owner_id", "tasklist_id", "parent_group", "gettask_ids", "progress_type", "progress_number", "progress_total", "progress_unit", "department_created_id", "duration_time", "process_node_id", "repeat_template_id", "phase_id", "progress_note", "proportion", "created_by_id", "process_node_doings", "deadline_list", "diploma_id", "workflow_type", "is_overdue_task", "date_pause_end", "rating_num_fail", "status_after_report", "tag_ids", "process_step", "last_comments", "num_file", "cf7", "cf10", "cf13", "cf16", "cf19", "cf22", "cf25", "cf26", "cf82", "cf91"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Column1",{{"percent", Percentage.Type}}),
+				    #"Added Conditional Column" = Table.AddColumn(#"Changed Type", "Custom", each if [deep_level] = "Cấp 2" then Text.Repeat(Character.FromNumber(8195), 2)&[title] else [title]),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Conditional Column",{"title"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Columns",{{"Custom", "title"}}),
+				    #"Added Index" = Table.AddIndexColumn(#"Renamed Columns", "Index", 0, 1, Int64.Type),
+				    #"Filtered Rows" = Table.SelectRows(#"Added Index", each ([deep_level] = "Cấp 1"))
+				in
+				    #"Filtered Rows"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

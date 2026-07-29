@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Novagroup CDS"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "640eae35-759b-4e9c-a552-05a2be9ac572"
+  }
+}

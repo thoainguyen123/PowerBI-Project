@@ -1,0 +1,8 @@
+relationship AutoDetected_b25bb140-61f1-44c7-b340-ffa57d140e44
+	fromColumn: Project.tag_ids
+	toColumn: Project_a.tag_ids
+
+relationship AutoDetected_bc3c38c5-e799-4418-a55b-0ee5f5429744
+	fromColumn: 'Deep lv 1'.tag_ids
+	toColumn: Project_a.tag_ids
+

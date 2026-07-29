@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "875cd6c72ba332347412",
   "position": {
-    "x": 197.11026615969581,
-    "y": 434.25855513307988,
+    "x": 197.03965818789516,
+    "y": 436.4802554795146,
     "z": 27000,
-    "height": 414.26470588235293,
-    "width": 868.23529411764707,
+    "height": 412.7856130391981,
+    "width": 880.44302962439224,
     "tabOrder": 27000
   },
   "visual": {
@@ -82,11 +82,12 @@
                       "Entity": "Measure_BDS"
                     }
                   },
-                  "Property": "Số căn đã bán lũy kế"
+                  "Property": "Tổng mở bán tính tới quý đó"
                 }
               },
-              "queryRef": "Measure_BDS.Số căn đã bán lũy kế",
-              "nativeQueryRef": "Số căn đã bán lũy kế"
+              "queryRef": "Measure_BDS.Tổng mở bán tính tới quý đó",
+              "nativeQueryRef": "Tổng mở bán lũy kế",
+              "displayName": "Tổng mở bán lũy kế"
             },
             {
               "field": {
@@ -110,6 +111,20 @@
                       "Entity": "Measure_BDS"
                     }
                   },
+                  "Property": "Số căn đã bán quý này"
+                }
+              },
+              "queryRef": "Measure_BDS.Số căn đã bán quý này",
+              "nativeQueryRef": "Số căn đã bán quý này"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Measure_BDS"
+                    }
+                  },
                   "Property": "Giá bán TB"
                 }
               },
@@ -124,61 +139,31 @@
                       "Entity": "Measure_BDS"
                     }
                   },
-                  "Property": "Số căn đã bán quý này"
+                  "Property": "Tỷ trọng số căn đã bán quý này"
                 }
               },
-              "queryRef": "Measure_BDS.Số căn đã bán quý này",
-              "nativeQueryRef": "Số căn đã bán quý này"
-            },
-            {
-              "field": {
-                "Aggregation": {
-                  "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Project_BDS"
-                        }
-                      },
-                      "Property": "salesOpeningQuantity"
-                    }
-                  },
-                  "Function": 0
-                }
-              },
-              "queryRef": "Sum(Project_BDS.salesOpeningQuantity)",
-              "nativeQueryRef": "Sum of salesOpeningQuantity1"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Measure_BDS"
-                    }
-                  },
-                  "Property": "Tổng mở bán tính tới quý trước"
-                }
-              },
-              "queryRef": "Measure_BDS.Tổng mở bán tính tới quý trước",
-              "nativeQueryRef": "Tổng mở bán tính tới quý trước"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Measure_BDS"
-                    }
-                  },
-                  "Property": "Số căn đã bán lũy kế quý trước"
-                }
-              },
-              "queryRef": "Measure_BDS.Số căn đã bán lũy kế quý trước",
-              "nativeQueryRef": "Số căn đã bán lũy kế quý trước"
+              "queryRef": "Measure_BDS.Tỷ trọng số căn đã bán quý này",
+              "nativeQueryRef": "Tỷ trọng số căn đã bán quý này"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Measure_BDS"
+                  }
+                },
+                "Property": "Số căn đã bán quý này"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "objects": {
@@ -188,7 +173,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "143.83464461800918D"
+                  "Value": "117.23737010896359D"
                 }
               }
             }
@@ -230,7 +215,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "81.16922917209972D"
+                  "Value": "68.62324036584894D"
                 }
               }
             }
@@ -244,13 +229,13 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "80.63129613300144D"
+                  "Value": "78.60557579290202D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Measure_BDS.Số căn đã bán lũy kế"
+            "metadata": "Measure_BDS.Số căn đã bán quý này"
           }
         },
         {
@@ -258,7 +243,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "85.62030960759445D"
+                  "Value": "83.19523941147364D"
                 }
               }
             }
@@ -272,13 +257,41 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "89.44433739025875D"
+                  "Value": "77.2447995477281D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Measure_BDS.Số căn đã bán quý này"
+            "metadata": "Measure_BDS.Tổng mở bán tính tới quý đó"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "86.72754911419611D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Tỷ trọng số căn đã bán quý này"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "60.232455428767146D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Giá bán TB"
           }
         }
       ],
@@ -374,6 +387,76 @@
   "filterConfig": {
     "filters": [
       {
+        "name": "a346248215baeea5e9b4",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "project_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "94a63a73989e87d8cb7b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "phase_name"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "99372c0e75c9085a2aeb",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "project_type"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "825b5bf0bd30bc738e0e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Tổng sản phẩm"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d4663213cdcaa2d8b55e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Giá bán TB"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
         "name": "9edbb9846c2b483e4cc5",
         "field": {
           "Column": {
@@ -426,6 +509,62 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "10c4ebc6526be97bdeb8",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Tổng mở bán tính tới quý đó"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "da878307275e7e770119",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Nguồn cung mở bán mới"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "29f6cdb68c08d21b39b7",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Số căn đã bán quý này"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "e12299273c43a44060b9",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Tỷ trọng số căn đã bán quý này"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

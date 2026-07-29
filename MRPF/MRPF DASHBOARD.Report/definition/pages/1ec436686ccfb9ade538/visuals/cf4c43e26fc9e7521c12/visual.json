@@ -348,6 +348,34 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "a1d406a02ec28b121ebc",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "ward"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "a2c644c713da8e9b0c60",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Số căn đã bán quý này"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

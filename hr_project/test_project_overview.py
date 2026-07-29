@@ -45,7 +45,8 @@ class ProjectOverviewApiTest(unittest.TestCase):
 
     def test_masterdata_crud_and_fact_exports(self):
         home = self.client.get('/')
-        self.assertIn(b'tab-masterdata', home.data)
+        self.assertIn(b'project-modal-masterdata-section', home.data)
+        self.assertIn(b'masterdata-all-sections', home.data)
         self.assertIn(b'modal-masterdata', home.data)
 
         config_response = self.client.get('/api/masterdata/config')

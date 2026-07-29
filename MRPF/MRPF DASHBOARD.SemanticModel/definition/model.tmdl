@@ -6,7 +6,7 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["KTVM","Measure KTVM","Project_BDS","Product_Project_BDS","SortBank","Measure_BDS","Nguon_Cung_Du_kien","Dim_Period"]
+annotation PBI_QueryOrder = ["KTVM","Measure KTVM","Project_BDS","Product_Project_BDS","SortBank","Measure_BDS","Nguon_Cung_Du_kien"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
@@ -36,8 +36,6 @@ ref table LocalDateTable_b101f860-42ec-4981-a7e8-188dd8586eb8
 ref table LocalDateTable_0fb0452a-2dfc-409d-8f42-64cb4f805f1d
 ref table LocalDateTable_9cdebaa8-cdbd-4c4d-9918-cc2dfdb2f775
 ref table LocalDateTable_a94ecec1-1b8f-421e-a412-a0441a3cb455
-ref table Dim_Period
-ref table LocalDateTable_c9caf710-4f0f-41ba-af0f-80a2d654e0c2
 
 ref cultureInfo en-US
 

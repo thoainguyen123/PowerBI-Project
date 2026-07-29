@@ -1,0 +1,189 @@
+table Project_a
+	lineageTag: f662cb77-a939-4d93-8926-6bb88113cb13
+
+	measure 'Measure 4' = ```
+			
+			VAR x = CALCULATE(AVERAGE(Project[percent]), CONTAINSSTRING(Project[title], "Số Hóa") && (Project[deep_level] = "Cấp 1"||Project[deep_level] = "Cấp 2"))
+			VAR y = CALCULATE(AVERAGE(Project[percent]), CONTAINSSTRING(Project[title], "AI") && (Project[deep_level] = "Cấp 1"||Project[deep_level] = "Cấp 2"))
+			
+			RETURN 
+			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) & 
+			    "AI: " & FORMAT(y, "0%")
+			```
+		lineageTag: 2e942fd1-7856-412b-ad8c-541ebf2d9363
+
+	column ID
+		dataType: string
+		lineageTag: d29acaa2-3a02-4121-bc44-8edacaec3278
+		summarizeBy: none
+		sourceColumn: ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column code
+		dataType: string
+		lineageTag: 47e60bdf-cf82-4554-97e3-76a6daa5b7d6
+		summarizeBy: none
+		sourceColumn: code
+
+		annotation SummarizationSetBy = Automatic
+
+	column title
+		dataType: string
+		lineageTag: 915026cc-53fb-4c37-acb5-e6308b46da38
+		summarizeBy: none
+		sourceColumn: title
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_start
+		dataType: string
+		lineageTag: 8d2c6764-38d8-4683-aab1-2fc4904b3960
+		summarizeBy: none
+		sourceColumn: date_start
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_end
+		dataType: string
+		lineageTag: e4a2ca70-1142-471f-b968-3cc49bf0079e
+		summarizeBy: none
+		sourceColumn: date_end
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 76672e2e-3bd7-4317-b07c-58fb9bb94878
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column num_task
+		dataType: string
+		lineageTag: aa11c5cc-f38a-4146-89ac-89c0c7d55ea8
+		summarizeBy: none
+		sourceColumn: num_task
+
+		annotation SummarizationSetBy = Automatic
+
+	column owner_ids
+		dataType: string
+		lineageTag: d484af77-b81c-4e1b-a7ec-c8d0495997fc
+		summarizeBy: none
+		sourceColumn: owner_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	column desc
+		dataType: string
+		lineageTag: 93652094-4a13-4879-99b9-4e37eb071391
+		summarizeBy: none
+		sourceColumn: desc
+
+		annotation SummarizationSetBy = Automatic
+
+	column progress
+		dataType: double
+		lineageTag: e4a27686-9371-418a-9141-18d338d0f487
+		summarizeBy: sum
+		sourceColumn: progress
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column progress_type
+		dataType: string
+		lineageTag: c204b01e-5c8c-4b34-b5f5-214c07263958
+		summarizeBy: none
+		sourceColumn: progress_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column project_type_id
+		dataType: string
+		lineageTag: 11b7bbca-430d-4338-82d3-74474173a829
+		summarizeBy: none
+		sourceColumn: project_type_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column tasklist
+		dataType: string
+		lineageTag: 96b2f9d8-222c-41f9-9917-620524267304
+		summarizeBy: none
+		sourceColumn: tasklist
+
+		annotation SummarizationSetBy = Automatic
+
+	column cf1
+		dataType: string
+		lineageTag: 6a9f1926-2107-46ce-8e6a-c7340062b87b
+		summarizeBy: none
+		sourceColumn: cf1
+
+		annotation SummarizationSetBy = Automatic
+
+	column tag_ids
+		dataType: string
+		lineageTag: 9ac427e3-fc75-48a1-af94-c35332ee72c2
+		summarizeBy: none
+		sourceColumn: tag_ids
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Project_a = m
+		mode: import
+		source = ```
+				let
+				    // 1. Hàm lấy từng trang (Đã sửa để fix lỗi Dynamic Data Source)
+				    GetPage = (PageNumber as number) =>
+				        let
+				            // URL Gốc (Cố định, không được sửa dòng này)
+				            BaseUrl = "https://eoffice.novagroup.vn/api/work/project/gets/",
+				            
+				            // Các tham số thay đổi (page, limit, token) đưa vào đây
+				            Options = [
+				                Query = [
+				                    access_token = "11869677726889ca3399560771094974",
+				                    limit = "100",
+				                    page = Number.ToText(PageNumber)
+				                ]
+				            ],
+				            
+				            // Gọi Web.Contents với cấu trúc chuẩn: Link gốc + Tham số
+				            Source = Json.Document(Web.Contents(BaseUrl, Options)),
+				            
+				            // Lấy dữ liệu
+				            DataList = Source[data]
+				        in
+				            DataList,
+				
+				    // 2. Vòng lặp (Giữ nguyên)
+				    SourceList = List.Generate(
+				        () => [Result = GetPage(1), Page = 1],
+				        each not List.IsEmpty([Result]),
+				        each [Result = GetPage([Page] + 1), Page = [Page] + 1],
+				        each [Result]
+				    ),
+				
+				    // 3. Gom dữ liệu (Giữ nguyên)
+				    #"Combined List" = List.Combine(SourceList),
+				
+				    // 4. Chuyển thành bảng và xử lý (Giữ nguyên code của bạn)
+				    #"Converted to Table" = Table.FromList(#"Combined List", Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Expanded Column1" = Table.ExpandRecordColumn(#"Converted to Table", "Column1", 
+				        {"ID", "code", "title", "date_start", "date_end", "status", "num_task", "owner_ids", "desc", "progress", "progress_type", "project_type_id", "tasklist", "tag_ids", "cf1"}, 
+				        {"ID", "code", "title", "date_start", "date_end", "status", "num_task", "owner_ids", "desc", "progress", "progress_type", "project_type_id", "tasklist", "tag_ids", "cf1"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Column1",{{"progress", Percentage.Type}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Changed Type", each ([code] = "2567"))
+				in
+				    #"Filtered Rows"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

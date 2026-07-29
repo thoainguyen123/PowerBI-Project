@@ -11,6 +11,18 @@ Cổng nhập liệu dùng chung cho dữ liệu Nhân sự và Tổng quan dự
   workbook cho Power BI.
 - Công việc và Danh mục đầu tư: không xây lại trong ứng dụng này.
 
+## Vai trò tài khoản
+
+| Vai trò | Tài khoản mẫu | Phạm vi |
+|---|---|---|
+| `admin` | `admin` | Toàn quyền mọi module, mọi vùng. |
+| `manager` | `manager_dongnai`, `manager_hcm`, `manager_phanthiet` | Chỉ xem/sửa dữ liệu (dự án, phân bổ, nhân sự, đánh giá, luân chuyển) thuộc vùng của mình — lọc theo `region_keyword`. |
+| `hr` | `hr_manager` | Xem/sửa toàn bộ dữ liệu Nhân sự ở **mọi vùng** (không bị giới hạn `region_keyword`), nhưng **không truy cập được** mảng "Thông tin dự án" (bao gồm cả Master data phòng ban, vốn là sub-view bên trong tab đó) — chặn ở `PROJECT_INFO_BLOCKED_ROLES` trong `app.py`. |
+
+Nhân viên chưa gắn `org_allocations` nào (chưa được phân bổ vào dự án) thì
+`manager` vùng không thấy được — an toàn hơn là mặc định hiển thị. `admin`/`hr`
+luôn thấy đầy đủ.
+
 ## Mapping Power BI
 
 File xuất `Template_Nhap_Lieu_Master_Data_Du_An.xlsx` có sheet
@@ -72,8 +84,9 @@ môi trường dùng chung. Không commit `.env` hoặc database thật vào kho
 
 - Mật khẩu được lưu trong bộ nhớ dưới dạng hash, so sánh bằng `check_password_hash`.
 - Nên đặt mật khẩu **riêng** cho từng tài khoản (`ADMIN_PASSWORD`,
-  `MANAGER_DONGNAI_PASSWORD`, ...). Nếu chỉ đặt `USER_PASSWORD` thì cả 4 tài khoản
-  dùng chung một mật khẩu và app sẽ in cảnh báo khi khởi động.
+  `MANAGER_DONGNAI_PASSWORD`, `HR_MANAGER_PASSWORD`, ...). Nếu chỉ đặt
+  `USER_PASSWORD` thì tất cả tài khoản dùng chung một mật khẩu và app sẽ in
+  cảnh báo khi khởi động.
 - CORS mặc định **tắt** vì frontend gọi API cùng origin. Chỉ khai báo `CORS_ORIGINS`
   khi thực sự phục vụ một origin khác.
 - Chạy sau HTTPS thì đặt `SESSION_COOKIE_SECURE=true`.

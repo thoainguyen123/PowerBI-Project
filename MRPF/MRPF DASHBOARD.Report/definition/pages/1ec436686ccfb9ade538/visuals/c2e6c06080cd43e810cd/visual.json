@@ -1,37 +1,18 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "c2e6c06080cd43e810cd",
   "position": {
-    "x": 1064.0874524714829,
-    "y": 434.25855513307988,
+    "x": 1081.2239471449691,
+    "y": 436.4802554795146,
     "z": 18000,
-    "height": 411.92965779467681,
-    "width": 555.14258555133085,
+    "height": 412.7856130391981,
+    "width": 538.7413439061437,
     "tabOrder": 18000
   },
   "visual": {
     "visualType": "azureMap",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Project_BDS"
-                    }
-                  },
-                  "Property": "project_name"
-                }
-              },
-              "queryRef": "Project_BDS.project_name",
-              "nativeQueryRef": "project_name",
-              "active": true
-            }
-          ]
-        },
         "Series": {
           "projections": [
             {
@@ -102,21 +83,16 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Column": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Project_BDS"
-                        }
-                      },
-                      "Property": "longtitude"
+                    "SourceRef": {
+                      "Entity": "Project_BDS"
                     }
                   },
-                  "Function": 1
+                  "Property": "longtitude"
                 }
               },
-              "queryRef": "Average(Project_BDS.longtitude)",
+              "queryRef": "Sum(Project_BDS.longtitude)",
               "nativeQueryRef": "longtitude"
             }
           ]
@@ -125,21 +101,16 @@
           "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Column": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "Project_BDS"
-                        }
-                      },
-                      "Property": "Latitude"
+                    "SourceRef": {
+                      "Entity": "Project_BDS"
                     }
                   },
-                  "Function": 1
+                  "Property": "Latitude"
                 }
               },
-              "queryRef": "Average(Project_BDS.Latitude)",
+              "queryRef": "Sum(Project_BDS.Latitude)",
               "nativeQueryRef": "Latitude",
               "format": "G"
             }
@@ -229,14 +200,14 @@
             "zoom": {
               "expr": {
                 "Literal": {
-                  "Value": "1.64D"
+                  "Value": "1.59D"
                 }
               }
             },
             "centerLatitude": {
               "expr": {
                 "Literal": {
-                  "Value": "10.659977253377363D"
+                  "Value": "10.659977253377377D"
                 }
               }
             },

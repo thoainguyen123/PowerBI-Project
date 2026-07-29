@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=9.0.0">
+    <link rel="stylesheet" href="/static/css/style.css?v=9.5.0">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -34,11 +34,12 @@
 
             <nav>
                 <span class="nav-section-label">Điều hành</span>
-                <button class="nav-tab" onclick="switchTab('projects', this)">
+                <button class="nav-tab" id="nav-projects" onclick="switchTab('projects', this)">
                     <i class="bx bx-building-house"></i>
                     <span>Thông tin dự án</span>
                 </button>
-                <!-- Standalone Master Data Nav item integrated into Project Info tab -->
+                <!-- Master data phòng ban là sub-view bên trong tab Thông tin dự án
+                     (không còn nav item riêng) nên ẩn nav-projects là đủ chặn cả 2 -->
 
                 <span class="nav-section-label">Nhân sự</span>
                 <button class="nav-tab active" onclick="switchTab('allocations', this)">
@@ -219,9 +220,9 @@
             <section id="tab-projects" class="tab-content">
                 <div class="page-hero project-hero">
                     <div>
-                        <span class="eyebrow">DANH MỤC & DỮ LIỆU DỰ ÁN</span>
+                        <span class="eyebrow">HỒ SƠ NHẬP LIỆU TẬP TRUNG</span>
                         <h2>Thông tin dự án</h2>
-                        <p>Quản lý thông tin tổng quan hồ sơ dự án và nhập liệu Master Data chi tiết (HRC, FAC, PLP, DMD, PCD...)</p>
+                        <p>Một đầu mối quản lý nhập thông tin chung và toàn bộ 15 nhóm dữ liệu dự án trong cùng một màn hình.</p>
                     </div>
                     <div class="hero-actions">
                         <a class="btn btn-secondary" href="/api/projects/export-overview">
@@ -236,17 +237,7 @@
                     </div>
                 </div>
 
-                <!-- Sub-Tab Toggle Buttons inside Thông tin dự án -->
-                <div class="project-subtab-container" style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
-                    <button id="btn-subtab-project-list" class="btn btn-primary" onclick="switchProjectSubTab('list')">
-                        <i class="bx bx-buildings"></i> 1. Tổng quan dự án
-                    </button>
-                    <button id="btn-subtab-project-masterdata" class="btn" style="border: 1px solid var(--border-color);" onclick="switchProjectSubTab('masterdata')">
-                        <i class="bx bx-spreadsheet"></i> 2. Dữ liệu phòng ban
-                    </button>
-                </div>
-
-                <!-- SUB-VIEW 1: DANH MỤC TỔNG QUAN DỰ ÁN -->
+                <!-- PHẦN 1: DANH MỤC TỔNG QUAN DỰ ÁN -->
                 <div id="project-subview-list">
                     <div class="grid-stats project-kpis">
                         <div class="stat-card">
@@ -330,50 +321,6 @@
                     </div>
                 </div>
 
-                <!-- SUB-VIEW 2: MASTER DATA CHI TIẾT NẮM TRONG THÔNG TIN DỰ ÁN -->
-                <div id="project-subview-masterdata" style="display: none;">
-                    <div class="masterdata-project-bar">
-                        <div>
-                            <label for="masterdata-project-select">Dự án đang nhập liệu Master Data</label>
-                            <select id="masterdata-project-select" class="filter-select" onchange="loadMasterdataProject()">
-                                <option value="">-- Chọn dự án --</option>
-                            </select>
-                        </div>
-                        <div class="masterdata-kpis">
-                            <span><strong id="masterdata-kpi-records">0</strong> bản ghi</span>
-                            <span><strong id="masterdata-kpi-modules">0/15</strong> sheet có dữ liệu</span>
-                            <span><strong id="masterdata-kpi-missing">15</strong> sheet chưa nhập</span>
-                        </div>
-                    </div>
-
-                    <div class="masterdata-workspace">
-                        <aside class="masterdata-modules">
-                            <div class="masterdata-modules-heading">
-                                <span>Nhóm dữ liệu</span>
-                            </div>
-                            <div id="masterdata-module-list"></div>
-                        </aside>
-                        <div class="table-card masterdata-panel">
-                            <div class="table-toolbar">
-                                <div>
-                                    <h3 id="masterdata-active-title">9.1 HRC · Nhân sự</h3>
-                                    <p id="masterdata-active-description">Chọn dự án để xem và nhập dữ liệu.</p>
-                                </div>
-                                <button class="btn btn-primary" id="masterdata-add-button" onclick="openMasterdataModal()" disabled>
-                                    <i class="bx bx-plus"></i> Thêm dòng
-                                </button>
-                            </div>
-                            <div class="table-responsive masterdata-table-wrap">
-                                <table class="masterdata-table">
-                                    <thead id="masterdata-table-head"></thead>
-                                    <tbody id="masterdata-table-body">
-                                        <tr><td class="no-data">Vui lòng chọn một dự án.</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <!-- 4. ALLOCATIONS TAB -->
@@ -809,12 +756,40 @@
                         </div>
                     </div>
 
+                    <div class="form-section project-modal-data-section" id="project-modal-masterdata-section">
+                        <div class="form-section-heading">
+                            <span>03</span>
+                            <div>
+                                <h4>Dữ liệu thực hiện dự án</h4>
+                                <p>Mỗi dự án có một bộ giá trị cố định cho 15 nhóm dữ liệu.</p>
+                            </div>
+                        </div>
+                        <div class="project-modal-masterdata-summary">
+                            <div class="entry-flow-note">
+                                <i class="bx bx-user-check"></i>
+                                <span>Không cần chuyển tab hoặc chọn lại dự án</span>
+                            </div>
+                            <div class="masterdata-kpis">
+                                <span><strong id="masterdata-kpi-records">0</strong> mục đã nhập</span>
+                                <span><strong id="masterdata-kpi-modules">0/15</strong> nhóm hoàn tất</span>
+                                <span><strong id="masterdata-kpi-missing">15</strong> nhóm chưa nhập</span>
+                            </div>
+                        </div>
+                        <div id="masterdata-all-sections" class="masterdata-all-sections">
+                            <div class="masterdata-empty-state">
+                                <i class="bx bx-save"></i>
+                                <h4>Lưu thông tin chung để nhập dữ liệu chi tiết</h4>
+                                <p>Dự án mới cần có mã dự án trước khi thêm dữ liệu vào 15 nhóm.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="modal-footer sticky-footer">
                         <span class="form-hint"><i class="bx bx-info-circle"></i> Mã dự án không thể đổi sau khi tạo.</span>
                         <div>
                             <button type="button" class="btn" onclick="closeModal('modal-project')">Hủy</button>
                             <button type="submit" class="btn btn-primary" id="project-save-button">
-                                <i class="bx bx-save"></i> Lưu dự án
+                                <i class="bx bx-save"></i> Lưu toàn bộ hồ sơ
                             </button>
                         </div>
                     </div>
@@ -1243,7 +1218,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=9.0.0"></script>
+    <script src="/static/js/main.js?v=9.5.1"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">

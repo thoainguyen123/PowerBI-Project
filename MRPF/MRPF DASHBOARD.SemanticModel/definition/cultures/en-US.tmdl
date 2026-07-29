@@ -11099,6 +11099,94 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
+			    "measure_BD.table__tổng_sản_phẩm_mới_nhất": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Table - Tổng sản phẩm mới nhất"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "table - tổng sản phẩm mới nhất": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "table tổng sản phẩm mới nhất": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.table__SL_đã_bán_mới_nhất": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Table - SL đã bán mới nhất"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "table - SL đã bán mới nhất": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "table SL đã bán mới nhất": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.table__SL_mở_bán": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Table - SL mở bán"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "table - SL mở bán": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "table SL mở bán": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.table__giá_TB_mới_nhất": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Table - Giá TB mới nhất"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "table - giá TB mới nhất": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "table giá TB mới nhất": {
+			            "State": "Generated",
+			            "Weight": 0.97
+			          }
+			        }
+			      ]
+			    },
 			    "measure_BD.nguồn_cung_dự_kiến": {
 			      "Definition": {
 			        "Binding": {
@@ -18704,16 +18792,6 @@ cultureInfo en-US
 			          "tồn của quý trước": {
 			            "State": "Generated"
 			          }
-			        },
-			        {
-			          "Tồn lũy kế": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -18778,6 +18856,16 @@ cultureInfo en-US
 			          "tồn chưa mở bán": {
 			            "State": "Generated"
 			          }
+			        },
+			        {
+			          "Số căn chưa mở bán": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -18810,16 +18898,6 @@ cultureInfo en-US
 			          "số căn đã bán quý này": {
 			            "State": "Generated"
 			          }
-			        },
-			        {
-			          "Số căn đã bán trong kỳ": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
-			          }
 			        }
 			      ]
 			    },
@@ -18851,6 +18929,16 @@ cultureInfo en-US
 			        {
 			          "tổng mở bán tính tới quý đó": {
 			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Tổng mở bán lũy kế": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -18918,9 +19006,174 @@ cultureInfo en-US
 			          }
 			        }
 			      ]
+			    },
+			    "measure_BD.tồn_của_quý_này": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Tồn của quý này"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tồn của quý này": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.nguồn_cung_mở_bán_mới_updated": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Nguồn cung mở bán mới updated"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "nguồn cung mở bán mới updated": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.tỷ_trọng_bán_quý_này": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Tỷ trọng bán quý này"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tỷ trọng bán quý này": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.tỷ_trọng_số_căn_đã_bán_quý_này": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Tỷ trọng số căn đã bán quý này"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tỷ trọng số căn đã bán quý này": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.số_căn_đã_bán_lũy_kế_all_status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Số căn đã bán lũy kế all status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "số căn đã bán lũy kế all status": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Số căn đã bán": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.tổng_mở_bán_tính_tới_quý_đó_all_status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Tổng mở bán tính tới quý đó all status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tổng mở bán tính tới quý đó all status": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
+			    },
+			    "measure_BD.tồn_của_quý_này_all_status": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Tồn của quý này all status"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "tồn của quý này all status": {
+			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Số căn chưa bán": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
+			    "nguon_cung_du_kien_updated_at_date_hierarchy_has_nguon_cung_du_kien_updated_at_quarter": {
+			      "Binding": {
+			        "ConceptualEntity": "Nguon_Cung_Du_kien"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "nguon_cung_du_kien.updated_at.date_hierarchy": {
+			          "Target": {
+			            "Entity": "nguon_cung_du_kien.updated_at.date_hierarchy"
+			          }
+			        },
+			        "nguon_cung_du_kien.updated_at.quarter": {
+			          "Target": {
+			            "Entity": "nguon_cung_du_kien.updated_at.quarter"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "nguon_cung_du_kien.updated_at.date_hierarchy"
+			            },
+			            "Object": {
+			              "Role": "nguon_cung_du_kien.updated_at.quarter"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter"
+			        }
+			      ]
+			    },
 			    "nguon_cung_du_kien_updated_at_date_hierarchy_has_nguon_cung_du_kien_updated_at_year": {
 			      "Binding": {
 			        "ConceptualEntity": "Nguon_Cung_Du_kien"
@@ -19742,7 +19995,7 @@ cultureInfo en-US
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter"
+			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter1"
 			        }
 			      ]
 			    },
@@ -20237,7 +20490,7 @@ cultureInfo en-US
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter1"
+			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter2"
 			        }
 			      ]
 			    },
@@ -20732,7 +20985,7 @@ cultureInfo en-US
 			          },
 			          "State": "Generated",
 			          "Weight": 0.99,
-			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter2"
+			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter3"
 			        }
 			      ]
 			    },
@@ -20997,6 +21250,237 @@ cultureInfo en-US
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "project_BD_have_product_project_BD"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_tồn_của_quý_này_all_status": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.tồn_của_quý_này_all_status": {
+			          "Target": {
+			            "Entity": "measure_BD.tồn_của_quý_này_all_status"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.tồn_của_quý_này_all_status"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_tồn_của_quý_này_all_status"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_tổng_mở_bán_tính_tới_quý_đó_all_status": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.tổng_mở_bán_tính_tới_quý_đó_all_status": {
+			          "Target": {
+			            "Entity": "measure_BD.tổng_mở_bán_tính_tới_quý_đó_all_status"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.tổng_mở_bán_tính_tới_quý_đó_all_status"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_tổng_mở_bán_tính_tới_quý_đó_all_status"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_số_căn_đã_bán_lũy_kế_all_status": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.số_căn_đã_bán_lũy_kế_all_status": {
+			          "Target": {
+			            "Entity": "measure_BD.số_căn_đã_bán_lũy_kế_all_status"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.số_căn_đã_bán_lũy_kế_all_status"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_số_căn_đã_bán_lũy_kế_all_status"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_tỷ_trọng_số_căn_đã_bán_quý_này": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.tỷ_trọng_số_căn_đã_bán_quý_này": {
+			          "Target": {
+			            "Entity": "measure_BD.tỷ_trọng_số_căn_đã_bán_quý_này"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.tỷ_trọng_số_căn_đã_bán_quý_này"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_tỷ_trọng_số_căn_đã_bán_quý_này"
+			        }
+			      ]
+			    },
+			    "measure_BD_has_tỷ_trọng_bán_quý_này": {
+			      "Binding": {
+			        "ConceptualEntity": "Measure_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "measure_BD": {
+			          "Target": {
+			            "Entity": "measure_BD"
+			          }
+			        },
+			        "measure_BD.tỷ_trọng_bán_quý_này": {
+			          "Target": {
+			            "Entity": "measure_BD.tỷ_trọng_bán_quý_này"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "measure_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.tỷ_trọng_bán_quý_này"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "measure_BD_have_tỷ_trọng_bán_quý_này"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_nguồn_cung_mở_bán_mới_updated": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.nguồn_cung_mở_bán_mới_updated": {
+			          "Target": {
+			            "Entity": "measure_BD.nguồn_cung_mở_bán_mới_updated"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.nguồn_cung_mở_bán_mới_updated"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_nguồn_cung_mở_bán_mới_updated"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_tồn_của_quý_này": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.tồn_của_quý_này": {
+			          "Target": {
+			            "Entity": "measure_BD.tồn_của_quý_này"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.tồn_của_quý_này"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_tồn_của_quý_này"
 			        }
 			      ]
 			    },
@@ -28727,39 +29211,6 @@ cultureInfo en-US
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "some_ktvms_are_deactivated_ktvms"
-			        }
-			      ]
-			    },
-			    "nguon_cung_du_kien_updated_at_date_hierarchy_has_nguon_cung_du_kien_updated_at_quarter": {
-			      "Binding": {
-			        "ConceptualEntity": "Nguon_Cung_Du_kien"
-			      },
-			      "State": "Generated",
-			      "Roles": {
-			        "nguon_cung_du_kien.updated_at.date_hierarchy": {
-			          "Target": {
-			            "Entity": "nguon_cung_du_kien.updated_at.date_hierarchy"
-			          }
-			        },
-			        "nguon_cung_du_kien.updated_at.quarter": {
-			          "Target": {
-			            "Entity": "nguon_cung_du_kien.updated_at.quarter"
-			          }
-			        }
-			      },
-			      "Phrasings": [
-			        {
-			          "Attribute": {
-			            "Subject": {
-			              "Role": "nguon_cung_du_kien.updated_at.date_hierarchy"
-			            },
-			            "Object": {
-			              "Role": "nguon_cung_du_kien.updated_at.quarter"
-			            }
-			          },
-			          "State": "Generated",
-			          "Weight": 0.99,
-			          "ID": "updated_at_date_hierarchy_have_updated_at_quarter3"
 			        }
 			      ]
 			    },

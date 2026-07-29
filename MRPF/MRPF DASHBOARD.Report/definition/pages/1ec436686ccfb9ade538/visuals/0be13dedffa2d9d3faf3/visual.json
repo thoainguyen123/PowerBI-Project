@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "0be13dedffa2d9d3faf3",
   "position": {
-    "x": 13.23529411764706,
-    "y": 563.82352941176475,
+    "x": 13.717950886499031,
+    "y": 546.15267632748566,
     "z": 11000,
-    "height": 67.5,
-    "width": 170.73529411764707,
+    "height": 67.33406309180279,
+    "width": 170.84710159979161,
     "tabOrder": 10000
   },
   "visual": {
@@ -196,6 +196,20 @@
           ]
         },
         "howCreated": "User"
+      },
+      {
+        "name": "0f284810447d21cbd870",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Giá bán TB"
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

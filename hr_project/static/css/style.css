@@ -2189,6 +2189,19 @@ textarea.form-control {
     box-shadow: 0 10px 30px rgba(29, 55, 82, 0.06);
 }
 
+.project-table-card .table-responsive {
+    max-height: 540px;
+    overflow: auto;
+}
+
+.project-table-card thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #f7fafc;
+    box-shadow: 0 1px 0 var(--border-color);
+}
+
 .table-toolbar {
     padding: 1.25rem 1.5rem;
     display: flex;
@@ -2318,17 +2331,37 @@ textarea.form-control {
 }
 
 .modal-project-content {
-    width: min(940px, calc(100vw - 2rem));
-    max-width: 940px;
-    max-height: 92vh;
+    width: min(1180px, calc(100vw - 2rem));
+    max-width: 1180px;
+    max-height: 94vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #ffffff;
 }
 
 .modal-project-content .modal-header {
+    flex: 0 0 auto;
     background: linear-gradient(135deg, #f7fafd, #eef5f8);
 }
 
 .modal-project-content .modal-header h3 {
     margin-top: 0.25rem;
+}
+
+.modal-project-content > .modal-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+    background: #ffffff;
+    scrollbar-gutter: stable;
+}
+
+.modal-project-content #form-project {
+    min-height: 100%;
+    padding: 1.5rem 1.5rem 0;
 }
 
 .form-section + .form-section {
@@ -2398,12 +2431,14 @@ textarea.form-control {
 
 .sticky-footer {
     position: sticky;
-    bottom: -1.5rem;
-    margin: 1.5rem -1.5rem -1.5rem;
+    z-index: 20;
+    bottom: 0;
+    margin: 1.5rem -1.5rem 0;
     padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.96);
+    background: #ffffff;
     backdrop-filter: blur(12px);
     border-top: 1px solid var(--border-color);
+    box-shadow: 0 -12px 28px rgba(15, 23, 42, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2666,6 +2701,241 @@ textarea.form-control {
     grid-column: span 2;
 }
 
+.project-modal-data-section {
+    border-color: rgba(13, 148, 136, 0.28);
+    background: linear-gradient(145deg, rgba(13, 148, 136, 0.045), rgba(255, 255, 255, 0.86));
+}
+
+.project-modal-masterdata-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.project-modal-masterdata-summary .masterdata-kpis {
+    justify-content: flex-end;
+}
+
+.project-modal-data-section .masterdata-section-card {
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.project-modal-data-section .masterdata-inline-table-wrap {
+    max-height: 260px;
+}
+
+.project-masterdata-rows {
+    display: grid;
+}
+
+.project-masterdata-row {
+    padding: 1rem 1.15rem 1.2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.project-masterdata-row:first-child {
+    border-top: 0;
+}
+
+.project-masterdata-row-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.project-masterdata-row-heading span {
+    color: var(--secondary);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.project-masterdata-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1rem;
+}
+
+.project-masterdata-field-wide {
+    grid-column: span 2;
+}
+
+.project-masterdata-fields .form-group {
+    margin-bottom: 0.85rem;
+}
+
+.project-masterdata-fields label {
+    color: var(--text-main);
+    font-size: 0.78rem;
+    font-weight: 650;
+}
+
+.project-masterdata-fields .form-control {
+    background: #ffffff;
+}
+
+.project-data-entry {
+    scroll-margin-top: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.project-data-entry-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.project-data-entry-heading h3 {
+    margin: 0.2rem 0 0.35rem;
+    color: var(--primary);
+    font-size: clamp(1.35rem, 2vw, 1.8rem);
+}
+
+.project-data-entry-heading p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.entry-flow-note {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    max-width: 360px;
+    padding: 0.8rem 1rem;
+    border: 1px solid rgba(13, 148, 136, 0.22);
+    border-radius: 12px;
+    background: rgba(13, 148, 136, 0.07);
+    color: #0f766e;
+    font-size: 0.82rem;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.entry-flow-note i {
+    flex: 0 0 auto;
+    font-size: 1.35rem;
+}
+
+.masterdata-all-sections {
+    display: grid;
+    gap: 1rem;
+}
+
+.masterdata-empty-state {
+    display: grid;
+    place-items: center;
+    min-height: 230px;
+    padding: 2.5rem;
+    border: 1px dashed rgba(13, 148, 136, 0.35);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(145deg, rgba(13, 148, 136, 0.05), rgba(255, 255, 255, 0.78));
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.masterdata-empty-state i {
+    margin-bottom: 0.6rem;
+    color: var(--secondary);
+    font-size: 2.5rem;
+}
+
+.masterdata-empty-state h4 {
+    margin: 0 0 0.35rem;
+    color: var(--primary);
+    font-size: 1.05rem;
+}
+
+.masterdata-empty-state p {
+    margin: 0;
+}
+
+.masterdata-section-card {
+    overflow: hidden;
+    scroll-margin-top: 1rem;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--secondary);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    box-shadow: 0 8px 26px rgba(29, 55, 82, 0.055);
+}
+
+.masterdata-section-header {
+    display: grid;
+    grid-template-columns: 44px minmax(190px, 1fr) auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.15rem;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(90deg, rgba(13, 148, 136, 0.075), rgba(255, 255, 255, 0));
+}
+
+.masterdata-section-index {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}
+
+.masterdata-section-title span {
+    color: var(--secondary);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.055em;
+}
+
+.masterdata-section-title h4 {
+    margin: 0.16rem 0 0;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+.masterdata-section-count {
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    background: #eef2f6;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.masterdata-section-count.has-data {
+    background: rgba(13, 148, 136, 0.12);
+    color: #0f766e;
+}
+
+.masterdata-section-add {
+    white-space: nowrap;
+}
+
+.masterdata-inline-table-wrap {
+    max-height: 330px;
+}
+
+.masterdata-inline-table {
+    margin: 0;
+}
+
+.masterdata-inline-empty {
+    padding: 1.4rem !important;
+    color: var(--text-muted);
+    text-align: center;
+}
+
 @media (max-width: 1280px) {
     .masterdata-workspace {
         grid-template-columns: 1fr;
@@ -2698,6 +2968,33 @@ textarea.form-control {
 }
 
 @media (max-width: 980px) {
+    .project-modal-masterdata-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .project-modal-masterdata-summary .masterdata-kpis {
+        justify-content: flex-start;
+    }
+
+    .project-data-entry-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .entry-flow-note {
+        max-width: none;
+    }
+
+    .masterdata-section-header {
+        grid-template-columns: 44px minmax(0, 1fr) auto;
+    }
+
+    .masterdata-section-add {
+        grid-column: 2 / -1;
+        justify-self: start;
+    }
+
     .masterdata-workspace {
         grid-template-columns: 1fr;
     }
@@ -2799,6 +3096,24 @@ textarea.form-control {
     .hero-actions .btn {
         flex: 1;
         justify-content: center;
+    }
+
+    .masterdata-section-header {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
+
+    .masterdata-section-count,
+    .masterdata-section-add {
+        grid-column: 2;
+        justify-self: start;
+    }
+
+    .project-masterdata-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .project-masterdata-field-wide {
+        grid-column: span 1;
     }
 
     .allocation-kpis,

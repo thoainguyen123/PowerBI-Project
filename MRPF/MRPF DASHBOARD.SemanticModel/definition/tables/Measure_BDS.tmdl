@@ -201,7 +201,6 @@ table Measure_BDS
 			            'Project_BDS'[Nhóm],
 			            'Project_BDS'[phase_status.2]
 			        ),
-			        REMOVEFILTERS('Dim_Period'),
 			        REMOVEFILTERS(
 			            'Project_BDS'[Năm - Quý],
 			            'Project_BDS'[year],
@@ -225,7 +224,6 @@ table Measure_BDS
 			        RETURN
 			            CALCULATE(
 			                MAX('Project_BDS'[totalProducts]),
-			                REMOVEFILTERS('Dim_Period'),
 			                REMOVEFILTERS(
 			                    'Project_BDS'[Năm - Quý],
 			                    'Project_BDS'[year],
@@ -247,78 +245,256 @@ table Measure_BDS
 		displayFolder: Nguồn cung
 		lineageTag: dee6e144-f4c2-4b2b-bc53-2545041960cd
 
-	/// Tồn kho sơ cấp đầu kỳ = [Tổng mở bán tính tới quý trước] - [Số căn đã bán lũy kế quý trước]
+	measure 'Table - Tổng sản phẩm mới nhất' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _QuarterKeyInScope =
+			    MAXX(
+			        FILTER(Project_BDS, NOT ISBLANK(Project_BDS[year]) && NOT ISBLANK(Project_BDS[quater])),
+			        Project_BDS[year] * 10 + Project_BDS[quater]
+			    )
+			RETURN
+			    SUMX(
+			        FILTER(
+			            VALUES(Project_BDS[realEstateProjectTypeId]),
+			            NOT ISBLANK(Project_BDS[realEstateProjectTypeId])
+			        ),
+			        VAR _RowsInQuarter =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] = _QuarterKeyInScope
+			                            && NOT ISBLANK(Project_BDS[totalProducts])
+			                    ),
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(Project_BDS[period])
+			            )
+			        VAR _ValueInQuarter = MAXX(_RowsInQuarter, Project_BDS[totalProducts])
+			        VAR _LastRows =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] <= _CurrentQuarterKey
+			                            && NOT ISBLANK(Project_BDS[totalProducts])
+			                    ),
+			                    Project_BDS[year], DESC,
+			                    Project_BDS[quater], DESC,
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    Project_BDS[Năm - Quý],
+			                    Project_BDS[year],
+			                    Project_BDS[quater],
+			                    Project_BDS[period]
+			                )
+			            )
+			        RETURN
+			            IF(
+			                _QuarterKeyInScope = _CurrentQuarterKey && ISBLANK(_ValueInQuarter),
+			                MAXX(_LastRows, Project_BDS[totalProducts]),
+			                _ValueInQuarter
+			            )
+			    )
+		formatString: #,0
+		lineageTag: 8798a9f4-9edf-47d4-bc60-472f4ae9c584
+
+	measure 'Table - SL đã bán mới nhất' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _QuarterKeyInScope =
+			    MAXX(
+			        FILTER(Project_BDS, NOT ISBLANK(Project_BDS[year]) && NOT ISBLANK(Project_BDS[quater])),
+			        Project_BDS[year] * 10 + Project_BDS[quater]
+			    )
+			RETURN
+			    SUMX(
+			        FILTER(
+			            VALUES(Project_BDS[realEstateProjectTypeId]),
+			            NOT ISBLANK(Project_BDS[realEstateProjectTypeId])
+			        ),
+			        VAR _RowsInQuarter =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] = _QuarterKeyInScope
+			                            && NOT ISBLANK(Project_BDS[quantity])
+			                    ),
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(Project_BDS[period])
+			            )
+			        VAR _ValueInQuarter = MAXX(_RowsInQuarter, Project_BDS[quantity])
+			        VAR _LastRows =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] <= _CurrentQuarterKey
+			                            && NOT ISBLANK(Project_BDS[quantity])
+			                    ),
+			                    Project_BDS[year], DESC,
+			                    Project_BDS[quater], DESC,
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    Project_BDS[Năm - Quý],
+			                    Project_BDS[year],
+			                    Project_BDS[quater],
+			                    Project_BDS[period]
+			                )
+			            )
+			        RETURN
+			            IF(
+			                _QuarterKeyInScope = _CurrentQuarterKey && ISBLANK(_ValueInQuarter),
+			                MAXX(_LastRows, Project_BDS[quantity]),
+			                _ValueInQuarter
+			            )
+			    )
+		formatString: #,0
+		lineageTag: b3039d90-49b1-4334-9745-9f1cc05731b3
+
+	measure 'Table - Giá TB mới nhất' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _QuarterKeyInScope =
+			    MAXX(
+			        FILTER(Project_BDS, NOT ISBLANK(Project_BDS[year]) && NOT ISBLANK(Project_BDS[quater])),
+			        Project_BDS[year] * 10 + Project_BDS[quater]
+			    )
+			RETURN
+			    AVERAGEX(
+			        FILTER(
+			            VALUES(Project_BDS[realEstateProjectTypeId]),
+			            NOT ISBLANK(Project_BDS[realEstateProjectTypeId])
+			        ),
+			        VAR _RowsInQuarter =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] = _QuarterKeyInScope
+			                            && NOT ISBLANK(Project_BDS[amount])
+			                    ),
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(Project_BDS[period])
+			            )
+			        VAR _ValueInQuarter = MAXX(_RowsInQuarter, Project_BDS[amount])
+			        VAR _LastRows =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        Project_BDS,
+			                        Project_BDS[year] * 10 + Project_BDS[quater] <= _CurrentQuarterKey
+			                            && NOT ISBLANK(Project_BDS[amount])
+			                    ),
+			                    Project_BDS[year], DESC,
+			                    Project_BDS[quater], DESC,
+			                    Project_BDS[period], DESC,
+			                    Project_BDS[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    Project_BDS[Năm - Quý],
+			                    Project_BDS[year],
+			                    Project_BDS[quater],
+			                    Project_BDS[period]
+			                )
+			            )
+			        RETURN
+			            IF(
+			                _QuarterKeyInScope = _CurrentQuarterKey && ISBLANK(_ValueInQuarter),
+			                MAXX(_LastRows, Project_BDS[amount]),
+			                _ValueInQuarter
+			            )
+			    )
+		formatString: #,0
+		lineageTag: 96af968a-1c86-439a-8d7a-21adead9b1fd
+
+	measure 'Table - SL mở bán' = SUM(Project_BDS[salesOpeningQuantity])
+		formatString: #,0
+		lineageTag: fcdcbd21-8b23-4985-a64f-ea1cd8e496ba
+
+	/// Tồn của quý trước = [Tổng mở bán tính tới quý đó] - COALESCE([Số căn đã bán lũy kế quý trước], 0)
 	measure 'Tồn của quý trước' = [Tổng mở bán tính tới quý trước] - COALESCE([Số căn đã bán lũy kế quý trước], 0)
 		formatString: #,##0
 		displayFolder: Nguồn cung
 		lineageTag: 3ef64cd4-6b34-4af7-bfe2-4fd2343e8434
 
-	/// Nguồn cung mở bán mới: luôn lấy mốc thời gian (Order) lớn nhất của từng dự án TRONG phạm vi filter hiện tại (không filter/All -> mốc mới nhất toàn cục; có filter theo quý/năm -> mốc mới nhất trong phạm vi đó), rồi cộng theo dự án.
-	/// Khi bị bẻ thêm theo Khoang_Gia_So (biểu đồ "theo giá bán"): chọn dòng đại diện của mỗi dự án PHẢI bỏ qua filter Khoang_Gia_So (REMOVEFILTERS) để không chọn nhầm nhiều dòng khác nhau cho cùng 1 dự án ở các phân khúc khác nhau (gây đếm trùng); chỉ áp Khoang_Gia_So khi SUM giá trị cuối để tự động = 0 nếu dòng đại diện không thuộc đúng phân khúc đang xem.
-	measure 'Nguồn cung mở bán mới' =
-			// Khi visual dùng Khoang_Gia_So, Power BI tự thêm cột sort Khoang_Gia_Order vào group-by.
-			// Phải bỏ đồng thời cả hai filter khi chọn dòng đại diện để tránh chọn sai Order và đếm trùng.
-			VAR _TargetQuarterKey =
-			    CALCULATE(
-			        MAX(Project_BDS[QuarterKey]),
-			        Project_BDS[phase_status.2] = "Đang mở bán",
-			        REMOVEFILTERS(
-			            Project_BDS[project_name],
-			            Project_BDS[phase_name],
-			            Project_BDS[project_type],
-			            Project_BDS[realEstateProjectTypeId]
-			        )
-			    )
-			RETURN
-			    SUMX(
-			        CALCULATETABLE(
-			            SUMMARIZE(
-			                FILTER(
-			                    Project_BDS,
-			                    Project_BDS[phase_status.2] = "Đang mở bán"
-			                        && Project_BDS[QuarterKey] = _TargetQuarterKey
-			                ),
-			                Project_BDS[project_name],
-			                Project_BDS[phase_name],
-			                Project_BDS[project_type]
-			            ),
-			            REMOVEFILTERS(
-			                Project_BDS[Khoang_Gia_So],
-			                Project_BDS[Khoang_Gia_Order]
-			            )
-			        ),
-			        VAR _MaxOrderInContext =
-			            CALCULATE(
-			                MAX(Project_BDS[Order]),
-			                Project_BDS[phase_status.2] = "Đang mở bán",
-			                Project_BDS[QuarterKey] = _TargetQuarterKey,
-			                REMOVEFILTERS(
-			                    Project_BDS[Khoang_Gia_So],
-			                    Project_BDS[Khoang_Gia_Order]
-			                )
-			            )
-			        RETURN
-			            CALCULATE(
-			                SUM(Project_BDS[salesOpeningQuantity]),
-			                Project_BDS[Order] = _MaxOrderInContext,
-			                Project_BDS[QuarterKey] = _TargetQuarterKey,
-			                Project_BDS[phase_status.2] = "Đang mở bán"
-			            )
-			    )
+	/// Cộng salesOpeningQuantity của tất cả các tháng trong quý đang xem; ví dụ tháng 5 là 50 và tháng 6 là 100 thì quý 2 bằng 150.
+	measure 'Nguồn cung mở bán mới' = ```
+			
+						VAR _IsTimeFiltered =
+						    ISFILTERED('Project_BDS'[Năm - Quý])
+						        || ISFILTERED('Project_BDS'[year])
+						        || ISFILTERED('Project_BDS'[quater])
+						        || ISFILTERED('Project_BDS'[period])
+						        || ISINSCOPE('Project_BDS'[Năm - Quý])
+						        || ISINSCOPE('Project_BDS'[year])
+						        || ISINSCOPE('Project_BDS'[quater])
+						
+						RETURN
+						    IF(
+						        _IsTimeFiltered,
+						        -- 1. Khi xem trên Biểu đồ/Bộ lọc theo Năm, Quý hoặc Tháng: 
+						        --    Cộng dồn toàn bộ phát sinh mở bán mới trong đúng phạm vi đó (Cả năm / Cả quý).
+						        CALCULATE(
+						            SUM('Project_BDS'[salesOpeningQuantity]),
+						            'Project_BDS'[phase_status.2] = "Đang mở bán"
+						        ),
+						        -- 2. Khi KHÔNG có bất kỳ bộ lọc thời gian nào (Card KPI mặc định): 
+						        --    Giữ nguyên tính năng hiển thị theo Quý mới nhất có dữ liệu.
+						        VAR _CurrentQuarterOrdinal = YEAR(TODAY()) * 4 + QUARTER(TODAY())
+						        VAR _LatestQuarterOrdinal =
+						            MAXX(
+						                FILTER(
+						                    CALCULATETABLE(
+						                        SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+						                        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+						                    ),
+						                    'Project_BDS'[year] * 4 + 'Project_BDS'[quater] <= _CurrentQuarterOrdinal
+						                ),
+						                'Project_BDS'[year] * 4 + 'Project_BDS'[quater]
+						            )
+						        VAR _EffectiveYear = INT(DIVIDE(_LatestQuarterOrdinal - 1, 4))
+						        VAR _EffectiveQuarter = _LatestQuarterOrdinal - _EffectiveYear * 4
+						        RETURN
+						            CALCULATE(
+						                SUM('Project_BDS'[salesOpeningQuantity]),
+						                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
+						                'Project_BDS'[year] = _EffectiveYear,
+						                'Project_BDS'[quater] = _EffectiveQuarter,
+						                'Project_BDS'[phase_status.2] = "Đang mở bán"
+						            )
+						    )
+			```
 		formatString: #,##0
 		displayFolder: Nguồn cung
 		lineageTag: 326b68f4-4810-47fa-9eba-436e7d1ef619
 
+	/// Nguồn cung sơ cấp bằng tồn đầu quý cộng tổng số sản phẩm mở bán phát sinh trong quý.
 	measure 'Nguồn cung sơ cấp' = [Tồn của quý trước] + [Nguồn cung mở bán mới]
 		formatString: #,##0
 		displayFolder: Nguồn cung
 		lineageTag: db2abb1b-2634-4e52-b296-17980b1268fb
 
+	/// Trung bình giá bán snapshot gần nhất của từng đối tượng tính đến quý đang xem; không cộng giá qua các tháng.
 	measure 'Giá bán TB' =
 			VAR _CurrentQuarterOrdinal =
 			    YEAR(TODAY()) * 4 + QUARTER(TODAY())
 			VAR _HasQuarterSelection =
-			    ISFILTERED('Dim_Period'[Năm - Quý]) || ISFILTERED('Dim_Period'[year]) || ISFILTERED('Dim_Period'[quater]) || ISFILTERED('Project_BDS'[Năm - Quý])
+			    ISFILTERED('Project_BDS'[Năm - Quý])
 			        || ISFILTERED('Project_BDS'[year])
 			        || ISFILTERED('Project_BDS'[quater])
 			VAR _SelectedQuarterOrdinal =
@@ -339,7 +515,6 @@ table Measure_BDS
 			                    'Project_BDS'[year],
 			                    'Project_BDS'[quater]
 			                ),
-			                REMOVEFILTERS('Dim_Period'),
 			                REMOVEFILTERS(
 			                    'Project_BDS'[Năm - Quý],
 			                    'Project_BDS'[year],
@@ -363,7 +538,6 @@ table Measure_BDS
 			            VALUES('Project_BDS'[realEstateProjectTypeId]),
 			            NOT ISBLANK('Project_BDS'[realEstateProjectTypeId])
 			        ),
-			        REMOVEFILTERS('Dim_Period'),
 			        REMOVEFILTERS(
 			            'Project_BDS'[Năm - Quý],
 			            'Project_BDS'[year],
@@ -377,7 +551,6 @@ table Measure_BDS
 			        VAR _HistoryRows =
 			            CALCULATETABLE(
 			                'Project_BDS',
-			                REMOVEFILTERS('Dim_Period'),
 			                REMOVEFILTERS(
 			                    'Project_BDS'[Năm - Quý],
 			                    'Project_BDS'[year],
@@ -405,160 +578,821 @@ table Measure_BDS
 		displayFolder: Giá bán
 		lineageTag: 6419db52-1f2b-4da8-bcf7-ca8c963fede8
 
-	/// Số căn thiết kế chưa bao giờ mở bán = Tổng sản phẩm quy hoạch - Tổng mở bán lũy kế toàn thời gian
+	/// Tổng sản phẩm cố định lấy một lần theo từng đối tượng, trừ tổng salesOpeningQuantity đã mở bán của tất cả các kỳ.
 	measure 'Tồn chưa mở bán' =
-			SUMX(
-			    VALUES(Project_BDS[realEstateProjectTypeId]),
-			    VAR _TotalProd = CALCULATE(MAX(Project_BDS[totalProducts]), REMOVEFILTERS(Project_BDS[Năm - Quý], Project_BDS[year], Project_BDS[quater], Project_BDS[period], Project_BDS[Tháng]), REMOVEFILTERS('Dim_Period'))
-			    VAR _TotalOpened = CALCULATE(SUM(Project_BDS[salesOpeningQuantity]), REMOVEFILTERS(Project_BDS[Năm - Quý], Project_BDS[year], Project_BDS[quater], Project_BDS[period], Project_BDS[Tháng]), REMOVEFILTERS('Dim_Period'))
-			    RETURN
-			        _TotalProd - COALESCE(_TotalOpened, 0)
-			)
-		formatString: #,##0
-		displayFolder: Nguồn cung
-		lineageTag: ed49d9cf-d3e9-4390-82e0-c0ef79b35889
-
-	measure 'Nguồn cung quý hiện tại' = [Nguồn cung sơ cấp]
-		formatString: #,##0
-		displayFolder: Nguồn cung
-		lineageTag: 846caa9a-729b-4479-bd2e-e36778dad919
-
-	/// Số căn đã bán quý này: luôn lấy mốc thời gian (Order) lớn nhất của từng dự án TRONG phạm vi filter hiện tại (không filter/All -> mốc mới nhất toàn cục; có filter theo quý/năm -> mốc mới nhất trong phạm vi đó), rồi cộng theo dự án.
-	/// Phòng trường hợp bị bẻ thêm theo Khoang_Gia_So hoặc thuộc tính khác biến đổi theo kỳ báo cáo: chọn dòng đại diện PHẢI bỏ qua filter đó (REMOVEFILTERS) để tránh đếm trùng 1 dự án ở nhiều phân khúc; chỉ áp filter đó khi SUM giá trị cuối.
-	measure 'Số căn đã bán quý này' =
-			VAR _TargetQuarterKey =
-			    CALCULATE(
-			        MAX(Project_BDS[QuarterKey]),
-			        Project_BDS[phase_status.2] = "Đang mở bán",
+			VAR _Entities =
+			    CALCULATETABLE(
+			        FILTER(
+			            VALUES('Project_BDS'[realEstateProjectTypeId]),
+			            NOT ISBLANK('Project_BDS'[realEstateProjectTypeId])
+			        ),
 			        REMOVEFILTERS(
-			            Project_BDS[project_name],
-			            Project_BDS[phase_name],
-			            Project_BDS[project_type],
-			            Project_BDS[realEstateProjectTypeId]
+			            'Project_BDS'[Năm - Quý],
+			            'Project_BDS'[year],
+			            'Project_BDS'[quater],
+			            'Project_BDS'[period]
 			        )
 			    )
 			RETURN
 			    SUMX(
-			        CALCULATETABLE(
-			            SUMMARIZE(
-			                FILTER(
-			                    Project_BDS,
-			                    Project_BDS[phase_status.2] = "Đang mở bán"
-			                        && Project_BDS[QuarterKey] = _TargetQuarterKey
-			                ),
-			                Project_BDS[project_name],
-			                Project_BDS[phase_name],
-			                Project_BDS[project_type]
-			            ),
-			            REMOVEFILTERS(Project_BDS[Khoang_Gia_So])
-			        ),
-			        VAR _MaxOrderInContext =
+			        _Entities,
+			        // totalProducts cố định và lặp theo thời gian: chỉ lấy một lần.
+			        VAR _TotalProducts =
 			            CALCULATE(
-			                MAX(Project_BDS[Order]),
-			                Project_BDS[phase_status.2] = "Đang mở bán",
-			                Project_BDS[QuarterKey] = _TargetQuarterKey,
-			                REMOVEFILTERS(Project_BDS[Khoang_Gia_So])
+			                MAX('Project_BDS'[totalProducts]),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period]
+			                )
+			            )
+			        // salesOpeningQuantity là phát sinh: cộng toàn bộ các kỳ.
+			        VAR _TotalOpened =
+			            CALCULATE(
+			                SUM('Project_BDS'[salesOpeningQuantity]),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period]
+			                )
 			            )
 			        RETURN
-			            CALCULATE(
-			                SUM(Project_BDS[quantity_this_period]),
-			                Project_BDS[Order] = _MaxOrderInContext,
-			                Project_BDS[QuarterKey] = _TargetQuarterKey,
-			                'Project_BDS'[phase_status.2] = "Đang mở bán"
+			            _TotalProducts - COALESCE(_TotalOpened, 0)
+			    )
+		formatString: #,##0
+		displayFolder: Nguồn cung
+		lineageTag: ed49d9cf-d3e9-4390-82e0-c0ef79b35889
+
+	/// Nguồn cung của quý đang xem bằng tồn đầu quý cộng tổng số sản phẩm mở bán phát sinh trong quý.
+	measure 'Nguồn cung quý hiện tại' = [Tồn của quý trước] + [Nguồn cung mở bán mới]
+		formatString: #,##0
+		displayFolder: Nguồn cung
+		lineageTag: 846caa9a-729b-4479-bd2e-e36778dad919
+
+	/// Số căn bán phát sinh trong quý, tính theo từng đối tượng bằng quantity lũy kế mới nhất trong quý trừ quantity lũy kế gần nhất trước quý. Không cộng quantity theo tháng.
+	measure 'Số căn đã bán quý này' =
+			VAR _CurrentQuarterOrdinal =
+			    YEAR(TODAY()) * 4 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterOrdinal =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year])
+			                && NOT ISBLANK('Project_BDS'[quater])
+			        ),
+			        'Project_BDS'[year] * 4 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterOrdinal =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE(
+			                    'Project_BDS',
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater]
+			                ),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period]
+			                )
+			            ),
+			            'Project_BDS'[year] * 4 + 'Project_BDS'[quater] <= _CurrentQuarterOrdinal
+			        ),
+			        'Project_BDS'[year] * 4 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterOrdinal =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterOrdinal),
+			        _SelectedQuarterOrdinal,
+			        _LatestAvailableQuarterOrdinal
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        FILTER(
+			            VALUES('Project_BDS'[realEstateProjectTypeId]),
+			            NOT ISBLANK('Project_BDS'[realEstateProjectTypeId])
+			        ),
+			        REMOVEFILTERS(
+			            'Project_BDS'[Năm - Quý],
+			            'Project_BDS'[year],
+			            'Project_BDS'[quater],
+			            'Project_BDS'[period]
+			        )
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _HistoryRows =
+			            CALCULATETABLE(
+			                'Project_BDS',
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period]
+			                )
+			            )
+			        // quantity là lũy kế: lấy snapshot mới nhất trong quý.
+			        VAR _LatestCurrentQuarterRow =
+			            TOPN(
+			                1,
+			                FILTER(
+			                    _HistoryRows,
+			                    'Project_BDS'[year] * 4 + 'Project_BDS'[quater] = _EffectiveQuarterOrdinal
+			                        && NOT ISBLANK('Project_BDS'[quantity])
+			                ),
+			                'Project_BDS'[period], DESC,
+			                'Project_BDS'[updatedAt], DESC
+			            )
+			        // Lấy snapshot lũy kế cuối cùng trước quý đang xem.
+			        VAR _LatestPreviousQuarterRow =
+			            TOPN(
+			                1,
+			                FILTER(
+			                    _HistoryRows,
+			                    'Project_BDS'[year] * 4 + 'Project_BDS'[quater] < _EffectiveQuarterOrdinal
+			                        && NOT ISBLANK('Project_BDS'[quantity])
+			                ),
+			                'Project_BDS'[year], DESC,
+			                'Project_BDS'[quater], DESC,
+			                'Project_BDS'[period], DESC,
+			                'Project_BDS'[updatedAt], DESC
+			            )
+			        VAR _CurrentCumulativeSold =
+			            MAXX(_LatestCurrentQuarterRow, 'Project_BDS'[quantity])
+			        VAR _PreviousCumulativeSold =
+			            MAXX(_LatestPreviousQuarterRow, 'Project_BDS'[quantity])
+			        RETURN
+			            IF(
+			                ISBLANK(_CurrentCumulativeSold),
+			                0,
+			                _CurrentCumulativeSold - COALESCE(_PreviousCumulativeSold, 0)
 			            )
 			    )
 		formatString: #,##0
 		displayFolder: Bán hàng
 		lineageTag: 3fafc306-a0c4-4cfb-9fa3-95e99ce35925
 
+	/// Số căn đã bán lũy kế tính đến quý đang xem (lấy snapshot tháng/quý lớn nhất của từng nhóm project_name, phase_name, project_type, Nhóm với phase_status.2 là Đang mở bán)
 	measure 'Số căn đã bán lũy kế' =
-			CALCULATE(
-			    SUMX(
-			        SUMMARIZE(
-			            Project_BDS,
-			            Project_BDS[project_name],
-			            Project_BDS[phase_name],
-			            Project_BDS[project_type]
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year]) && NOT ISBLANK('Project_BDS'[quater])
 			        ),
-			        VAR _LatestRowInContext =
-			            TOPN(
-			                1,
-			                CALCULATETABLE(
-			                    Project_BDS,
-			                    NOT ISBLANK(Project_BDS[quantity])
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
+			        KEEPFILTERS('Project_BDS'[phase_status.2] = "Đang mở bán")
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        VAR _LatestRow =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        'Project_BDS',
+			                        'Project_BDS'[project_name] = _ProjName
+			                            && 'Project_BDS'[phase_name] = _PhaseName
+			                            && 'Project_BDS'[project_type] = _ProjType
+			                            && 'Project_BDS'[Nhóm] = _Nhom
+			                            && 'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			                            && NOT ISBLANK('Project_BDS'[quantity])
+			                    ),
+			                    'Project_BDS'[year], DESC,
+			                    'Project_BDS'[quater], DESC,
+			                    'Project_BDS'[period], DESC,
+			                    'Project_BDS'[updatedAt], DESC
 			                ),
-			                Project_BDS[Order], DESC,
-			                Project_BDS[updatedAt], DESC
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[phase_status.2]
+			                )
 			            )
-			        RETURN
-			            MAXX(_LatestRowInContext, Project_BDS[quantity])
-			    ),
-			    'Project_BDS'[phase_status.2] = "Đang mở bán"
-			)
+			        RETURN MAXX(_LatestRow, 'Project_BDS'[quantity])
+			    )
 		formatString: #,##0
 		displayFolder: Nguồn cung
-		lineageTag: 4a5b6c7d-8e9f-0a1b-2c3d-4e5f6a7b8c9d
+		lineageTag: b8c9d0e1-2f3a-4b5c-6d7e-8f9a0b1c2d3e
 
+	/// Tổng mở bán tích lũy tính đến quý đang xem (<= _EffectiveQuarterKey) của các phân khu đang mở bán
 	measure 'Tổng mở bán tính tới quý đó' =
-			SUMX(
-			    SUMMARIZE(
-			        Project_BDS,
-			        Project_BDS[project_name],
-			        Project_BDS[phase_name],
-			        Project_BDS[project_type]
-			    ),
-			    VAR _MaxOrderInContext = CALCULATE(MAX(Project_BDS[Order]))
-			    RETURN
-			        CALCULATE(
-			            SUM(Project_BDS[salesOpeningQuantity]),
-			            REMOVEFILTERS(Project_BDS[Năm - Quý], Project_BDS[year], Project_BDS[quater], Project_BDS[period], Project_BDS[Tháng]), REMOVEFILTERS('Dim_Period'),
-			            Project_BDS[Order] <= _MaxOrderInContext
-			        )
-			)
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year]) && NOT ISBLANK('Project_BDS'[quater])
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
+			        KEEPFILTERS('Project_BDS'[phase_status.2] = "Đang mở bán")
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        RETURN
+			            CALCULATE(
+			                SUM('Project_BDS'[salesOpeningQuantity]),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[phase_status.2]
+			                ),
+			                'Project_BDS'[project_name] = _ProjName,
+			                'Project_BDS'[phase_name] = _PhaseName,
+			                'Project_BDS'[project_type] = _ProjType,
+			                'Project_BDS'[Nhóm] = _Nhom,
+			                'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			            )
+			    )
 		formatString: #,##0
 		displayFolder: Nguồn cung
-		lineageTag: 6c7d8e9f-0a1b-2c3d-4e5f-6a7b8c9d0e1f
+		lineageTag: a7b8c9d0-1e2f-3a4b-5c6d-7e8f9a0b1c2d
 
-	/// Sửa lại: đo trực tiếp bằng hiệu của 2 measure đã đúng ngữ cảnh (lũy kế hiện tại - phát sinh kỳ này) thay vì suy Order-1, tránh lỗi row context không transition khi gọi MIN()/MAX() trần trong SUMX(VALUES(...)).
-	measure 'Số căn đã bán lũy kế quý trước' = [Số căn đã bán lũy kế] - COALESCE([Số căn đã bán quý này], 0)
+	/// Số căn đã bán lũy kế tính đến trước quý đang xem (< _EffectiveQuarterKey) của từng nhóm project_name, phase_name, project_type, Nhóm với phase_status.2 là Đang mở bán
+	measure 'Số căn đã bán lũy kế quý trước' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year]) && NOT ISBLANK('Project_BDS'[quater])
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
+			        KEEPFILTERS('Project_BDS'[phase_status.2] = "Đang mở bán")
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        VAR _LatestRow =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        'Project_BDS',
+			                        'Project_BDS'[project_name] = _ProjName
+			                            && 'Project_BDS'[phase_name] = _PhaseName
+			                            && 'Project_BDS'[project_type] = _ProjType
+			                            && 'Project_BDS'[Nhóm] = _Nhom
+			                            && 'Project_BDS'[year] * 10 + 'Project_BDS'[quater] < _EffectiveQuarterKey
+			                            && NOT ISBLANK('Project_BDS'[quantity])
+			                    ),
+			                    'Project_BDS'[year], DESC,
+			                    'Project_BDS'[quater], DESC,
+			                    'Project_BDS'[period], DESC,
+			                    'Project_BDS'[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[phase_status.2]
+			                )
+			            )
+			        RETURN MAXX(_LatestRow, 'Project_BDS'[quantity])
+			    )
 		formatString: #,##0
 		displayFolder: Nguồn cung
-		lineageTag: 5b6c7d8e-9f0a-1b2c-3d4e-5f6a7b8c9d0e
+		lineageTag: d1e2f3a4-5b6c-7d8e-9f0a-1b2c3d4e5f6a
 
-	/// Tổng số căn đã mở bán lũy kế tính tới trước kỳ đang xem
+	/// Tổng mở bán tích lũy tính đến trước quý đang xem = [Tổng mở bán tính tới quý đó] - [Nguồn cung mở bán mới]
 	measure 'Tổng mở bán tính tới quý trước' = [Tổng mở bán tính tới quý đó] - [Nguồn cung mở bán mới]
 		formatString: #,##0
 		displayFolder: Nguồn cung
 		lineageTag: c9d0e1f2-3a4b-5c6d-7e8f-9a0b1c2d3e4f
 
+	/// Tổng sản phẩm unique theo project_name, phase_name, project_type, Nhóm và phase_status.2 rồi cộng tổng lại
 	measure 'Tổng sản phẩm' =
-			SUMX(
-			    VALUES(Project_BDS[realEstateProjectTypeId]),
-			    CALCULATE(
-			        MAX(Project_BDS[totalProducts]),
-			        REMOVEFILTERS(Project_BDS[Năm - Quý], Project_BDS[year], Project_BDS[quater], Project_BDS[period], Project_BDS[Tháng]), REMOVEFILTERS('Dim_Period')
+			VAR _Entities =
+			    SUMMARIZE(
+			        'Project_BDS',
+			        'Project_BDS'[project_name],
+			        'Project_BDS'[phase_name],
+			        'Project_BDS'[project_type],
+			        'Project_BDS'[Nhóm],
+			        'Project_BDS'[phase_status.2]
 			    )
-			)
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        VAR _Status2 = 'Project_BDS'[phase_status.2]
+			        RETURN
+			            CALCULATE(
+			                MAX('Project_BDS'[totalProducts]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
+			                'Project_BDS'[project_name] = _ProjName,
+			                'Project_BDS'[phase_name] = _PhaseName,
+			                'Project_BDS'[project_type] = _ProjType,
+			                'Project_BDS'[Nhóm] = _Nhom,
+			                'Project_BDS'[phase_status.2] = _Status2
+			            )
+			    )
 		formatString: #,##0
 		displayFolder: Nguồn cung
-		lineageTag: 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
+		lineageTag: e8f9a0b1-2c3d-4e5f-6a7b-8c9d0e1f2a3b
 
-	/// Tồn kho sơ cấp cuối kỳ = Nguồn cung sơ cấp trong kỳ - Số căn đã bán trong kỳ
-	measure 'Tồn của quý này' = [Nguồn cung sơ cấp] - [Số căn đã bán quý này]
-		formatString: #,##0
+	measure 'Tồn của quý này' = [Tổng mở bán tính tới quý đó] - COALESCE([Số căn đã bán lũy kế], 0)
+		formatString: 0
 		displayFolder: Nguồn cung
 		lineageTag: 511020a0-e566-4172-a112-3b6ff94ca3f5
 
-	/// Số căn chưa bán = Số căn mở bán lũy kế - Số căn đã bán lũy kế (cùng lọc trạng thái Đang mở bán để hai vế đồng nhất)
-	measure 'Số căn chưa bán' =
-			CALCULATE(
-			    [Tổng mở bán tính tới quý đó],
-			    'Project_BDS'[phase_status.2] = "Đang mở bán"
+	measure 'Nguồn cung mở bán mới updated' = ```
+			
+			IF(
+			    ISINSCOPE(Project_BDS[phase_name]),
+			    -- Nếu là cấp dòng từng Phân khu: Chạy logic gốc
+			    [Nguồn cung mở bán mới], 
+			    -- Nếu là dòng TOTAL: Lặp qua từng dòng phân khu và cộng tổng lại
+			    SUMX(
+			        VALUES(Project_BDS[phase_name]),
+			        [Nguồn cung mở bán mới]
+			    )
 			)
-			    - COALESCE([Số căn đã bán lũy kế], 0)
+			```
+		formatString: 0
+		displayFolder: Nguồn cung
+		lineageTag: 9c353ec9-cc42-4cd8-a340-94269baed4ff
+
+	measure 'Tỷ trọng bán quý này' = DIVIDE([Số căn đã bán quý này],Số
+		displayFolder: Nguồn cung
+		lineageTag: 34a38a2d-786f-49f9-98b9-e75e441037a9
+
+	measure 'Tỷ trọng số căn đã bán quý này' =
+			
+			VAR _SoldCurrentRow =
+			    [Số căn đã bán quý này]
+			
+			VAR _TotalSoldVisible =
+			    CALCULATE(
+			        [Số căn đã bán quý này],
+			        ALLSELECTED('Project_BDS'[project_name]),
+			        ALLSELECTED('Project_BDS'[phase_name]),
+			        ALLSELECTED('Project_BDS'[project_type])
+			    )
+			
+			RETURN
+			    DIVIDE(
+			        _SoldCurrentRow,
+			        _TotalSoldVisible,
+			        0
+			    )
+		formatString: 0.00%;-0.00%;0.00%
+		displayFolder: Nguồn cung
+		lineageTag: eff16682-bca9-4eda-945d-02a95f108610
+
+	measure 'Số căn đã bán lũy kế all status' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year]) && NOT ISBLANK('Project_BDS'[quater])
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        VAR _LatestRow =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        'Project_BDS',
+			                        'Project_BDS'[project_name] = _ProjName
+			                            && 'Project_BDS'[phase_name] = _PhaseName
+			                            && 'Project_BDS'[project_type] = _ProjType
+			                            && 'Project_BDS'[Nhóm] = _Nhom
+			                            && 'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			                            && NOT ISBLANK('Project_BDS'[quantity])
+			                    ),
+			                    'Project_BDS'[year], DESC,
+			                    'Project_BDS'[quater], DESC,
+			                    'Project_BDS'[period], DESC,
+			                    'Project_BDS'[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[phase_status.2]
+			                )
+			            )
+			        RETURN MAXX(_LatestRow, 'Project_BDS'[quantity])
+			    )
+		formatString: 0
+		displayFolder: Giá bán
+		lineageTag: 66fe65f9-11a4-4acd-887d-c09d5131b3fc
+
+	measure 'Tổng mở bán tính tới quý đó all status' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        FILTER(
+			            'Project_BDS',
+			            NOT ISBLANK('Project_BDS'[year]) && NOT ISBLANK('Project_BDS'[quater])
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE('Project_BDS', 'Project_BDS'[year], 'Project_BDS'[quater]),
+			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period])
+			    )
+			RETURN
+			    SUMX(
+			        _Entities,
+			        VAR _ProjName = 'Project_BDS'[project_name]
+			        VAR _PhaseName = 'Project_BDS'[phase_name]
+			        VAR _ProjType = 'Project_BDS'[project_type]
+			        VAR _Nhom = 'Project_BDS'[Nhóm]
+			        RETURN
+			            CALCULATE(
+			                SUM('Project_BDS'[salesOpeningQuantity]),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[phase_status.2]
+			                ),
+			                'Project_BDS'[project_name] = _ProjName,
+			                'Project_BDS'[phase_name] = _PhaseName,
+			                'Project_BDS'[project_type] = _ProjType,
+			                'Project_BDS'[Nhóm] = _Nhom,
+			                'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			            )
+			    )
+		formatString: 0
+		displayFolder: Giá bán
+		lineageTag: 32d8f9f9-559c-45be-b9a9-867a28c582a6
+
+	measure 'Tồn của quý này all status' = [Tổng mở bán tính tới quý đó all status] - COALESCE([Số căn đã bán lũy kế all status], 0) + [Nguồn cung dự kiến]
+		formatString: 0
+		displayFolder: Giá bán
+		lineageTag: 23cd5b0e-9e10-4567-bcd8-14347ae2a378
+
+	/// Phân bổ nguồn cung sơ cấp vào đúng một khoảng giá theo snapshot giá gần nhất có dữ liệu của từng dự án/phân khu tại quý đang xem. Lịch sử mở bán và bán lũy kế được tính ngoài filter khoảng giá để tránh số âm giả và bảo đảm tổng các khoảng giá khớp nguồn cung sơ cấp.
+	measure 'Nguồn cung sơ cấp theo giá bán' =
+			VAR _CurrentQuarterKey = YEAR(TODAY()) * 10 + QUARTER(TODAY())
+			VAR _HasQuarterSelection =
+			    ISFILTERED('Project_BDS'[Năm - Quý])
+			        || ISFILTERED('Project_BDS'[year])
+			        || ISFILTERED('Project_BDS'[quater])
+			VAR _SelectedQuarterKey =
+			    MAXX(
+			        CALCULATETABLE(
+			            FILTER(
+			                'Project_BDS',
+			                NOT ISBLANK('Project_BDS'[year])
+			                    && NOT ISBLANK('Project_BDS'[quater])
+			            ),
+			            REMOVEFILTERS(
+			                'Project_BDS'[Khoang_Gia_So],
+			                'Project_BDS'[Khoang_Gia_Order]
+			            )
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _LatestAvailableQuarterKey =
+			    MAXX(
+			        FILTER(
+			            CALCULATETABLE(
+			                SUMMARIZE(
+			                    'Project_BDS',
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater]
+			                ),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[Khoang_Gia_So],
+			                    'Project_BDS'[Khoang_Gia_Order]
+			                )
+			            ),
+			            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _CurrentQuarterKey
+			        ),
+			        'Project_BDS'[year] * 10 + 'Project_BDS'[quater]
+			    )
+			VAR _EffectiveQuarterKey =
+			    IF(
+			        _HasQuarterSelection && NOT ISBLANK(_SelectedQuarterKey),
+			        _SelectedQuarterKey,
+			        _LatestAvailableQuarterKey
+			    )
+			VAR _SelectedPriceBands =
+			    VALUES('Project_BDS'[Khoang_Gia_So])
+			VAR _HasPriceBandFilter =
+			    ISFILTERED('Project_BDS'[Khoang_Gia_So])
+			VAR _Entities =
+			    CALCULATETABLE(
+			        SUMMARIZE(
+			            'Project_BDS',
+			            'Project_BDS'[project_name],
+			            'Project_BDS'[phase_name],
+			            'Project_BDS'[project_type],
+			            'Project_BDS'[Nhóm]
+			        ),
+			        REMOVEFILTERS(
+			            'Project_BDS'[Năm - Quý],
+			            'Project_BDS'[year],
+			            'Project_BDS'[quater],
+			            'Project_BDS'[period],
+			            'Project_BDS'[Khoang_Gia_So],
+			            'Project_BDS'[Khoang_Gia_Order]
+			        ),
+			        KEEPFILTERS('Project_BDS'[phase_status.2] = "Đang mở bán")
+			    )
+			VAR _EntitiesWithLatestBand =
+			    ADDCOLUMNS(
+			        _Entities,
+			        "__LatestPriceBand",
+			            VAR _LatestRow =
+			                CALCULATETABLE(
+			                    TOPN(
+			                        1,
+			                        FILTER(
+			                            'Project_BDS',
+			                            'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			                                && NOT ISBLANK('Project_BDS'[Khoang_Gia_So])
+			                        ),
+			                        'Project_BDS'[year], DESC,
+			                        'Project_BDS'[quater], DESC,
+			                        'Project_BDS'[period], DESC,
+			                        'Project_BDS'[updatedAt], DESC
+			                    ),
+			                    REMOVEFILTERS(
+			                        'Project_BDS'[Năm - Quý],
+			                        'Project_BDS'[year],
+			                        'Project_BDS'[quater],
+			                        'Project_BDS'[period],
+			                        'Project_BDS'[Khoang_Gia_So],
+			                        'Project_BDS'[Khoang_Gia_Order],
+			                        'Project_BDS'[phase_status.2]
+			                    )
+			                )
+			            RETURN
+			                MAXX(_LatestRow, 'Project_BDS'[Khoang_Gia_So])
+			    )
+			VAR _EntitiesInSelectedBand =
+			    FILTER(
+			        _EntitiesWithLatestBand,
+			        CONTAINS(
+			            _SelectedPriceBands,
+			            'Project_BDS'[Khoang_Gia_So],
+			            [__LatestPriceBand]
+			        )
+			    )
+			VAR _AllocatedPrimarySupply =
+			    SUMX(
+			        _EntitiesInSelectedBand,
+			        VAR _OpenedThroughQuarter =
+			            CALCULATE(
+			                SUM('Project_BDS'[salesOpeningQuantity]),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[Khoang_Gia_So],
+			                    'Project_BDS'[Khoang_Gia_Order],
+			                    'Project_BDS'[phase_status.2]
+			                ),
+			                'Project_BDS'[year] * 10 + 'Project_BDS'[quater] <= _EffectiveQuarterKey
+			            )
+			        VAR _LatestSoldRowBeforeQuarter =
+			            CALCULATETABLE(
+			                TOPN(
+			                    1,
+			                    FILTER(
+			                        'Project_BDS',
+			                        'Project_BDS'[year] * 10 + 'Project_BDS'[quater] < _EffectiveQuarterKey
+			                            && NOT ISBLANK('Project_BDS'[quantity])
+			                    ),
+			                    'Project_BDS'[year], DESC,
+			                    'Project_BDS'[quater], DESC,
+			                    'Project_BDS'[period], DESC,
+			                    'Project_BDS'[updatedAt], DESC
+			                ),
+			                REMOVEFILTERS(
+			                    'Project_BDS'[Năm - Quý],
+			                    'Project_BDS'[year],
+			                    'Project_BDS'[quater],
+			                    'Project_BDS'[period],
+			                    'Project_BDS'[Khoang_Gia_So],
+			                    'Project_BDS'[Khoang_Gia_Order],
+			                    'Project_BDS'[phase_status.2]
+			                )
+			            )
+			        VAR _SoldBeforeQuarter =
+			            MAXX(_LatestSoldRowBeforeQuarter, 'Project_BDS'[quantity])
+			        RETURN
+			            COALESCE(_OpenedThroughQuarter, 0)
+			                - COALESCE(_SoldBeforeQuarter, 0)
+			    )
+			RETURN
+			    IF(
+			        NOT _HasPriceBandFilter,
+			        [Nguồn cung sơ cấp],
+			        _AllocatedPrimarySupply
+			    )
 		formatString: #,##0
-		displayFolder: Bán hàng
-		lineageTag: 8f2a4b6c-1d3e-4f5a-9b7c-2e4d6f8a0c1e
+		displayFolder: Nguồn cung
+		lineageTag: 2c80709c-9974-4ea4-b200-7f36ab0ea3a1
 
 	partition Measure_BDS = m
 		mode: import
@@ -569,6 +1403,8 @@ table Measure_BDS
 				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
 				in
 				    #"Removed Columns"
+
+	changedProperty = Name
 
 	annotation PBI_ResultType = Table
 

@@ -120,8 +120,21 @@ USER_PROFILES = {
         'role': 'manager',
         'region_keyword': 'Phan Thiết',
         'display_name': 'Quản lý Phan Thiết'
+    },
+    'hr_manager': {
+        # Vai trò Nhân sự: xem/sửa toàn bộ dữ liệu nhân sự ở MỌI vùng (không bị
+        # giới hạn region_keyword như 'manager'), nhưng bị chặn hẳn khỏi mảng
+        # "Thông tin dự án" và "Master data phòng ban" — xem PROJECT_INFO_BLOCKED_ROLES.
+        'role': 'hr',
+        'region_keyword': None,
+        'display_name': 'Quản lý Nhân sự'
     }
 }
+
+# Các route thuộc mảng "Thông tin dự án" / "Master data phòng ban" mà vai trò
+# 'hr' không được truy cập. Not started with a region check vì HR không giới hạn
+# theo vùng - đây là chặn toàn bộ tính năng, không phải lọc theo phạm vi.
+PROJECT_INFO_BLOCKED_ROLES = {'hr'}
 
 
 def resolve_password_hash(username):
@@ -598,8 +611,15 @@ def get_current_user():
         return USERS[username]
     return None
 
+def is_region_unrestricted(user):
+    """admin: toàn quyền. hr: xem hết dữ liệu nhân sự mọi vùng (region_keyword=None
+    nên không thể so khớp chuỗi như 'manager' - phải coi là không giới hạn vùng ở đây;
+    việc chặn 'hr' khỏi mảng Thông tin dự án nằm ở route guard riêng, không phải ở đây).
+    """
+    return user['role'] in ('admin', 'hr')
+
 def check_project_region(ma_du_an, user):
-    if user['role'] == 'admin':
+    if is_region_unrestricted(user):
         return True
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -612,7 +632,7 @@ def check_project_region(ma_du_an, user):
     return user['region_keyword'] in khu_vuc
 
 def check_allocation_region(alloc_id, user):
-    if user['role'] == 'admin':
+    if is_region_unrestricted(user):
         return True
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -629,8 +649,27 @@ def check_allocation_region(alloc_id, user):
     khu_vuc = row['khu_vuc'] or ''
     return user['region_keyword'] in vung or user['region_keyword'] in khu_vuc
 
+def check_employee_region(ma_nhan_vien, user):
+    """Nhân viên không có cột vùng riêng - suy ra từ allocation dự án mà họ đang
+    gắn (common_allocations không có cột vùng nên không tính vào đây). Nhân viên
+    chưa có allocation dự án nào thì manager vùng nào cũng không thấy được - an
+    toàn hơn là mặc định cho thấy."""
+    if is_region_unrestricted(user):
+        return True
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT 1 FROM org_allocations a
+        LEFT JOIN projects p ON a.ma_du_an = p.ma_du_an
+        WHERE a.ma_nhan_vien = ? AND (a.vung LIKE ? OR p.khu_vuc LIKE ?)
+        LIMIT 1
+    ''', (ma_nhan_vien, f"%{user['region_keyword']}%", f"%{user['region_keyword']}%"))
+    row = cursor.fetchone()
+    conn.close()
+    return row is not None
+
 def check_dept_region(dept_id, user):
-    if user['role'] == 'admin':
+    if is_region_unrestricted(user):
         return True
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -646,6 +685,22 @@ def check_dept_region(dept_id, user):
     khu_vuc = row['khu_vuc'] or ''
     return user['region_keyword'] in khu_vuc
 
+def is_project_info_route(path):
+    """Mảng "Thông tin dự án" + "Master data phòng ban" mà vai trò 'hr' bị chặn.
+
+    /api/projects/<id>/departments KHÔNG bị chặn - đó là cấu hình phòng ban dùng
+    khi Nhân sự tạo phân bổ, thuộc mảng "Cấu hình phòng ban" (Nhân sự vẫn được
+    dùng), khác với /api/projects/<id> (chi tiết dự án, bị chặn).
+    """
+    if path.startswith('/api/masterdata/'):
+        return True
+    if path in ('/api/projects', '/api/projects/overview-stats', '/api/projects/export-overview'):
+        return True
+    if path.startswith('/api/projects/') and not path.endswith('/departments'):
+        return True
+    return False
+
+
 @app.before_request
 def before_request():
     if request.path == '/' or request.path.startswith('/static/'):
@@ -656,6 +711,8 @@ def before_request():
         user = get_current_user()
         if not user:
             return jsonify({'error': 'Unauthorized', 'logged_in': False}), 401
+        if user['role'] in PROJECT_INFO_BLOCKED_ROLES and is_project_info_route(request.path):
+            return jsonify({'error': 'Vai trò Nhân sự không có quyền truy cập Thông tin dự án!'}), 403
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -739,7 +796,9 @@ def get_dashboard_stats():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    is_admin = (user['role'] == 'admin')
+    # Tên biến vẫn là is_admin cho gọn (11 chỗ dùng bên dưới) nhưng thực chất là
+    # "không giới hạn theo vùng" - true cho cả admin lẫn hr (region_keyword=None).
+    is_admin = is_region_unrestricted(user)
     keyword = user['region_keyword']
     
     # Total headcount (distinct real employee IDs currently allocated in project or common)
@@ -961,11 +1020,25 @@ def get_dashboard_stats():
 # API: Employees CRUD
 @app.route('/api/employees', methods=['GET', 'POST'])
 def manage_employees():
+    user = get_current_user()
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     if request.method == 'GET':
-        cursor.execute('SELECT * FROM employees ORDER BY ho_ten ASC')
+        if is_region_unrestricted(user):
+            cursor.execute('SELECT * FROM employees ORDER BY ho_ten ASC')
+        else:
+            # Trước đây route này không lọc vùng - manager vùng nào cũng xem được
+            # toàn bộ nhân sự hệ thống. Giờ chỉ trả về nhân sự có allocation dự án
+            # khớp vùng của manager (nhân sự chưa được phân bổ dự án nào thì không
+            # ai ngoài admin/hr thấy được, cùng logic với check_employee_region).
+            cursor.execute('''
+                SELECT DISTINCT e.* FROM employees e
+                JOIN org_allocations a ON a.ma_nhan_vien = e.ma_nhan_vien
+                LEFT JOIN projects p ON a.ma_du_an = p.ma_du_an
+                WHERE a.vung LIKE ? OR p.khu_vuc LIKE ?
+                ORDER BY e.ho_ten ASC
+            ''', (f"%{user['region_keyword']}%", f"%{user['region_keyword']}%"))
         employees = [dict(row) for row in cursor.fetchall()]
         conn.close()
         return jsonify(employees)
@@ -996,15 +1069,19 @@ def manage_employees():
 
 @app.route('/api/employees/<ma_nhan_vien>', methods=['GET', 'PUT', 'DELETE'])
 def manage_single_employee(ma_nhan_vien):
+    user = get_current_user()
+    if not check_employee_region(ma_nhan_vien, user):
+        return jsonify({'error': 'Bạn không có quyền truy cập nhân sự ở vùng khác!'}), 403
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     cursor.execute('SELECT * FROM employees WHERE ma_nhan_vien = ?', (ma_nhan_vien,))
     employee = cursor.fetchone()
     if not employee:
         conn.close()
         return jsonify({'error': 'Không tìm thấy nhân sự!'}), 404
-        
+
     if request.method == 'GET':
         emp_dict = dict(employee)
         # Get allocations for this employee (project allocations)
@@ -1643,11 +1720,11 @@ def manage_allocations():
             WHERE 1=1
         '''
         params = []
-        
-        if user['role'] != 'admin':
+
+        if not is_region_unrestricted(user):
             query += ' AND (a.vung LIKE ? OR p.khu_vuc LIKE ?)'
             params.extend([f"%{user['region_keyword']}%", f"%{user['region_keyword']}%"])
-        
+
         if proj_filter:
             query += ' AND (a.ma_du_an = ? OR p.ten_du_an = ?)'
             params.extend([proj_filter, proj_filter])
@@ -1697,7 +1774,9 @@ def manage_allocations():
         if not check_project_region(ma_da, user):
             return jsonify({'error': 'Bạn không có quyền phân bổ cho dự án ở vùng khác!'}), 403
             
-        if user['role'] != 'admin':
+        # Chỉ tự gán vùng khi user thực sự bị giới hạn theo vùng (manager). admin/hr
+        # có region_keyword=None nên bỏ qua, tránh sinh chuỗi rác "Vùng None 1".
+        if not is_region_unrestricted(user):
             if not vung or user['region_keyword'] not in vung:
                 vung = f"Ban điều hành Dự án Vùng {user['region_keyword']} 1"
             
@@ -1756,7 +1835,9 @@ def manage_single_allocation(alloc_id):
         if not check_project_region(ma_da, user):
             return jsonify({'error': 'Bạn không có quyền phân bổ cho dự án ở vùng khác!'}), 403
             
-        if user['role'] != 'admin':
+        # Chỉ tự gán vùng khi user thực sự bị giới hạn theo vùng (manager). admin/hr
+        # có region_keyword=None nên bỏ qua, tránh sinh chuỗi rác "Vùng None 1".
+        if not is_region_unrestricted(user):
             if not vung or user['region_keyword'] not in vung:
                 vung = f"Ban điều hành Dự án Vùng {user['region_keyword']} 1"
             
@@ -1959,6 +2040,9 @@ def transfer_employee():
 
 @app.route('/api/transfer/history/<ma_nhan_vien>', methods=['GET'])
 def get_transfer_history(ma_nhan_vien):
+    user = get_current_user()
+    if not check_employee_region(ma_nhan_vien, user):
+        return jsonify({'error': 'Bạn không có quyền truy cập nhân sự ở vùng khác!'}), 403
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM transfer_history WHERE ma_nhan_vien = ? ORDER BY ngay_luan_chuyen DESC', (ma_nhan_vien,))
@@ -1969,9 +2053,13 @@ def get_transfer_history(ma_nhan_vien):
 # API: Evaluations
 @app.route('/api/evaluations/<ma_nhan_vien>', methods=['GET', 'POST'])
 def manage_evaluations(ma_nhan_vien):
+    user = get_current_user()
+    if not check_employee_region(ma_nhan_vien, user):
+        return jsonify({'error': 'Bạn không có quyền truy cập nhân sự ở vùng khác!'}), 403
+
     conn = get_db_connection()
     cursor = conn.cursor()
-    
+
     if request.method == 'GET':
         cursor.execute('SELECT * FROM evaluations WHERE ma_nhan_vien = ? ORDER BY ngay_danh_gia DESC', (ma_nhan_vien,))
         evals = [dict(row) for row in cursor.fetchall()]
@@ -1982,7 +2070,11 @@ def manage_evaluations(ma_nhan_vien):
         data = request.json
         ngay_dg = str(data.get('ngay_danh_gia', '')).strip()
         nguoi_dg = str(data.get('nguoi_danh_gia', '')).strip()
-        diem_so = int(data.get('diem_so', 5))
+        try:
+            diem_so = int(data.get('diem_so', 5))
+        except (TypeError, ValueError):
+            conn.close()
+            return jsonify({'error': 'Điểm số phải là số nguyên!'}), 400
         nang_luc = json.dumps(data.get('nang_luc', {}))
         uu_diem = str(data.get('uu_diem', '')).strip()
         nhuoc_diem = str(data.get('nhuoc_diem', '')).strip()

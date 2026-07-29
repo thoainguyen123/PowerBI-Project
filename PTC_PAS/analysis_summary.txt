@@ -1,0 +1,361 @@
+=== HEADERS LIST ===
+1. Col_1
+2. Col_2
+3. Col_3
+4. Col_4
+5. Col_5
+6. Col_6
+7. Col_7
+8. Col_8
+9. Col_9
+10. Col_10
+11. Col_11
+12. Col_12
+13. Col_13
+14. Col_14
+15. Col_15
+16. Col_16
+17. Col_17
+18. Col_18
+19. Col_19
+20. Col_20
+21. Col_21
+22. Col_22
+23. Col_23
+24. Col_24
+25. Col_25
+26. Col_26
+27. Col_27
+28. Col_28
+29. Col_29
+30. Col_30
+31. Col_31
+32. Col_32
+33. Col_33
+34. Col_34
+35. Col_35
+36. Col_36
+37. Col_37
+38. Col_38
+39. Col_39
+40. Col_40
+41. Col_41
+42. Col_42
+43. Col_43
+44. Col_44
+45. Col_45
+46. Col_46
+47. Col_47
+48. Col_48
+
+=== UNIQUE VALUES PER CATEGORICAL COLUMN ===
+
+Header: 'Col_1' (76 unique values)
+  Values: ['21', '6', '52', '11', '33', '8', '63', '22', '27', '30', '38', '13', '45', '92', '60']
+
+Header: 'Col_2' (111 unique values)
+  Values: ['1000000000009300', '1000000000011510', '1000000000009070', '1000000000006300', '1000000000007350', '1000000000009920', '1000000000011450', '1000000000010270', '1000000000004780', '1000000000005740', '1000000000011920', '1000000000005810', '1000000000009840', '1000000000006420', '1000000000005520']
+
+Header: 'Col_3' (154 unique values)
+  Values: ['180/2022/HĐTC/NVW.PT', '09/2019/HĐTC/NVW.HT', '34/2020/HĐTC/NVW.HT', '54/2021/HĐTC/NVW.HT-TFC', '42/2020/HĐTC/NVW.PT', '56/2021/HĐTC/NVW.HT-TFC', '61/2021/HĐTC/NVW.HT-TFC', '11/2019/HĐTC/NVW.HT', '171/2022/HĐTC/NVW.PT', '31/2020/HĐTC/NVW.HT', '35/2020/HĐTC/AQC.DN 112ha', '02/2019/HĐTV/NVW.HT', '10/2020/HĐTC/NH1.VT', '071/2021/HĐTC/NVW.HT-TFC', '12/2020/HĐTC/NVW.HT']
+
+Header: 'Col_4' (1 unique values)
+  Values: ['SỐ PLHĐ']
+
+Header: 'Col_5' (9 unique values)
+  Values: ['AQUA 112HA', 'HOÀN VŨ', 'NGÂN HIỆP 1', 'NOVAWORLD PHAN THIẾT', 'BÌNH AN', 'SUỐI NƯỚC NÓNG BÌNH CHÂU', 'DỰ ÁN', 'AQUA 81HA', 'NovaWorld Hồ Tràm - The Tropicana']
+
+Header: 'Col_6' (9 unique values)
+  Values: ['TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ', 'NWH-MKB.BR', 'AQC112.DN', 'NH1.VT', 'NWH-KGA.BR', 'SNN.BC', 'NVW.HT', 'AQC81.DN', 'NVW.PT']
+
+Header: 'Col_7' (4 unique values)
+  Values: ['KHU VỰC', 'ĐỒNG NAI', 'HỒ TRÀM', 'BÌNH THUẬN 1']
+
+Header: 'Col_8' (1 unique values)
+  Values: ['HẠNG MỤC HH-DV']
+
+Header: 'Col_9' (153 unique values)
+  Values: ['TỔNG THẦU THIẾT KẾ THI CÔNG HOÀN THIỆN XDCB, MEP VÀ CUNG CẤP LẮP ĐẶT TRANG THIẾT', 'Thi công Hạ tầng kỹ thuật dọc Hương lộ 2, Đường số 1 và Đường số 2', 'THI CÔNG XÂY DỰNG, HOÀN THIỆN THÔ VÀ MEP CHO 149 CĂN THUỘC KHU 3 (A,B,C)', 'THI CÔNG KẾT CẤU, HOÀN THIỆN, MEP VÀ HÀNG RÀO CHO CÁC CĂN VILLA KHU 3.2 - ZONE 1', 'CUNG CẤP VÀ LẮP ĐẶT CỬA SỔ, CỬA ĐI NHÔM KÍNH CHO 740 CĂN VILLA PK3.5', 'THI CÔNG KẾT CẤU, HOÀN THIỆN THÔ 17 CĂN VILLA KHU KHÁCH SẠN MGALLERY', 'CUNG CẤP VÀ THI CÔNG NHÔM KÍNH, KIM LOẠI CHO 152 CĂN  SEMI DETACHED, SINGLE VILL', 'THI CÔNG KẾT CẤU, HOÀN THIỆN, MEP CHO 14 CĂN SHOPHOUSE KHU CLARKE QUAY', 'THI CÔNG SAN LẤP MẶT BẰNG CHO CÔNG VIÊN TROPICANA PARK GIAI ĐOẠN 2', 'THI CÔNG HTKT ORGANIC FARM VÀ KID FARM', 'CUNG CẤP VÀ THI CÔNG NHÔM KÍNH, KIM LOẠI CHO 44 CĂN VILLA KHU 3.7 VÀ 19 CĂN KHU', 'THI CÔNG CỌC VILLA PK3.3', 'THI CÔNG KC, HT VÀ MEP THÔ 100 CĂN PK5.6', 'Thi công đào đất, Bê tông lót cho hồ nước khu Tiki Park', 'thi công  KC, HT & MEP cho 24 mockup villa khu lagoon và 5 villa khu 3']
+
+Header: 'Col_10' (1 unique values)
+  Values: ['LOẠI HĐ']
+
+Header: 'Col_11' (10 unique values)
+  Values: ['PHÁP NHÂN KÝ HĐ/PLHĐ', 'CTY TNHH DELTA - VALLEY BÌNH THUẬN', 'CÔNG TY TNHH THE FOREST CITY', 'CÔNG TY TNHH THÀNH PHỐ AQUA', 'CÔNG TY TNHH ĐẦU TƯ BẤT ĐỘNG SẢN LONG HƯNG PHÁT', 'CÔNG TY CỔ PHẦN ĐỊA ỐC NGÂN HIỆP', 'THE FOREST CITY', 'CÔNG TY CỔ PHẦN DU LỊCH SÀI GÒN- BÌNH CHÂU', 'CÔNG TY TNHH DU LỊCH BÌNH AN', 'CÔNG TY CỔ PHẦN HOÀN VŨ']
+
+Header: 'Col_12' (64 unique values)
+  Values: ['CÔNG TY TNHH THƯƠNG MẠI DỊCH VỤ KỸ THUẬT G.P.L', 'CÔNG TY CỔ PHẦN TÂN BÌNH', 'CÔNG TY TNHH VSL VIỆT NAM', 'CÔNG TY TNHH PHÁT TRIỂN CÔNG NGHỆ NƯỚC & MÔI TRƯỜNG A.Q.C', 'CÔNG TY TNHH HẠ TẦNG XÂY DỰNG ĐẠI NAM', 'CÔNG TY CỔ PHẦN CƠ KHÍ VÀ ĐẦU TƯ XÂY DỰNG SỐ 9', 'CÔNG TY CỔ PHẦN GLOBE BUILD', 'CÔNG TY CP XÂY DỰNG VÀ PHÁT TRIỂN ĐÔ THỊ TỈNH BÀ RỊA VŨNG TÀU', 'CÔNG TY CỔ PHẦN ILA E&C', 'CÔNG TY CỔ PHẦN CƠ ĐIỆN MINH QUANG', 'CÔNG TY TNHH XÂY DỰNG CÔNG TRÌNH HÙNG VƯƠNG', 'CÔNG TY CỔ PHẦN XÂY DỰNG COTECCONS', 'CÔNG TY CỔ PHẦN XÂY LẮP KỸ THUẬT VIỆT', 'CÔNG TY CP KỸ THUẬT & XÂY DỰNG HANDONG', 'CÔNG TY TNHH XÂY LẮP ĐIỆN TRÍ NGUYỄN']
+
+Header: 'Col_13' (81 unique values)
+  Values: ['2020-06-11 00:00:00', '2021-03-23 00:00:00', '2021-01-15 00:00:00', '2021-06-30 00:00:00', '2020-01-17 00:00:00', '2021-04-02 00:00:00', '2021-06-15 00:00:00', '2020-05-15 00:00:00', '2021-12-21 00:00:00', '2020-08-17 00:00:00', '2021-08-12 00:00:00', '2024-03-01 00:00:00', '2021-05-02 00:00:00', '2021-07-05 00:00:00', 'NGÀY BẮT ĐẦU HIỆU LỰC HĐ']
+
+Header: 'Col_14' (1 unique values)
+  Values: ['TIẾN ĐỘ THỰC HIỆN HĐ (ngày)']
+
+Header: 'Col_15' (64 unique values)
+  Values: ['4752083000', '88091798632', '33803062332', '275337488027', '19488658329', '11585956000', '720309982140', '274400000000', '96500903000', '99093216000', '147524027356', '37941676852', '711669569478', '249653138000', '63676702000']
+
+Header: 'Col_16' (148 unique values)
+  Values: ['66423220161', '6796402500', '1045454545', '73500723766', '6037241885', '-37713139031', '9847081338', '116712979086', '4537429083', '8175231965', '-9293655511', '12268663735', '6100872247', '10304621326', '24839713343']
+
+Header: 'Col_17' (138 unique values)
+  Values: ['74553710090', '78198066124', '1060649007', '15917560774', '-621424490', '24722939738', '41137463259', '73939046061', '7204944353', '107262516693', '13818532415', '1729653909', '-1750677436', '-15711906884', '33568313349']
+
+Header: 'Col_18' (153 unique values)
+  Values: ['9525101292', '15088561853', '1045454545', '1581816936', '25891023060', '17400637413', '33682913408', '722310800', '1762767434', '18013331000', '1326071028', '198663212715', '41143550271', '1231447827', '15298394301']
+
+Header: 'Col_19' (154 unique values)
+  Values: ['47900000', '2903813056', '47858011347', '5959124401', '197859489', '3244203309', '3962015905', '175807662351', '11876209612', '6831493437', '13875063735', '29190132', '46435933199', '2319242182', '1300577030']
+
+Header: 'Col_20' (149 unique values)
+  Values: ['74553710090', '15108527694', '240960726130', '24169245486', '24722939738', '41137463259', '25701056228', '107262516693', '25508200095', '5546966971', '6401826565', '33568313349', '7497653350', '201902346281', '3468646500']
+
+Header: 'Col_21' (145 unique values)
+  Values: ['47858011347', '9312969230', '5959124401', '3781927277', '575327872', '15088561853', '14364970815', '2286889771', '393748937', '1045454545', '85135035404', '3962015905', '1581816936', '96220672593', '6831493437']
+
+Header: 'Col_22' (117 unique values)
+  Values: ['173582215421', '29534220550', '23266328063', '32993664529', '1885373423', '25701056228', '9432389521', '6863712521', '4745360976', '1250773900', '88025245824', '11582505237', '4691402937', '7497653350', '83612357881']
+
+Header: 'Col_23' (118 unique values)
+  Values: ['47858011347', '993967680', '5959124401', '10626916054', '189130804796', '3962015905', '27838737', '9831642667', '1926191456', '6831493437', '-23950000', '55771317843', '53496296146', '14984717434', 'GIÁ TRỊ HĐ CHƯA THỰC HIỆN (GỒM VAT)']
+
+Header: 'Col_24' (149 unique values)
+  Values: ['13599588109', '4668385815', '3141926137', '5959124401', '9087177163', '16199299509', '40402198059', '148401963923', '25701056228', '6594841507', '393748937', '3286280095', '14247733712', '5515207056', '50844599616']
+
+Header: 'Col_25' (91 unique values)
+  Values: ['4668385815', '3141926137', '19738311340', '25701056228', '6594841507', '393748937', '12453882945', '3286280095', '5515207056', '12928295482', '4529662750', '19525247133', '4346715011', '8603337000', '1008397089']
+
+Header: 'Col_26' (42 unique values)
+  Values: ['18168161971', '29976970458', '7255096063', '5118112597', '3229045637', '60443269', '46277998917', '-629746076', '27838737', '43921588377', '529265646', '7373659003', '6692090821', '2289220991', '10041905512']
+
+Header: 'Col_27' (84 unique values)
+  Values: ['1034060620', '228688977', '2191713907', '1650291552', '21610600646', '2083429131', '1326071028', '23729249176', '2847278044', '34023040', '7272483007', '2958293381', '2717793200', '12505521505', '23950000']
+
+Header: 'Col_28' (98 unique values)
+  Values: ['2191713907', '1650291552', '528145600', '746034352', '8410058924', '6594841507', '17000000000', '3250786058', '2083429131', '24999772350', '1281080085', '4346715011', '8603337000', '60619514', '2717793200']
+
+Header: 'Col_29' (75 unique values)
+  Values: ['10949170275', '2740784980', '1928310327', '130621060160', '1276400456', '89252449', '528145600', '450657744', '2043241903', '3423268943', '3680599121', '610087225', '44657819525', '7260492709', '8848005653']
+
+Header: 'Col_30' (17 unique values)
+  Values: ['2013393577', '1549418908', '566781187', '2517781868', '752639898', 'Dở dang theo tờ trình ko có TOC', '1180124724', 'GIÁ TRỊ TẠM ỨNG CÒN LẠI CHƯA KHẤU TRỪ', '937176020', '1816718057', '5723824942', '1180097064', '6594841507', '562287552', '3914674600']
+
+Header: 'Col_31' (5 unique values)
+  Values: ['2022-11-30 00:00:00', 'STAY', '2022-02-23 00:00:00', 'NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI', 'LAND']
+
+Header: 'Col_32' (7 unique values)
+  Values: ['3.1 Royal Mansion', 'AQUA RIVERSIDE CITY- GD1', 'Phân khu 3', 'PHÂN KHU (TỔNG)', 'Phân khu 4-5', 'Aqua 1', 'Phân khu 3-H5']
+
+Header: 'Col_33' (7 unique values)
+  Values: ['WONDERLAND', 'Dở dang -> QT', 'PHÂN KHU (CHI TIẾT)', 'Đang dừng / chờ', 'Đang thực hiện', 'Hoàn Thành', 'Hủy hợp đồng']
+
+Header: 'Col_34' (10 unique values)
+  Values: ['PAS đang kiểm', 'Đã quyết toán', 'NT đã nộp (Thất lạc HS)', 'Dở dang -> QT', 'Đang dừng / chờ', 'Đang thực hiện', 'Hoàn Thành', 'NT đang hoàn tất HSQT', 'TÌNH TRẠNG THI CÔNG / THỰC HIỆN', 'Hủy hợp đồng']
+
+Header: 'Col_35' (9 unique values)
+  Values: ['2026-06-24 00:00:00', 'TÌNH TRẠNG QUYẾT TOÁN', 'Đã quyết toán', 'NT chưa nộp HSQT', '2026-04-02 00:00:00', '2026-01-22 00:00:00', 'NT đang hoàn tất HSQT', 'PAS đang kiểm', 'Hủy hợp đồng']
+
+Header: 'Col_36' (6 unique values)
+  Values: ['Lê Vân', '2026-04-08 00:00:00', 'Bích Ngọc', 'Nguyên Lộc', 'NGÀY KÝ BIÊN BẢN QUYẾT TOÁN', 'Thanh Thủy']
+
+Header: 'Col_37' (15 unique values)
+  Values: ['Vũ Cao Cường', 'Hữu Tân', 'Hồ sĩ Trúc', 'Duy Phương', 'Mạnh Thông', 'Nguyễn Văn Cương', 'Văn Hảo', 'Hoàng Hiệp', 'Lê Quang Thẳng', 'PIC XÂY DỰNG/CUNG ỨNG', 'Phạm Thị Thanh Thủy', 'Hồ Sĩ Trúc', 'Duy Phương*', 'Công Hiếu', 'Tô Xuân Diếu']
+
+Header: 'Col_38' (5 unique values)
+  Values: ['Vũ Cao Cường', 'Ngọc Thiên', 'Xuân Hòa', 'Trần Xuân Hòa', 'PIC MEP']
+
+Header: 'Col_39' (1 unique values)
+  Values: ['PIC SITE1']
+
+Header: 'Col_40' (6 unique values)
+  Values: ['2026-06-24 00:00:00', 'PIC SITE2', '2026-12-31 00:00:00', '2027-03-31 00:00:00', '2026-11-30 00:00:00', '2027-03-30 00:00:00']
+
+Header: 'Col_41' (14 unique values)
+  Values: ['2027-03-31 00:00:00', '2026-06-30 00:00:00', '2026-08-25 00:00:00', '2026-12-31 00:00:00', '2026-10-30 00:00:00', '2026-08-15 00:00:00', '2026-09-15 00:00:00', '2026-09-30 00:00:00', '2026-08-20 00:00:00', 'NGÀY MỤC TIÊU', '2026-08-30 00:00:00', '2026-11-30 00:00:00', '2026-08-10 00:00:00', '2026-12-30 00:00:00']
+
+Header: 'Col_42' (5 unique values)
+  Values: ['Thanh lý', 'Đang trình EA, QT theo WD gần nhất', 'Nhà thầu chưa trình hồ sơ', 'LÝ DO KHÔNG ĐẠT', 'BMD']
+
+Header: 'Col_43' (6 unique values)
+  Values: ['PHÂN LOẠI BỘ PHẬN', 'MEP', 'XD', 'QSD', 'XD&MEP', 'BMD']
+
+Header: 'Col_44' (10 unique values)
+  Values: ['Đã quyết toán', 'Ưu tiên 3', 'Ưu tiên 4', 'MEP', 'Ưu tiên 2', 'PHÂN LOẠI THEO BỘ MÔN', 'XD', 'Ưu tiên 1', 'Chiến dịch 90 ngày', 'XD&MEP']
+
+Header: 'Col_45' (7 unique values)
+  Values: ['Chưa ưu tiên', 'Ưu tiên 3', 'Ưu tiên 2', 'Phân loại ưu tiên', 'KPI 2026', 'Chiến dịch 90 ngày', 'Ưu tiên 1']
+
+Header: 'Col_46' (4 unique values)
+  Values: ['Dòng nào có data thì tính số lượng HĐ cần quyết tóan', 'KPI417', 'KPI QUYẾT TOÁN', 'KPI NGOÀI 417']
+
+Header: 'Col_47' (3 unique values)
+  Values: ['sl tqt', '0', '1']
+
+Header: 'Col_48' (4 unique values)
+  Values: ['1900', '2026', '2027', 'Year']
+
+=== SAMPLE FIRST 3 ROWS ===
+
+-- Row 1 --
+  Col_1: None
+  Col_2: None
+  Col_3: None
+  Col_4: None
+  Col_5: None
+  Col_6: None
+  Col_7: None
+  Col_8: None
+  Col_9: None
+  Col_10: None
+  Col_11: None
+  Col_12: None
+  Col_13: None
+  Col_14: None
+  Col_15: None
+  Col_16: None
+  Col_17: None
+  Col_18: None
+  Col_19: None
+  Col_20: None
+  Col_21: None
+  Col_22: None
+  Col_23: None
+  Col_24: None
+  Col_25: None
+  Col_26: None
+  Col_27: None
+  Col_28: None
+  Col_29: None
+  Col_30: None
+  Col_31: None
+  Col_32: None
+  Col_33: None
+  Col_34: None
+  Col_35: None
+  Col_36: None
+  Col_37: None
+  Col_38: None
+  Col_39: None
+  Col_40: None
+  Col_41: None
+  Col_42: None
+  Col_43: None
+  Col_44: None
+  Col_45: None
+  Col_46: Dòng nào có data thì tính số lượng HĐ cần quyết tóan
+  Col_47: None
+  Col_48: None
+
+-- Row 2 --
+  Col_1: STT
+  Col_2: SỐ HĐ SAP/SỐ HĐ CHÍNH
+  Col_3: SỐ HỢP ĐỒNG CHÍNH
+  Col_4: SỐ PLHĐ
+  Col_5: DỰ ÁN
+  Col_6: TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ
+  Col_7: KHU VỰC
+  Col_8: HẠNG MỤC HH-DV
+  Col_9: NỘI DUNG HỢP ĐỒNG
+  Col_10: LOẠI HĐ
+  Col_11: PHÁP NHÂN KÝ HĐ/PLHĐ
+  Col_12: NT/NCC/TV
+  Col_13: NGÀY BẮT ĐẦU HIỆU LỰC HĐ
+  Col_14: TIẾN ĐỘ THỰC HIỆN HĐ (ngày)
+  Col_15: NGÀY HẾT HẠN THỰC HIỆN HĐ
+  Col_16: GIÁ TRỊ HỢP ĐỒNG (CHƯA GỒM VAT)
+  Col_17: GIÁ TRỊ ĐIỀU CHỈNH/PHÁT SINH (CHƯA GỒM VAT)
+  Col_18: TỔNG GIÁ TRỊ HĐ BAO GỒM PHÁT SINH CHƯA VATM VAT)
+  Col_19: THUẾ VAT
+  Col_20: GIÁ TRỊ HĐ+PS (GỒM VAT)
+  Col_21: GIÁ TRỊ WORKDONE (CHƯA GỒM VAT)
+  Col_22: GIÁ TRỊ WORKDONE (GỒM VAT)
+  Col_23: GIÁ TRỊ HĐ CHƯA THỰC HIỆN (GỒM VAT)
+  Col_24: GIÁ TRỊ CÔNG NỢ ĐÃ CÓ CPC GỒM ỨNG +WORKDONE (GỒM VAT)
+  Col_25: GIÁ TRỊ ĐÃ THANH TOÁN (GỒM VAT)
+  Col_26: GIÁ TRỊ TĐSP (GỒM VAT)
+  Col_27: GIÁ TRỊ CÔNG NỢ CHƯA THANH TOÁN (GỒM VAT)
+  Col_28: GIÁ TRỊ TẠM ỨNG CHƯA VAT
+  Col_29: KHẤU TRỪ TẠM ỨNG
+  Col_30: GIÁ TRỊ TẠM ỨNG CÒN LẠI CHƯA KHẤU TRỪ
+  Col_31: NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI
+  Col_32: PHÂN KHU (TỔNG)
+  Col_33: PHÂN KHU (CHI TIẾT)
+  Col_34: TÌNH TRẠNG THI CÔNG / THỰC HIỆN
+  Col_35: TÌNH TRẠNG QUYẾT TOÁN
+  Col_36: NGÀY KÝ BIÊN BẢN QUYẾT TOÁN
+  Col_37: PIC XÂY DỰNG/CUNG ỨNG
+  Col_38: PIC MEP
+  Col_39: PIC SITE1
+  Col_40: PIC SITE2
+  Col_41: NGÀY MỤC TIÊU
+  Col_42: LÝ DO KHÔNG ĐẠT
+  Col_43: PHÂN LOẠI BỘ PHẬN
+  Col_44: PHÂN LOẠI THEO BỘ MÔN
+  Col_45: Phân loại ưu tiên
+  Col_46: KPI QUYẾT TOÁN
+  Col_47: sl tqt
+  Col_48: Year
+
+-- Row 3 --
+  Col_1: 16
+  Col_2: 1000000000006030
+  Col_3: 23/2020/HĐTC/AQC.DN 112ha
+  Col_4: None
+  Col_5: AQUA 112HA
+  Col_6: AQC112.DN
+  Col_7: ĐỒNG NAI
+  Col_8: None
+  Col_9: Hạ Tầng Kỹ Thuật Hệ Thống Điện, Điện Nhẹ, cấp nước sinh hoạt và cấp nước chữa  c
+  Col_10: None
+  Col_11: CÔNG TY TNHH THÀNH PHỐ AQUA
+  Col_12: CÔNG TY CỔ PHẦN TẬP ĐOÀN ĐẦU TƯ -THƯƠNG MẠI VÀ XÂY DỰNG VÂN KHÁNH
+  Col_13: 2020-07-14 00:00:00
+  Col_14: None
+  Col_15: None
+  Col_16: 15909090909
+  Col_17: 12734624193
+  Col_18: 28643715102
+  Col_19: 2768606555
+  Col_20: 31412321657
+  Col_21: 17570222924
+  Col_22: 19231480260
+  Col_23: 12180841397
+  Col_24: 14661614061
+  Col_25: 14661614061
+  Col_26: -
+  Col_27: -
+  Col_28: 3295239612
+  Col_29: 3295239612
+  Col_30: -
+  Col_31: None
+  Col_32: None
+  Col_33: None
+  Col_34: Hoàn Thành
+  Col_35: PAS đang kiểm
+  Col_36: None
+  Col_37: None
+  Col_38: Trần Xuân Hòa
+  Col_39: None
+  Col_40: None
+  Col_41: 2026-12-31 00:00:00
+  Col_42: None
+  Col_43: BMD
+  Col_44: MEP
+  Col_45: Ưu tiên 1
+  Col_46: KPI417
+  Col_47: 1
+  Col_48: 2026
+
+=== REPORT SHEET ROWS ===
+Row 1: ['BÁO CÁO TRACKING QUYẾT TOÁN']
+Row 3: ['Drill down xuống Dự án']
+Row 4: ['KHU VỰC', 'DỰ ÁN', 'Số lượng HĐ cần quyết toán', 'Số lượng HĐ cần quyết toán 2026', 'Hoàn thành', '% hoàn thành', 'Làm báo cáo theo PIC (Cột AK, AL) theo số lượng đăng ký HĐ quyết toán, % hoàn thành…']
+Row 5: ['ĐỒNG NAI', 'AQC112.DN', '20', '20']
+Row 6: ['ĐỒNG NAI', 'AQC81.DN', '3', '3']
+Row 7: ['HỒ TRÀM', 'NH1.VT', '1', '1']
+Row 8: ['HỒ TRÀM', 'NWH-MKB.BR', '1', '1']
+Row 9: ['HỒ TRÀM', 'NVW.HT', '59', '10']
+Row 10: ['HỒ TRÀM', 'NWH-KGA.BR', '2', '2']
+Row 11: ['HỒ TRÀM', 'SNN.BC', '2', '2']
+Row 12: ['BÌNH THUẬN 1', 'NVW.PT', '64', '0']
+Row 13: ['152', '39']

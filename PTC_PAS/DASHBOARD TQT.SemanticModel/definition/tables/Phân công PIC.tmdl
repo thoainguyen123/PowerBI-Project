@@ -1,0 +1,141 @@
+/// Bảng phân công theo vai trò, tạo một dòng cho mỗi lượt HĐ-PIC. Một HĐ có cả PIC Xây dựng/Cung ứng và PIC MEP sẽ xuất hiện hai lượt để không mất trách nhiệm phối hợp.
+table 'Phân công PIC'
+	lineageTag: e4ece5ba-98d8-42f5-9fdb-ca0b7971d330
+
+	/// Số lượt HĐ thuộc phạm vi quyết toán theo PIC; bao gồm fallback ngày mục tiêu của nguồn Hồ Tràm.
+	measure 'Số lượt HĐ cần quyết toán' =
+			CALCULATE(
+			    COUNTROWS('Phân công PIC'),
+			    'Phân công PIC'[Thuộc phạm vi quyết toán] = TRUE()
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: cf0dc78b-72b7-46a1-b773-0db54645d1f0
+
+	/// Số lượt HĐ thuộc phạm vi theo PIC có năm mục tiêu bằng năm hiện tại.
+	measure 'Số lượt HĐ cần quyết toán (năm nay)' =
+			CALCULATE(
+			    [Số lượt HĐ cần quyết toán],
+			    'Phân công PIC'[Năm mục tiêu] = YEAR(TODAY())
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 2ae6e687-6091-442d-99f7-2bc58eb5ced4
+
+	/// Số lượt HĐ thuộc phạm vi theo PIC có tình trạng 'Đã quyết toán'.
+	measure 'Số lượt HĐ hoàn thành' =
+			CALCULATE(
+			    [Số lượt HĐ cần quyết toán],
+			    'Phân công PIC'[Tình trạng quyết toán] = "Đã quyết toán"
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 2c784507-cd82-4686-87cf-08726dc40d86
+
+	/// Tỷ lệ hoàn thành theo lượt HĐ thuộc phạm vi được phân công cho PIC.
+	measure '% Hoàn thành PIC' =
+			DIVIDE(
+			    [Số lượt HĐ hoàn thành],
+			    [Số lượt HĐ cần quyết toán]
+			)
+		formatString: 0.0%
+		displayFolder: KPI quyết toán
+		lineageTag: 70813dfb-a52a-480c-a3d2-9fd403b7d3b0
+
+	column 'Mã hợp đồng'
+		lineageTag: 5c9584f8-1b00-4f3d-9203-dfe799b4d125
+		isNameInferred
+		sourceColumn: [Mã hợp đồng]
+
+	column 'PIC phụ trách'
+		lineageTag: 4baed899-8e02-41bc-afbb-1d6d09ce37ac
+		isNameInferred
+		sourceColumn: [PIC phụ trách]
+
+	column 'Nhóm PIC'
+		lineageTag: e97b1dcc-d7f9-41ce-a6fb-028693cb47be
+		isNameInferred
+		sourceColumn: [Nhóm PIC]
+
+	column 'Khu vực'
+		lineageTag: 84a030a1-9756-4fe4-9d39-1cab6dbd7836
+		isNameInferred
+		sourceColumn: [Khu vực]
+
+	column 'Dự án'
+		lineageTag: e074772c-1fe8-4560-9cdf-a35252f8228d
+		isNameInferred
+		sourceColumn: [Dự án]
+
+	column 'Kỳ mục tiêu'
+		lineageTag: e3d6329d-e99a-49e6-8f42-578960f279a4
+		isNameInferred
+		sourceColumn: [Kỳ mục tiêu]
+
+	column 'Năm mục tiêu'
+		lineageTag: 62344c8d-335c-42b7-8fc7-6042d3a7c7d8
+		isNameInferred
+		sourceColumn: [Năm mục tiêu]
+
+	column 'KPI quyết toán'
+		lineageTag: 7cec411e-58f1-4dec-87dc-81b37ec5050e
+		isNameInferred
+		sourceColumn: [KPI quyết toán]
+
+	column 'Tình trạng quyết toán'
+		lineageTag: be248471-272e-4597-91ac-69c4a4cc6043
+		isNameInferred
+		sourceColumn: [Tình trạng quyết toán]
+
+	column File
+		isNameInferred
+		sourceColumn: [File]
+
+	column 'Thuộc phạm vi quyết toán'
+		isNameInferred
+		sourceColumn: [Thuộc phạm vi quyết toán]
+
+	partition 'Phân công PIC' = calculated
+		mode: import
+		source =
+				VAR _XayDung =
+				    SELECTCOLUMNS(
+				        FILTER(
+				            Data,
+				            NOT ISBLANK(Data[PIC XÂY DỰNG/CUNG ỨNG])
+				                && TRIM(Data[PIC XÂY DỰNG/CUNG ỨNG]) <> ""
+				        ),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT(Data[STT], "0"),
+				        "PIC phụ trách", TRIM(Data[PIC XÂY DỰNG/CUNG ỨNG]),
+				        "Nhóm PIC", "Xây dựng/Cung ứng",
+				        "File", Data[File],
+				        "Khu vực", Data[Khu vực chuẩn],
+				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
+				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
+				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
+				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN]
+				    )
+				VAR _MEP =
+				    SELECTCOLUMNS(
+				        FILTER(
+				            Data,
+				            NOT ISBLANK(Data[PIC MEP])
+				                && TRIM(Data[PIC MEP]) <> ""
+				        ),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT(Data[STT], "0"),
+				        "PIC phụ trách", TRIM(Data[PIC MEP]),
+				        "Nhóm PIC", "MEP",
+				        "File", Data[File],
+				        "Khu vực", Data[Khu vực chuẩn],
+				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
+				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
+				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
+				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN]
+				    )
+				RETURN
+				    UNION(_XayDung, _MEP)
+

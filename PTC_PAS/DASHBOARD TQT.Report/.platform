@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "DASHBOARD TQT"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "4ed90168-8520-4368-8df9-498af9d35bf1"
+  }
+}

@@ -1,0 +1,32 @@
+Total Contracts: 153
+Total Contract Value (Gồm VAT): 6,645.72 tỷ VNĐ
+Total Workdone (Gồm VAT): 4,402.02 tỷ VNĐ
+Total Paid (Gồm VAT): 2,300.73 tỷ VNĐ
+Total Unpaid Outstanding (Gồm VAT): 1,165.44 tỷ VNĐ
+
+--- Status Breakdown ---
+  PAS đang kiểm: 10 hợp đồng
+  NT đang hoàn tất HSQT: 22 hợp đồng
+  NT chưa nộp HSQT: 20 hợp đồng
+  Hủy hợp đồng: 1 hợp đồng
+  Đã quyết toán: 39 hợp đồng
+  Chưa nộp HSQT: 61 hợp đồng
+
+--- Project Breakdown ---
+  AQUA 112HA: 20 hợp đồng
+  AQUA 81HA: 4 hợp đồng
+  NGÂN HIỆP 1: 1 hợp đồng
+  BÌNH AN: 1 hợp đồng
+  NovaWorld Hồ Tràm - The Tropicana: 59 hợp đồng
+  HOÀN VŨ: 2 hợp đồng
+  SUỐI NƯỚC NÓNG BÌNH CHÂU: 2 hợp đồng
+  NOVAWORLD PHAN THIẾT: 64 hợp đồng
+
+--- Priority Breakdown ---
+  Ưu tiên 1: 3 hợp đồng
+  Chưa phân loại: 116 hợp đồng
+  Ưu tiên 3: 3 hợp đồng
+  Ưu tiên 2: 5 hợp đồng
+  Chiến dịch 90 ngày: 3 hợp đồng
+  Chưa ưu tiên: 1 hợp đồng
+  KPI 2026: 22 hợp đồng

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "DASHBOARD TQT"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "61588424-a915-484c-af96-dafce3c1d25a"
+  }
+}

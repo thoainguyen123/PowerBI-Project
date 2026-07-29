@@ -22,3 +22,7 @@ Thumbs.db
 *.bak
 tmp/
 
+# Power BI local state and caches
+**/.pbi/localSettings.json
+**/.pbi/editorSettings.json
+**/.pbi/cache.abf

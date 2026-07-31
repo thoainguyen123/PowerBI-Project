@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=11.2.1">
+    <link rel="stylesheet" href="/static/css/style.css?v=11.3.3">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -95,8 +95,8 @@
                         <i class="bx bx-menu"></i>
                     </button>
                     <div class="topbar-title">
-                        <span id="page-kicker">Tổng quan hệ thống</span>
                         <h2 id="page-title">Tổng quan dự án</h2>
+                        <span id="page-kicker">Novaland Group</span>
                     </div>
                 </div>
                 <div class="topbar-actions">
@@ -118,14 +118,29 @@
             <section id="tab-project-overview" class="tab-content active">
                 <div class="overview-stage">
                     <header class="overview-hero">
-                        <div>
-                            <h2>Tổng quan điều hành dự án</h2>
+                        <div class="overview-hero-title">
+                            <span class="overview-hero-mark"><i class="bx bx-bar-chart-square"></i></span>
+                            <div>
+                                <h2>Tổng quan điều hành dự án</h2>
+                            </div>
                         </div>
                         <div class="overview-kpis">
-                            <div><strong id="overview-kpi-areas">5</strong><span>Khu vực</span></div>
-                            <div><strong id="overview-kpi-regions">0</strong><span>Vùng</span></div>
-                            <div><strong id="overview-kpi-projects">0</strong><span>Dự án</span></div>
-                            <div><strong id="overview-kpi-headcount">0</strong><span>Nhân sự</span></div>
+                            <div class="overview-kpi overview-kpi-area">
+                                <span class="overview-kpi-icon"><i class="bx bx-map-alt"></i></span>
+                                <span class="overview-kpi-copy"><strong id="overview-kpi-areas">5</strong><small>Khu vực</small></span>
+                            </div>
+                            <div class="overview-kpi overview-kpi-region">
+                                <span class="overview-kpi-icon"><i class="bx bx-layer"></i></span>
+                                <span class="overview-kpi-copy"><strong id="overview-kpi-regions">0</strong><small>Vùng</small></span>
+                            </div>
+                            <div class="overview-kpi overview-kpi-project">
+                                <span class="overview-kpi-icon"><i class="bx bx-briefcase-alt-2"></i></span>
+                                <span class="overview-kpi-copy"><strong id="overview-kpi-projects">0</strong><small>Dự án</small></span>
+                            </div>
+                            <div class="overview-kpi overview-kpi-people">
+                                <span class="overview-kpi-icon"><i class="bx bx-group"></i></span>
+                                <span class="overview-kpi-copy"><strong id="overview-kpi-headcount">0</strong><small>Nhân sự</small></span>
+                            </div>
                         </div>
                     </header>
 
@@ -201,7 +216,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="pheader-date" id="l3-current-date"></div>
+                            <div class="pheader-date"><i class="bx bx-calendar"></i><span id="l3-current-date"></span></div>
                         </header>
 
                         <div class="pdetail-top-grid">
@@ -226,7 +241,13 @@
                                     <span><i class="bx bx-history"></i></span>
                                     <div><h3>Nguồn gốc dự án</h3><p>Bối cảnh hình thành và quá trình triển khai</p></div>
                                 </div>
-                                <p class="porigin-text" id="l3-nguon-goc">Chưa có dữ liệu nguồn gốc dự án.</p>
+                                <div class="porigin-body">
+                                    <div class="porigin-empty" id="l3-nguon-goc-empty">
+                                        <span class="porigin-empty-icon"><i class="bx bx-folder-open"></i></span>
+                                        <strong>Chưa có dữ liệu nguồn gốc dự án.</strong>
+                                    </div>
+                                    <p class="porigin-text" id="l3-nguon-goc" hidden></p>
+                                </div>
                             </article>
                         </div>
 
@@ -1389,7 +1410,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=11.1.5"></script>
+    <script src="/static/js/main.js?v=11.3.0"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">

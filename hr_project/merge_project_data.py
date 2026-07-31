@@ -1,7 +1,7 @@
 """Merge project master data from data_duan.xlsx into SQLite.
 
-Only rows with a non-empty "Nhóm dự án" are imported. Existing projects are
-updated by "Mã dự án"; missing projects are inserted. Empty source values never
+All rows with a valid "Mã dự án" are imported. Existing projects are updated by
+that unique business code; missing projects are inserted. Empty source values never
 overwrite existing values, and "Quy mô (m2)" is converted to hectares.
 """
 
@@ -12,6 +12,8 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import openpyxl
+
+from project_schema import ensure_sqlite_project_id
 
 
 REQUIRED_HEADERS = {
@@ -110,7 +112,7 @@ def load_source_rows(excel_path):
             source = dict(zip(headers, values))
             project_code = clean_text(source.get('Mã dự án'))
             project_group = clean_text(source.get('Nhóm dự án'))
-            if not project_code or not project_group:
+            if not project_code:
                 continue
             if project_code in seen_codes:
                 raise ValueError(
@@ -171,14 +173,16 @@ def ensure_project_schema(connection):
         raise ValueError(
             'Bảng projects thiếu cột: ' + ', '.join(sorted(missing_columns))
         )
+    ensure_sqlite_project_id(connection)
 
 
 def merge(database_path, source_rows, apply_changes=False):
     connection = sqlite3.connect(database_path)
     connection.row_factory = sqlite3.Row
     try:
-        connection.execute('BEGIN IMMEDIATE' if apply_changes else 'BEGIN')
         ensure_project_schema(connection)
+        connection.commit()
+        connection.execute('BEGIN IMMEDIATE' if apply_changes else 'BEGIN')
         existing_codes = {
             row['ma_du_an']
             for row in connection.execute('SELECT ma_du_an FROM projects')
@@ -229,7 +233,7 @@ def merge(database_path, source_rows, apply_changes=False):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Merge các dự án có Nhóm dự án từ data_duan.xlsx vào SQLite.'
+        description='Merge các dự án hợp lệ từ data_duan.xlsx vào SQLite.'
     )
     parser.add_argument('--database', default='hr_management.db')
     parser.add_argument('--excel', default='data_duan.xlsx')
@@ -251,7 +255,7 @@ def main():
     result = merge(database_path, source_rows, apply_changes=args.apply)
     mode = 'ĐÃ GHI' if result['applied'] else 'DRY RUN'
     print(
-        f"{mode}: chọn {result['selected']} dòng có nhóm; "
+        f"{mode}: chọn {result['selected']} dòng có mã dự án; "
         f"cập nhật {result['updated']}; thêm mới {result['inserted']}."
     )
 

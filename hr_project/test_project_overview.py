@@ -294,9 +294,12 @@ class ProjectOverviewApiTest(unittest.TestCase):
         }
         created = self.client.post('/api/projects', json=payload)
         self.assertEqual(created.status_code, 200, created.get_data(as_text=True))
+        created_project_id = created.get_json()['id']
+        self.assertIsInstance(created_project_id, int)
 
         project = self.client.get('/api/projects/TEST.CDX.001')
         self.assertEqual(project.status_code, 200)
+        self.assertEqual(project.get_json()['id'], created_project_id)
         self.assertEqual(project.get_json()['ten_thuong_mai'], 'Codex Riverside')
         self.assertEqual(project.get_json()['hien_trang_dau_tu'], 'Đang nghiên cứu')
         self.assertEqual(project.get_json()['nhom_du_an'], 'Nhóm 1')

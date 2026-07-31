@@ -55,7 +55,7 @@ let masterdataDraftRowCounter = 0;
 let currentUser = null;
 
 const PAGE_META = {
-    'project-overview': { kicker: 'Tổng quan hệ thống', title: 'Tổng quan dự án' },
+    'project-overview': { kicker: 'Novaland Group', title: 'Tổng quan dự án' },
     'region-config': { kicker: 'Cấu trúc điều hành', title: 'Quản lý khu vực' },
     dashboard: { kicker: 'Giám sát nguồn lực', title: 'Tổng quan nhân sự' },
     projects: { kicker: 'Danh mục dự án', title: 'Thông tin dự án' },
@@ -4036,11 +4036,14 @@ async function selectOverviewProject(projectCode) {
                 : ''
         );
         setText('l3-dia-diem', project?.dia_diem_du_an || project?.khu_vuc);
-        setText(
-            'l3-nguon-goc',
-            project?.nguon_goc_du_an,
-            'Chưa có dữ liệu nguồn gốc dự án.'
-        );
+        const originText = String(project?.nguon_goc_du_an || '').trim();
+        const originElement = document.getElementById('l3-nguon-goc');
+        const originEmpty = document.getElementById('l3-nguon-goc-empty');
+        if (originElement) {
+            originElement.innerText = originText;
+            originElement.hidden = !originText;
+        }
+        if (originEmpty) originEmpty.hidden = Boolean(originText);
         setText(
             'l3-current-date',
             new Intl.DateTimeFormat('vi-VN', {
@@ -4091,7 +4094,6 @@ function renderRegionManagement() {
                 <div class="region-config-fields">
                     <label>Tên khu vực<input class="form-control" name="area_name" value="${escapeHtml(area.area_name)}"></label>
                     <label>Phạm vi vùng<input class="form-control" name="area_scope" value="${escapeHtml(area.area_scope || '')}"></label>
-                    <label>Màu nhận diện<input class="form-control" name="accent_color" value="${escapeHtml(area.accent_color || '')}"></label>
                     <label>Giám đốc khu vực<input class="form-control" name="director_name" value="${escapeHtml(area.director_name || '')}"></label>
                     <label>Phó Giám đốc khu vực<input class="form-control" name="deputy_director_name" value="${escapeHtml(area.deputy_director_name || '')}"></label>
                     <label>Phụ trách Pháp lý<input class="form-control" name="legal_lead" value="${escapeHtml(area.legal_lead || '')}"></label>

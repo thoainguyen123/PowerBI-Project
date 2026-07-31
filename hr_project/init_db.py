@@ -17,7 +17,8 @@ def init_database():
     # Create tables
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS projects (
-        ma_du_an TEXT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ma_du_an TEXT NOT NULL UNIQUE,
         ten_du_an TEXT,
         khu_vuc TEXT,
         hien_trang_dau_tu TEXT,

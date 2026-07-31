@@ -95,7 +95,8 @@ def migrate(pg_host, pg_port, pg_user, pg_password, pg_db):
     tables_sql = {
         'projects': """
             CREATE TABLE IF NOT EXISTS projects (
-                ma_du_an VARCHAR(100) PRIMARY KEY,
+                id BIGSERIAL PRIMARY KEY,
+                ma_du_an VARCHAR(100) NOT NULL UNIQUE,
                 ten_du_an TEXT,
                 khu_vuc VARCHAR(100),
                 hien_trang_dau_tu VARCHAR(100),

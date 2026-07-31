@@ -18,6 +18,8 @@ import openpyxl
 import psycopg2
 import psycopg2.extras
 
+from project_schema import ensure_postgres_project_id, ensure_sqlite_project_id
+
 # Console Windows mặc định là cp1252 nên mọi print tiếng Việt sẽ ném
 # UnicodeEncodeError và làm sập app. Ép stdout/stderr về UTF-8 ngay từ đầu.
 for _stream in (sys.stdout, sys.stderr):
@@ -665,6 +667,7 @@ def ensure_project_overview_schema():
                         f'{column_name} {column_type}'
                     )
                     existing_columns.add(column_name)
+            ensure_postgres_project_id(cursor)
         else:
             cursor.execute('PRAGMA table_info(projects)')
             existing_columns = {row['name'] for row in cursor.fetchall()}
@@ -682,6 +685,7 @@ def ensure_project_overview_schema():
                         f'ALTER TABLE projects ADD COLUMN {column_name} {column_type}'
                     )
                     existing_columns.add(column_name)
+            ensure_sqlite_project_id(conn)
         conn.commit()
     except Exception as ex:
         conn.rollback()
@@ -1487,9 +1491,10 @@ def manage_projects():
                 source_stt, tong_cong_ty, tinh_cu, tinh_moi, loai_hinh,
                 muc_do_uu_tien, updated_at, updated_by
             ))
+            project_id = cursor.lastrowid
             conn.commit()
             conn.close()
-            return jsonify({'success': True, 'ma_du_an': ma_da})
+            return jsonify({'success': True, 'id': project_id, 'ma_du_an': ma_da})
         except (sqlite3.IntegrityError, psycopg2.IntegrityError):
             conn.close()
             return jsonify({'error': 'Mã dự án đã tồn tại!'}), 400

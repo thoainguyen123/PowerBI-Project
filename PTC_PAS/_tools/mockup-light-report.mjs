@@ -7,37 +7,39 @@ const pagesRoot = path.join(definition, "pages");
 const page1 = "5bd3737f4bb0549b9e5c";
 const page2 = "bdeba8b7c925406c4124";
 const schema = "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json";
-const previousThemeName = "MidnightOperations-72f4c1a9.json";
-const themeName = "LightAnalytics-9a3f2c7d.json";
+const previousThemeName = "LightAnalytics-c4b7e2a1.json";
+const themeName = "LightAnalytics-e7a3d5b9.json";
 
 const palette = {
-  canvas: "#F4F7FB",
+  canvas: "#F3F6FB",
   surface: "#FFFFFF",
-  surfaceAlt: "#F1F5F9",
+  surfaceAlt: "#F6F9FC",
   ink: "#172033",
-  muted: "#6B7A90",
-  border: "#DFE7F1",
-  cyan: "#2B8FD8",
-  cyanTint: "#DCEFFE",
+  muted: "#64748B",
+  border: "#E7EDF5",
+  header: "#174A7E",
+  headerSoft: "#D9EAF7",
+  cyan: "#2AA7C9",
+  cyanTint: "#D9F0F6",
   teal: "#0E8F9C",
   tealTint: "#D8F1F3",
   green: "#1F9D74",
   greenTint: "#DDF4EC",
-  orange: "#E39A2F",
-  orangeTint: "#FAECD7",
+  orange: "#E59B2F",
+  orangeTint: "#FBEBD2",
   red: "#D9534F",
   redTint: "#F8E1E0",
-  chartBlue: "#2477E0",
-  chartBlueTint: "#8DB9F3",
-  chartCoral: "#E76F51",
-  chartCoralTint: "#F4B09B",
+  chartBlue: "#174A7E",
+  chartBlueTint: "#8AB4D3",
+  chartCoral: "#D9534F",
+  chartCoralTint: "#F0A4A1",
   chartSlate: "#4F6D8A",
   chartSlateTint: "#B3C1CD",
-  chartGreen: "#168A6A",
-  chartGreenTint: "#86C8B4",
-  chartOrange: "#E8891C",
-  chartOrangeTint: "#F3C27D",
-  chartRed: "#D9505B",
+  chartGreen: "#1F9D74",
+  chartGreenTint: "#8ACCB7",
+  chartOrange: "#E59B2F",
+  chartOrangeTint: "#F2C67F",
+  chartRed: "#D9534F",
   chartNeutral: "#AEB8C5",
 };
 
@@ -123,7 +125,7 @@ const panel = (titleValue, padding = 12) => {
       properties: {
         show: bool(true),
         preset: text("BottomRight"),
-        color: fill("#9AA8BA"),
+        color: fill("#263B5A"),
         transparency: num(96),
         position: text("Outer"),
       },
@@ -149,6 +151,12 @@ const panel = (titleValue, padding = 12) => {
         fontColor: fill(palette.ink),
         background: fill(palette.surface),
         alignment: text("left"),
+      },
+    }];
+    result.subTitle = [{ properties: { show: bool(false) } }];
+    result.general = [{
+      properties: {
+        altText: text(titleValue),
       },
     }];
   }
@@ -188,7 +196,7 @@ const paragraph = (runs, alignment = "left") => ({
   horizontalTextAlignment: alignment,
 });
 
-const railShape = (id, position) => ({
+const headerShape = (id, position) => ({
   $schema: schema,
   name: id,
   position,
@@ -201,16 +209,16 @@ const railShape = (id, position) => ({
       }],
       fill: [{
         properties: {
-          fillColor: fill(palette.surface),
+          fillColor: fill(palette.header),
           transparency: num(0),
         },
         selector: { id: "default" },
       }],
       outline: [{
         properties: {
-          show: bool(true),
-          lineColor: fill(palette.border),
-          weight: num(1),
+          show: bool(false),
+          lineColor: fill(palette.header),
+          weight: num(0),
           transparency: num(0),
         },
         selector: { id: "default" },
@@ -280,6 +288,11 @@ const slicer = (id, position, entity, property, label) => ({
         },
       }],
       visualHeader: [{ properties: { show: bool(false) } }],
+      general: [{
+        properties: {
+          altText: text(`Bộ lọc ${label}`),
+        },
+      }],
       padding: [{
         properties: {
           top: num(0),
@@ -321,7 +334,7 @@ const card = ({
           fontFamily: text("Segoe UI Semibold"),
           fontSize: num(31),
           bold: bool(true),
-          fontColor: fill(color),
+          fontColor: fill(palette.ink),
           horizontalAlignment: text("left"),
           labelDisplayUnits: text("0"),
           labelPrecision: num(measureName.includes("%") ? 1 : 0, "L"),
@@ -379,6 +392,11 @@ const card = ({
     },
     visualContainerObjects: {
       ...panel(null, 0),
+      general: [{
+        properties: {
+          altText: text(`Chỉ số ${label}`),
+        },
+      }],
       padding: [{
         properties: {
           top: num(0),
@@ -696,23 +714,23 @@ const sourceChrome = {
     properties: {
       show: bool(true),
       color: fill(palette.surface),
-      transparency: num(0),
+      transparency: num(88),
     },
   }],
   border: [{
     properties: {
       show: bool(true),
-      color: fill(palette.border),
+      color: fill("#5B82A8"),
       width: num(1),
       radius: num(12),
     },
   }],
   dropShadow: [{
     properties: {
-      show: bool(true),
+      show: bool(false),
       preset: text("BottomRight"),
-      color: fill("#9AA8BA"),
-      transparency: num(97),
+      color: fill("#263B5A"),
+      transparency: num(100),
       position: text("Outer"),
     },
   }],
@@ -727,28 +745,28 @@ const sourceChrome = {
   }],
 };
 
-const writeRailCommon = (pageId, prefix, titleId, title, subtitle, source, fields) => {
+const writeHeaderCommon = (pageId, prefix, titleId, title, subtitle, source, fields) => {
   writeJson(
     visualPath(pageId, `${prefix}000000000000000001`),
-    railShape(
+    headerShape(
       `${prefix}000000000000000001`,
-      { x: 0, y: 0, z: 0, height: 1080, width: 264, tabOrder: 99 },
+      { x: 0, y: 0, z: 0, height: 112, width: 1920, tabOrder: 99 },
     ),
   );
   writeJson(
     visualPath(pageId, `${prefix}000000000000000002`),
     richTextbox(
       `${prefix}000000000000000002`,
-      { x: 24, y: 28, z: 1000, height: 44, width: 216, tabOrder: 0 },
-      brandParagraphs,
+      { x: 40, y: 64, z: 1000, height: 32, width: 1080, tabOrder: 1 },
+      [paragraph([textRun(subtitle, { size: 12, color: palette.headerSoft })])],
     ),
   );
   writeJson(
     visualPath(pageId, `${prefix}000000000000000003`),
     richTextbox(
       `${prefix}000000000000000003`,
-      { x: 24, y: 104, z: 1000, height: 24, width: 216, tabOrder: 1 },
-      filterParagraphs,
+      { x: 40, y: 144, z: 1000, height: 24, width: 104, tabOrder: 4 },
+      [paragraph([textRun("BỘ LỌC", { family: "Segoe UI Semibold", size: 10, weight: "600", color: palette.muted })])],
     ),
   );
   fields.forEach(([id, entity, property, label], index) => {
@@ -756,7 +774,7 @@ const writeRailCommon = (pageId, prefix, titleId, title, subtitle, source, field
       visualPath(pageId, id),
       slicer(
         id,
-        { x: 24, y: 144 + index * 96, z: 1000, height: 80, width: 216, tabOrder: 2 + index },
+        { x: 160 + index * 432, y: 128, z: 1000, height: 80, width: 416, tabOrder: 5 + index },
         entity,
         property,
         label,
@@ -767,27 +785,24 @@ const writeRailCommon = (pageId, prefix, titleId, title, subtitle, source, field
     visualPath(pageId, `${prefix}000000000000000004`),
     richTextbox(
       `${prefix}000000000000000004`,
-      { x: 24, y: 544, z: 1000, height: 112, width: 216, tabOrder: 6 },
-      noteParagraphs,
+      { x: 1184, y: 72, z: 1000, height: 24, width: 336, tabOrder: 2 },
+      [paragraph([textRun("HỒ TRÀM  •  ĐỒNG NAI  •  HCM", { family: "Segoe UI Semibold", size: 10, weight: "600", color: palette.headerSoft })], "right")],
     ),
   );
   writeJson(
     visualPath(pageId, titleId),
     richTextbox(
       titleId,
-      { x: 296, y: 24, z: 1000, height: 64, width: 1048, tabOrder: 7 },
-      [
-        paragraph([textRun(title, { family: "Segoe UI Semibold", size: 25, weight: "600" })]),
-        paragraph([textRun(subtitle, { size: 11, color: palette.muted })]),
-      ],
+      { x: 40, y: 16, z: 1000, height: 48, width: 1080, tabOrder: 0 },
+      [paragraph([textRun(title, { family: "Segoe UI Semibold", size: 27, weight: "700", color: palette.surface })])],
     ),
   );
   writeJson(
     visualPath(pageId, `${prefix}000000000000000005`),
     richTextbox(
       `${prefix}000000000000000005`,
-      { x: 1576, y: 28, z: 1000, height: 44, width: 312, tabOrder: 8 },
-      [paragraph([textRun(source, { size: 10, color: palette.muted })], "center")],
+      { x: 1544, y: 32, z: 1000, height: 48, width: 336, tabOrder: 3 },
+      [paragraph([textRun(source, { size: 10, color: palette.surface })], "center")],
       sourceChrome,
     ),
   );
@@ -796,12 +811,12 @@ const writeRailCommon = (pageId, prefix, titleId, title, subtitle, source, field
 setPage(page1, "Tổng quan quyết toán");
 setPage(page2, "Phân công quyết toán theo PIC");
 
-writeRailCommon(
+writeHeaderCommon(
   page1,
   "a1",
   "fd3619b3945134649638",
-  "Dashboard Quyết Toán",
-  "Bức tranh điều hành theo hợp đồng, khu vực, dự án và PIC",
+  "BÁO CÁO THEO DÕI QUYẾT TOÁN",
+  "Tổng hợp tiến độ theo khu vực, dự án, PIC và KPI",
   "Nguồn: SharePoint • Semantic model",
   [
     ["f8ed7790f3f96fbccc22", "Data", "Kỳ mục tiêu", "Kỳ mục tiêu"],
@@ -815,18 +830,18 @@ writeJson(
   visualPath(page1, "391ab8b03678954b5ac4"),
   card({
     id: "391ab8b03678954b5ac4",
-    position: { x: 296, y: 112, z: 1000, height: 152, width: 384, tabOrder: 9 },
+    position: { x: 40, y: 224, z: 1000, height: 128, width: 448, tabOrder: 9 },
     entity: "Data",
     measureName: "Số HĐ cần quyết toán",
-    label: "Tổng hợp đồng",
-    color: palette.cyan,
+    label: "Tổng hợp đồng cần QT",
+    color: palette.chartBlue,
   }),
 );
 writeJson(
   visualPath(page1, "a1000000000000000008"),
   card({
     id: "a1000000000000000008",
-    position: { x: 696, y: 112, z: 1000, height: 152, width: 384, tabOrder: 10 },
+    position: { x: 504, y: 224, z: 1000, height: 128, width: 448, tabOrder: 10 },
     entity: "Data",
     measureName: "Số HĐ hoàn thành",
     label: "Đã hoàn thành",
@@ -837,7 +852,7 @@ writeJson(
   visualPath(page1, "a1000000000000000009"),
   card({
     id: "a1000000000000000009",
-    position: { x: 1096, y: 112, z: 1000, height: 152, width: 384, tabOrder: 11 },
+    position: { x: 968, y: 224, z: 1000, height: 128, width: 448, tabOrder: 11 },
     entity: "Data",
     measureName: "Số HĐ cần quyết toán (năm nay)",
     label: "Mục tiêu năm nay",
@@ -848,7 +863,7 @@ writeJson(
   visualPath(page1, "a100000000000000000a"),
   card({
     id: "a100000000000000000a",
-    position: { x: 1496, y: 112, z: 1000, height: 152, width: 384, tabOrder: 12 },
+    position: { x: 1432, y: 224, z: 1000, height: 128, width: 448, tabOrder: 12 },
     entity: "Data",
     measureName: "% Hoàn thành",
     label: "Tỷ lệ hoàn thành",
@@ -859,8 +874,8 @@ writeJson(
   visualPath(page1, "6c01133a552db7acb6c8"),
   bar({
     id: "6c01133a552db7acb6c8",
-    position: { x: 296, y: 288, z: 1000, height: 336, width: 776, tabOrder: 13 },
-    titleValue: "PHÂN BỐ HỢP ĐỒNG THEO TÌNH TRẠNG",
+    position: { x: 40, y: 368, z: 1000, height: 320, width: 912, tabOrder: 13 },
+    titleValue: "Tình trạng quyết toán",
     entity: "Data",
     category: "TÌNH TRẠNG QUYẾT TOÁN",
     measureName: "Số HĐ cần quyết toán",
@@ -870,7 +885,7 @@ writeJson(
     categoryColors: {
       "Đã quyết toán": palette.chartGreen,
       "Đã thanh lý": palette.chartGreen,
-      "NT đang hoàn tất HSQT": palette.chartBlue,
+      "NT đang hoàn tất HSQT": palette.cyan,
       "NT chưa nộp HSQT": palette.chartOrange,
       "PAS đang kiểm": palette.chartSlate,
       "Hủy hợp đồng": palette.chartRed,
@@ -882,8 +897,8 @@ writeJson(
   visualPath(page1, "a100000000000000000b"),
   bar({
     id: "a100000000000000000b",
-    position: { x: 1088, y: 288, z: 1000, height: 336, width: 800, tabOrder: 14 },
-    titleValue: "KHỐI LƯỢNG THEO KHU VỰC",
+    position: { x: 968, y: 368, z: 1000, height: 320, width: 912, tabOrder: 14 },
+    titleValue: "Số lượng theo khu vực",
     entity: "Data",
     category: "Khu vực chuẩn",
     measureName: "Số HĐ cần quyết toán",
@@ -892,7 +907,7 @@ writeJson(
     margin: 30,
     categoryColors: {
       "HỒ TRÀM": palette.chartBlue,
-      "ĐỒNG NAI": palette.chartCoral,
+      "ĐỒNG NAI": palette.cyan,
       "HCM": palette.chartGreen,
     },
   }),
@@ -901,8 +916,8 @@ writeJson(
   visualPath(page1, "53b0dfd78e779da94001"),
   bar({
     id: "53b0dfd78e779da94001",
-    position: { x: 296, y: 640, z: 1000, height: 408, width: 504, tabOrder: 15 },
-    titleValue: "DỰ ÁN / ĐƠN VỊ CÓ KHỐI LƯỢNG CAO",
+    position: { x: 40, y: 704, z: 1000, height: 344, width: 600, tabOrder: 15 },
+    titleValue: "Top dự án / đơn vị",
     entity: "Data",
     category: "TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ",
     measureName: "Số HĐ cần quyết toán",
@@ -916,13 +931,13 @@ writeJson(
   visualPath(page1, "a100000000000000000c"),
   bar({
     id: "a100000000000000000c",
-    position: { x: 816, y: 640, z: 1000, height: 408, width: 504, tabOrder: 16 },
-    titleValue: "PIC CÓ NHIỀU LƯỢT PHÂN CÔNG",
+    position: { x: 656, y: 704, z: 1000, height: 344, width: 600, tabOrder: 16 },
+    titleValue: "Top PIC phụ trách",
     entity: "Phân công PIC",
     category: "PIC phụ trách",
     measureName: "Số lượt HĐ cần quyết toán",
-    color: palette.chartOrange,
-    tint: palette.chartOrangeTint,
+    color: palette.cyan,
+    tint: palette.cyanTint,
     margin: 44,
     padding: 10,
   }),
@@ -931,8 +946,8 @@ writeJson(
   visualPath(page1, "493203045ab4b4ce6700"),
   bar({
     id: "493203045ab4b4ce6700",
-    position: { x: 1336, y: 640, z: 1000, height: 408, width: 552, tabOrder: 17 },
-    titleValue: "TỶ LỆ HOÀN THÀNH THEO KHU VỰC",
+    position: { x: 1272, y: 704, z: 1000, height: 344, width: 608, tabOrder: 17 },
+    titleValue: "Tỷ lệ hoàn thành theo khu vực",
     entity: "Data",
     category: "Khu vực chuẩn",
     measureName: "% Hoàn thành",
@@ -943,17 +958,17 @@ writeJson(
     padding: 10,
     categoryColors: {
       "HỒ TRÀM": palette.chartBlue,
-      "ĐỒNG NAI": palette.chartCoral,
+      "ĐỒNG NAI": palette.cyan,
       "HCM": palette.chartGreen,
     },
   }),
 );
 
-writeRailCommon(
+writeHeaderCommon(
   page2,
   "a2",
   "8dbd3c7eaa512aee813c",
-  "Phân Công Quyết Toán Theo PIC",
+  "PHÂN CÔNG QUYẾT TOÁN THEO PIC",
   "Theo dõi khối lượng, kết quả và tỷ lệ hoàn thành theo lượt phân công",
   "Đơn vị: lượt phân công",
   [
@@ -968,13 +983,13 @@ writeJson(
   visualPath(page2, "3c6a3ac7623c8cf678f4"),
   bar({
     id: "3c6a3ac7623c8cf678f4",
-    position: { x: 296, y: 112, z: 1000, height: 432, width: 1592, tabOrder: 9 },
-    titleValue: "LƯỢT HỢP ĐỒNG CẦN QUYẾT TOÁN THEO PIC",
+    position: { x: 40, y: 224, z: 1000, height: 360, width: 1840, tabOrder: 9 },
+    titleValue: "Khối lượng quyết toán theo PIC",
     entity: "Phân công PIC",
     category: "PIC phụ trách",
     measureName: "Số lượt HĐ cần quyết toán",
-    color: palette.chartOrange,
-    tint: palette.chartOrangeTint,
+    color: palette.chartBlue,
+    tint: palette.chartBlueTint,
     margin: 30,
   }),
 );
@@ -982,8 +997,8 @@ writeJson(
   visualPath(page2, "146945f73a4f1b0a942f"),
   matrix({
     id: "146945f73a4f1b0a942f",
-    position: { x: 296, y: 568, z: 1000, height: 480, width: 1592, tabOrder: 10 },
-    titleValue: "CHI TIẾT KPI THEO PIC",
+    position: { x: 40, y: 600, z: 1000, height: 448, width: 1840, tabOrder: 10 },
+    titleValue: "Chi tiết KPI theo PIC",
     rows: [["Phân công PIC", "PIC phụ trách"]],
     values: [
       ["Phân công PIC", "Số lượt HĐ cần quyết toán"],
@@ -1000,31 +1015,28 @@ writeJson(
 const themeDir = path.join(root, "StaticResources", "RegisteredResources");
 const previousThemePath = path.join(themeDir, previousThemeName);
 const themePath = path.join(themeDir, themeName);
-const theme = JSON.parse(fs.readFileSync(
-  fs.existsSync(themePath) ? themePath : previousThemePath,
-  "utf8",
-));
+if (!fs.existsSync(themePath) && fs.existsSync(previousThemePath)) {
+  fs.renameSync(previousThemePath, themePath);
+}
+const theme = JSON.parse(fs.readFileSync(themePath, "utf8"));
 
 theme.name = themeName;
 theme.dataColors = [
+  palette.chartBlue,
   palette.cyan,
-  palette.chartCoral,
   palette.green,
   palette.orange,
   palette.teal,
   palette.red,
   "#4F6D8A",
   "#5CB8E6",
-  "#9A84E8",
-  "#66C5A5",
-  "#F1BD69",
 ];
 theme.good = palette.green;
 theme.neutral = palette.orange;
 theme.bad = palette.red;
-theme.maximum = palette.green;
-theme.center = palette.orangeTint;
-theme.minimum = palette.red;
+theme.maximum = palette.chartBlue;
+theme.center = palette.cyan;
+theme.minimum = "#D7E6F2";
 theme.null = palette.muted;
 theme.foreground = palette.ink;
 theme.foregroundNeutralSecondary = palette.muted;
@@ -1143,4 +1155,4 @@ const registered = report.resourcePackages.find((pkg) => pkg.name === "Registere
 registered.items = [{ name: themeName, path: themeName, type: "CustomTheme" }];
 writeJson(reportPath, report);
 
-console.log("Applied Light Analytics mockup styling to both report pages.");
+console.log("Applied the corporate-blue HTML reference styling to both report pages.");

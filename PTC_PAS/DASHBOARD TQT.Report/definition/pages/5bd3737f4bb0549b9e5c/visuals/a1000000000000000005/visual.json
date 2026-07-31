@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1000000000000000005",
   "position": {
-    "x": 1576,
-    "y": 28,
-    "z": 1000,
-    "height": 44,
-    "width": 312,
-    "tabOrder": 8
+    "x": 1345,
+    "y": 23.333333333333336,
+    "z": 5000,
+    "height": 48.333333333333336,
+    "width": 338.33333333333337,
+    "tabOrder": 7000
   },
   "visual": {
     "visualType": "textbox",
@@ -22,9 +22,8 @@
                     "value": "Nguồn: SharePoint • Semantic model",
                     "textStyle": {
                       "fontFamily": "Segoe UI",
-                      "fontSize": "10px",
-                      "fontWeight": "400",
-                      "color": "#6B7A90"
+                      "fontSize": "14pt",
+                      "color": "#6b7a90"
                     }
                   }
                 ],

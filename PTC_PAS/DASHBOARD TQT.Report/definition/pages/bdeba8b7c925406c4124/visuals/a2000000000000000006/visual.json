@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a2000000000000000006",
   "position": {
     "x": 24,
     "y": 336,
-    "z": 1000,
+    "z": 10000,
     "height": 80,
     "width": 216,
-    "tabOrder": 4
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "slicer",
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Phân công PIC.Khu vực",
-              "nativeQueryRef": "Khu vực"
+              "nativeQueryRef": "Khu vực",
+              "active": true
             }
           ]
         }
@@ -74,7 +75,7 @@
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "11D"
                 }
               }
             },

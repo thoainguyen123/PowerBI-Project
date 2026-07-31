@@ -42,6 +42,125 @@ table 'Phân công PIC'
 		displayFolder: KPI quyết toán
 		lineageTag: 70813dfb-a52a-480c-a3d2-9fd403b7d3b0
 
+	/// (1) theo PIC = số lượt phân công có NGÀY MỤC TIÊU hợp lệ. Một HĐ có cả PIC Xây dựng (cột AK) và PIC MEP (cột AL) được tính 2 lượt để không bỏ sót trách nhiệm.
+	measure '(1) Số lượt cần quyết toán' =
+			CALCULATE (
+			    COUNTROWS ( 'Phân công PIC' ),
+			    NOT ISBLANK ( 'Phân công PIC'[Năm mục tiêu] )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: 97de1068-05ee-44ed-bd63-6c5337defc02
+
+	/// (2) theo PIC: lượt phân công có mục tiêu quyết toán năm 2026.
+	measure '(2) Số lượt cần quyết toán 2026' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: c6e8fcd8-12dc-4b0c-96ef-2f8e67c7ea92
+
+	/// (2.1) theo PIC: KPI QUYẾT TOÁN = 'KPI 417'.
+	measure '(2.1) KPI đã đăng ký (PIC)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        'Phân công PIC'[Nhóm KPI quyết toán] = "KPI đã đăng ký"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: 11a41e12-8e41-425c-bbf7-b9833aa8b208
+
+	/// (2.2) theo PIC: KPI QUYẾT TOÁN = 'Ngoài 417'.
+	measure '(2.2) Đăng ký thêm (PIC)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        'Phân công PIC'[Nhóm KPI quyết toán] = "Đăng ký thêm"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: 0a1f7e11-f093-4559-ad34-96dc5140c3ce
+
+	/// Phần còn lại để cân đối: (2) = (2.1) + (2.2) + (2.3).
+	measure '(2.3) Chưa phân loại KPI (PIC)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        NOT 'Phân công PIC'[Nhóm KPI quyết toán] IN { "KPI đã đăng ký", "Đăng ký thêm" }
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: 04e16605-4e37-40d8-ac92-42ed59f8070e
+
+	/// (3) theo PIC: lượt có ngày ký biên bản quyết toán từ 2026 trở đi, trong số lượt có mục tiêu 2026.
+	measure '(3) Số lượt hoàn thành 2026' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        'Phân công PIC'[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Số lượng
+		lineageTag: 93a81616-7ba3-4542-8dab-baba86f7c765
+
+	/// (3) / (2.1) theo từng PIC.
+	measure '% Hoàn thành theo KPI đã đăng ký (PIC)' = DIVIDE ( [(3) Số lượt hoàn thành 2026], [(2.1) KPI đã đăng ký (PIC)] )
+		formatString: 0.0%
+		displayFolder: Tracking theo PIC\02. Tỷ lệ
+		lineageTag: fc3878e2-6aaa-4370-b342-aec5712f3262
+
+	/// (3) / (2) theo từng PIC.
+	measure '% Hoàn thành 2026 (PIC)' = DIVIDE ( [(3) Số lượt hoàn thành 2026], [(2) Số lượt cần quyết toán 2026] )
+		formatString: 0.0%
+		displayFolder: Tracking theo PIC\02. Tỷ lệ
+		lineageTag: f1da3afd-c86a-4c38-b755-ed41abafdafc
+
+	/// CẢNH BÁO: hợp đồng có đồng thời PIC Xây dựng và PIC MEP sẽ được cộng giá trị 2 lần. Chỉ dùng để so sánh giữa các PIC, KHÔNG dùng dòng Tổng. Muốn tổng đúng hãy dùng [Giá trị đã quyết toán 2026] của bảng Data.
+	measure 'Giá trị đã quyết toán 2026 (PIC)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        SUM ( 'Phân công PIC'[Giá trị workdone gồm VAT] ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        'Phân công PIC'[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\03. Giá trị
+		lineageTag: ed2b57d3-5953-47d3-803e-a14847d0e212
+
+	/// Phần của (3) nằm đúng trong nhóm KPI 417, theo từng PIC.
+	measure '(3.1) Số lượt hoàn thành thuộc KPI đã đăng ký' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'Phân công PIC' ),
+			        'Phân công PIC'[Năm mục tiêu] = _Nam,
+			        'Phân công PIC'[Năm ký quyết toán] >= _Nam,
+			        'Phân công PIC'[Nhóm KPI quyết toán] = "KPI đã đăng ký"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\04. Tham chiếu thêm
+		lineageTag: 92390f8d-f60a-4926-b34f-9d01af510afc
+
+	/// (3.1) / (2.1) theo PIC - luôn <= 100%.
+	measure '% Hoàn thành KPI đăng ký (chặt) (PIC)' = DIVIDE ( [(3.1) Số lượt hoàn thành thuộc KPI đã đăng ký], [(2.1) KPI đã đăng ký (PIC)] )
+		formatString: 0.0%
+		displayFolder: Tracking theo PIC\04. Tham chiếu thêm
+		lineageTag: 71cf155d-30a3-47ba-9ab3-85bebfd929dd
+
 	column 'Mã hợp đồng'
 		lineageTag: 5c9584f8-1b00-4f3d-9203-dfe799b4d125
 		isNameInferred
@@ -88,54 +207,84 @@ table 'Phân công PIC'
 		sourceColumn: [Tình trạng quyết toán]
 
 	column File
+		lineageTag: 5fa411ef-e8f2-4494-b83c-0ec8679c834d
 		isNameInferred
 		sourceColumn: [File]
 
 	column 'Thuộc phạm vi quyết toán'
+		lineageTag: b120f353-ca33-4eda-b334-0110fee89fbc
 		isNameInferred
 		sourceColumn: [Thuộc phạm vi quyết toán]
+
+	column 'Năm ký quyết toán'
+		lineageTag: af47dfe1-ec79-4682-b6f6-1f01d5bd067c
+		isNameInferred
+		sourceColumn: [Năm ký quyết toán]
+
+	column 'Nhóm KPI quyết toán'
+		lineageTag: 911e813b-f6fc-4148-8cd1-eaa881ea5844
+		isNameInferred
+		sourceColumn: [Nhóm KPI quyết toán]
+
+	column 'Giá trị workdone gồm VAT'
+		lineageTag: 34f9009d-dd8d-4714-889b-dcc6db3fb16a
+		isNameInferred
+		sourceColumn: [Giá trị workdone gồm VAT]
+
+	column 'Tình trạng quyết toán (chuẩn)'
+		lineageTag: 7eaf7040-f461-418d-9e4d-8b73cb74206b
+		isNameInferred
+		sourceColumn: [Tình trạng quyết toán (chuẩn)]
 
 	partition 'Phân công PIC' = calculated
 		mode: import
 		source =
 				VAR _XayDung =
-				    SELECTCOLUMNS(
-				        FILTER(
+				    SELECTCOLUMNS (
+				        FILTER (
 				            Data,
-				            NOT ISBLANK(Data[PIC XÂY DỰNG/CUNG ỨNG])
-				                && TRIM(Data[PIC XÂY DỰNG/CUNG ỨNG]) <> ""
+				            NOT ISBLANK ( Data[PIC XÂY DỰNG/CUNG ỨNG] )
+				                && TRIM ( Data[PIC XÂY DỰNG/CUNG ỨNG] ) <> ""
 				        ),
-				        "Mã hợp đồng", Data[File] & "|" & FORMAT(Data[STT], "0"),
-				        "PIC phụ trách", TRIM(Data[PIC XÂY DỰNG/CUNG ỨNG]),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT ( Data[STT], "0" ),
+				        "PIC phụ trách", TRIM ( Data[PIC XÂY DỰNG/CUNG ỨNG] ),
 				        "Nhóm PIC", "Xây dựng/Cung ứng",
 				        "File", Data[File],
 				        "Khu vực", Data[Khu vực chuẩn],
 				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
 				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
 				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Năm ký quyết toán", Data[Năm ký quyết toán],
+				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
+				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],
 				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
 				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
-				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN]
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN],
+				        "Tình trạng quyết toán (chuẩn)", Data[TÌNH TRẠNG QUYẾT TOÁN (chuẩn)]
 				    )
 				VAR _MEP =
-				    SELECTCOLUMNS(
-				        FILTER(
+				    SELECTCOLUMNS (
+				        FILTER (
 				            Data,
-				            NOT ISBLANK(Data[PIC MEP])
-				                && TRIM(Data[PIC MEP]) <> ""
+				            NOT ISBLANK ( Data[PIC MEP] )
+				                && TRIM ( Data[PIC MEP] ) <> ""
 				        ),
-				        "Mã hợp đồng", Data[File] & "|" & FORMAT(Data[STT], "0"),
-				        "PIC phụ trách", TRIM(Data[PIC MEP]),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT ( Data[STT], "0" ),
+				        "PIC phụ trách", TRIM ( Data[PIC MEP] ),
 				        "Nhóm PIC", "MEP",
 				        "File", Data[File],
 				        "Khu vực", Data[Khu vực chuẩn],
 				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
 				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
 				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Năm ký quyết toán", Data[Năm ký quyết toán],
+				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
+				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],
 				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
 				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
-				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN]
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN],
+				        "Tình trạng quyết toán (chuẩn)", Data[TÌNH TRẠNG QUYẾT TOÁN (chuẩn)]
 				    )
 				RETURN
-				    UNION(_XayDung, _MEP)
+				    UNION ( _XayDung, _MEP )
 

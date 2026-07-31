@@ -1,176 +1,123 @@
 Design Brief:
   generated_by: powerbi-report-design
-  contract_version: 2
+  contract_version: 4
   mode: brownfield
-  reference:
-    file: "C:\\Users\\Admin\\Downloads\\preview (2).html"
-    usage: "Dùng làm tham chiếu về ngôn ngữ thị giác và bố cục; không dùng dữ liệu minh họa trong HTML."
+
+  objective:
+    - "Theo dõi số lượng quyết toán 2026 theo khu vực, dự án và PIC."
+    - "Hiển thị rõ cơ cấu trạng thái và tiến độ hoàn thành."
+    - "Giữ giao diện Light Analytics hiện tại nhưng thay toàn bộ binding sang KPI nghiệp vụ đã duyệt."
+
+  business_rules:
+    report_year_measure: "Data[Năm báo cáo] = 2026"
+    contract_metrics:
+      "(1)": "Năm mục tiêu không trống."
+      "(2)": "Năm mục tiêu bằng năm báo cáo."
+      "(2.1)": "Thuộc (2), KPI QUYẾT TOÁN = KPI 417."
+      "(2.2)": "Thuộc (2), KPI QUYẾT TOÁN = Ngoài 417."
+      "(2.3)": "Phần còn lại của (2)."
+      "(3)": "Thuộc (2), năm ký biên bản quyết toán từ năm báo cáo trở đi."
+      percent_registered: "(3)/(2.1); có thể vượt 100%."
+      percent_2026: "(3)/(2)."
+      settled_value: "Tổng GIÁ TRỊ WORKDONE (GỒM VAT) của (3)."
+    pic_grain:
+      rule: "Một dòng cho mỗi lượt AK hoặc AL."
+      warning: "Một HĐ có cả AK và AL được tính hai lượt; tổng giá trị PIC có thể cộng trùng."
 
   design_identity:
-    tone: "Light Analytics — Soft Card Workspace"
-    signature: "Thanh điều hướng trắng bên trái; bốn KPI card có màu nhấn riêng; panel trắng bo tròn trên nền xanh xám rất nhạt."
-    current_tone: "Midnight Operations — tương phản cao và nặng hơn mockup mới."
-    current_signature: "Nền navy, panel trắng, cyan làm tín hiệu điều hướng."
-  archetype: "Executive Summary (trang 1) + Analytical Canvas (trang 2)"
+    tone: "Light corporate analytics"
+    signature: "Sidebar trắng, nền xanh xám nhạt, panel bo 16 px và accent KPI theo ngữ nghĩa."
+    font: "Segoe UI"
 
   design_tokens:
     canvas: "#F4F7FB"
     surface: "#FFFFFF"
-    surface_alt: "#F1F5F9"
+    surface_alt: "#F4F7FB"
     ink: "#172033"
     muted: "#6B7A90"
     border: "#DFE7F1"
-    cyan: "#2B8FD8"
+    blue: "#2B8FD8"
+    navy: "#174A7E"
+    cyan: "#2AA7C9"
     teal: "#0E8F9C"
-    coral: "#E76F51"
     green: "#1F9D74"
     orange: "#E39A2F"
+    coral: "#E76F51"
     red: "#D9534F"
+    slate: "#4F6D8A"
+    neutral: "#AEB9C7"
     radius: 16
-    shadow: "BottomRight, 96% transparency"
-    font: "Segoe UI"
+    purple_allowed: false
 
-  color_map:
-    - measure: "Data[Số HĐ cần quyết toán]"
-      color: "#2B8FD8"
-      label: "Tổng hợp đồng"
-    - measure: "Data[Số HĐ hoàn thành]"
-      color: "#1F9D74"
-      label: "Đã hoàn thành"
-    - measure: "Data[Số HĐ cần quyết toán (năm nay)]"
-      color: "#E39A2F"
-      label: "Mục tiêu năm nay"
-    - measure: "Data[% Hoàn thành]"
-      color: "#0E8F9C"
-      label: "Tỷ lệ hoàn thành"
-    - measure: "Phân công PIC[Số lượt HĐ cần quyết toán]"
-      color: "#E8891C"
-
-  chart_color_strategy:
-    status:
-      type: "semantic categorical"
-      mapping:
-        "Đã quyết toán": "#168A6A"
-        "Đã thanh lý": "#168A6A"
-        "NT đang hoàn tất HSQT": "#2477E0"
-        "NT chưa nộp HSQT": "#E8891C"
-        "PAS đang kiểm": "#4F6D8A"
-        "Hủy hợp đồng": "#D9505B"
-        "NT đã nộp(thất lạc HS)": "#D9505B"
-        fallback: "#AEB8C5"
-    region:
-      type: "category identity"
-      mapping:
-        "HỒ TRÀM": "#2477E0"
-        "ĐỒNG NAI": "#E76F51"
-        "HCM": "#168A6A"
-    ranking:
-      type: "high-contrast sequential"
-      rule: "Tint tối thiểu giữ ở mức trung bình, không dùng màu gần trắng cho các cột nhỏ."
+  status_color_map:
+    "Đã quyết toán": "#1F9D74"
+    "Đã quyết toán/thanh lý": "#147A5A"
+    "Đã thanh lý": "#0E8F9C"
+    "NT đang hoàn tất HSQT": "#2B8FD8"
+    "Đang thống nhất HSQT": "#2AA7C9"
+    "Đang trình HSQT": "#7EB8DA"
+    "PAS đang kiểm": "#4F6D8A"
+    "NT chưa nộp HSQT": "#E39A2F"
+    "Nhà thầu không phối hợp": "#E76F51"
+    "Chưa cập nhật": "#AEB9C7"
+    "Hủy hợp đồng": "#D9534F"
+    "NT đã nộp (thất lạc HS)": "#F1BD69"
 
   pages:
     - name: "Tổng quan quyết toán"
-      role: landing
-      archetype: "Executive Summary — KPI cards + compact analytical grid"
-      layout_variant: B
-      variant_rationale: "Mockup ưu tiên KPI độc lập và các panel nhỏ. Bố cục được chuyển thành lưới 2+3 panel để vừa theo dõi tổng quan, vừa làm Hồ Tràm hiện rõ."
-      page_background: "#F4F7FB"
-      layout_summary: "Rail lọc 264 px bên trái; tiêu đề và nguồn dữ liệu ở đầu; bốn KPI card; hai panel chính; ba panel phân tích phía dưới."
-      layout_contract:
-        canvas: { width: 1920, height: 1080, margin: 24, gutter: 16, snap: 8 }
-        rail: { x: 0, y: 0, width: 264, height: 1080 }
-        content: { x: 296, y: 24, width: 1592, height: 1024 }
-        placements:
-          - id: filter_rail
-            kind: shape
-            purpose: "Nhóm toàn bộ bộ lọc để vùng phân tích không bị phân mảnh."
-          - id: slicers
-            kind: slicer
-            fields:
-              - "Data[Kỳ mục tiêu]"
-              - "Data[Khu vực chuẩn]"
-              - "Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ]"
-              - "Data[TÌNH TRẠNG QUYẾT TOÁN]"
-          - id: kpi_cards
-            kind: cardVisual
-            count: 4
-            fields:
-              - "Data[Số HĐ cần quyết toán]"
-              - "Data[Số HĐ hoàn thành]"
-              - "Data[Số HĐ cần quyết toán (năm nay)]"
-              - "Data[% Hoàn thành]"
-          - id: status_backlog
-            kind: barChart
-            field_bindings: { Category: "Data[TÌNH TRẠNG QUYẾT TOÁN]", Y: "Data[Số HĐ cần quyết toán]" }
-          - id: region_volume
-            kind: barChart
-            field_bindings: { Category: "Data[Khu vực chuẩn]", Y: "Data[Số HĐ cần quyết toán]" }
-            purpose: "Làm Hồ Tràm hiện trực tiếp cùng Đồng Nai và HCM."
-          - id: top_projects
-            kind: barChart
-            field_bindings: { Category: "Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ]", Y: "Data[Số HĐ cần quyết toán]" }
-          - id: top_pic
-            kind: barChart
-            field_bindings: { Category: "Phân công PIC[PIC phụ trách]", Y: "Phân công PIC[Số lượt HĐ cần quyết toán]" }
-          - id: completion_by_region
-            kind: barChart
-            field_bindings: { Category: "Data[Khu vực chuẩn]", Y: "Data[% Hoàn thành]" }
-        space_audit:
-          content_cell_count: 120
-          placed_cell_count: 120
-          empty_cell_pct: 0
-          unplaced_regions: []
-          largest_region: { name: main_analytics, pct_of_content: 33 }
-          balance_rationale: "KPI 25%, hai panel chính 33%, ba panel dưới 42%; không có khoảng trống lớn hoặc panel lẻ."
+      canvas: { width: 1720, height: 1190 }
+      display_option: "ActualSize"
+      placements:
+        - id: kpi_1
+          kind: cardVisual
+          binding: "Data[(1) Số HĐ cần quyết toán]"
+        - id: kpi_2
+          kind: cardVisual
+          binding: "Data[(2) Số HĐ cần quyết toán 2026]"
+        - id: kpi_3
+          kind: cardVisual
+          binding: "Data[(3) Số HĐ hoàn thành 2026]"
+        - id: kpi_percent
+          kind: cardVisual
+          binding: "Data[% Hoàn thành 2026]"
+        - id: status_donut
+          kind: donutChart
+          category: "Data[Tình trạng quyết toán (chuẩn)]"
+          value: "Data[(2) Số HĐ cần quyết toán 2026]"
+        - id: region_status
+          kind: columnChart
+          category: "Data[Khu vực chuẩn]"
+          series: "Data[Tình trạng quyết toán (chuẩn)]"
+          value: "Data[(2) Số HĐ cần quyết toán 2026]"
+        - id: region_project_matrix
+          kind: pivotTable
+          rows:
+            - "Data[Khu vực chuẩn]"
+            - "Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ]"
+          value_count: 9
 
     - name: "Phân công quyết toán theo PIC"
-      role: detail
-      archetype: "Analytical Canvas"
-      layout_variant: A
-      variant_rationale: "Bar ngang ở trên cho xếp hạng nhanh; matrix phía dưới cho tra cứu. Rail lọc thống nhất với trang tổng quan."
-      page_background: "#F4F7FB"
-      layout_summary: "Rail lọc 264 px bên trái; một chart xếp hạng lớn và một matrix chi tiết trong hai card trắng."
-      layout_contract:
-        canvas: { width: 1920, height: 1080, margin: 24, gutter: 16, snap: 8 }
-        rail: { x: 0, y: 0, width: 264, height: 1080 }
-        content: { x: 296, y: 24, width: 1592, height: 1024 }
-        placements:
-          - id: slicers_pic
-            kind: slicer
-            fields:
-              - "Phân công PIC[Kỳ mục tiêu]"
-              - "Phân công PIC[Nhóm PIC]"
-              - "Phân công PIC[Khu vực]"
-              - "Phân công PIC[PIC phụ trách]"
-          - id: ranked_pic
-            kind: barChart
-            field_bindings: { Category: "Phân công PIC[PIC phụ trách]", Y: "Phân công PIC[Số lượt HĐ cần quyết toán]" }
-          - id: matrix_pic
-            kind: pivotTable
-            field_bindings:
-              Rows: ["Phân công PIC[PIC phụ trách]"]
-              Values:
-                - "Phân công PIC[Số lượt HĐ cần quyết toán]"
-                - "Phân công PIC[Số lượt HĐ cần quyết toán (năm nay)]"
-                - "Phân công PIC[Số lượt HĐ hoàn thành]"
-                - "Phân công PIC[% Hoàn thành PIC]"
-        space_audit:
-          content_cell_count: 120
-          placed_cell_count: 120
-          empty_cell_pct: 0
-          unplaced_regions: []
-          largest_region: { name: detail_matrix, pct_of_content: 48 }
-          balance_rationale: "Chart và matrix chia gần đều chiều cao để vừa xem nhanh vừa tra cứu."
-
-  interaction_pattern:
-    drill_targets: []
-    cross_filter_rules: "Slicer chỉ lọc các visual trong cùng trang. Trang PIC dùng bảng Phân công PIC để giữ đúng ngữ nghĩa lượt phân công."
+      canvas: { width: 1920, height: 1080 }
+      display_option: "FitToPage"
+      placements:
+        - id: pic_ranking
+          kind: barChart
+          category: "Phân công PIC[PIC phụ trách]"
+          value: "Phân công PIC[(2) Số lượt cần quyết toán 2026]"
+        - id: pic_matrix
+          kind: pivotTable
+          rows:
+            - "Phân công PIC[Nhóm PIC]"
+            - "Phân công PIC[PIC phụ trách]"
+          value_count: 9
 
   accessibility:
-    alt_text_strategy: "Tiêu đề visual là câu hỏi kinh doanh ngắn; mọi bar chart bật data label; matrix luôn hiển thị số song song với màu."
-    contrast_notes: "Ink #172033 trên nền trắng; muted #6B7A90 dùng cho nhãn phụ; màu trạng thái không phải tín hiệu duy nhất."
-    reading_order: "Tiêu đề → KPI → visual chính → visual phụ; slicer rail theo thứ tự từ trên xuống."
+    alt_text: "Mỗi chart mô tả rõ điều kiện mục tiêu 2026."
+    color: "Không dùng màu làm tín hiệu duy nhất; luôn có legend hoặc data label."
+    tab_order: "Header → slicers → KPI → chart → matrix."
 
-  theme:
-    base: "CY26SU02"
-    user_overrides: "Nền #F4F7FB, surface trắng, border #DFE7F1, radius 16; cyan/green/orange/teal cho bốn KPI; coral làm màu nhận diện Đồng Nai."
+  delivery:
+    target: "Local PBIP"
+    theme: "LightAnalytics-TQT2026-4f8c2d71.json"
+    semantic_model_changes: false
+    publish_fabric: false

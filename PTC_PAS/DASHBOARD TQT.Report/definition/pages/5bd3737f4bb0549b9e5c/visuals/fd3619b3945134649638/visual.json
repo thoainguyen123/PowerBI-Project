@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "fd3619b3945134649638",
   "position": {
-    "x": 296,
-    "y": 24,
-    "z": 1000,
-    "height": 64,
-    "width": 1048,
-    "tabOrder": 7
+    "x": 296.66666666666669,
+    "y": 11.666666666666668,
+    "z": 14000,
+    "height": 76.666666666666671,
+    "width": 1046.6666666666667,
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "textbox",
@@ -19,30 +19,21 @@
               {
                 "textRuns": [
                   {
-                    "value": "Dashboard Quyết Toán",
+                    "value": "Dashboard Quyết Toán 2026",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
-                      "fontSize": "25px",
-                      "fontWeight": "600",
+                      "fontSize": "20pt",
                       "color": "#172033"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               },
               {
                 "textRuns": [
                   {
-                    "value": "Bức tranh điều hành theo hợp đồng, khu vực, dự án và PIC",
-                    "textStyle": {
-                      "fontFamily": "Segoe UI",
-                      "fontSize": "11px",
-                      "fontWeight": "400",
-                      "color": "#6B7A90"
-                    }
+                    "value": ""
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }

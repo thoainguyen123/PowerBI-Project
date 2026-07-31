@@ -1,56 +1,129 @@
-# Report Spec — DASHBOARD TQT
+# Report Spec — DASHBOARD TQT 2026
 
-## Mục tiêu
+## Mục tiêu nghiệp vụ
 
-- Đối tượng: quản lý PAS/PTC.
-- Theo dõi khối lượng và tiến độ quyết toán theo Khu vực/Dự án và theo PIC.
-- Phạm vi giao: PBIP local, không publish Fabric.
-- Nguồn dữ liệu: semantic model SharePoint hiện có. `preview (2).html` chỉ là mẫu thiết kế.
+- Báo cáo số lượng quyết toán theo khu vực và dự án.
+- Tracking tình trạng quyết toán của các hợp đồng có ngày mục tiêu năm 2026.
+- So sánh tình trạng quyết toán 2026 giữa các khu vực.
+- Tracking khối lượng theo từng PIC từ cột AK và AL.
 
-## Quy ước nghiệp vụ
+## Định nghĩa KPI đã kiểm tra
 
-- `Số HĐ cần quyết toán`: HĐ có giá trị tại `KPI QUYẾT TOÁN`; riêng nguồn Hồ Tràm thiếu cột KPI nên dùng fallback là HĐ có `NGÀY MỤC TIÊU`.
-- Khu vực dùng `Data[Khu vực chuẩn]` để chuẩn hóa Hồ Tràm và suy ra Hồ Tràm từ tên file khi ô khu vực trống.
-- `Số HĐ hoàn thành`: HĐ thuộc KPI quyết toán và `TÌNH TRẠNG QUYẾT TOÁN = "Đã quyết toán"`.
-- `Kỳ mục tiêu`: năm của `NGÀY MỤC TIÊU`; giá trị trống hiển thị `Chưa có mục tiêu`.
-- Trang PIC dùng bảng `Phân công PIC`; một HĐ có hai vai trò PIC được tính thành hai lượt phân công.
+- `(1) Số HĐ cần quyết toán`: `Năm mục tiêu` không trống.
+- `(2) Số HĐ cần quyết toán 2026`: `Năm mục tiêu = [Năm báo cáo]`, hiện là 2026.
+- `(2.1) KPI đã đăng ký`: thuộc `(2)` và `KPI QUYẾT TOÁN = KPI 417`.
+- `(2.2) Đăng ký thêm`: thuộc `(2)` và `KPI QUYẾT TOÁN = Ngoài 417`.
+- `(2.3) Chưa phân loại`: phần còn lại để cân đối `(2)`.
+- `(3) Hoàn thành 2026`: thuộc `(2)` và năm ký biên bản quyết toán từ 2026 trở đi.
+- `% Hoàn thành theo KPI đã đăng ký`: `(3)/(2.1)` theo yêu cầu; có thể vượt 100%.
+- `% Hoàn thành 2026`: `(3)/(2)`.
+- `Giá trị đã quyết toán 2026`: tổng `GIÁ TRỊ WORKDONE (GỒM VAT)` của các dòng thuộc `(3)`.
+- Bảng PIC dùng một dòng cho mỗi lượt AK hoặc AL. Một hợp đồng có cả hai PIC xuất hiện hai lượt.
 
-## Cấu trúc trang
+## Kết quả kiểm tra dữ liệu ngày 30/07/2026
 
-1. **Tổng quan quyết toán**
-   - Rail trái: Kỳ mục tiêu, Khu vực, Dự án/Đơn vị, Tình trạng.
-   - Bốn KPI độc lập: tổng HĐ, đã hoàn thành, mục tiêu năm nay, tỷ lệ hoàn thành.
-   - Phân bố theo tình trạng và khối lượng theo khu vực.
-   - Ba panel dưới: dự án, PIC và tỷ lệ hoàn thành theo khu vực.
-   - Hồ Tràm phải hiện trực tiếp ở biểu đồ khu vực khi không bị bộ lọc loại bỏ.
+- Tổng dòng dữ liệu: 18.222.
+- `(1)`: 2.441 hợp đồng.
+- `(2)`: 764 hợp đồng.
+- `(2.1)`: 134; `(2.2)`: 303; `(2.3)`: 327; cân đối bằng 0.
+- `(3)`: 88 hợp đồng.
+- `% Hoàn thành theo KPI đã đăng ký`: 65,7%.
+- `% Hoàn thành 2026`: 11,5%.
+- Giá trị đã quyết toán 2026: 1.840.708.588.808,52.
+- PIC: 2.591 lượt ở `(1)`, 828 lượt ở `(2)`, 89 lượt ở `(3)`.
 
-2. **Phân công quyết toán theo PIC**
-   - Rail trái: Kỳ mục tiêu, Nhóm PIC, Khu vực, PIC phụ trách.
-   - Bar xếp hạng khối lượng theo PIC.
-   - Matrix chi tiết bốn KPI theo lượt phân công.
+## Thiết kế báo cáo
 
-## Thiết kế
+### Trang Tổng quan quyết toán
 
-- Tone: Light Analytics — Soft Card Workspace.
-- Signature: rail trắng bên trái, bốn KPI card có màu riêng, panel trắng bo tròn trên nền `#F4F7FB`.
-- Canvas: 1920×1080; rail 264 px; nội dung bắt đầu tại x=296; gutter 16 px.
-- Màu: cyan `#2B8FD8`, teal `#0E8F9C`, coral `#E76F51`, green `#1F9D74`, orange `#E39A2F`, red `#D9534F`.
-- Font: Segoe UI / Segoe UI Semibold.
-- Accessibility: nhãn số bật trên chart; màu không được dùng làm tín hiệu duy nhất.
+- Sidebar: kỳ mục tiêu, khu vực chuẩn, dự án/đơn vị và tình trạng chuẩn hóa.
+- KPI cards: `(1)`, `(2)`, `(3)` và `% Hoàn thành 2026`.
+- Donut: tình trạng quyết toán, dùng `(2)` nên luôn giới hạn ngày mục tiêu 2026.
+- Stacked column: khu vực chuẩn trên trục X, tình trạng chuẩn hóa ở legend, `(2)` ở value.
+- Matrix: `Khu vực chuẩn → Dự án/Đơn vị` với toàn bộ KPI `(1)–(3)`, gồm cả cột ngoại lệ `(2.3)`, hai tỷ lệ và giá trị.
 
-## Model đã duyệt
+### Trang Phân công quyết toán theo PIC
 
-- Measures bảng `Data`: `[Số HĐ cần quyết toán]`, `[Số HĐ cần quyết toán (năm nay)]`, `[Số HĐ hoàn thành]`, `[% Hoàn thành]`.
-- Bảng `Phân công PIC` và bốn measures theo lượt phân công giữ nguyên.
-- Số kiểm tra: 1.053 HĐ cần quyết toán; 207 năm nay; 358 hoàn thành; 34,0%; 1.096 lượt PIC.
-- Hồ Tràm: 856 HĐ cần quyết toán; 151 năm nay; 334 hoàn thành; 39,0%.
+- Sidebar: kỳ mục tiêu, nhóm PIC, khu vực và PIC.
+- Bar chart: `(2) Số lượt cần quyết toán 2026` theo PIC.
+- Matrix: `Nhóm PIC → PIC phụ trách`, gồm toàn bộ KPI PIC, cột ngoại lệ `(2.3)` và giá trị.
+- Ghi chú rõ AK = Xây dựng/Cung ứng, AL = MEP và cảnh báo tổng giá trị có thể cộng trùng.
 
 ## Canonical design contract
 
-Thiết kế chi tiết nằm tại `_brief/design-brief.yaml`.
+```yaml
+Design Brief:
+  generated_by: powerbi-report-design
+  contract_version: 4
+  mode: brownfield
+  archetype: "Executive Summary + Analytical Detail"
+  reference:
+    file: "C:\\Users\\Admin\\Downloads\\bao_cao_tqt_dashboard.html"
+    usage: "Tham chiếu chrome và palette; nghiệp vụ theo yêu cầu TQT 2026."
+  theme:
+    name: "LightAnalytics-TQT2026-4f8c2d71.json"
+    canvas: "#F4F7FB"
+    surface: "#FFFFFF"
+    ink: "#172033"
+    muted: "#6B7A90"
+    accent: "#2B8FD8"
+    semantic_colors:
+      completed: "#1F9D74"
+      in_progress: "#2B8FD8"
+      pending: "#E39A2F"
+      risk: "#E76F51"
+      cancelled: "#D9534F"
+      neutral: "#AEB9C7"
+    exclusions:
+      - "Không dùng màu tím."
+  pages:
+    - name: "Tổng quan quyết toán"
+      canvas: { width: 1720, height: 1190 }
+      layout:
+        sidebar: [0, 0, 264, 1190]
+        header: [296, 12, 1390, 76]
+        kpis: [296, 112, 1390, 152]
+        donut_2026: [296, 288, 685, 336]
+        stacked_status_region: [1002, 288, 685, 336]
+        region_project_matrix: [296, 642, 1390, 513]
+      bindings:
+        cards:
+          - "Data[(1) Số HĐ cần quyết toán]"
+          - "Data[(2) Số HĐ cần quyết toán 2026]"
+          - "Data[(3) Số HĐ hoàn thành 2026]"
+          - "Data[% Hoàn thành 2026]"
+        donut:
+          category: "Data[Tình trạng quyết toán (chuẩn)]"
+          value: "Data[(2) Số HĐ cần quyết toán 2026]"
+        stacked_column:
+          category: "Data[Khu vực chuẩn]"
+          series: "Data[Tình trạng quyết toán (chuẩn)]"
+          value: "Data[(2) Số HĐ cần quyết toán 2026]"
+    - name: "Phân công quyết toán theo PIC"
+      canvas: { width: 1920, height: 1080 }
+      layout:
+        sidebar: [0, 0, 264, 1080]
+        ranking: [296, 112, 1592, 432]
+        pic_matrix: [296, 568, 1592, 480]
+      bindings:
+        ranking:
+          category: "Phân công PIC[PIC phụ trách]"
+          value: "Phân công PIC[(2) Số lượt cần quyết toán 2026]"
+        matrix_rows:
+          - "Phân công PIC[Nhóm PIC]"
+          - "Phân công PIC[PIC phụ trách]"
+  accessibility:
+    strategy: "Nhãn dữ liệu và legend bổ sung cho màu; alt text mô tả điều kiện năm 2026."
+  delivery:
+    target: "Local PBIP"
+    semantic_model_changes: false
+    publish_fabric: false
+```
 
 ## Điều kiện hoàn thành
 
-- PBIR validate không có lỗi.
-- Không có overlap ngoài chủ ý; visual nằm trong canvas.
-- Desktop render đủ cả hai trang, hiển thị dữ liệu thật và không có lỗi visual.
+- PBIR validate 0 lỗi và 0 cảnh báo.
+- Card và bảng khớp kết quả truy vấn DAX.
+- Donut và stacked column chỉ dùng mục tiêu 2026.
+- Hồ Tràm dùng `Khu vực chuẩn` và hiển thị trong chart/matrix.
+- Không có màu tím trong theme đang active.

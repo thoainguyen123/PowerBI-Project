@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.1.0/schema.json",
   "themeCollection": {
     "baseTheme": {
       "name": "CY26SU02",
@@ -11,7 +11,7 @@
       "type": "SharedResources"
     },
     "customTheme": {
-      "name": "LightAnalytics-9a3f2c7d.json",
+      "name": "LightAnalytics-TQT2026-4f8c2d71.json",
       "reportVersionAtImport": {
         "visual": "2.6.0",
         "report": "3.1.0",
@@ -28,6 +28,19 @@
             "expr": {
               "Literal": {
                 "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
               }
             }
           }
@@ -52,8 +65,8 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "LightAnalytics-9a3f2c7d.json",
-          "path": "LightAnalytics-9a3f2c7d.json",
+          "name": "LightAnalytics-TQT2026-4f8c2d71.json",
+          "path": "LightAnalytics-TQT2026-4f8c2d71.json",
           "type": "CustomTheme"
         }
       ]

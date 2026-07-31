@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "146945f73a4f1b0a942f",
   "position": {
     "x": 296,
@@ -7,7 +7,7 @@
     "z": 1000,
     "height": 480,
     "width": 1592,
-    "tabOrder": 10
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -23,11 +23,27 @@
                       "Entity": "Phân công PIC"
                     }
                   },
+                  "Property": "Nhóm PIC"
+                }
+              },
+              "queryRef": "Phân công PIC.Nhóm PIC",
+              "nativeQueryRef": "Nhóm PIC",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
                   "Property": "PIC phụ trách"
                 }
               },
               "queryRef": "Phân công PIC.PIC phụ trách",
-              "nativeQueryRef": "PIC phụ trách"
+              "nativeQueryRef": "PIC phụ trách",
+              "active": true
             }
           ]
         },
@@ -41,11 +57,11 @@
                       "Entity": "Phân công PIC"
                     }
                   },
-                  "Property": "Số lượt HĐ cần quyết toán"
+                  "Property": "(1) Số lượt cần quyết toán"
                 }
               },
-              "queryRef": "Phân công PIC.Số lượt HĐ cần quyết toán",
-              "nativeQueryRef": "Số lượt HĐ cần quyết toán"
+              "queryRef": "Phân công PIC.(1) Số lượt cần quyết toán",
+              "nativeQueryRef": "(1) Số lượt cần quyết toán"
             },
             {
               "field": {
@@ -55,11 +71,11 @@
                       "Entity": "Phân công PIC"
                     }
                   },
-                  "Property": "Số lượt HĐ cần quyết toán (năm nay)"
+                  "Property": "(2) Số lượt cần quyết toán 2026"
                 }
               },
-              "queryRef": "Phân công PIC.Số lượt HĐ cần quyết toán (năm nay)",
-              "nativeQueryRef": "Số lượt HĐ cần quyết toán (năm nay)"
+              "queryRef": "Phân công PIC.(2) Số lượt cần quyết toán 2026",
+              "nativeQueryRef": "(2) Số lượt cần quyết toán 2026"
             },
             {
               "field": {
@@ -69,11 +85,11 @@
                       "Entity": "Phân công PIC"
                     }
                   },
-                  "Property": "Số lượt HĐ hoàn thành"
+                  "Property": "(2.1) KPI đã đăng ký (PIC)"
                 }
               },
-              "queryRef": "Phân công PIC.Số lượt HĐ hoàn thành",
-              "nativeQueryRef": "Số lượt HĐ hoàn thành"
+              "queryRef": "Phân công PIC.(2.1) KPI đã đăng ký (PIC)",
+              "nativeQueryRef": "(2.1) KPI đã đăng ký (PIC)"
             },
             {
               "field": {
@@ -83,11 +99,81 @@
                       "Entity": "Phân công PIC"
                     }
                   },
-                  "Property": "% Hoàn thành PIC"
+                  "Property": "(2.2) Đăng ký thêm (PIC)"
                 }
               },
-              "queryRef": "Phân công PIC.% Hoàn thành PIC",
-              "nativeQueryRef": "% Hoàn thành PIC"
+              "queryRef": "Phân công PIC.(2.2) Đăng ký thêm (PIC)",
+              "nativeQueryRef": "(2.2) Đăng ký thêm (PIC)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "(2.3) Chưa phân loại KPI (PIC)"
+                }
+              },
+              "queryRef": "Phân công PIC.(2.3) Chưa phân loại KPI (PIC)",
+              "nativeQueryRef": "(2.3) Chưa phân loại KPI (PIC)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "(3) Số lượt hoàn thành 2026"
+                }
+              },
+              "queryRef": "Phân công PIC.(3) Số lượt hoàn thành 2026",
+              "nativeQueryRef": "(3) Số lượt hoàn thành 2026"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "% Hoàn thành theo KPI đã đăng ký (PIC)"
+                }
+              },
+              "queryRef": "Phân công PIC.% Hoàn thành theo KPI đã đăng ký (PIC)",
+              "nativeQueryRef": "% Hoàn thành theo KPI đã đăng ký (PIC)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "% Hoàn thành 2026 (PIC)"
+                }
+              },
+              "queryRef": "Phân công PIC.% Hoàn thành 2026 (PIC)",
+              "nativeQueryRef": "% Hoàn thành 2026 (PIC)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "Giá trị đã quyết toán 2026 (PIC)"
+                }
+              },
+              "queryRef": "Phân công PIC.Giá trị đã quyết toán 2026 (PIC)",
+              "nativeQueryRef": "Giá trị đã quyết toán 2026 (PIC)"
             }
           ]
         }
@@ -102,15 +188,73 @@
                     "Entity": "Phân công PIC"
                   }
                 },
-                "Property": "Số lượt HĐ cần quyết toán"
+                "Property": "(2) Số lượt cần quyết toán 2026"
               }
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
+    "expansionStates": [
+      {
+        "roles": [
+          "Rows"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "Phân công PIC.Nhóm PIC"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Phân công PIC"
+                    }
+                  },
+                  "Property": "Nhóm PIC"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "Phân công PIC.PIC phụ trách"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {
+          "children": [
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'MEP'"
+                  }
+                }
+              ],
+              "isToggled": true
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'Xây dựng/Cung ứng'"
+                  }
+                }
+              ],
+              "isToggled": true
+            }
+          ]
+        }
+      }
+    ],
     "objects": {
       "columnHeaders": [
         {
@@ -134,7 +278,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#F1F5F9'"
+                      "Value": "'#F4F7FB'"
                     }
                   }
                 }
@@ -161,7 +305,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "9D"
                 }
               }
             },
@@ -175,7 +319,7 @@
             "alignment": {
               "expr": {
                 "Literal": {
-                  "Value": "'Right'"
+                  "Value": "'Center'"
                 }
               }
             },
@@ -186,21 +330,10 @@
                 }
               }
             },
-            "showExpandCollapseButtons": {
+            "titleAlignment": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "expandCollapseButtonsColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#2B8FD8'"
-                    }
-                  }
+                  "Value": "'Left'"
                 }
               }
             }
@@ -220,7 +353,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "9D"
                 }
               }
             },
@@ -301,7 +434,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "9D"
                 }
               }
             },
@@ -367,7 +500,7 @@
                     "FillRule": {
                       "Input": {
                         "SelectRef": {
-                          "ExpressionName": "Phân công PIC.% Hoàn thành PIC"
+                          "ExpressionName": "Phân công PIC.% Hoàn thành 2026 (PIC)"
                         }
                       },
                       "FillRule": {
@@ -431,7 +564,7 @@
                 }
               }
             ],
-            "metadata": "Phân công PIC.% Hoàn thành PIC"
+            "metadata": "Phân công PIC.% Hoàn thành 2026 (PIC)"
           }
         }
       ],
@@ -499,6 +632,37 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EDF2F7'"
+                    }
+                  }
                 }
               }
             }
@@ -681,7 +845,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'CHI TIẾT KPI THEO PIC'"
+                  "Value": "'TRACKING QUYẾT TOÁN 2026 THEO PIC'"
                 }
               }
             },
@@ -732,6 +896,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TRACKING QUYẾT TOÁN 2026 THEO PIC (AK / AL)'"
                 }
               }
             }

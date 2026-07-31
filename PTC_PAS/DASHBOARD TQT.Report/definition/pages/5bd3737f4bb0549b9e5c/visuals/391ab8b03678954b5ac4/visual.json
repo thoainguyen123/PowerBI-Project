@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "391ab8b03678954b5ac4",
   "position": {
     "x": 296,
-    "y": 112,
+    "y": 95,
     "z": 1000,
     "height": 152,
-    "width": 384,
-    "tabOrder": 9
+    "width": 334,
+    "tabOrder": 8000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Số HĐ cần quyết toán"
+                  "Property": "(1) Số HĐ cần quyết toán"
                 }
               },
-              "queryRef": "Data.Số HĐ cần quyết toán",
-              "nativeQueryRef": "Số HĐ cần quyết toán"
+              "queryRef": "Data.(1) Số HĐ cần quyết toán",
+              "nativeQueryRef": "(1) Số HĐ cần quyết toán"
             }
           ]
         }
@@ -132,7 +132,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tổng hợp đồng'"
+                  "Value": "'(1) HĐ cần quyết toán'"
                 }
               }
             },
@@ -512,6 +512,32 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chỉ số (1) HĐ cần quyết toán'"
                 }
               }
             }

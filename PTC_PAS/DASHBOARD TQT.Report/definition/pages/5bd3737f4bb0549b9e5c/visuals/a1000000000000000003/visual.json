@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1000000000000000003",
   "position": {
     "x": 24,
     "y": 104,
-    "z": 1000,
+    "z": 4000,
     "height": 24,
     "width": 216,
-    "tabOrder": 1
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "textbox",
@@ -22,13 +22,11 @@
                     "value": "BỘ LỌC",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
-                      "fontSize": "10px",
-                      "fontWeight": "600",
-                      "color": "#6B7A90"
+                      "color": "#6b7a90"
                     }
                   }
                 ],
-                "horizontalTextAlignment": "left"
+                "horizontalTextAlignment": "center"
               }
             ]
           }

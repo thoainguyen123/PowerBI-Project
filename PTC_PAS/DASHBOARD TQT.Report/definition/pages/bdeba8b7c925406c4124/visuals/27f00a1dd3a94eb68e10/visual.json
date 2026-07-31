@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "27f00a1dd3a94eb68e10",
   "position": {
     "x": 24,
     "y": 240,
-    "z": 1000,
+    "z": 3000,
     "height": 80,
     "width": 216,
-    "tabOrder": 3
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "slicer",
@@ -27,7 +27,8 @@
                 }
               },
               "queryRef": "Phân công PIC.Nhóm PIC",
-              "nativeQueryRef": "Nhóm PIC"
+              "nativeQueryRef": "Nhóm PIC",
+              "active": true
             }
           ]
         }
@@ -74,7 +75,7 @@
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "11D"
                 }
               }
             },

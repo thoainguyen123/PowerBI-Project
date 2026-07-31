@@ -1,10 +1,10 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a2000000000000000002",
   "position": {
     "x": 24,
     "y": 28,
-    "z": 1000,
+    "z": 6000,
     "height": 44,
     "width": 216,
     "tabOrder": 0
@@ -22,22 +22,27 @@
                     "value": "TQT",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
-                      "fontSize": "22px",
-                      "fontWeight": "600",
+                      "fontSize": "20pt",
                       "color": "#172033"
                     }
                   },
                   {
-                    "value": "  Analytics",
+                    "value": "  ",
                     "textStyle": {
                       "fontFamily": "Segoe UI Semibold",
-                      "fontSize": "14px",
-                      "fontWeight": "600",
-                      "color": "#2B8FD8"
+                      "fontSize": "20pt",
+                      "color": "#2b8fd8"
+                    }
+                  },
+                  {
+                    "value": "Aalytics",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "14pt",
+                      "color": "#2b8fd8"
                     }
                   }
-                ],
-                "horizontalTextAlignment": "left"
+                ]
               }
             ]
           }

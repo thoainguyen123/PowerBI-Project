@@ -13,11 +13,6 @@ annotation PBI_QueryOrder = ["Data"]
 annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
 
 ref table Data
-ref table DateTableTemplate_d58af951-fae3-4915-abbb-b765f30a7322
-ref table LocalDateTable_22a7e44d-c911-48e3-816f-11bf271e4716
-ref table LocalDateTable_b6d80b60-c11c-431c-9bfd-e50f7397e227
-ref table LocalDateTable_9aa40266-55d9-4f5e-9e45-e7d8dfa7152e
-ref table LocalDateTable_5e05e95e-fb0f-466e-87cf-ae730c4f3684
 ref table 'Phân công PIC'
 
 ref cultureInfo en-US

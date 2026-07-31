@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "3c6a3ac7623c8cf678f4",
   "position": {
     "x": 296,
     "y": 112,
-    "z": 1000,
+    "z": 4000,
     "height": 432,
     "width": 1592,
-    "tabOrder": 9
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "barChart",
@@ -42,11 +42,11 @@
                       "Entity": "Phân công PIC"
                     }
                   },
-                  "Property": "Số lượt HĐ cần quyết toán"
+                  "Property": "(2) Số lượt cần quyết toán 2026"
                 }
               },
-              "queryRef": "Phân công PIC.Số lượt HĐ cần quyết toán",
-              "nativeQueryRef": "Số lượt HĐ cần quyết toán"
+              "queryRef": "Phân công PIC.(2) Số lượt cần quyết toán 2026",
+              "nativeQueryRef": "(2) Số lượt cần quyết toán 2026"
             }
           ]
         }
@@ -61,13 +61,12 @@
                     "Entity": "Phân công PIC"
                   }
                 },
-                "Property": "Số lượt HĐ cần quyết toán"
+                "Property": "(2) Số lượt cần quyết toán 2026"
               }
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "objects": {
@@ -272,7 +271,7 @@
                               "Entity": "Phân công PIC"
                             }
                           },
-                          "Property": "Số lượt HĐ cần quyết toán"
+                          "Property": "(2) Số lượt cần quyết toán 2026"
                         }
                       },
                       "FillRule": {
@@ -500,7 +499,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'LƯỢT HỢP ĐỒNG CẦN QUYẾT TOÁN THEO PIC'"
+                  "Value": "'MỤC TIÊU QUYẾT TOÁN 2026 THEO PIC'"
                 }
               }
             },

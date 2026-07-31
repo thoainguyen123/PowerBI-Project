@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a100000000000000000a",
   "position": {
-    "x": 1496,
-    "y": 112,
-    "z": 1000,
+    "x": 1354,
+    "y": 95,
+    "z": 10000,
     "height": 152,
-    "width": 384,
-    "tabOrder": 12
+    "width": 330,
+    "tabOrder": 11000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "% Hoàn thành"
+                  "Property": "% Hoàn thành 2026"
                 }
               },
-              "queryRef": "Data.% Hoàn thành",
-              "nativeQueryRef": "% Hoàn thành"
+              "queryRef": "Data.% Hoàn thành 2026",
+              "nativeQueryRef": "% Hoàn thành 2026"
             }
           ]
         }
@@ -132,7 +132,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Tỷ lệ hoàn thành'"
+                  "Value": "'% Hoàn thành 2026'"
                 }
               }
             },
@@ -512,6 +512,32 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chỉ số % Hoàn thành 2026'"
                 }
               }
             }

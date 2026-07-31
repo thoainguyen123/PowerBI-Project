@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "f8ed7790f3f96fbccc22",
   "position": {
     "x": 24,
     "y": 144,
-    "z": 1000,
+    "z": 13000,
     "height": 80,
     "width": 216,
-    "tabOrder": 2
+    "tabOrder": 2000
   },
   "visual": {
     "visualType": "slicer",
@@ -23,11 +23,12 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Kỳ mục tiêu"
+                  "Property": "Năm mục tiêu"
                 }
               },
-              "queryRef": "Data.Kỳ mục tiêu",
-              "nativeQueryRef": "Kỳ mục tiêu"
+              "queryRef": "Data.Năm mục tiêu",
+              "nativeQueryRef": "Năm mục tiêu",
+              "active": true
             }
           ]
         }
@@ -74,7 +75,7 @@
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "12D"
                 }
               }
             },
@@ -123,7 +124,7 @@
             "textSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "12D"
                 }
               }
             },

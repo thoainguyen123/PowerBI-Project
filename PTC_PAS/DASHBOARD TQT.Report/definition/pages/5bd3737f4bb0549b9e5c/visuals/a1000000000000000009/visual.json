@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1000000000000000009",
   "position": {
-    "x": 1096,
-    "y": 112,
-    "z": 1000,
+    "x": 1002,
+    "y": 95,
+    "z": 9000,
     "height": 152,
-    "width": 384,
-    "tabOrder": 11
+    "width": 330,
+    "tabOrder": 10000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Số HĐ cần quyết toán (năm nay)"
+                  "Property": "(3) Số HĐ hoàn thành 2026"
                 }
               },
-              "queryRef": "Data.Số HĐ cần quyết toán (năm nay)",
-              "nativeQueryRef": "Số HĐ cần quyết toán (năm nay)"
+              "queryRef": "Data.(3) Số HĐ hoàn thành 2026",
+              "nativeQueryRef": "(3) Số HĐ hoàn thành 2026"
             }
           ]
         }
@@ -86,7 +86,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E39A2F'"
+                      "Value": "'#1F9D74'"
                     }
                   }
                 }
@@ -132,7 +132,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Mục tiêu năm nay'"
+                  "Value": "'(3) Hoàn thành từ 2026'"
                 }
               }
             },
@@ -262,7 +262,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E39A2F'"
+                      "Value": "'#1F9D74'"
                     }
                   }
                 }
@@ -512,6 +512,32 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chỉ số (3) Hoàn thành từ 2026'"
                 }
               }
             }

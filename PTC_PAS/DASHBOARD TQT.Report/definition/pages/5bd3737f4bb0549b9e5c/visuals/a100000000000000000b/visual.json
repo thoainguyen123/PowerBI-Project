@@ -1,16 +1,16 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a100000000000000000b",
   "position": {
-    "x": 1088,
-    "y": 288,
-    "z": 1000,
+    "x": 1002,
+    "y": 271,
+    "z": 11000,
     "height": 336,
-    "width": 800,
-    "tabOrder": 14
+    "width": 685,
+    "tabOrder": 13000
   },
   "visual": {
-    "visualType": "barChart",
+    "visualType": "columnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -32,6 +32,25 @@
             }
           ]
         },
+        "Series": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Tình trạng quyết toán (chuẩn)"
+                }
+              },
+              "queryRef": "Data.Tình trạng quyết toán (chuẩn)",
+              "nativeQueryRef": "Tình trạng quyết toán (chuẩn)",
+              "active": true
+            }
+          ]
+        },
         "Y": {
           "projections": [
             {
@@ -42,11 +61,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Số HĐ cần quyết toán"
+                  "Property": "(2) Số HĐ cần quyết toán 2026"
                 }
               },
-              "queryRef": "Data.Số HĐ cần quyết toán",
-              "nativeQueryRef": "Số HĐ cần quyết toán"
+              "queryRef": "Data.(2) Số HĐ cần quyết toán 2026",
+              "nativeQueryRef": "(2) Số HĐ cần quyết toán 2026"
             }
           ]
         }
@@ -61,13 +80,12 @@
                     "Entity": "Data"
                   }
                 },
-                "Property": "Số HĐ cần quyết toán"
+                "Property": "(2) Số HĐ cần quyết toán 2026"
               }
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "objects": {
@@ -91,7 +109,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "9D"
                 }
               }
             },
@@ -109,14 +127,7 @@
             "innerPadding": {
               "expr": {
                 "Literal": {
-                  "Value": "26L"
-                }
-              }
-            },
-            "maxMarginFactor": {
-              "expr": {
-                "Literal": {
-                  "Value": "30L"
+                  "Value": "24L"
                 }
               }
             },
@@ -143,7 +154,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -154,10 +165,46 @@
                 }
               }
             },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "labelColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#6B7A90'"
+                    }
+                  }
+                }
+              }
+            },
             "gridlineShow": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "gridlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E7EDF5'"
+                    }
+                  }
                 }
               }
             },
@@ -171,7 +218,7 @@
           }
         }
       ],
-      "labels": [
+      "legend": [
         {
           "properties": {
             "show": {
@@ -181,70 +228,49 @@
                 }
               }
             },
-            "labelPosition": {
+            "position": {
               "expr": {
                 "Literal": {
-                  "Value": "'OutsideEnd'"
+                  "Value": "'Top'"
                 }
               }
             },
-            "optimizeLabelDisplay": {
+            "showTitle": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "labelOverflow": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
             "fontFamily": {
               "expr": {
                 "Literal": {
-                  "Value": "'Segoe UI Semibold'"
+                  "Value": "'Segoe UI'"
                 }
               }
             },
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "8D"
                 }
               }
             },
-            "color": {
+            "labelColor": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#172033'"
+                      "Value": "'#6B7A90'"
                     }
                   }
-                }
-              }
-            },
-            "labelDisplayUnits": {
-              "expr": {
-                "Literal": {
-                  "Value": "'0'"
-                }
-              }
-            },
-            "labelPrecision": {
-              "expr": {
-                "Literal": {
-                  "Value": "0L"
                 }
               }
             }
           }
         }
       ],
-      "legend": [
+      "labels": [
         {
           "properties": {
             "show": {
@@ -265,7 +291,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#AEB8C5'"
+                      "Value": "'#AEB9C7'"
                     }
                   }
                 }
@@ -287,7 +313,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2477E0'"
+                      "Value": "'#1F9D74'"
                     }
                   }
                 }
@@ -314,12 +340,348 @@
                             "Entity": "Data"
                           }
                         },
-                        "Property": "Khu vực chuẩn"
+                        "Property": "Tình trạng quyết toán (chuẩn)"
                       }
                     },
                     "Right": {
                       "Literal": {
-                        "Value": "'HỒ TRÀM'"
+                        "Value": "'Đã quyết toán'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#147A5A'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đã quyết toán/thanh lý'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0E8F9C'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đã thanh lý'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#2B8FD8'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'NT đang hoàn tất HSQT'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#2AA7C9'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đang thống nhất HSQT'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#7EB8DA'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Đang trình HSQT'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#4F6D8A'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'PAS đang kiểm'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E39A2F'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'NT chưa nộp HSQT'"
                       }
                     }
                   }
@@ -362,12 +724,12 @@
                             "Entity": "Data"
                           }
                         },
-                        "Property": "Khu vực chuẩn"
+                        "Property": "Tình trạng quyết toán (chuẩn)"
                       }
                     },
                     "Right": {
                       "Literal": {
-                        "Value": "'ĐỒNG NAI'"
+                        "Value": "'Nhà thầu không phối hợp'"
                       }
                     }
                   }
@@ -383,7 +745,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#168A6A'"
+                      "Value": "'#AEB9C7'"
                     }
                   }
                 }
@@ -410,12 +772,108 @@
                             "Entity": "Data"
                           }
                         },
-                        "Property": "Khu vực chuẩn"
+                        "Property": "Tình trạng quyết toán (chuẩn)"
                       }
                     },
                     "Right": {
                       "Literal": {
-                        "Value": "'HCM'"
+                        "Value": "'Chưa cập nhật'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D9534F'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Hủy hợp đồng'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F1BD69'"
+                    }
+                  }
+                }
+              }
+            },
+            "borderShow": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "Data"
+                          }
+                        },
+                        "Property": "Tình trạng quyết toán (chuẩn)"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'NT đã nộp (thất lạc HS)'"
                       }
                     }
                   }
@@ -560,28 +1018,28 @@
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "10D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "10D"
                 }
               }
             },
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "10D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "10D"
                 }
               }
             }
@@ -601,7 +1059,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'KHỐI LƯỢNG THEO KHU VỰC'"
+                  "Value": "'TÌNH TRẠNG QUYẾT TOÁN 2026 THEO KHU VỰC'"
                 }
               }
             },
@@ -652,6 +1110,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Cột chồng số hợp đồng mục tiêu 2026, chia theo tình trạng và khu vực'"
                 }
               }
             }

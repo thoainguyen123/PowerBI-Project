@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.9.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "a1000000000000000008",
   "position": {
-    "x": 696,
-    "y": 112,
-    "z": 1000,
+    "x": 652,
+    "y": 95,
+    "z": 8000,
     "height": 152,
-    "width": 384,
-    "tabOrder": 10
+    "width": 330,
+    "tabOrder": 9000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -23,11 +23,11 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "Số HĐ hoàn thành"
+                  "Property": "(2) Số HĐ cần quyết toán 2026"
                 }
               },
-              "queryRef": "Data.Số HĐ hoàn thành",
-              "nativeQueryRef": "Số HĐ hoàn thành"
+              "queryRef": "Data.(2) Số HĐ cần quyết toán 2026",
+              "nativeQueryRef": "(2) Số HĐ cần quyết toán 2026"
             }
           ]
         }
@@ -86,7 +86,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F9D74'"
+                      "Value": "'#E39A2F'"
                     }
                   }
                 }
@@ -132,7 +132,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Đã hoàn thành'"
+                  "Value": "'(2) Mục tiêu 2026'"
                 }
               }
             },
@@ -262,7 +262,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1F9D74'"
+                      "Value": "'#E39A2F'"
                     }
                   }
                 }
@@ -512,6 +512,32 @@
               "expr": {
                 "Literal": {
                   "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chỉ số (2) Mục tiêu 2026'"
                 }
               }
             }

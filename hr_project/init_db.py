@@ -20,8 +20,8 @@ def init_database():
         ma_du_an TEXT PRIMARY KEY,
         ten_du_an TEXT,
         khu_vuc TEXT,
-        trang_thai TEXT,
-        nhom TEXT,
+        hien_trang_dau_tu TEXT,
+        nhom_du_an TEXT,
         quan_ly TEXT,
         ten_phap_ly TEXT,
         ten_thuong_mai TEXT,
@@ -30,6 +30,12 @@ def init_database():
         tong_dien_tich_ha TEXT,
         so_luong_san_pham TEXT,
         nguon_goc_du_an TEXT,
+        source_stt TEXT,
+        tong_cong_ty TEXT,
+        tinh_cu TEXT,
+        tinh_moi TEXT,
+        loai_hinh TEXT,
+        muc_do_uu_tien TEXT,
         updated_at TEXT,
         updated_by TEXT
     )
@@ -173,8 +179,8 @@ def main():
         khu_vuc = clean_str(duan_sheet.cell(row=r, column=1).value)
         ma_du_an = clean_str(duan_sheet.cell(row=r, column=10).value) # ITD Check
         ten_du_an = clean_str(duan_sheet.cell(row=r, column=5).value)
-        trang_thai = clean_str(duan_sheet.cell(row=r, column=6).value)
-        nhom = clean_str(duan_sheet.cell(row=r, column=7).value)
+        hien_trang_dau_tu = clean_str(duan_sheet.cell(row=r, column=6).value)
+        nhom_du_an = clean_str(duan_sheet.cell(row=r, column=7).value)
         quan_ly = clean_str(duan_sheet.cell(row=r, column=8).value)
         
         if not ma_du_an:
@@ -185,7 +191,10 @@ def main():
         if ma_du_an:
             if not ten_du_an:
                 ten_du_an = f"Dự án {ma_du_an}"
-            projects_loaded[ma_du_an] = (ma_du_an, ten_du_an, khu_vuc, trang_thai, nhom, quan_ly)
+            projects_loaded[ma_du_an] = (
+                ma_du_an, ten_du_an, khu_vuc, hien_trang_dau_tu,
+                nhom_du_an, quan_ly
+            )
 
     # 2. Extract employee names from sheets
     print("Extracting employee profiles...")
@@ -302,7 +311,8 @@ def main():
     for proj in projects_loaded.values():
         cursor.execute('''
             INSERT OR REPLACE INTO projects (
-                ma_du_an, ten_du_an, khu_vuc, trang_thai, nhom, quan_ly
+                ma_du_an, ten_du_an, khu_vuc, hien_trang_dau_tu,
+                nhom_du_an, quan_ly
             ) VALUES (?, ?, ?, ?, ?, ?)
         ''', proj)
         

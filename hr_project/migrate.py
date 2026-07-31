@@ -18,16 +18,34 @@ def migrate(pg_host, pg_port, pg_user, pg_password, pg_db):
         'tong_dien_tich_ha': 'TEXT',
         'so_luong_san_pham': 'TEXT',
         'nguon_goc_du_an': 'TEXT',
+        'source_stt': 'TEXT',
+        'tong_cong_ty': 'TEXT',
+        'tinh_cu': 'TEXT',
+        'tinh_moi': 'TEXT',
+        'loai_hinh': 'TEXT',
+        'muc_do_uu_tien': 'TEXT',
         'updated_at': 'TEXT',
         'updated_by': 'TEXT'
     }
     sqlite_cur.execute('PRAGMA table_info(projects)')
     existing_project_columns = {row['name'] for row in sqlite_cur.fetchall()}
+    legacy_renames = {
+        'trang_thai': 'hien_trang_dau_tu',
+        'nhom': 'nhom_du_an',
+    }
+    for legacy_name, current_name in legacy_renames.items():
+        if legacy_name in existing_project_columns and current_name not in existing_project_columns:
+            sqlite_cur.execute(
+                f'ALTER TABLE projects RENAME COLUMN {legacy_name} TO {current_name}'
+            )
+            existing_project_columns.remove(legacy_name)
+            existing_project_columns.add(current_name)
     for column_name, column_type in project_overview_columns.items():
         if column_name not in existing_project_columns:
             sqlite_cur.execute(
                 f'ALTER TABLE projects ADD COLUMN {column_name} {column_type}'
             )
+            existing_project_columns.add(column_name)
     sqlite_conn.commit()
 
     # 1. Connect to default 'postgres' database to check/create the target database
@@ -80,8 +98,8 @@ def migrate(pg_host, pg_port, pg_user, pg_password, pg_db):
                 ma_du_an VARCHAR(100) PRIMARY KEY,
                 ten_du_an TEXT,
                 khu_vuc VARCHAR(100),
-                trang_thai VARCHAR(100),
-                nhom VARCHAR(100),
+                hien_trang_dau_tu VARCHAR(100),
+                nhom_du_an VARCHAR(100),
                 quan_ly VARCHAR(100),
                 ten_phap_ly TEXT,
                 ten_thuong_mai TEXT,
@@ -90,6 +108,12 @@ def migrate(pg_host, pg_port, pg_user, pg_password, pg_db):
                 tong_dien_tich_ha TEXT,
                 so_luong_san_pham TEXT,
                 nguon_goc_du_an TEXT,
+                source_stt TEXT,
+                tong_cong_ty TEXT,
+                tinh_cu TEXT,
+                tinh_moi TEXT,
+                loai_hinh TEXT,
+                muc_do_uu_tien TEXT,
                 updated_at TEXT,
                 updated_by TEXT
             );
@@ -178,9 +202,12 @@ def migrate(pg_host, pg_port, pg_user, pg_password, pg_db):
     # 5. Migrate Data
     tables_to_migrate = [
         ('projects', [
-            'ma_du_an', 'ten_du_an', 'khu_vuc', 'trang_thai', 'nhom', 'quan_ly',
+            'ma_du_an', 'ten_du_an', 'khu_vuc', 'hien_trang_dau_tu',
+            'nhom_du_an', 'quan_ly',
             'ten_phap_ly', 'ten_thuong_mai', 'chu_dau_tu', 'dia_diem_du_an',
             'tong_dien_tich_ha', 'so_luong_san_pham', 'nguon_goc_du_an',
+            'source_stt', 'tong_cong_ty', 'tinh_cu', 'tinh_moi', 'loai_hinh',
+            'muc_do_uu_tien',
             'updated_at', 'updated_by'
         ]),
         ('employees', ['ma_nhan_vien', 'ho_ten', 'email', 'so_dien_thoai', 'ngay_vao_lam']),

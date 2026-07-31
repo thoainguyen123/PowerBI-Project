@@ -7,6 +7,7 @@ import shutil
 import sys
 import unicodedata
 from datetime import date, datetime, timedelta
+from functools import lru_cache
 from io import BytesIO, StringIO
 from flask import (
     Flask, g, has_app_context, jsonify, render_template, request, send_file, session
@@ -288,9 +289,90 @@ PROJECT_OVERVIEW_COLUMNS = {
     'tong_dien_tich_ha': 'TEXT',
     'so_luong_san_pham': 'TEXT',
     'nguon_goc_du_an': 'TEXT',
+    'source_stt': 'TEXT',
+    'tong_cong_ty': 'TEXT',
+    'tinh_cu': 'TEXT',
+    'tinh_moi': 'TEXT',
+    'loai_hinh': 'TEXT',
+    'muc_do_uu_tien': 'TEXT',
     'updated_at': 'TEXT',
     'updated_by': 'TEXT'
 }
+
+PROJECT_LEGACY_COLUMN_RENAMES = {
+    'trang_thai': 'hien_trang_dau_tu',
+    'nhom': 'nhom_du_an',
+}
+
+MANAGEMENT_AREA_SEED = [
+    {
+        'area_code': 'KV1',
+        'area_name': 'KHU VỰC 1 · TP HỒ CHÍ MINH',
+        'area_scope': 'TP.HCM · Bà Rịa - Vũng Tàu · Hồ Tràm',
+        'sort_order': 1,
+        'accent_color': '#0f766e',
+    },
+    {
+        'area_code': 'KV2',
+        'area_name': 'KHU VỰC 2 · TP ĐỒNG NAI + TỈNH LÂM ĐỒNG',
+        'area_scope': 'Đồng Nai · Đà Lạt · Phan Thiết · Khánh Hòa · Stay · Play',
+        'sort_order': 2,
+        'accent_color': '#2563eb',
+    },
+    {
+        'area_code': 'KV3',
+        'area_name': 'KHU VỰC 3',
+        'area_scope': 'ĐBSCL · Tây Ninh · Khu công nghiệp · Phú Quốc',
+        'sort_order': 3,
+        'accent_color': '#7c3aed',
+    },
+    {
+        'area_code': 'KV4',
+        'area_name': 'KHU VỰC 4',
+        'area_scope': 'Miền Trung · Miền Bắc',
+        'sort_order': 4,
+        'accent_color': '#d97706',
+    },
+    {
+        'area_code': 'KV5',
+        'area_name': 'KHU VỰC 5',
+        'area_scope': 'Hạ tầng · Metro',
+        'sort_order': 5,
+        'accent_color': '#dc2626',
+    },
+]
+
+MANAGEMENT_REGION_SEED = [
+    ('GMD.HCM1-NVLG', 'KV1', 'Vùng TP.HCM 1', 'HCM 1', 1),
+    ('GMD.HCM2.1-NVLG', 'KV1', 'Vùng TP.HCM 2.1', 'HCM 2.1', 2),
+    ('GMD.HCM2.2-NVLG', 'KV1', 'Vùng TP.HCM 2.2', 'HCM 2.2', 3),
+    ('GMD.HCM2.3-NVLG', 'KV1', 'Vùng TP.HCM 2.3', 'HCM 2.3', 4),
+    ('GMD.HCM3-NVLG', 'KV1', 'Vùng TP.HCM 3', 'HCM 3', 5),
+    ('GMD.BRVT-NVLG', 'KV1', 'Vùng Bà Rịa - Vũng Tàu', 'BRVT', 6),
+    ('GMD.HT1-NVLG', 'KV1', 'Vùng Hồ Tràm 1', 'Hồ Tràm 1', 7),
+    ('GMD.HT2-NVLG', 'KV1', 'Vùng Hồ Tràm 2', 'Hồ Tràm 2', 8),
+    ('GMD.ĐN1-NVLG', 'KV2', 'Vùng Đồng Nai 1', 'Đồng Nai 1', 1),
+    ('GMD.ĐN2-NVLG', 'KV2', 'Vùng Đồng Nai 2', 'Đồng Nai 2', 2),
+    ('GMD.ĐN3-NVLG', 'KV2', 'Vùng Đồng Nai 3', 'Đồng Nai 3', 3),
+    ('GMD.ĐL1-NVLG', 'KV2', 'Vùng Đà Lạt 1', 'Đà Lạt 1', 4),
+    ('GMD.ĐL2-NVLG', 'KV2', 'Vùng Đà Lạt 2', 'Đà Lạt 2', 5),
+    ('GMD.ĐL3-NVLG', 'KV2', 'Vùng Đà Lạt 3', 'Đà Lạt 3', 6),
+    ('GMD.PT1-NVLG', 'KV2', 'Vùng Phan Thiết 1', 'Phan Thiết 1', 7),
+    ('GMD.PT2-NVLG', 'KV2', 'Vùng Phan Thiết 2', 'Phan Thiết 2', 8),
+    ('GMD.PT3-NVLG', 'KV2', 'Vùng Phan Thiết 3', 'Phan Thiết 3', 9),
+    ('GMD.KH-NVLG', 'KV2', 'Vùng Khánh Hòa', 'Khánh Hòa', 10),
+    ('GMD.STAY-NVLG', 'KV2', 'Vùng Stay', 'Stay', 11),
+    ('GMD.PLAY-NVLG', 'KV2', 'Vùng Play', 'Play', 12),
+    ('GMD.DBSCL1-NVLG', 'KV3', 'Vùng Đồng Bằng Sông Cửu Long 1', 'ĐBSCL 1', 1),
+    ('GMD.DBSCL2-NVLG', 'KV3', 'Vùng Đồng Bằng Sông Cửu Long 2', 'ĐBSCL 2', 2),
+    ('GMD.TN-NVLG', 'KV3', 'Vùng Tây Ninh (Long An)', 'Tây Ninh', 3),
+    ('GMD.KCN-NVLG', 'KV3', 'Vùng Dự Án Khu Công Nghiệp', 'Khu công nghiệp', 4),
+    ('GMD.PQ-NVLG', 'KV3', 'Vùng Phú Quốc', 'Phú Quốc', 5),
+    ('GMD.HDNGL-NVLG', 'KV4', 'Vùng Huế - Đà Nẵng - Gia Lai', 'Miền Trung', 1),
+    ('GMD.HNHPQN-NVLG', 'KV4', 'Vùng Hà Nội', 'Miền Bắc', 2),
+    ('GMD.HT-NVLG', 'KV5', 'Vùng Dự Án Hạ Tầng', 'Hạ tầng', 1),
+    ('GMD.METRO-NVLG', 'KV5', 'Vùng Metro', 'Metro', 2),
+]
 
 MASTERDATA_SHEETS = {
     'HRC': {
@@ -330,8 +412,9 @@ MASTERDATA_SHEETS = {
     },
     'IDD': {
         'nhom': '9.8 IDD', 'sort': 8, 'phan_nhom': 'Thiết kế nội bộ',
-        'item': 'Mục',
-        'headers': ['Mã dự án', 'Mục', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
+        'item': 'Nội dung', 'legacy_item': 'Mục', 'subgroup': 'Mục',
+        'dynamic_item_field': 'Mục', 'dynamic_content_field': 'Nội dung',
+        'headers': ['Mã dự án', 'Mục', 'Nội dung', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     },
     'CSC': {
         'nhom': '9.9 CSC', 'sort': 9, 'phan_nhom': 'Bồi thường, giải phóng mặt bằng', 'hang_muc': 'Bồi thường / GPMB',
@@ -345,22 +428,37 @@ MASTERDATA_SHEETS = {
     'PLP': {
         'nhom': '4.1 PLP', 'sort': 11, 'phan_nhom': 'Pháp lý',
         'item': 'Hạng mục', 'subgroup': 'Nhóm',
+        'dynamic_item_field': 'Nhóm', 'dynamic_content_field': 'Hạng mục',
         'headers': ['Mã dự án', 'Nhóm', 'Hạng mục', 'Trạng thái', 'Văn bản phê duyệt', 'Khó khăn/Vướng mắc', 'Hướng xử lý', 'Ngày hoàn thành', 'Chi tiết']
     },
     'DMD': {
         'nhom': '4.2 DMD', 'sort': 12, 'phan_nhom': 'Thiết kế',
-        'item': 'Hạng mục',
-        'headers': ['Mã dự án', 'Hạng mục', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
+        'item': 'Nội dung', 'legacy_item': 'Hạng mục', 'subgroup': 'Hạng mục',
+        'dynamic_item_field': 'Hạng mục', 'dynamic_content_field': 'Nội dung',
+        'headers': ['Mã dự án', 'Hạng mục', 'Nội dung', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     },
     'PCD': {
         'nhom': '4.3 PCD', 'sort': 13, 'phan_nhom': 'Thi công',
-        'item': 'Mục',
-        'headers': ['Mã dự án', 'Mục', 'Hiện trạng thi công (%)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
+        'item': 'Nội dung', 'legacy_item': 'Mục', 'subgroup': 'Mục',
+        'dynamic_item_field': 'Mục', 'dynamic_content_field': 'Nội dung',
+        'headers': ['Mã dự án', 'Mục', 'Nội dung', 'Hiện trạng thi công (%)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     },
     'OM': {
         'nhom': '4.4 OM', 'sort': 14, 'phan_nhom': 'Bàn giao nhà', 'hang_muc': 'Bàn giao nhà',
         'headers': ['Mã dự án', 'Đã bàn giao ( Số lượng giao /Tổng số)', 'Chưa bàn giao', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     }
+}
+
+MASTERDATA_FIELD_LABELS = {
+    'PLP': {'Nhóm': 'Mục', 'Hạng mục': 'Nội dung'},
+    'DMD': {'Hạng mục': 'Mục'},
+}
+
+MASTERDATA_SELECT_FIELDS = {
+    'IDD': ['Mục'],
+    'PLP': ['Nhóm', 'Hạng mục'],
+    'DMD': ['Hạng mục'],
+    'PCD': ['Mục'],
 }
 
 PHONG_NHOM_MAP = {
@@ -391,6 +489,49 @@ def clean_master_value(value):
     if isinstance(value, (datetime, date)):
         return value.isoformat()
     return unicodedata.normalize('NFC', re.sub(r'\s+', ' ', str(value)).strip())
+
+
+@lru_cache(maxsize=1)
+def get_masterdata_select_options():
+    """Đọc danh mục lựa chọn trực tiếp từ workbook mẫu, giữ UI đồng bộ nguồn."""
+    result = {}
+    if not os.path.exists(MASTERDATA_TEMPLATE_PATH):
+        return result
+
+    workbook = openpyxl.load_workbook(
+        MASTERDATA_TEMPLATE_PATH, read_only=True, data_only=True
+    )
+    try:
+        for sheet_name, select_headers in MASTERDATA_SELECT_FIELDS.items():
+            if sheet_name not in workbook.sheetnames:
+                continue
+            rows = workbook[sheet_name].iter_rows(values_only=True)
+            source_headers = [clean_master_value(value) for value in next(rows, ())]
+            values_by_header = {header: [] for header in select_headers}
+            dependencies = {}
+            for row in rows:
+                values = dict(zip(source_headers, row))
+                cleaned = {
+                    header: clean_master_value(values.get(header))
+                    for header in select_headers
+                }
+                for header, value in cleaned.items():
+                    if value and value not in values_by_header[header]:
+                        values_by_header[header].append(value)
+                if sheet_name == 'PLP':
+                    group = cleaned.get('Nhóm')
+                    item = cleaned.get('Hạng mục')
+                    if group and item:
+                        dependencies.setdefault('Hạng mục', {}).setdefault(group, [])
+                        if item not in dependencies['Hạng mục'][group]:
+                            dependencies['Hạng mục'][group].append(item)
+            result[sheet_name] = {
+                'choices': values_by_header,
+                'dependencies': dependencies,
+            }
+    finally:
+        workbook.close()
+    return result
 
 def normalize_master_values(values, sheet_name):
     allowed_headers = MASTERDATA_SHEETS[sheet_name]['headers']
@@ -426,6 +567,8 @@ def build_fact_masterdata_row(entry):
     hang_muc = config.get('hang_muc', '')
     if config.get('item'):
         hang_muc = master_record_value(values, config['item'])
+        if not hang_muc and config.get('legacy_item'):
+            hang_muc = master_record_value(values, config['legacy_item'])
 
     hien_trang = master_first_value(
         values, 'Trạng thái', 'Hiện trạng FS', 'Hiện trạng KH CUĐT',
@@ -501,19 +644,44 @@ def ensure_project_overview_schema():
     cursor = conn.cursor()
     try:
         if isinstance(conn, PostgresConnectionWrapper):
+            cursor.execute('''
+                SELECT column_name
+                FROM information_schema.columns
+                WHERE table_schema = current_schema() AND table_name = 'projects'
+            ''')
+            existing_columns = {row['column_name'] for row in cursor.fetchall()}
+            for legacy_name, current_name in PROJECT_LEGACY_COLUMN_RENAMES.items():
+                if legacy_name in existing_columns and current_name not in existing_columns:
+                    cursor.execute(
+                        f'ALTER TABLE projects RENAME COLUMN '
+                        f'{legacy_name} TO {current_name}'
+                    )
+                    existing_columns.remove(legacy_name)
+                    existing_columns.add(current_name)
             for column_name, column_type in PROJECT_OVERVIEW_COLUMNS.items():
-                cursor.execute(
-                    f'ALTER TABLE projects ADD COLUMN IF NOT EXISTS '
-                    f'{column_name} {column_type}'
-                )
+                if column_name not in existing_columns:
+                    cursor.execute(
+                        f'ALTER TABLE projects ADD COLUMN '
+                        f'{column_name} {column_type}'
+                    )
+                    existing_columns.add(column_name)
         else:
             cursor.execute('PRAGMA table_info(projects)')
             existing_columns = {row['name'] for row in cursor.fetchall()}
+            for legacy_name, current_name in PROJECT_LEGACY_COLUMN_RENAMES.items():
+                if legacy_name in existing_columns and current_name not in existing_columns:
+                    cursor.execute(
+                        f'ALTER TABLE projects RENAME COLUMN '
+                        f'{legacy_name} TO {current_name}'
+                    )
+                    existing_columns.remove(legacy_name)
+                    existing_columns.add(current_name)
             for column_name, column_type in PROJECT_OVERVIEW_COLUMNS.items():
                 if column_name not in existing_columns:
                     cursor.execute(
                         f'ALTER TABLE projects ADD COLUMN {column_name} {column_type}'
                     )
+                    existing_columns.add(column_name)
         conn.commit()
     except Exception as ex:
         conn.rollback()
@@ -604,6 +772,130 @@ def ensure_masterdata_schema():
         conn.close()
 
 ensure_masterdata_schema()
+
+
+def ensure_management_area_schema():
+    """Tạo cấu hình 5 khu vực và các vùng con, không ghi đè cấu hình đã sửa."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        if isinstance(conn, PostgresConnectionWrapper):
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS management_areas (
+                    id SERIAL PRIMARY KEY,
+                    area_code TEXT NOT NULL UNIQUE,
+                    area_name TEXT NOT NULL,
+                    area_scope TEXT,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    accent_color TEXT,
+                    director_name TEXT,
+                    deputy_director_name TEXT,
+                    legal_lead TEXT,
+                    investment_lead TEXT,
+                    external_relations_lead TEXT,
+                    updated_at TEXT,
+                    updated_by TEXT
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS management_regions (
+                    id SERIAL PRIMARY KEY,
+                    region_code TEXT NOT NULL UNIQUE,
+                    area_code TEXT NOT NULL,
+                    region_name TEXT NOT NULL,
+                    short_name TEXT,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active INTEGER NOT NULL DEFAULT 1,
+                    updated_at TEXT,
+                    updated_by TEXT,
+                    FOREIGN KEY(area_code) REFERENCES management_areas(area_code)
+                )
+            ''')
+        else:
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS management_areas (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    area_code TEXT NOT NULL UNIQUE,
+                    area_name TEXT NOT NULL,
+                    area_scope TEXT,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    accent_color TEXT,
+                    director_name TEXT,
+                    deputy_director_name TEXT,
+                    legal_lead TEXT,
+                    investment_lead TEXT,
+                    external_relations_lead TEXT,
+                    updated_at TEXT,
+                    updated_by TEXT
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS management_regions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    region_code TEXT NOT NULL UNIQUE,
+                    area_code TEXT NOT NULL,
+                    region_name TEXT NOT NULL,
+                    short_name TEXT,
+                    sort_order INTEGER NOT NULL DEFAULT 0,
+                    is_active INTEGER NOT NULL DEFAULT 1,
+                    updated_at TEXT,
+                    updated_by TEXT,
+                    FOREIGN KEY(area_code) REFERENCES management_areas(area_code)
+                )
+            ''')
+
+        now = datetime.now().isoformat(timespec='seconds')
+        for area in MANAGEMENT_AREA_SEED:
+            params = (
+                area['area_code'], area['area_name'], area['area_scope'],
+                area['sort_order'], area['accent_color'], now, 'system-seed'
+            )
+            if isinstance(conn, PostgresConnectionWrapper):
+                cursor.execute('''
+                    INSERT INTO management_areas (
+                        area_code, area_name, area_scope, sort_order,
+                        accent_color, updated_at, updated_by
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT (area_code) DO NOTHING
+                ''', params)
+            else:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO management_areas (
+                        area_code, area_name, area_scope, sort_order,
+                        accent_color, updated_at, updated_by
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', params)
+
+        for region_code, area_code, region_name, short_name, sort_order in MANAGEMENT_REGION_SEED:
+            params = (
+                region_code, area_code, region_name, short_name,
+                sort_order, now, 'system-seed'
+            )
+            if isinstance(conn, PostgresConnectionWrapper):
+                cursor.execute('''
+                    INSERT INTO management_regions (
+                        region_code, area_code, region_name, short_name,
+                        sort_order, updated_at, updated_by
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ON CONFLICT (region_code) DO NOTHING
+                ''', params)
+            else:
+                cursor.execute('''
+                    INSERT OR IGNORE INTO management_regions (
+                        region_code, area_code, region_name, short_name,
+                        sort_order, updated_at, updated_by
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', params)
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        print(f"Không thể khởi tạo cấu hình khu vực: {ex}")
+    finally:
+        conn.close()
+
+
+ensure_management_area_schema()
+
 
 def get_current_user():
     username = session.get('username')
@@ -1148,8 +1440,10 @@ def manage_projects():
         ma_da = str(data.get('ma_du_an', '')).strip()
         ten_da = str(data.get('ten_du_an', '')).strip()
         khu_vuc = str(data.get('khu_vuc', '')).strip()
-        trang_thai = str(data.get('trang_thai', 'Đang nghiên cứu')).strip()
-        nhom = str(data.get('nhom', '')).strip()
+        hien_trang_dau_tu = str(
+            data.get('hien_trang_dau_tu', 'Đang nghiên cứu')
+        ).strip()
+        nhom_du_an = str(data.get('nhom_du_an', '')).strip()
         quan_ly = str(data.get('quan_ly', '')).strip()
         ten_phap_ly = str(data.get('ten_phap_ly', '')).strip()
         ten_thuong_mai = str(data.get('ten_thuong_mai', '')).strip()
@@ -1158,6 +1452,12 @@ def manage_projects():
         dien_tich = str(data.get('tong_dien_tich_ha', '')).strip()
         so_san_pham = str(data.get('so_luong_san_pham', '')).strip()
         nguon_goc = str(data.get('nguon_goc_du_an', '')).strip()
+        source_stt = str(data.get('source_stt', '')).strip()
+        tong_cong_ty = str(data.get('tong_cong_ty', '')).strip()
+        tinh_cu = str(data.get('tinh_cu', '')).strip()
+        tinh_moi = str(data.get('tinh_moi', '')).strip()
+        loai_hinh = str(data.get('loai_hinh', '')).strip()
+        muc_do_uu_tien = str(data.get('muc_do_uu_tien', '')).strip()
         updated_at = datetime.now().isoformat(timespec='seconds')
         updated_by = session.get('username', '')
         
@@ -1170,15 +1470,22 @@ def manage_projects():
         try:
             cursor.execute('''
                 INSERT INTO projects (
-                    ma_du_an, ten_du_an, khu_vuc, trang_thai, nhom, quan_ly,
+                    ma_du_an, ten_du_an, khu_vuc, hien_trang_dau_tu,
+                    nhom_du_an, quan_ly,
                     ten_phap_ly, ten_thuong_mai, chu_dau_tu, dia_diem_du_an,
                     tong_dien_tich_ha, so_luong_san_pham, nguon_goc_du_an,
+                    source_stt, tong_cong_ty, tinh_cu, tinh_moi, loai_hinh,
+                    muc_do_uu_tien,
                     updated_at, updated_by
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
             ''', (
-                ma_da, ten_da, khu_vuc, trang_thai, nhom, quan_ly,
+                ma_da, ten_da, khu_vuc, hien_trang_dau_tu, nhom_du_an, quan_ly,
                 ten_phap_ly, ten_thuong_mai, chu_dau_tu, dia_diem,
-                dien_tich, so_san_pham, nguon_goc, updated_at, updated_by
+                dien_tich, so_san_pham, nguon_goc,
+                source_stt, tong_cong_ty, tinh_cu, tinh_moi, loai_hinh,
+                muc_do_uu_tien, updated_at, updated_by
             ))
             conn.commit()
             conn.close()
@@ -1210,8 +1517,11 @@ def get_project_overview_stats():
         1 for project in projects
         if all(str(project.get(field) or '').strip() for field in overview_fields)
     )
-    active_statuses = {'Đã mua, đang thiết kế', 'Đang xây dựng', 'Đang vận hành'}
-    active = sum(1 for project in projects if project.get('trang_thai') in active_statuses)
+    active_statuses = {'Đã mua đang thiết kế', 'Đang xây dựng', 'Đang vận hành'}
+    active = sum(
+        1 for project in projects
+        if project.get('hien_trang_dau_tu') in active_statuses
+    )
     regions = len({
         str(project.get('khu_vuc') or '').strip()
         for project in projects if str(project.get('khu_vuc') or '').strip()
@@ -1297,9 +1607,11 @@ def manage_single_project(ma_du_an):
     data = request.json or {}
     current = dict(project)
     fields = [
-        'ten_du_an', 'khu_vuc', 'trang_thai', 'nhom', 'quan_ly',
+        'ten_du_an', 'khu_vuc', 'hien_trang_dau_tu', 'nhom_du_an', 'quan_ly',
         'ten_phap_ly', 'ten_thuong_mai', 'chu_dau_tu', 'dia_diem_du_an',
-        'tong_dien_tich_ha', 'so_luong_san_pham', 'nguon_goc_du_an'
+        'tong_dien_tich_ha', 'so_luong_san_pham', 'nguon_goc_du_an',
+        'source_stt', 'tong_cong_ty', 'tinh_cu', 'tinh_moi', 'loai_hinh',
+        'muc_do_uu_tien'
     ]
     values = {
         field: str(data.get(field, current.get(field) or '')).strip()
@@ -1314,17 +1626,22 @@ def manage_single_project(ma_du_an):
 
     cursor.execute('''
         UPDATE projects SET
-            ten_du_an = ?, khu_vuc = ?, trang_thai = ?, nhom = ?, quan_ly = ?,
+            ten_du_an = ?, khu_vuc = ?, hien_trang_dau_tu = ?,
+            nhom_du_an = ?, quan_ly = ?,
             ten_phap_ly = ?, ten_thuong_mai = ?, chu_dau_tu = ?,
             dia_diem_du_an = ?, tong_dien_tich_ha = ?, so_luong_san_pham = ?,
-            nguon_goc_du_an = ?, updated_at = ?, updated_by = ?
+            nguon_goc_du_an = ?, source_stt = ?, tong_cong_ty = ?,
+            tinh_cu = ?, tinh_moi = ?, loai_hinh = ?, muc_do_uu_tien = ?,
+            updated_at = ?, updated_by = ?
         WHERE ma_du_an = ?
     ''', (
-        values['ten_du_an'], values['khu_vuc'], values['trang_thai'],
-        values['nhom'], values['quan_ly'], values['ten_phap_ly'],
+        values['ten_du_an'], values['khu_vuc'], values['hien_trang_dau_tu'],
+        values['nhom_du_an'], values['quan_ly'], values['ten_phap_ly'],
         values['ten_thuong_mai'], values['chu_dau_tu'],
         values['dia_diem_du_an'], values['tong_dien_tich_ha'],
         values['so_luong_san_pham'], values['nguon_goc_du_an'],
+        values['source_stt'], values['tong_cong_ty'], values['tinh_cu'],
+        values['tinh_moi'], values['loai_hinh'], values['muc_do_uu_tien'],
         datetime.now().isoformat(timespec='seconds'), session.get('username', ''),
         ma_du_an
     ))
@@ -1336,15 +1653,23 @@ def manage_single_project(ma_du_an):
 @app.route('/api/masterdata/config', methods=['GET'])
 def get_masterdata_config():
     sheets = []
+    select_options = get_masterdata_select_options()
     for sheet_name, config in sorted(
         MASTERDATA_SHEETS.items(), key=lambda item: (item[1]['sort'], item[0])
     ):
+        option_config = select_options.get(sheet_name, {})
         sheets.append({
             'sheet': sheet_name,
             'nhom': config['nhom'],
             'sort_colum': config['sort'],
             'phan_nhom': config['phan_nhom'],
-            'headers': config['headers']
+            'headers': config['headers'],
+            'field_labels': MASTERDATA_FIELD_LABELS.get(sheet_name, {}),
+            'choices': option_config.get('choices', {}),
+            'choice_dependencies': option_config.get('dependencies', {}),
+            'dynamic_item_field': config.get('dynamic_item_field', ''),
+            'dynamic_content_field': config.get('dynamic_content_field', ''),
+            'repeatable': True,
         })
     return jsonify(sheets)
 
@@ -1696,6 +2021,232 @@ def copy_project_departments():
         conn.close()
         return jsonify({'error': str(ex)}), 500
 
+
+def load_overview_source_data(user):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    allocation_scope = ''
+    project_scope = ''
+    allocation_params = []
+    project_params = []
+    if not is_region_unrestricted(user):
+        user_region_pattern = f"%{user['region_keyword']}%"
+        allocation_scope = 'WHERE (a.vung LIKE ? OR p.khu_vuc LIKE ?)'
+        allocation_params = [user_region_pattern, user_region_pattern]
+        project_scope = 'WHERE khu_vuc LIKE ?'
+        project_params = [user_region_pattern]
+
+    cursor.execute(f'''
+        SELECT
+            a.ma_nhan_vien, a.vung, a.chuc_danh, a.ma_oc, a.name_oc,
+            e.ho_ten, p.khu_vuc
+        FROM org_allocations a
+        LEFT JOIN projects p ON a.ma_du_an = p.ma_du_an
+        LEFT JOIN employees e ON a.ma_nhan_vien = e.ma_nhan_vien
+        {allocation_scope}
+    ''', tuple(allocation_params))
+    allocations = [dict(row) for row in cursor.fetchall()]
+
+    cursor.execute(
+        f'SELECT ma_du_an, khu_vuc, hien_trang_dau_tu FROM projects {project_scope}',
+        tuple(project_params)
+    )
+    projects = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return allocations, projects
+
+
+def build_region_snapshot(region, allocations, projects):
+    region_name = str(region['region_name'] or '').strip()
+    keyword = region_name.casefold()
+    region_allocations = [
+        allocation for allocation in allocations
+        if keyword in str(
+            allocation.get('vung') or allocation.get('khu_vuc') or ''
+        ).casefold()
+    ]
+    region_projects = [
+        project for project in projects
+        if keyword in str(project.get('khu_vuc') or '').casefold()
+    ]
+
+    team_by_employee = {}
+    employee_codes = set()
+    for allocation in region_allocations:
+        employee_code = str(allocation.get('ma_nhan_vien') or '').strip()
+        employee_name = str(allocation.get('ho_ten') or '').strip()
+        if not employee_name or is_placeholder_id(employee_code):
+            continue
+        employee_codes.add(employee_code or employee_name)
+        if str(allocation.get('ma_oc') or '').strip().upper() != 'GMD':
+            continue
+        team_by_employee.setdefault(employee_code or employee_name, {
+            'ma_nhan_vien': employee_code,
+            'ho_ten': employee_name,
+            'chuc_danh': str(allocation.get('chuc_danh') or '').strip(),
+            'ma_oc': str(allocation.get('ma_oc') or '').strip(),
+        })
+
+    status_counts = {}
+    for project in region_projects:
+        status = str(project.get('hien_trang_dau_tu') or 'Chưa phân loại').strip()
+        status_counts[status] = status_counts.get(status, 0) + 1
+    result = dict(region)
+    result.update({
+        'team': list(team_by_employee.values()),
+        'headcount': len(employee_codes),
+        'project_count': len(region_projects),
+        'status_counts': status_counts,
+    })
+    return result
+
+
+@app.route('/api/overview/areas', methods=['GET'])
+def get_overview_areas():
+    user = get_current_user()
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM management_areas ORDER BY sort_order, area_code')
+    areas = [dict(row) for row in cursor.fetchall()]
+    cursor.execute('''
+        SELECT * FROM management_regions
+        WHERE is_active = 1
+        ORDER BY area_code, sort_order, region_code
+    ''')
+    regions = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    allocations, projects = load_overview_source_data(user)
+    regions_by_area = {}
+    for region in regions:
+        snapshot = build_region_snapshot(region, allocations, projects)
+        regions_by_area.setdefault(region['area_code'], []).append(snapshot)
+
+    for area in areas:
+        area_regions = regions_by_area.get(area['area_code'], [])
+        area['regions'] = area_regions
+        area['headcount'] = sum(region['headcount'] for region in area_regions)
+        area['project_count'] = sum(
+            region['project_count'] for region in area_regions
+        )
+    return jsonify(areas)
+
+
+@app.route('/api/overview/region-team', methods=['GET'])
+def get_overview_region_team():
+    """Nhân sự OC=GMD và headcount thực của một vùng."""
+    user = get_current_user()
+    region_name = str(request.args.get('region') or '').strip()
+    if not region_name:
+        return jsonify({'error': 'Thiếu vùng dự án!'}), 400
+    allocations, projects = load_overview_source_data(user)
+    snapshot = build_region_snapshot({
+        'region_code': '',
+        'area_code': '',
+        'region_name': region_name,
+        'short_name': region_name,
+        'sort_order': 0,
+        'is_active': 1,
+    }, allocations, projects)
+    return jsonify({
+        'region': region_name,
+        'team': snapshot['team'],
+        'headcount': snapshot['headcount'],
+        'project_count': snapshot['project_count'],
+        'status_counts': snapshot['status_counts'],
+    })
+
+
+@app.route('/api/management/areas/<area_code>', methods=['PUT'])
+def update_management_area(area_code):
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được cập nhật cấu hình khu vực!'}), 403
+    data = request.json or {}
+    fields = [
+        'area_name', 'area_scope', 'sort_order', 'accent_color',
+        'director_name', 'deputy_director_name', 'legal_lead',
+        'investment_lead', 'external_relations_lead'
+    ]
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT * FROM management_areas WHERE area_code = ?', (area_code,)
+    )
+    current = cursor.fetchone()
+    if not current:
+        conn.close()
+        return jsonify({'error': 'Không tìm thấy khu vực!'}), 404
+    current = dict(current)
+    values = []
+    for field in fields:
+        value = data.get(field, current.get(field))
+        if field == 'sort_order':
+            try:
+                value = int(value)
+            except (TypeError, ValueError):
+                value = current.get(field) or 0
+        else:
+            value = str(value or '').strip()
+        values.append(value)
+    cursor.execute('''
+        UPDATE management_areas SET
+            area_name = ?, area_scope = ?, sort_order = ?, accent_color = ?,
+            director_name = ?, deputy_director_name = ?, legal_lead = ?,
+            investment_lead = ?, external_relations_lead = ?,
+            updated_at = ?, updated_by = ?
+        WHERE area_code = ?
+    ''', (
+        *values, datetime.now().isoformat(timespec='seconds'),
+        session.get('username', ''), area_code
+    ))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'area_code': area_code})
+
+
+@app.route('/api/management/regions/<path:region_code>', methods=['PUT'])
+def update_management_region(region_code):
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được cập nhật cấu hình vùng!'}), 403
+    data = request.json or {}
+    fields = ['area_code', 'region_name', 'short_name', 'sort_order', 'is_active']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT * FROM management_regions WHERE region_code = ?', (region_code,)
+    )
+    current = cursor.fetchone()
+    if not current:
+        conn.close()
+        return jsonify({'error': 'Không tìm thấy vùng!'}), 404
+    current = dict(current)
+    values = []
+    for field in fields:
+        value = data.get(field, current.get(field))
+        if field in ('sort_order', 'is_active'):
+            try:
+                value = int(value)
+            except (TypeError, ValueError):
+                value = current.get(field) or 0
+        else:
+            value = str(value or '').strip()
+        values.append(value)
+    cursor.execute('''
+        UPDATE management_regions SET
+            area_code = ?, region_name = ?, short_name = ?,
+            sort_order = ?, is_active = ?, updated_at = ?, updated_by = ?
+        WHERE region_code = ?
+    ''', (
+        *values, datetime.now().isoformat(timespec='seconds'),
+        session.get('username', ''), region_code
+    ))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'region_code': region_code})
+
+
 # API: Allocations (Org) CRUD
 @app.route('/api/allocations', methods=['GET', 'POST'])
 def manage_allocations():
@@ -1729,8 +2280,9 @@ def manage_allocations():
             query += ' AND (a.ma_du_an = ? OR p.ten_du_an = ?)'
             params.extend([proj_filter, proj_filter])
         if rgn_filter:
-            query += ' AND (a.vung = ? OR p.khu_vuc = ?)'
-            params.extend([rgn_filter, rgn_filter])
+            query += ' AND (a.vung LIKE ? OR p.khu_vuc LIKE ?)'
+            region_pattern = f'%{rgn_filter}%'
+            params.extend([region_pattern, region_pattern])
         if dept_filter:
             query += ' AND a.name_oc = ?'
             params.append(dept_filter)
@@ -2185,8 +2737,8 @@ def sync_to_excel():
                     p['ma_du_an'],
                     p['ma_du_an'],
                     p['ten_du_an'],
-                    p['trang_thai'],
-                    p['nhom'],
+                    p['hien_trang_dau_tu'],
+                    p['nhom_du_an'],
                     p['quan_ly'],
                     None,
                     p['ma_du_an'] # ITD Check

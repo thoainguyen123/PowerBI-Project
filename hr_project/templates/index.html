@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=9.5.0">
+    <link rel="stylesheet" href="/static/css/style.css?v=11.2.1">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -33,7 +33,15 @@
             </div>
 
             <nav>
-                <span class="nav-section-label">Điều hành</span>
+                <span class="nav-section-label">Tổng quan</span>
+                <button class="nav-tab active" id="nav-project-overview" onclick="switchTab('project-overview', this)">
+                    <i class="bx bx-map-alt"></i>
+                    <span>Tổng quan dự án</span>
+                </button>
+                <button class="nav-tab" id="nav-region-config" onclick="switchTab('region-config', this)" style="display: none;">
+                    <i class="bx bx-layer"></i>
+                    <span>Quản lý khu vực</span>
+                </button>
                 <button class="nav-tab" id="nav-projects" onclick="switchTab('projects', this)">
                     <i class="bx bx-building-house"></i>
                     <span>Thông tin dự án</span>
@@ -42,7 +50,7 @@
                      (không còn nav item riêng) nên ẩn nav-projects là đủ chặn cả 2 -->
 
                 <span class="nav-section-label">Nhân sự</span>
-                <button class="nav-tab active" onclick="switchTab('allocations', this)">
+                <button class="nav-tab" onclick="switchTab('allocations', this)">
                     <i class="bx bx-group"></i>
                     <span>Phân bổ dự án</span>
                 </button>
@@ -87,8 +95,8 @@
                         <i class="bx bx-menu"></i>
                     </button>
                     <div class="topbar-title">
-                        <span id="page-kicker">Điều phối nhân sự</span>
-                        <h2 id="page-title">Phân bổ dự án</h2>
+                        <span id="page-kicker">Tổng quan hệ thống</span>
+                        <h2 id="page-title">Tổng quan dự án</h2>
                     </div>
                 </div>
                 <div class="topbar-actions">
@@ -106,6 +114,158 @@
 
             <!-- Main Content -->
             <main>
+            <!-- 0. TỔNG QUAN DỰ ÁN · 3 LAYER -->
+            <section id="tab-project-overview" class="tab-content active">
+                <div class="overview-stage">
+                    <header class="overview-hero">
+                        <div>
+                            <h2>Tổng quan điều hành dự án</h2>
+                        </div>
+                        <div class="overview-kpis">
+                            <div><strong id="overview-kpi-areas">5</strong><span>Khu vực</span></div>
+                            <div><strong id="overview-kpi-regions">0</strong><span>Vùng</span></div>
+                            <div><strong id="overview-kpi-projects">0</strong><span>Dự án</span></div>
+                            <div><strong id="overview-kpi-headcount">0</strong><span>Nhân sự</span></div>
+                        </div>
+                    </header>
+
+                    <div id="overview-layer-1" class="overview-layer">
+                        <div class="overview-section-heading">
+                            <div>
+                                <h3>Sơ đồ điều hành khu vực</h3>
+                            </div>
+                        </div>
+                        <div id="management-areas-container" class="management-areas-grid">
+                            <div class="overview-loading"><i class="bx bx-loader-alt bx-spin"></i> Đang tải cấu hình khu vực...</div>
+                        </div>
+                    </div>
+
+                    <div id="overview-layer-2" class="overview-layer" hidden>
+                        <div class="region-command-card">
+                            <button class="overview-back-button overview-inline-back" type="button"
+                                    onclick="showOverviewLayer(1)" aria-label="Quay về danh sách khu vực">
+                                <i class="bx bx-left-arrow-alt"></i>
+                                <span>Khu vực</span>
+                            </button>
+                            <div class="region-command-copy">
+                                <h2 id="layer2-region-title">BAN ĐIỀU HÀNH DỰ ÁN</h2>
+                                <p id="layer2-region-code">Mã vùng đang tải...</p>
+                            </div>
+                            <div class="region-command-stats">
+                                <div><i class="bx bx-buildings"></i><strong id="layer2-project-count">0</strong><span>Dự án</span></div>
+                                <div><i class="bx bx-user-circle"></i><strong id="layer2-exec-headcount">0</strong><span>Nhân sự</span></div>
+                            </div>
+                        </div>
+
+                        <div class="org-flow">
+                            <article class="org-flow-card org-flow-parent">
+                                <div>
+                                    <h4>BAN TỔNG GIÁM ĐỐC</h4>
+                                    <p>Tổng Giám đốc · Phó TGĐ Điều hành Dự án</p>
+                                </div>
+                            </article>
+                            <div class="org-flow-connector"><span></span><i class="bx bx-down-arrow-alt"></i></div>
+                            <article class="org-flow-card org-flow-region">
+                                <div>
+                                    <h4 id="layer2-exec-title">BAN ĐIỀU HÀNH DỰ ÁN VÙNG</h4>
+                                    <p id="layer2-exec-leader">Đang tải chức danh...</p>
+                                    <div id="layer2-exec-members" class="org-member-list">Đang tải nhân sự...</div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <div class="kanban-status-grid">
+                            <div class="status-column col-research"><div class="status-col-header"><span>Đang nghiên cứu</span><b id="count-research">0</b></div><div class="status-col-body" id="list-research"></div></div>
+                            <div class="status-column col-design"><div class="status-col-header"><span>Đã mua đang thiết kế</span><b id="count-design">0</b></div><div class="status-col-body" id="list-design"></div></div>
+                            <div class="status-column col-construction"><div class="status-col-header"><span>Đang xây dựng</span><b id="count-construction">0</b></div><div class="status-col-body" id="list-construction"></div></div>
+                            <div class="status-column col-handover"><div class="status-col-header"><span>Đã bàn giao cho khách hàng</span><b id="count-handover">0</b></div><div class="status-col-body" id="list-handover"></div></div>
+                            <div class="status-column col-divestment"><div class="status-col-header"><span>Thoái vốn</span><b id="count-divestment">0</b></div><div class="status-col-body" id="list-divestment"></div></div>
+                        </div>
+                    </div>
+
+                    <div id="overview-layer-3" class="overview-layer" hidden>
+                        <header class="project-detail-header">
+                            <button class="overview-back-button overview-inline-back" type="button"
+                                    onclick="showOverviewLayer(2)" aria-label="Quay về ban điều hành dự án vùng">
+                                <i class="bx bx-left-arrow-alt"></i>
+                                <span id="layer3-back-label">Vùng dự án</span>
+                            </button>
+                            <div class="pheader-title-box">
+                                <div class="pheader-icon"><i class="bx bx-buildings"></i></div>
+                                <div>
+                                    <h2 class="pheader-name" id="l3-project-name">Đang tải dự án...</h2>
+                                    <div class="project-detail-tags">
+                                        <span id="l3-project-code">—</span>
+                                        <span id="l3-project-status">—</span>
+                                        <span id="l3-project-region">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pheader-date" id="l3-current-date"></div>
+                        </header>
+
+                        <div class="pdetail-top-grid">
+                            <article class="pdetail-card pinfo-card">
+                                <div class="card-section-heading">
+                                    <span><i class="bx bx-info-circle"></i></span>
+                                    <div><h3>Tổng quan dự án</h3><p>Thông tin pháp lý và quy mô đầu tư</p></div>
+                                </div>
+                                <div class="pinfo-list">
+                                    <div class="pinfo-item"><span class="pinfo-label">Tên pháp lý</span><strong class="pinfo-val" id="l3-ten-phap-ly">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Tên thương mại</span><strong class="pinfo-val" id="l3-ten-thuong-mai">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Chủ đầu tư</span><strong class="pinfo-val" id="l3-chu-dau-tu">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Loại hình</span><strong class="pinfo-val" id="l3-loai-hinh">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Quy mô</span><strong class="pinfo-val" id="l3-quy-mo">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Số lượng sản phẩm</span><strong class="pinfo-val" id="l3-so-luong">—</strong></div>
+                                    <div class="pinfo-item pinfo-address"><span class="pinfo-label">Địa điểm</span><strong class="pinfo-val" id="l3-dia-diem">—</strong></div>
+                                </div>
+                            </article>
+
+                            <article class="pdetail-card porigin-card porigin-summary-card">
+                                <div class="card-section-heading">
+                                    <span><i class="bx bx-history"></i></span>
+                                    <div><h3>Nguồn gốc dự án</h3><p>Bối cảnh hình thành và quá trình triển khai</p></div>
+                                </div>
+                                <p class="porigin-text" id="l3-nguon-goc">Chưa có dữ liệu nguồn gốc dự án.</p>
+                            </article>
+                        </div>
+
+                        <article class="pdetail-card ptable-card">
+                            <div class="card-section-heading detail-table-heading">
+                                <span><i class="bx bx-table"></i></span>
+                                <div class="department-heading-copy">
+                                    <h3>Thông tin theo phòng ban</h3>
+                                    <p>Chọn một phòng ban để xem dữ liệu liên quan</p>
+                                </div>
+                                <div class="department-chip-groups" id="l3-department-chips" aria-label="Chọn phòng ban"></div>
+                                <strong id="l3-detail-count">0 mục</strong>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="detail-status-table">
+                                    <thead id="l3-details-table-head"><tr><th>STT</th><th>Tổng nhân sự theo định biên</th><th>Đang làm việc</th><th>Sẽ tuyển dụng</th><th>Chi tiết</th><th>Ghi chú</th></tr></thead>
+                                    <tbody id="l3-details-table-body"><tr><td colspan="6" class="no-data">Chọn dự án để tải dữ liệu chi tiết.</td></tr></tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CẤU HÌNH KHU VỰC -->
+            <section id="tab-region-config" class="tab-content">
+                <div class="page-hero compact-hero">
+                    <div>
+                        <span class="eyebrow">QUẢN TRỊ CẤU TRÚC</span>
+                        <h2>Quản lý khu vực</h2>
+                        <p>Cấu hình 5 khu vực, phân vùng và đầu mối điều hành hiển thị trên dashboard.</p>
+                    </div>
+                    <button class="btn btn-secondary" type="button" onclick="loadRegionManagement()"><i class="bx bx-refresh"></i> Làm mới</button>
+                </div>
+                <div id="region-management-container" class="region-management-grid">
+                    <div class="overview-loading"><i class="bx bx-loader-alt bx-spin"></i> Đang tải cấu hình...</div>
+                </div>
+            </section>
+
             <!-- 1. DASHBOARD TAB -->
             <section id="tab-dashboard" class="tab-content">
                 <!-- Active Filters Info -->
@@ -220,9 +380,7 @@
             <section id="tab-projects" class="tab-content">
                 <div class="page-hero project-hero">
                     <div>
-                        <span class="eyebrow">HỒ SƠ NHẬP LIỆU TẬP TRUNG</span>
                         <h2>Thông tin dự án</h2>
-                        <p>Một đầu mối quản lý nhập thông tin chung và toàn bộ 15 nhóm dữ liệu dự án trong cùng một màn hình.</p>
                     </div>
                     <div class="hero-actions">
                         <a class="btn btn-secondary" href="/api/projects/export-overview">
@@ -324,7 +482,7 @@
             </section>
 
             <!-- 4. ALLOCATIONS TAB -->
-            <section id="tab-allocations" class="tab-content active">
+            <section id="tab-allocations" class="tab-content">
                 <div class="grid-stats allocation-kpis" aria-label="Chỉ số phân bổ nhân sự">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="bx bx-user-check"></i></div>
@@ -600,7 +758,7 @@
                 <div class="export-grid">
                     <div class="sync-card export-card">
                         <div class="sync-icon"><i class="bx bx-building-house"></i></div>
-                        <span class="source-note">MASTER DATA DỰ ÁN</span>
+                        <span class="source-note">DỮ LIỆU DỰ ÁN</span>
                         <h2>Workbook dự án &amp; master data</h2>
                         <p>Xuất một workbook gồm sheet “Tổng quan dự án” và toàn bộ 15 sheet master theo mẫu NVLG_PROJECT.</p>
                         <a class="btn btn-primary" href="/api/masterdata/export-template">
@@ -662,13 +820,13 @@
         <div class="modal-content modal-project-content">
             <div class="modal-header">
                 <div>
-                    <span class="eyebrow">MASTER DATA DỰ ÁN</span>
                     <h3 id="modal-project-title">Thêm thông tin dự án</h3>
                 </div>
                 <button class="modal-close" onclick="closeModal('modal-project')">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="form-project" onsubmit="saveProject(event)">
+                <form id="form-project" onsubmit="saveProject(event)"
+                      onkeydown="preventProjectFormImplicitSubmit(event)">
                     <input type="hidden" id="project-edit-code">
 
                     <div class="form-section">
@@ -696,18 +854,35 @@
                                 <label for="project-status-input">Hiện trạng đầu tư</label>
                                 <select id="project-status-input" class="form-control">
                                     <option value="Đang nghiên cứu">Đang nghiên cứu</option>
-                                    <option value="Đã mua đang thiết kế">Đã mua, đang thiết kế</option>
+                                    <option value="Đã mua đang thiết kế">Đã mua đang thiết kế</option>
                                     <option value="Đang xây dựng">Đang xây dựng</option>
+                                    <option value="Đã bàn giao cho khách hàng">Đã bàn giao cho khách hàng</option>
                                     <option value="Thoái vốn">Thoái vốn</option>
-                                    <option value="Đang vận hành">Đang vận hành</option>
-                                    <option value="Đã bàn giao khách hàng">Đã bàn giao khách hàng</option>
-                                    <option value="Đóng cửa">Đóng cửa</option>
-                                    <option value="Chưa phân loại">Chưa phân loại</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="project-group-input">Nhóm dự án</label>
                                 <input type="text" id="project-group-input" class="form-control" placeholder="Nhóm / loại dự án">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-corporation-input">Tổng công ty</label>
+                                <input type="text" id="project-corporation-input" class="form-control" placeholder="NVLG, NSG, NVG...">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-type-input">Loại hình</label>
+                                <input type="text" id="project-type-input" class="form-control" placeholder="Khu đô thị, chung cư...">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-priority-input">Mức độ ưu tiên</label>
+                                <input type="text" id="project-priority-input" class="form-control" placeholder="1, 2, 3 hoặc Khác">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-old-province-input">Tỉnh cũ</label>
+                                <input type="text" id="project-old-province-input" class="form-control" placeholder="Địa giới trước thay đổi">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-new-province-input">Tỉnh mới</label>
+                                <input type="text" id="project-new-province-input" class="form-control" placeholder="Địa giới hiện tại">
                             </div>
                             <div class="form-group span-3">
                                 <label for="project-manager-input">Quản lý khu vực / Ban điều hành</label>
@@ -724,7 +899,7 @@
                                 <p>Các trường bên dưới khớp trực tiếp bảng “Tổng quan dự án”.</p>
                             </div>
                         </div>
-                        <div class="form-grid-2">
+                        <div class="form-grid-2 project-detail-fields">
                             <div class="form-group">
                                 <label for="project-legal-name-input">Tên pháp lý dự án</label>
                                 <input type="text" id="project-legal-name-input" class="form-control" placeholder="Tên theo hồ sơ pháp lý">
@@ -737,13 +912,13 @@
                                 <label for="project-investor-input">Chủ đầu tư</label>
                                 <input type="text" id="project-investor-input" class="form-control" placeholder="Pháp nhân chủ đầu tư">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group project-origin-field">
                                 <label for="project-origin-input">Nguồn gốc dự án</label>
-                                <input type="text" id="project-origin-input" class="form-control" placeholder="M&A, tự phát triển, hợp tác...">
+                                <textarea id="project-origin-input" class="form-control" rows="2" placeholder="M&amp;A, đấu giá quyền sử dụng đất, đấu thầu lựa chọn nhà đầu tư..."></textarea>
                             </div>
-                            <div class="form-group span-2">
+                            <div class="form-group">
                                 <label for="project-address-input">Địa điểm dự án</label>
-                                <textarea id="project-address-input" class="form-control" rows="2" placeholder="Địa chỉ / địa bàn triển khai"></textarea>
+                                <input type="text" id="project-address-input" class="form-control" placeholder="Số nhà, đường, phường/xã, tỉnh/thành">
                             </div>
                             <div class="form-group">
                                 <label for="project-area-input">Tổng diện tích (ha)</label>
@@ -751,7 +926,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="project-products-input">Số lượng sản phẩm</label>
-                                <input type="number" id="project-products-input" class="form-control" min="0" step="1" placeholder="0">
+                                <input type="text" id="project-products-input" class="form-control" placeholder="Ví dụ: 850 căn và 12 shophouse">
                             </div>
                         </div>
                     </div>
@@ -761,14 +936,10 @@
                             <span>03</span>
                             <div>
                                 <h4>Dữ liệu thực hiện dự án</h4>
-                                <p>Mỗi dự án có một bộ giá trị cố định cho 15 nhóm dữ liệu.</p>
+                                <p>Mỗi Mục có thể thêm nhiều Nội dung theo nhu cầu thực tế.</p>
                             </div>
                         </div>
                         <div class="project-modal-masterdata-summary">
-                            <div class="entry-flow-note">
-                                <i class="bx bx-user-check"></i>
-                                <span>Không cần chuyển tab hoặc chọn lại dự án</span>
-                            </div>
                             <div class="masterdata-kpis">
                                 <span><strong id="masterdata-kpi-records">0</strong> mục đã nhập</span>
                                 <span><strong id="masterdata-kpi-modules">0/15</strong> nhóm hoàn tất</span>
@@ -1218,15 +1389,14 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=9.5.1"></script>
+    <script src="/static/js/main.js?v=11.1.5"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">
         <div class="modal-container masterdata-modal-container" style="max-width: 1200px; width: 95vw; max-height: 92vh; display: flex; flex-direction: column;">
             <div class="modal-header">
                 <div>
-                    <span class="eyebrow" style="color: var(--secondary);">MASTER DATA DỰ ÁN</span>
-                    <h3 id="modal-masterdata-project-title">Master Data Dự Án</h3>
+                    <h3 id="modal-masterdata-project-title">Dữ liệu thực hiện dự án</h3>
                 </div>
                 <button class="modal-close" onclick="closeProjectMasterDataModal()" aria-label="Đóng">&times;</button>
             </div>

@@ -68,6 +68,25 @@ thực thi code tùy ý từ trình duyệt, không được bật ở môi trư
 Khi khởi động, ứng dụng tự bổ sung các cột Tổng quan dự án còn thiếu vào bảng
 `projects` mà không xóa dữ liệu hiện có.
 
+## Merge danh mục dự án
+
+File `data_duan.xlsx` được merge theo `Mã dự án` và chỉ lấy các dòng có
+`Nhóm dự án`. Chạy kiểm tra trước (tự rollback):
+
+```powershell
+python merge_project_data.py
+```
+
+Sau khi đã sao lưu database, áp dụng thay đổi:
+
+```powershell
+python merge_project_data.py --apply
+```
+
+Schema dùng `hien_trang_dau_tu` và `nhom_du_an`; dữ liệu quy mô từ nguồn m²
+được đổi sang `tong_dien_tich_ha`. Giá trị trống, `N/A` và diện tích bằng 0
+không ghi đè dữ liệu hiện có.
+
 ## Kiểm thử
 
 ```powershell

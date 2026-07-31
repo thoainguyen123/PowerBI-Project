@@ -16,6 +16,7 @@ let state = {
     masterdataEntries: [],
     masterdataActiveSheet: 'HRC',
     masterdataProjectCode: '',
+    managementAreas: [],
     
     // Active filters from clicking charts
     chartFilters: {
@@ -28,10 +29,13 @@ let state = {
     },
     
     // Active tab
-    activeTab: 'allocations',
+    activeTab: 'project-overview',
     
-    // Currently selected employee for profile detail
-    selectedEmployeeId: null,
+    // Overview Dashboard State
+    selectedOverviewRegion: null,
+    selectedOverviewProject: null,
+    selectedOverviewDepartment: '9.1 HRC',
+    overviewProjectEntries: [],
     
     // Chart instances
     charts: {
@@ -45,14 +49,17 @@ let state = {
 
 // API base path
 const API_URL = '/api';
+let masterdataDraftRowCounter = 0;
 
 // Global User variable
 let currentUser = null;
 
 const PAGE_META = {
+    'project-overview': { kicker: 'Tổng quan hệ thống', title: 'Tổng quan dự án' },
+    'region-config': { kicker: 'Cấu trúc điều hành', title: 'Quản lý khu vực' },
     dashboard: { kicker: 'Giám sát nguồn lực', title: 'Tổng quan nhân sự' },
     projects: { kicker: 'Danh mục dự án', title: 'Thông tin dự án' },
-    masterdata: { kicker: 'Dữ liệu master data', title: 'Master data dự án' },
+    masterdata: { kicker: 'Dữ liệu dự án', title: 'Dữ liệu thực hiện dự án' },
     allocations: { kicker: 'Điều phối nhân sự', title: 'Phân bổ dự án' },
     common: { kicker: 'Nguồn lực hệ thống', title: 'Nhân sự chung' },
     profiles: { kicker: 'Vòng đời nhân sự', title: 'Hồ sơ & đánh giá' },
@@ -119,6 +126,12 @@ async function checkLoginState() {
             const syncNav = document.getElementById('nav-sync');
             if (syncNav) {
                 syncNav.style.display = (data.role === 'admin') ? 'inline-flex' : 'none';
+            }
+            const regionConfigNav = document.getElementById('nav-region-config');
+            if (regionConfigNav) {
+                regionConfigNav.style.display = (data.role === 'admin')
+                    ? 'inline-flex'
+                    : 'none';
             }
             // Vai trò Nhân sự không có quyền vào "Thông tin dự án" (Master data
             // phòng ban là sub-view bên trong tab này nên ẩn luôn cả 2). Tab mặc
@@ -232,6 +245,7 @@ async function initApp() {
     await fetchAllocationsData();
     await fetchCommonAllocationsData();
     await fetchProfilesData();
+    await renderProjectOverviewDashboard();
 }
 
 // Switch between tabs
@@ -247,15 +261,20 @@ function switchTab(tabId, trigger = null) {
     document.querySelectorAll('.tab-content').forEach(panel => {
         panel.classList.remove('active');
     });
-    document.getElementById(`tab-${tabId}`).classList.add('active');
+    const targetTabPanel = document.getElementById(`tab-${tabId}`);
+    if (targetTabPanel) targetTabPanel.classList.add('active');
 
-    const pageMeta = PAGE_META[tabId] || PAGE_META.allocations;
+    const pageMeta = PAGE_META[tabId] || PAGE_META['project-overview'];
     document.getElementById('page-kicker').innerText = pageMeta.kicker;
     document.getElementById('page-title').innerText = pageMeta.title;
     document.title = `${pageMeta.title} | NVL Data Hub`;
     closeSidebar();
     
-    if (tabId === 'dashboard') {
+    if (tabId === 'project-overview') {
+        renderProjectOverviewDashboard();
+    } else if (tabId === 'region-config') {
+        loadRegionManagement();
+    } else if (tabId === 'dashboard') {
         fetchDashboardData();
     } else if (tabId === 'projects') {
         fetchProjectOverviewData();
@@ -486,7 +505,9 @@ function setProjectFilterOptions(projects) {
     const selectedStatus = statusSelect.value;
     const regions = [...new Set(projects.map(p => p.khu_vuc).filter(Boolean))]
         .sort((a, b) => a.localeCompare(b, 'vi', { numeric: true }));
-    const statuses = [...new Set(projects.map(p => p.trang_thai).filter(Boolean))]
+    const statuses = [...new Set(
+        projects.map(p => p.hien_trang_dau_tu).filter(Boolean)
+    )]
         .sort((a, b) => a.localeCompare(b, 'vi'));
 
     regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' +
@@ -548,7 +569,7 @@ function filterProjectOverview() {
         const dataQuality = getProjectDataQuality(project);
         return (!query || searchable.includes(query))
             && (!region || project.khu_vuc === region)
-            && (!status || project.trang_thai === status)
+            && (!status || project.hien_trang_dau_tu === status)
             && (!quality || (quality === 'complete') === dataQuality.complete);
     });
 
@@ -575,7 +596,10 @@ function renderProjectOverviewTable(projects) {
 
     tableBody.innerHTML = projects.map(project => {
         const quality = getProjectDataQuality(project);
-        const statusLabel = PROJECT_STATUS_LABELS[project.trang_thai] || project.trang_thai || 'Chưa phân loại';
+        const projectStatus = project.hien_trang_dau_tu;
+        const statusLabel = PROJECT_STATUS_LABELS[projectStatus]
+            || projectStatus
+            || 'Chưa phân loại';
         const displayName = project.ten_thuong_mai || project.ten_phap_ly || project.ten_du_an || 'Chưa có tên';
         const legalName = project.ten_phap_ly && project.ten_phap_ly !== displayName
             ? project.ten_phap_ly
@@ -645,12 +669,17 @@ async function editProjectOverview(projectCode, focusMasterdata = false) {
         document.getElementById('project-name-input').value = project.ten_du_an || '';
         document.getElementById('project-region-input').value = project.khu_vuc || '';
         const statusSelect = document.getElementById('project-status-input');
-        const projectStatus = project.trang_thai || 'Chưa phân loại';
+        const projectStatus = project.hien_trang_dau_tu || 'Chưa phân loại';
         if (![...statusSelect.options].some(option => option.value === projectStatus)) {
             statusSelect.add(new Option(projectStatus, projectStatus));
         }
         statusSelect.value = projectStatus;
-        document.getElementById('project-group-input').value = project.nhom || '';
+        document.getElementById('project-group-input').value = project.nhom_du_an || '';
+        document.getElementById('project-corporation-input').value = project.tong_cong_ty || '';
+        document.getElementById('project-type-input').value = project.loai_hinh || '';
+        document.getElementById('project-priority-input').value = project.muc_do_uu_tien || '';
+        document.getElementById('project-old-province-input').value = project.tinh_cu || '';
+        document.getElementById('project-new-province-input').value = project.tinh_moi || '';
         document.getElementById('project-manager-input').value = project.quan_ly || '';
         document.getElementById('project-legal-name-input').value = project.ten_phap_ly || '';
         document.getElementById('project-commercial-name-input').value = project.ten_thuong_mai || '';
@@ -674,6 +703,14 @@ async function editProjectOverview(projectCode, focusMasterdata = false) {
     }
 }
 
+function preventProjectFormImplicitSubmit(event) {
+    if (event.key !== 'Enter' || event.isComposing) return;
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (target.type === 'submit' || target.type === 'button') return;
+    event.preventDefault();
+}
+
 async function saveProject(event) {
     event.preventDefault();
     const editingCode = document.getElementById('project-edit-code').value;
@@ -683,8 +720,13 @@ async function saveProject(event) {
         ma_du_an: projectCode,
         ten_du_an: document.getElementById('project-name-input').value.trim(),
         khu_vuc: document.getElementById('project-region-input').value.trim(),
-        trang_thai: document.getElementById('project-status-input').value,
-        nhom: document.getElementById('project-group-input').value.trim(),
+        hien_trang_dau_tu: document.getElementById('project-status-input').value,
+        nhom_du_an: document.getElementById('project-group-input').value.trim(),
+        tong_cong_ty: document.getElementById('project-corporation-input').value.trim(),
+        loai_hinh: document.getElementById('project-type-input').value.trim(),
+        muc_do_uu_tien: document.getElementById('project-priority-input').value.trim(),
+        tinh_cu: document.getElementById('project-old-province-input').value.trim(),
+        tinh_moi: document.getElementById('project-new-province-input').value.trim(),
         quan_ly: document.getElementById('project-manager-input').value.trim(),
         ten_phap_ly: document.getElementById('project-legal-name-input').value.trim(),
         ten_thuong_mai: document.getElementById('project-commercial-name-input').value.trim(),
@@ -795,7 +837,7 @@ function updateMasterdataKpis() {
     const records = document.getElementById('masterdata-kpi-records');
     const modules = document.getElementById('masterdata-kpi-modules');
     const missing = document.getElementById('masterdata-kpi-missing');
-    if (records) records.innerText = sheetCount.toLocaleString('vi-VN');
+    if (records) records.innerText = state.masterdataEntries.length.toLocaleString('vi-VN');
     if (modules) modules.innerText = `${sheetCount}/${state.masterdataConfig.length || 15}`;
     if (missing) missing.innerText = Math.max((state.masterdataConfig.length || 15) - sheetCount, 0);
 }
@@ -835,26 +877,33 @@ function renderMasterdataAllSections() {
         return;
     }
 
-    container.innerHTML = state.masterdataConfig.map((config, index) => {
+    container.innerHTML = state.masterdataConfig.map(config => {
         const entries = state.masterdataEntries.filter(entry => entry.source_sheet === config.sheet);
-        const entry = entries[0] || null;
-
         return `
             <section id="masterdata-section-${escapeHtml(config.sheet)}"
                      class="masterdata-section-card project-masterdata-form-section"
                      data-sheet="${escapeHtml(config.sheet)}">
                 <div class="masterdata-section-header">
-                    <div class="masterdata-section-index">${String(index + 1).padStart(2, '0')}</div>
+                    <div class="masterdata-section-index">${escapeHtml(config.nhom.split(/\s+/)[0])}</div>
                     <div class="masterdata-section-title">
-                        <span>${escapeHtml(config.nhom)} · SHEET ${escapeHtml(config.sheet)}</span>
+                        <span>${escapeHtml(config.nhom)}</span>
                         <h4>${escapeHtml(config.phan_nhom)}</h4>
                     </div>
-                    <span class="masterdata-section-count ${entry ? 'has-data' : ''}">
-                        ${entry ? 'Đã có dữ liệu' : 'Chưa nhập'}
-                    </span>
+                    <div class="masterdata-section-actions">
+                        <span class="masterdata-section-count ${entries.length ? 'has-data' : ''}">
+                            ${entries.length ? `${entries.length} nội dung` : 'Chưa nhập'}
+                        </span>
+                        ${config.repeatable ? `
+                            <button type="button" class="masterdata-section-add"
+                                    onclick="addProjectMasterdataContent('${escapeHtml(config.sheet)}')">
+                                <i class="bx bx-plus"></i> Thêm nội dung
+                            </button>` : ''}
+                    </div>
                 </div>
                 <div class="project-masterdata-rows" data-sheet="${escapeHtml(config.sheet)}">
-                    ${renderProjectMasterdataInlineRow(config, entry)}
+                    ${(entries.length ? entries : [null])
+                        .map((item, index) => renderProjectMasterdataInlineRow(config, item, index))
+                        .join('')}
                 </div>
             </section>`;
     }).join('');
@@ -865,13 +914,107 @@ const PROJECT_MASTERDATA_TEXTAREAS = new Set([
     'Khó khăn/Vướng mắc', 'Hướng xử lý'
 ]);
 
-function renderProjectMasterdataInlineRow(config, entry = null) {
+function masterdataFieldLabel(config, header) {
+    return config.field_labels?.[header] || header;
+}
+
+function masterdataFieldChoices(config, header, values = {}) {
+    const dependencies = config.choice_dependencies?.[header];
+    if (dependencies) {
+        const parentValue = String(
+            values[config.dynamic_item_field] || values.Nhóm || values.parentValue || ''
+        ).trim();
+        if (parentValue && dependencies[parentValue]) return dependencies[parentValue];
+    }
+    return config.choices?.[header] || [];
+}
+
+function renderMasterdataField(config, header, value, fieldId, inputClass) {
+    const label = masterdataFieldLabel(config, header);
+    const choices = masterdataFieldChoices(config, header, { Nhóm: value.parentValue });
+    const isDynamicField = header === config.dynamic_item_field
+        || header === config.dynamic_content_field;
+    if (isDynamicField) {
+        const listId = `${fieldId}-options`;
+        const isParent = header === config.dynamic_item_field;
+        const parentAttribute = header === config.dynamic_content_field
+            ? ` data-choice-parent="${escapeHtml(config.dynamic_item_field)}"`
+            : '';
+        return `
+            <input id="${escapeHtml(fieldId)}" type="text"
+                   class="form-control ${inputClass}"
+                   data-header="${escapeHtml(header)}" data-sheet="${escapeHtml(config.sheet)}"
+                   list="${escapeHtml(listId)}"${parentAttribute}
+                   value="${escapeHtml(value.current)}"
+                   placeholder="Nhập hoặc chọn ${escapeHtml(label.toLowerCase())}"
+                   ${isParent ? 'oninput="syncMasterdataDependentChoices(this)"' : ''}>
+            <datalist id="${escapeHtml(listId)}">
+                ${choices.map(option => `<option value="${escapeHtml(option)}"></option>`).join('')}
+            </datalist>`;
+    }
+    if (choices.length) {
+        const isDependencyParent = header === 'Nhóm'
+            && Object.keys(config.choice_dependencies || {}).length > 0;
+        const dependencyAttribute = config.choice_dependencies?.[header]
+            ? ' data-choice-parent="Nhóm"'
+            : '';
+        return `
+            <select id="${escapeHtml(fieldId)}" class="form-control ${inputClass}"
+                    data-header="${escapeHtml(header)}" data-sheet="${escapeHtml(config.sheet)}"
+                    ${dependencyAttribute}
+                    ${isDependencyParent ? 'onchange="syncMasterdataDependentChoices(this)"' : ''}>
+                <option value="">Chọn ${escapeHtml(label.toLowerCase())}</option>
+                ${choices.map(option => `
+                    <option value="${escapeHtml(option)}" ${option === value.current ? 'selected' : ''}>
+                        ${escapeHtml(option)}
+                    </option>`).join('')}
+            </select>`;
+    }
+    if (PROJECT_MASTERDATA_TEXTAREAS.has(header)) {
+        return `<textarea id="${escapeHtml(fieldId)}" class="form-control ${inputClass}"
+                          data-header="${escapeHtml(header)}" rows="1"
+                          placeholder="Nhập ${escapeHtml(label.toLowerCase())}">${escapeHtml(value.current)}</textarea>`;
+    }
+    return `<input id="${escapeHtml(fieldId)}" type="text"
+                   class="form-control ${inputClass}"
+                   data-header="${escapeHtml(header)}"
+                   value="${escapeHtml(value.current)}"
+                   placeholder="Nhập ${escapeHtml(label.toLowerCase())}">`;
+}
+
+function syncMasterdataDependentChoices(source) {
+    const root = source.closest('.project-masterdata-row')
+        || document.getElementById('masterdata-fields');
+    const config = state.masterdataConfig.find(item => item.sheet === source.dataset.sheet);
+    if (!root || !config) return;
+    root.querySelectorAll(`[data-choice-parent="${source.dataset.header}"]`).forEach(input => {
+        const choices = config.choice_dependencies?.[input.dataset.header]?.[source.value] || [];
+        const list = document.getElementById(input.getAttribute('list'));
+        if (list) {
+            list.innerHTML = choices.map(option =>
+                `<option value="${escapeHtml(option)}"></option>`
+            ).join('');
+        }
+    });
+}
+
+function renderProjectMasterdataInlineRow(config, entry = null, rowIndex = 0) {
     const visibleHeaders = config.headers.filter(header => header !== 'Mã dự án');
-    const rowToken = entry?.id || `fixed-${config.sheet}`;
+    const rowToken = entry?.id || `draft-${config.sheet}-${++masterdataDraftRowCounter}`;
+    const itemName = entry?.values?.[config.dynamic_item_field] || '';
     return `
         <div class="project-masterdata-row"
              data-sheet="${escapeHtml(config.sheet)}"
              data-entry-id="${entry?.id || ''}">
+            ${config.repeatable ? `
+                <div class="project-masterdata-row-heading">
+                    <span>${itemName ? `Mục: ${escapeHtml(itemName)}` : `Nội dung ${rowIndex + 1}`}</span>
+                    <button type="button" class="project-masterdata-remove"
+                            onclick="removeProjectMasterdataContent(this)"
+                            aria-label="Xóa nội dung này">
+                        <i class="bx bx-trash"></i> Xóa
+                    </button>
+                </div>` : ''}
             <div class="project-masterdata-fields">
                 ${visibleHeaders.map((header, fieldIndex) => {
                     const value = entry?.values?.[header] || '';
@@ -879,21 +1022,72 @@ function renderProjectMasterdataInlineRow(config, entry = null) {
                     const fieldId = `project-md-${config.sheet}-${rowToken}-${fieldIndex}`;
                     return `
                         <div class="form-group ${isTextarea ? 'project-masterdata-field-wide' : ''}">
-                            <label for="${escapeHtml(fieldId)}">${escapeHtml(header)}</label>
-                            ${isTextarea
-                                ? `<textarea id="${escapeHtml(fieldId)}" class="form-control project-masterdata-input"
-                                           data-header="${escapeHtml(header)}" rows="2"
-                                           placeholder="Nhập ${escapeHtml(header.toLowerCase())}">${escapeHtml(value)}</textarea>`
-                                : `<input id="${escapeHtml(fieldId)}" type="text"
-                                          class="form-control project-masterdata-input"
-                                          data-header="${escapeHtml(header)}"
-                                          value="${escapeHtml(value)}"
-                                          placeholder="Nhập ${escapeHtml(header.toLowerCase())}">`
-                            }
+                            <label for="${escapeHtml(fieldId)}">${escapeHtml(masterdataFieldLabel(config, header))}</label>
+                            ${renderMasterdataField(
+                                config,
+                                header,
+                                {
+                                    current: value,
+                                    parentValue: entry?.values?.[config.dynamic_item_field] || ''
+                                },
+                                fieldId,
+                                'project-masterdata-input'
+                            )}
                         </div>`;
                 }).join('')}
             </div>
         </div>`;
+}
+
+function updateProjectMasterdataSectionCount(section) {
+    if (!section) return;
+    const rows = section.querySelectorAll('.project-masterdata-row').length;
+    const count = section.querySelector('.masterdata-section-count');
+    if (!count) return;
+    count.innerText = `${rows} nội dung`;
+    count.classList.toggle('has-data', rows > 0);
+}
+
+function addProjectMasterdataContent(sheetName) {
+    const config = state.masterdataConfig.find(item => item.sheet === sheetName);
+    const section = document.getElementById(`masterdata-section-${sheetName}`);
+    const rows = section?.querySelector('.project-masterdata-rows');
+    if (!config || !rows) return;
+    const existingRows = [...rows.querySelectorAll('.project-masterdata-row')];
+    const parentInput = config.dynamic_item_field
+        ? existingRows.at(-1)?.querySelector(`[data-header="${config.dynamic_item_field}"]`)
+        : null;
+    const draftValues = {};
+    if (config.dynamic_item_field && parentInput?.value) {
+        draftValues[config.dynamic_item_field] = parentInput.value;
+    }
+    rows.insertAdjacentHTML('beforeend', renderProjectMasterdataInlineRow(config, {
+        values: draftValues
+    }, existingRows.length));
+    updateProjectMasterdataSectionCount(section);
+    const newRow = rows.lastElementChild;
+    const preferredInput = config.dynamic_content_field
+        ? newRow?.querySelector(`[data-header="${config.dynamic_content_field}"]`)
+        : null;
+    (preferredInput || newRow?.querySelector('.project-masterdata-input'))?.focus();
+}
+
+async function removeProjectMasterdataContent(button) {
+    const row = button.closest('.project-masterdata-row');
+    const section = button.closest('.masterdata-section-card');
+    if (!row) return;
+    const entryId = row.dataset.entryId;
+    if (entryId) {
+        await deleteMasterdataEntry(entryId);
+        return;
+    }
+    const rows = row.parentElement.querySelectorAll('.project-masterdata-row');
+    if (rows.length === 1) {
+        row.querySelectorAll('.project-masterdata-input').forEach(input => { input.value = ''; });
+    } else {
+        row.remove();
+    }
+    updateProjectMasterdataSectionCount(section);
 }
 
 async function saveAllProjectMasterdata(projectCode) {
@@ -910,22 +1104,27 @@ async function saveAllProjectMasterdata(projectCode) {
         if (!hasData) return;
 
         const entryId = row.dataset.entryId;
-        requests.push(fetch(
-            entryId ? `${API_URL}/masterdata/entries/${entryId}` : `${API_URL}/masterdata/entries`,
-            {
-                method: entryId ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    project_code: projectCode,
-                    source_sheet: row.dataset.sheet,
-                    values
-                })
+        requests.push({
+            url: entryId ? `${API_URL}/masterdata/entries/${entryId}` : `${API_URL}/masterdata/entries`,
+            method: entryId ? 'PUT' : 'POST',
+            payload: {
+                project_code: projectCode,
+                source_sheet: row.dataset.sheet,
+                values
             }
-        ));
+        });
     });
 
-    if (requests.length) {
-        await Promise.all(requests);
+    for (const requestItem of requests) {
+        const response = await fetch(requestItem.url, {
+            method: requestItem.method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestItem.payload)
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error || 'Không thể lưu nội dung dự án');
+        }
     }
 }
 
@@ -945,13 +1144,11 @@ function openMasterdataModal(entryId = null, sheetName = null) {
         ? state.masterdataEntries.find(item => item.id === entryId)
         : null;
     document.getElementById('masterdata-entry-id').value = entry?.id || '';
-    document.getElementById('masterdata-modal-kicker').innerText =
-        `${escapeHtml(config.nhom)} · SHEET ${escapeHtml(config.sheet)}`;
+    document.getElementById('masterdata-modal-kicker').innerText = config.nhom;
     document.getElementById('masterdata-modal-title').innerText =
         entry ? 'Cập nhật dòng dữ liệu' : 'Thêm dòng dữ liệu';
     document.getElementById('masterdata-modal-project').innerText = state.masterdataProjectCode;
-    document.getElementById('masterdata-modal-sheet').innerText =
-        `${escapeHtml(config.sheet)} — ${escapeHtml(config.phan_nhom)}`;
+    document.getElementById('masterdata-modal-sheet').innerText = config.phan_nhom;
 
     const textareaHeaders = new Set([
         'Chi tiết', 'Ghi chú', 'Văn bản phê duyệt',
@@ -964,14 +1161,14 @@ function openMasterdataModal(entryId = null, sheetName = null) {
             const isTextarea = textareaHeaders.has(header);
             return `
                 <div class="form-group ${isTextarea ? 'masterdata-field-wide' : ''}">
-                    <label for="masterdata-field-${index}">${escapeHtml(header)}</label>
-                    ${isTextarea
-                        ? `<textarea id="masterdata-field-${index}" class="form-control masterdata-input"
-                                   data-header="${escapeHtml(header)}" rows="3">${escapeHtml(value)}</textarea>`
-                        : `<input id="masterdata-field-${index}" type="text" class="form-control masterdata-input"
-                                  data-header="${escapeHtml(header)}" value="${escapeHtml(value)}"
-                                  placeholder="Nhập ${escapeHtml(header.toLowerCase())}">`
-                    }
+                    <label for="masterdata-field-${index}">${escapeHtml(masterdataFieldLabel(config, header))}</label>
+                    ${renderMasterdataField(
+                        config,
+                        header,
+                        { current: value, parentValue: entry?.values?.Nhóm || '' },
+                        `masterdata-field-${index}`,
+                        'masterdata-input'
+                    )}
                 </div>`;
         }).join('');
     openModal('modal-masterdata');
@@ -3108,4 +3305,860 @@ function switchProjectSubTab(mode, selectedProjectCode = null) {
         behavior: 'smooth',
         block: 'start'
     });
+}
+
+/* ==========================================================================
+   MULTI-LAYER PROJECT OVERVIEW DASHBOARD LOGIC (TỔNG QUAN DỰ ÁN)
+   ========================================================================== */
+
+const REGION_DEFINITIONS = [
+    { code: 'GMD.HCM1-NVLG', name: 'Vùng TP.HCM 1' },
+    { code: 'GMD.HCM2.1-NVLG', name: 'Vùng TP.HCM 2.1' },
+    { code: 'GMD.HCM2.2-NVLG', name: 'Vùng TP.HCM 2.2' },
+    { code: 'GMD.HCM2.3-NVLG', name: 'Vùng HCM 2.3' },
+    { code: 'GMD.HCM3-NVLG', name: 'Vùng TP.HCM 3' },
+    { code: 'GMD.BRVT-NVLG', name: 'Vùng Bà Rịa - Vũng Tàu' },
+    { code: 'GMD.HT1-NVLG', name: 'Vùng Hồ Tràm 1' },
+    { code: 'GMD.HT2-NVLG', name: 'Vùng Hồ Tràm 2' },
+    { code: 'GMD.ĐN1-NVLG', name: 'Vùng Đồng Nai 1' },
+    { code: 'GMD.ĐN2-NVLG', name: 'Vùng Đồng Nai 2' },
+    { code: 'GMD.ĐN3-NVLG', name: 'Vùng Đồng Nai 3' },
+    { code: 'GMD.HDNGL-NVLG', name: 'Vùng Huế - Đà Nẵng - Gia Lai' },
+    { code: 'GMD.PT1-NVLG', name: 'Vùng Phan Thiết 1' },
+    { code: 'GMD.PT2-NVLG', name: 'Vùng Phan Thiết 2' },
+    { code: 'GMD.PT3-NVLG', name: 'Vùng Phan Thiết 3' },
+    { code: 'GMD.PQ-NVLG', name: 'Vùng Phú Quốc' },
+    { code: 'GMD.ĐL1-NVLG', name: 'Vùng Đà Lạt 1' },
+    { code: 'GMD.ĐL2-NVLG', name: 'Vùng Đà Lạt 2' },
+    { code: 'GMD.ĐL3-NVLG', name: 'Vùng Đà Lạt 3' },
+    { code: 'GMD.HNHPQN-NVLG', name: 'Vùng Hà Nội - Hải Phòng Quảng Ninh' },
+    { code: 'GMD.DBSCL1-NVLG', name: 'Vùng Đồng Bằng Sông Cửu Long 1' },
+    { code: 'GMD.DBSCL2-NVLG', name: 'Vùng Đồng Bằng Sông Cửu Long 2' },
+    { code: 'GMD.TN-NVLG', name: 'Vùng Tây Ninh (Long An)' },
+    { code: 'GMD.KH-NVLG', name: 'Vùng Khánh Hòa' },
+    { code: 'GMD.TĐ-NVLG', name: 'Vùng Dự Án Trọng Điểm' },
+    { code: 'GMD.KCN-NVLG', name: 'Vùng Dự Án Khu Công Nghiệp' },
+    { code: 'GMD.HT-NVLG', name: 'Vùng Dự Án Hạ Tầng' },
+    { code: '', name: 'GMD vùng đầu tư' },
+    { code: 'GMD.STAY-NVLG', name: 'Vùng Stay' },
+    { code: 'GMD.PLAY-NVLG', name: 'Vùng Play' }
+];
+
+function showOverviewLayer(layerNum) {
+    document.querySelectorAll('.overview-layer').forEach(el => el.style.display = 'none');
+    const targetLayer = document.getElementById(`overview-layer-${layerNum}`);
+    if (targetLayer) targetLayer.style.display = 'block';
+}
+
+function renderOverviewLayer1() {
+    showOverviewLayer(1);
+    const container = document.getElementById('regions-cards-container');
+    if (!container) return;
+
+    const regionCounts = {};
+    (state.allocations || []).forEach(alloc => {
+        const v = alloc.vung || alloc.khu_vuc || '';
+        if (v) {
+            regionCounts[v] = (regionCounts[v] || 0) + 1;
+        }
+    });
+
+    const projectCounts = {};
+    (state.projects || []).forEach(p => {
+        const v = p.khu_vuc || '';
+        if (v) {
+            projectCounts[v] = (projectCounts[v] || 0) + 1;
+        }
+    });
+
+    container.innerHTML = REGION_DEFINITIONS.map(r => {
+        let count = 0;
+        for (const [key, val] of Object.entries(regionCounts)) {
+            if (key.toLowerCase().includes(r.name.toLowerCase()) || (r.code && key.includes(r.code))) {
+                count += val;
+            }
+        }
+        if (count === 0) {
+            for (const [key, val] of Object.entries(projectCounts)) {
+                if (key.toLowerCase().includes(r.name.toLowerCase()) || (r.code && key.includes(r.code))) {
+                    count += val;
+                }
+            }
+        }
+
+        const countDisplay = count > 0 
+            ? `<div class="region-card-headcount"><i class="bx bx-user"></i> ${count}</div>` 
+            : (r.name.includes('GMD vùng') ? `<div class="region-card-headcount"><i class="bx bx-user"></i> (Blank)</div>` : '');
+
+        return `
+            <div class="region-card" onclick="selectOverviewRegion('${r.name.replace(/'/g, "\\'")}', '${(r.code || '').replace(/'/g, "\\'")}')">
+                <div class="region-card-name">${r.name}</div>
+                ${r.code ? `<div class="region-card-code">(${r.code})</div>` : ''}
+                ${countDisplay}
+            </div>
+        `;
+    }).join('');
+}
+
+async function selectOverviewRegion(regionName, regionCode) {
+    state.selectedOverviewRegion = { name: regionName, code: regionCode };
+    showOverviewLayer(2);
+
+    const execLeaderEl = document.getElementById('layer2-exec-leader');
+    const execMembersEl = document.getElementById('layer2-exec-members');
+    if (execLeaderEl) execLeaderEl.innerText = 'Đang tải chức danh...';
+    if (execMembersEl) execMembersEl.innerText = 'Đang tải nhân sự...';
+
+    let regionalOverview = null;
+    try {
+        const response = await fetch(
+            `${API_URL}/overview/region-team?region=${encodeURIComponent(regionName)}`
+        );
+        if (response.ok) {
+            regionalOverview = await response.json();
+        }
+    } catch (error) {
+        console.error('Không thể tải nhân sự Ban điều hành theo vùng:', error);
+    }
+    renderOverviewLayer2(regionName, regionCode, regionalOverview);
+}
+
+function renderOverviewLayer2(regionName, regionCode, regionalOverview = null) {
+    showOverviewLayer(2);
+
+    const titleStr = regionName.toUpperCase();
+    document.getElementById('layer2-region-title').innerText = `BAN ĐIỀU HÀNH DỰ ÁN ${titleStr}`;
+    document.getElementById('layer2-exec-title').innerText = `BAN ĐIỀU HÀNH DỰ ÁN ${titleStr}`;
+
+    const fallbackAllocations = (state.allocations || []).filter(alloc => {
+            const region = (alloc.vung || alloc.khu_vuc || '').toLowerCase();
+            return region.includes(regionName.toLowerCase())
+                || (regionCode && region.includes(regionCode.toLowerCase()));
+        });
+
+    // Chỉ mã OC chính xác GMD là lãnh đạo Ban Điều hành Dự án khu vực.
+    // GMD4 là thư ký và không thuộc card lãnh đạo. Dữ liệu được lặp lại theo
+    // từng dự án, nên gom theo mã nhân viên trước khi hiển thị.
+    const regionalTeam = new Map();
+    const teamSource = Array.isArray(regionalOverview?.team)
+        ? regionalOverview.team
+        : fallbackAllocations;
+    teamSource.forEach(alloc => {
+        const v = (alloc.vung || alloc.khu_vuc || '').toLowerCase();
+        const regMatch = regionalOverview
+            ? true
+            : v.includes(regionName.toLowerCase())
+                || (regionCode && v.includes(regionCode.toLowerCase()));
+
+        const departmentCode = (alloc.ma_oc || '').toUpperCase();
+        const isGMD = departmentCode === 'GMD';
+        if (regMatch && isGMD && alloc.ho_ten && !isPlaceholder(alloc.ma_nhan_vien)) {
+            const employeeKey = String(alloc.ma_nhan_vien || alloc.ho_ten);
+            if (!regionalTeam.has(employeeKey)) {
+                regionalTeam.set(employeeKey, {
+                    name: alloc.ho_ten,
+                    title: alloc.chuc_danh || '',
+                });
+            }
+        }
+    });
+
+    const teamMembers = [...regionalTeam.values()];
+    const leaders = teamMembers.filter(member =>
+        member.title.toLowerCase().includes('giám đốc')
+    ).sort((a, b) => {
+        const aIsDeputy = a.title.toLowerCase().includes('phó');
+        const bIsDeputy = b.title.toLowerCase().includes('phó');
+        return Number(aIsDeputy) - Number(bIsDeputy);
+    });
+    const primaryLeader = leaders[0] || null;
+    const orderedMembers = primaryLeader
+        ? [
+            primaryLeader,
+            ...teamMembers.filter(member => member !== primaryLeader),
+        ]
+        : teamMembers;
+
+    const execLeaderEl = document.getElementById('layer2-exec-leader');
+    const execMembersEl = document.getElementById('layer2-exec-members');
+
+    if (execLeaderEl) {
+        execLeaderEl.innerText = primaryLeader?.title || 'Chưa có dữ liệu lãnh đạo';
+    }
+    if (execMembersEl) {
+        execMembersEl.innerHTML = orderedMembers.length
+            ? orderedMembers.slice(0, 4).map(member => escapeHtml(member.name)).join('<br>')
+            : 'Chưa có dữ liệu nhân sự';
+    }
+
+    const regionProjects = (state.projects || []).filter(p => {
+        const k = p.khu_vuc || '';
+        return k.toLowerCase().includes(regionName.toLowerCase()) || (regionCode && k.includes(regionCode));
+    });
+
+    const employeeCodes = new Set(
+        fallbackAllocations
+            .filter(alloc => alloc.ho_ten && !isPlaceholder(alloc.ma_nhan_vien))
+            .map(alloc => String(alloc.ma_nhan_vien || alloc.ho_ten))
+    );
+    const headcount = Number.isFinite(Number(regionalOverview?.headcount))
+        ? Number(regionalOverview.headcount)
+        : employeeCodes.size;
+    document.getElementById('layer2-exec-headcount').innerText = headcount;
+
+    const categories = {
+        research: [],
+        design: [],
+        construction: [],
+        handover: [],
+        divestment: []
+    };
+
+    if (regionProjects.length === 0) {
+        categories.research = [
+            { ma_du_an: 'DEMO1', ten_du_an: '104 Nguyễn Văn Cừ' },
+            { ma_du_an: 'DEMO2', ten_du_an: '2600 Hà Bình Chánh' },
+            { ma_du_an: 'DEMO3', ten_du_an: '2Bis Ntmk Cái Mếp' },
+            { ma_du_an: 'DEMO4', ten_du_an: '2Bis Ntmk Nam Phong' },
+            { ma_du_an: 'DEMO5', ten_du_an: 'Dự Án 0,4 Ha, Đường 12 Ấp Bình Khánh' }
+        ];
+        categories.design = [
+            { ma_du_an: 'DEMO6', ten_du_an: '136 Lct' },
+            { ma_du_an: 'DEMO7', ten_du_an: '136 Thạnh Mỹ Lợi' },
+            { ma_du_an: 'DEMO8', ten_du_an: '18 Nguyễn Văn Trỗi' },
+            { ma_du_an: 'DEMO9', ten_du_an: '299 Tôn Thất Thuyết' }
+        ];
+        categories.construction = [
+            { ma_du_an: 'DEMO10', ten_du_an: 'Grand Manhattan' },
+            { ma_du_an: 'DEMO11', ten_du_an: 'Park Avenue' },
+            { ma_du_an: 'DEMO12', ten_du_an: 'Sunrise Garden Cần Giờ' },
+            { ma_du_an: 'DEMO13', ten_du_an: 'Sunrise Riverside' },
+            { ma_du_an: 'DEMO14', ten_du_an: 'Victoria Village' }
+        ];
+        categories.handover = [
+            { ma_du_an: 'DEMO15', ten_du_an: '19 Lê Quý Đôn' },
+            { ma_du_an: 'DEMO16', ten_du_an: 'Botanica Premier' },
+            { ma_du_an: 'DEMO17', ten_du_an: 'Galaxy 9' },
+            { ma_du_an: 'DEMO18', ten_du_an: 'Garden Gate' },
+            { ma_du_an: 'DEMO19', ten_du_an: 'Golden Mansion' }
+        ];
+        categories.divestment = [
+            { ma_du_an: 'DEMO20', ten_du_an: '14B Trần Ngọc Diện' },
+            { ma_du_an: 'DEMO21', ten_du_an: '232 Đỗ Xuân Hợp' },
+            { ma_du_an: 'DEMO22', ten_du_an: 'Chung Cư Hoàng Kim' },
+            { ma_du_an: 'DEMO23', ten_du_an: 'Saigon Broadway' }
+        ];
+    } else {
+        regionProjects.forEach((p, idx) => {
+            const st = (
+                p.hien_trang_dau_tu || p.nhom_du_an || ''
+            ).toLowerCase();
+            if (st.includes('nghiên cứu') || st.includes('chuẩn bị')) {
+                categories.research.push(p);
+            } else if (st.includes('thiết kế') || st.includes('đã mua')) {
+                categories.design.push(p);
+            } else if (st.includes('xây dựng') || st.includes('thi công')) {
+                categories.construction.push(p);
+            } else if (st.includes('bàn giao') || st.includes('hoàn thành')) {
+                categories.handover.push(p);
+            } else if (st.includes('thoái vốn') || st.includes('dừng')) {
+                categories.divestment.push(p);
+            } else {
+                const mod = idx % 5;
+                if (mod === 0) categories.research.push(p);
+                else if (mod === 1) categories.design.push(p);
+                else if (mod === 2) categories.construction.push(p);
+                else if (mod === 3) categories.handover.push(p);
+                else categories.divestment.push(p);
+            }
+        });
+    }
+
+    const renderCol = (list, colId, countId) => {
+        document.getElementById(countId).innerText = list.length;
+        const el = document.getElementById(colId);
+        if (!el) return;
+        el.innerHTML = list.map((item, i) => `
+            <div class="project-kanban-item" onclick="selectOverviewProject('${item.ma_du_an}')">
+                ${String(i + 1).padStart(2, '0')}. ${item.ten_du_an || item.ten_thuong_mai || item.ma_du_an}
+            </div>
+        `).join('');
+    };
+
+    renderCol(categories.research, 'list-research', 'count-research');
+    renderCol(categories.design, 'list-design', 'count-design');
+    renderCol(categories.construction, 'list-construction', 'count-construction');
+    renderCol(categories.handover, 'list-handover', 'count-handover');
+    renderCol(categories.divestment, 'list-divestment', 'count-divestment');
+}
+
+async function selectOverviewProject(projectCode) {
+    showOverviewLayer(3);
+    
+    let p = (state.projects || []).find(item => item.ma_du_an === projectCode);
+    if (!p) {
+        try {
+            const res = await fetch(`${API_URL}/projects/${projectCode}`);
+            if (res.ok) p = await res.json();
+        } catch (e) {
+            console.error('Fetch project detail error:', e);
+        }
+    }
+
+    const name = p?.ten_thuong_mai || p?.ten_phap_ly || p?.ten_du_an || projectCode;
+    document.getElementById('l3-project-name').innerText = name;
+    document.getElementById('l3-ten-phap-ly').innerText = p?.ten_phap_ly || name;
+    document.getElementById('l3-ten-thuong-mai').innerText = p?.ten_thuong_mai || name;
+    document.getElementById('l3-chu-dau-tu').innerText = p?.chu_dau_tu || 'Công ty TNHH Bất động sản Đà Lạt Valley';
+    document.getElementById('l3-quy-mo').innerText = p?.tong_dien_tich_ha ? `${p.tong_dien_tich_ha} ha` : '85.08 ha';
+    document.getElementById('l3-so-luong').innerText = p?.so_luong_san_pham ? `${p.so_luong_san_pham} căn NOTM` : '2586 căn NOTM';
+    document.getElementById('l3-dia-diem').innerText = p?.dia_diem_du_an || p?.khu_vuc || 'Phường Long Hưng, Thành phố Đồng Nai';
+    
+    if (p?.nguon_goc_du_an) {
+        document.getElementById('l3-nguon-goc').innerText = p.nguon_goc_du_an;
+    }
+}
+
+async function renderProjectOverviewDashboard() {
+    if (!state.projects || state.projects.length === 0) {
+        try {
+            const res = await fetch(`${API_URL}/projects`);
+            if (res.ok) {
+                state.projects = await res.json();
+            }
+        } catch (e) {
+            console.error('Fetch projects error:', e);
+        }
+    }
+    renderOverviewLayer1();
+}
+
+/* ==========================================================================
+   PROJECT COMMAND CENTER V2
+   Cấu hình khu vực từ database, không dùng dữ liệu demo/hard-code khi hiển thị.
+   Các declaration bên dưới thay thế implementation dashboard thử nghiệm phía trên.
+   ========================================================================== */
+
+function safeAreaColor(value) {
+    const color = String(value || '').trim();
+    return /^#[0-9a-f]{6}$/i.test(color) ? color : '#0f766e';
+}
+
+function findManagementRegion(regionCode) {
+    for (const area of state.managementAreas || []) {
+        const region = (area.regions || []).find(item => item.region_code === regionCode);
+        if (region) return { area, region };
+    }
+    return null;
+}
+
+function getRegionLeader(region) {
+    const leaders = (region?.team || []).filter(member =>
+        String(member.chuc_danh || '').toLowerCase().includes('giám đốc')
+    );
+    leaders.sort((a, b) => {
+        const aDeputy = String(a.chuc_danh || '').toLowerCase().includes('phó');
+        const bDeputy = String(b.chuc_danh || '').toLowerCase().includes('phó');
+        return Number(aDeputy) - Number(bDeputy);
+    });
+    return leaders[0] || (region?.team || [])[0] || null;
+}
+
+async function loadManagementAreas(force = false) {
+    if (!force && state.managementAreas?.length) return state.managementAreas;
+    try {
+        const response = await fetch(`${API_URL}/overview/areas`);
+        if (!response.ok) return [];
+        state.managementAreas = await response.json();
+        return state.managementAreas;
+    } catch (error) {
+        console.error('Không thể tải cấu hình khu vực:', error);
+        return [];
+    }
+}
+
+function showOverviewLayer(layerNum) {
+    document.querySelectorAll('#tab-project-overview .overview-layer').forEach(layer => {
+        layer.hidden = true;
+    });
+    const targetLayer = document.getElementById(`overview-layer-${layerNum}`);
+    if (targetLayer) targetLayer.hidden = false;
+    document.querySelector('#tab-project-overview .overview-stage')
+        ?.classList.toggle('is-drilldown', layerNum > 1);
+    document.getElementById('tab-project-overview')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+    });
+}
+
+function renderOverviewLayer1() {
+    showOverviewLayer(1);
+    const container = document.getElementById('management-areas-container');
+    if (!container) return;
+
+    const areas = state.managementAreas || [];
+    document.getElementById('overview-kpi-areas').innerText = areas.length;
+    document.getElementById('overview-kpi-regions').innerText = areas.reduce(
+        (total, area) => total + (area.regions || []).length, 0
+    );
+    document.getElementById('overview-kpi-projects').innerText = areas.reduce(
+        (total, area) => total + Number(area.project_count || 0), 0
+    ).toLocaleString('vi-VN');
+    document.getElementById('overview-kpi-headcount').innerText = areas.reduce(
+        (total, area) => total + Number(area.headcount || 0), 0
+    ).toLocaleString('vi-VN');
+
+    if (!areas.length) {
+        container.innerHTML = `
+            <div class="overview-empty">
+                <i class="bx bx-map-pin"></i>
+                <strong>Chưa có cấu hình khu vực</strong>
+                <span>Kiểm tra kết nối dữ liệu hoặc mở trang Quản lý khu vực.</span>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = areas.map(area => {
+        const regions = area.regions || [];
+        const leadership = [
+            area.director_name && `GĐ: ${area.director_name}`,
+            area.deputy_director_name && `PGĐ: ${area.deputy_director_name}`,
+        ].filter(Boolean).join(' · ');
+        return `
+            <article class="management-area-card" style="--area-accent:${safeAreaColor(area.accent_color)}">
+                <header class="management-area-header">
+                    <div class="area-number">${escapeHtml(area.area_code)}</div>
+                    <div>
+                        <h3>${escapeHtml(area.area_name)}</h3>
+                        <p>${escapeHtml(area.area_scope || 'Chưa cấu hình phạm vi')}</p>
+                    </div>
+                    <div class="area-summary">
+                        <strong>${Number(area.project_count || 0).toLocaleString('vi-VN')}</strong>
+                        <span>dự án</span>
+                    </div>
+                </header>
+                <div class="area-leadership ${leadership ? '' : 'is-empty'}">
+                    <i class="bx bx-user-voice"></i>
+                    <span>${escapeHtml(leadership || 'Chưa cấu hình Giám đốc / Phó Giám đốc khu vực')}</span>
+                </div>
+                <div class="area-region-grid">
+                    ${regions.map(region => {
+                        const leader = getRegionLeader(region);
+                        return `
+                            <button class="region-command-tile" type="button"
+                                data-region-code="${escapeHtml(region.region_code)}"
+                                onclick="selectOverviewRegionByCode(this.dataset.regionCode)">
+                                <div class="region-tile-top">
+                                    <span class="region-tile-code">${escapeHtml(region.region_code)}</span>
+                                    <i class="bx bx-right-arrow-alt"></i>
+                                </div>
+                                <h4>${escapeHtml(region.short_name || region.region_name)}</h4>
+                                <p>${escapeHtml(leader?.ho_ten || 'Chưa có nhân sự GMD')}</p>
+                                <div class="region-tile-footer">
+                                    <span><i class="bx bx-buildings"></i>${Number(region.project_count || 0)} dự án</span>
+                                    <span><i class="bx bx-user"></i>${Number(region.headcount || 0)} NS</span>
+                                </div>
+                            </button>`;
+                    }).join('')}
+                </div>
+            </article>`;
+    }).join('');
+}
+
+function selectOverviewRegionByCode(regionCode) {
+    const selected = findManagementRegion(regionCode);
+    if (!selected) {
+        showToast('Không tìm thấy cấu hình vùng dự án!', true);
+        return;
+    }
+    state.selectedOverviewRegion = selected.region;
+    renderOverviewLayer2(selected.region, selected.area);
+}
+
+function projectStatusBucket(project) {
+    const status = String(project.hien_trang_dau_tu || '').toLowerCase();
+    if (status.includes('nghiên cứu')) return 'research';
+    if (status.includes('thiết kế') || status.includes('đã mua')) return 'design';
+    if (status.includes('xây dựng') || status.includes('thi công')) return 'construction';
+    if (
+        status.includes('bàn giao')
+        || status.includes('hoàn thành')
+        || status.includes('vận hành')
+        || status.includes('hoạt động')
+    ) return 'handover';
+    if (
+        status.includes('thoái vốn')
+        || status.includes('đóng cửa')
+        || status.includes('dừng')
+    ) return 'divestment';
+    return 'research';
+}
+
+function renderKanbanColumn(items, columnId, countId) {
+    const count = document.getElementById(countId);
+    const container = document.getElementById(columnId);
+    if (count) count.innerText = items.length;
+    if (!container) return;
+    if (!items.length) {
+        container.innerHTML = '<div class="kanban-empty">Không có dự án</div>';
+        return;
+    }
+    container.innerHTML = items.map(project => `
+        <button class="project-kanban-item" type="button"
+            data-project-code="${escapeHtml(project.ma_du_an)}"
+            onclick="selectOverviewProject(this.dataset.projectCode)">
+            <span class="project-kanban-code">${escapeHtml(project.ma_du_an)}</span>
+            <strong>${escapeHtml(
+                project.ten_thuong_mai
+                || project.ten_phap_ly
+                || project.ten_du_an
+                || project.ma_du_an
+            )}</strong>
+            <i class="bx bx-chevron-right"></i>
+        </button>
+    `).join('');
+}
+
+function renderOverviewLayer2(region, area = null) {
+    showOverviewLayer(2);
+    state.selectedOverviewRegion = region;
+    const regionTitle = `BAN ĐIỀU HÀNH DỰ ÁN ${String(region.region_name).toUpperCase()}`;
+    document.getElementById('layer2-region-title').innerText = regionTitle;
+    document.getElementById('layer2-exec-title').innerText = regionTitle;
+    document.getElementById('layer2-region-code').innerText = region.region_code;
+    document.getElementById('layer2-project-count').innerText = Number(
+        region.project_count || 0
+    ).toLocaleString('vi-VN');
+    document.getElementById('layer2-exec-headcount').innerText = Number(
+        region.headcount || 0
+    ).toLocaleString('vi-VN');
+
+    const leader = getRegionLeader(region);
+    document.getElementById('layer2-exec-leader').innerText =
+        leader?.chuc_danh || 'Chưa có dữ liệu lãnh đạo OC GMD';
+    document.getElementById('layer2-exec-members').innerHTML = (region.team || []).length
+        ? (region.team || []).map(member => `
+            <span>
+                <strong>${escapeHtml(member.ho_ten)}</strong>
+                <small>${escapeHtml(member.chuc_danh || 'Chưa cập nhật chức danh')}</small>
+            </span>`).join('')
+        : '<span class="org-member-empty">Chưa có nhân sự mã OC GMD</span>';
+
+    const regionName = String(region.region_name || '').toLowerCase();
+    const projects = (state.projects || []).filter(project =>
+        String(project.khu_vuc || '').toLowerCase().includes(regionName)
+    );
+    const buckets = {
+        research: [], design: [], construction: [], handover: [], divestment: [],
+    };
+    projects.forEach(project => buckets[projectStatusBucket(project)].push(project));
+    const columns = [
+        ['research', 'list-research', 'count-research'],
+        ['design', 'list-design', 'count-design'],
+        ['construction', 'list-construction', 'count-construction'],
+        ['handover', 'list-handover', 'count-handover'],
+        ['divestment', 'list-divestment', 'count-divestment'],
+    ];
+    columns.forEach(([bucket, listId, countId]) => {
+        buckets[bucket].sort((a, b) => String(a.ten_du_an || '').localeCompare(
+            String(b.ten_du_an || ''), 'vi'
+        ));
+        renderKanbanColumn(buckets[bucket], listId, countId);
+    });
+
+    document.getElementById('layer3-back-label').innerText =
+        region.short_name || region.region_name;
+}
+
+function masterEntryCompletion(entry, config) {
+    const values = entry?.values || {};
+    const editableHeaders = (config?.headers || []).filter(header => header !== 'Mã dự án');
+    if (!editableHeaders.length) return 0;
+    const completed = editableHeaders.filter(header =>
+        String(values[header] ?? '').trim()
+    ).length;
+    return Math.round((completed / editableHeaders.length) * 100);
+}
+
+function firstMasterValue(values, keys) {
+    for (const key of keys) {
+        const value = String(values?.[key] ?? '').trim();
+        if (value) return value;
+    }
+    return '';
+}
+
+function formatProjectDate(value) {
+    const text = String(value || '').trim();
+    const isoMatch = text.match(/^(\d{4})-(\d{2})-(\d{2})(?:T00:00:00)?$/);
+    if (!isoMatch) return text;
+    return `${isoMatch[3]}/${isoMatch[2]}/${isoMatch[1]}`;
+}
+
+function overviewDepartmentGroups() {
+    const grouped = new Map();
+    (state.masterdataConfig || []).forEach(config => {
+        if (!/^(9\.[1-9]|4\.[1-4])\b/.test(config.nhom)) return;
+        if (!grouped.has(config.nhom)) grouped.set(config.nhom, []);
+        grouped.get(config.nhom).push(config);
+    });
+    return [...grouped.entries()].map(([code, configs]) => ({
+        code,
+        configs,
+        type: code.startsWith('9.') ? 'Phòng gián tiếp' : 'Phòng trực tiếp',
+        name: [...new Set(configs.map(config => config.phan_nhom))].join(' / '),
+        sort: Math.min(...configs.map(config => Number(config.sort_colum || 999))),
+    })).sort((a, b) => a.sort - b.sort);
+}
+
+function renderOverviewDepartmentSelector() {
+    const groups = overviewDepartmentGroups();
+    const chips = document.getElementById('l3-department-chips');
+    if (!chips || !groups.length) return;
+    if (!groups.some(group => group.code === state.selectedOverviewDepartment)) {
+        state.selectedOverviewDepartment = groups[0].code;
+    }
+    const indirect = groups.filter(group => group.type === 'Phòng gián tiếp');
+    const direct = groups.filter(group => group.type === 'Phòng trực tiếp');
+    const renderGroup = (label, items) => `
+        <div class="department-chip-group">
+            <span class="department-chip-group-label">${label}</span>
+            <div class="department-chip-list" role="tablist" aria-label="${label}">
+                ${items.map(group => `
+                    <button class="department-chip${group.code === state.selectedOverviewDepartment ? ' is-active' : ''}"
+                            type="button" role="tab"
+                            aria-selected="${group.code === state.selectedOverviewDepartment}"
+                            title="${escapeHtml(`${group.code} · ${group.name}`)}"
+                            data-department-code="${escapeHtml(group.code)}"
+                            onclick="selectOverviewDepartment(this.dataset.departmentCode)">
+                        ${escapeHtml(group.code)} · ${escapeHtml(group.name)}
+                    </button>`).join('')}
+            </div>
+        </div>`;
+    chips.innerHTML = `${renderGroup('9 Phòng Ban gián tiếp', indirect)}${renderGroup('4 Phòng Ban trực tiếp', direct)}`;
+}
+
+function selectOverviewDepartment(departmentCode) {
+    state.selectedOverviewDepartment = departmentCode || '9.1 HRC';
+    renderOverviewDepartmentSelector();
+    renderProjectDetailTable();
+}
+
+function renderProjectDetailTable() {
+    const department = overviewDepartmentGroups()
+        .find(group => group.code === state.selectedOverviewDepartment);
+    const configs = department?.configs || [];
+    const sheets = new Set(configs.map(config => config.sheet));
+    const rows = (state.overviewProjectEntries || [])
+        .filter(entry => sheets.has(entry.source_sheet));
+    const headers = [];
+    configs.forEach(config => config.headers
+        .filter(header => header !== 'Mã dự án')
+        .forEach(header => {
+            if (!headers.includes(header)) headers.push(header);
+        }));
+    const fieldLabels = Object.assign({}, ...configs.map(config => config.field_labels || {}));
+    const tableHead = document.getElementById('l3-details-table-head');
+    const body = document.getElementById('l3-details-table-body');
+    const columnCount = Math.max(headers.length + 1, 1);
+    tableHead.innerHTML = `<tr><th>STT</th>${headers.map(header =>
+        `<th>${escapeHtml(fieldLabels[header] || header)}</th>`
+    ).join('')}</tr>`;
+    document.getElementById('l3-detail-count').innerText =
+        `${rows.length.toLocaleString('vi-VN')} mục`;
+    if (!rows.length) {
+        body.innerHTML = `
+            <tr><td colspan="${columnCount}" class="no-data">
+                <i class="bx bx-data"></i> Phòng ban này chưa có dữ liệu chi tiết.
+            </td></tr>`;
+        return;
+    }
+    body.innerHTML = rows.map((entry, index) => `
+        <tr>
+            <td><span class="detail-row-number">${index + 1}</span></td>
+            ${headers.map(header => {
+                let value = entry.values?.[header] || '';
+                if (header === 'Ngày hoàn thành' || header === 'Ngày tổ chức') {
+                    value = formatProjectDate(value);
+                }
+                return `<td>${escapeHtml(value || '—')}</td>`;
+            }).join('')}
+        </tr>
+    `).join('');
+}
+
+async function selectOverviewProject(projectCode) {
+    showOverviewLayer(3);
+    state.selectedOverviewProject = projectCode;
+    state.selectedOverviewDepartment = '9.1 HRC';
+    state.overviewProjectEntries = [];
+    document.getElementById('l3-project-name').innerText = 'Đang tải dự án...';
+    document.getElementById('l3-details-table-body').innerHTML =
+        '<tr><td colspan="7" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải master data...</td></tr>';
+
+    let project = (state.projects || []).find(item => item.ma_du_an === projectCode);
+    try {
+        const requests = [
+            project
+                ? Promise.resolve(null)
+                : fetch(`${API_URL}/projects/${encodeURIComponent(projectCode)}`),
+            fetch(`${API_URL}/masterdata/entries?project_code=${encodeURIComponent(projectCode)}`),
+        ];
+        const [projectResponse, entriesResponse] = await Promise.all(requests);
+        if (projectResponse?.ok) project = await projectResponse.json();
+        const entries = entriesResponse.ok ? await entriesResponse.json() : [];
+        if (!state.masterdataConfig?.length) await loadMasterdataConfig();
+
+        const displayName = project?.ten_thuong_mai
+            || project?.ten_phap_ly
+            || project?.ten_du_an
+            || projectCode;
+        const setText = (id, value, fallback = '—') => {
+            const element = document.getElementById(id);
+            if (element) element.innerText = String(value || fallback);
+        };
+        setText('l3-project-name', displayName);
+        setText('l3-project-code', project?.ma_du_an);
+        setText('l3-project-status', project?.hien_trang_dau_tu, 'Chưa phân loại');
+        setText('l3-project-region', project?.khu_vuc);
+        setText('l3-ten-phap-ly', project?.ten_phap_ly || project?.ten_du_an);
+        setText('l3-ten-thuong-mai', project?.ten_thuong_mai);
+        setText('l3-chu-dau-tu', project?.chu_dau_tu);
+        setText('l3-loai-hinh', project?.loai_hinh);
+        setText(
+            'l3-quy-mo',
+            project?.tong_dien_tich_ha ? `${project.tong_dien_tich_ha} ha` : ''
+        );
+        setText(
+            'l3-so-luong',
+            project?.so_luong_san_pham
+                ? `${project.so_luong_san_pham} sản phẩm`
+                : ''
+        );
+        setText('l3-dia-diem', project?.dia_diem_du_an || project?.khu_vuc);
+        setText(
+            'l3-nguon-goc',
+            project?.nguon_goc_du_an,
+            'Chưa có dữ liệu nguồn gốc dự án.'
+        );
+        setText(
+            'l3-current-date',
+            new Intl.DateTimeFormat('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            }).format(new Date())
+        );
+        state.overviewProjectEntries = entries;
+        renderOverviewDepartmentSelector();
+        renderProjectDetailTable();
+    } catch (error) {
+        console.error('Không thể tải chi tiết dự án:', error);
+        showToast('Không thể tải chi tiết dự án!', true);
+    }
+}
+
+async function renderProjectOverviewDashboard() {
+    showOverviewLayer(1);
+    if (!state.projects?.length) {
+        try {
+            const response = await fetch(`${API_URL}/projects`);
+            if (response.ok) state.projects = await response.json();
+        } catch (error) {
+            console.error('Không thể tải danh mục dự án:', error);
+        }
+    }
+    await loadManagementAreas(true);
+    renderOverviewLayer1();
+}
+
+function renderRegionManagement() {
+    const container = document.getElementById('region-management-container');
+    if (!container) return;
+    const areas = state.managementAreas || [];
+    if (!areas.length) {
+        container.innerHTML = '<div class="overview-empty">Chưa có cấu hình khu vực.</div>';
+        return;
+    }
+    container.innerHTML = areas.map(area => `
+        <article class="region-config-card" style="--area-accent:${safeAreaColor(area.accent_color)}">
+            <form onsubmit="saveManagementArea(event, ${escapeJsArg(area.area_code)})">
+                <div class="region-config-heading">
+                    <span>${escapeHtml(area.area_code)}</span>
+                    <div><h3>${escapeHtml(area.area_name)}</h3><p>${(area.regions || []).length} vùng đang hoạt động</p></div>
+                    <button class="btn btn-primary btn-sm" type="submit"><i class="bx bx-save"></i> Lưu khu vực</button>
+                </div>
+                <div class="region-config-fields">
+                    <label>Tên khu vực<input class="form-control" name="area_name" value="${escapeHtml(area.area_name)}"></label>
+                    <label>Phạm vi vùng<input class="form-control" name="area_scope" value="${escapeHtml(area.area_scope || '')}"></label>
+                    <label>Màu nhận diện<input class="form-control" name="accent_color" value="${escapeHtml(area.accent_color || '')}"></label>
+                    <label>Giám đốc khu vực<input class="form-control" name="director_name" value="${escapeHtml(area.director_name || '')}"></label>
+                    <label>Phó Giám đốc khu vực<input class="form-control" name="deputy_director_name" value="${escapeHtml(area.deputy_director_name || '')}"></label>
+                    <label>Phụ trách Pháp lý<input class="form-control" name="legal_lead" value="${escapeHtml(area.legal_lead || '')}"></label>
+                    <label>Phụ trách Đầu tư<input class="form-control" name="investment_lead" value="${escapeHtml(area.investment_lead || '')}"></label>
+                    <label>Phụ trách Đối ngoại<input class="form-control" name="external_relations_lead" value="${escapeHtml(area.external_relations_lead || '')}"></label>
+                </div>
+            </form>
+            <div class="region-config-table-wrap">
+                <table class="region-config-table">
+                    <thead><tr><th>Mã vùng</th><th>Tên hiển thị</th><th>Tên đối chiếu dữ liệu</th><th>Thứ tự</th><th>Thao tác</th></tr></thead>
+                    <tbody>
+                        ${(area.regions || []).map(region => `
+                            <tr data-region-code="${escapeHtml(region.region_code)}">
+                                <td><code>${escapeHtml(region.region_code)}</code></td>
+                                <td><input class="form-control js-short-name" value="${escapeHtml(region.short_name || '')}"></td>
+                                <td><input class="form-control js-region-name" value="${escapeHtml(region.region_name || '')}"></td>
+                                <td><input class="form-control js-sort-order" type="number" value="${Number(region.sort_order || 0)}"></td>
+                                <td><button class="btn-icon" type="button" onclick="saveManagementRegion(this)"><i class="bx bx-check"></i></button></td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    `).join('');
+}
+
+async function loadRegionManagement() {
+    await loadManagementAreas(true);
+    renderRegionManagement();
+}
+
+async function saveManagementArea(event, areaCode) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries());
+    try {
+        await fetch(`${API_URL}/management/areas/${encodeURIComponent(areaCode)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+        showToast(`Đã lưu cấu hình ${areaCode}.`);
+        await loadRegionManagement();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function saveManagementRegion(button) {
+    const row = button.closest('tr');
+    const regionCode = row?.dataset.regionCode;
+    if (!regionCode) return;
+    const payload = {
+        short_name: row.querySelector('.js-short-name').value.trim(),
+        region_name: row.querySelector('.js-region-name').value.trim(),
+        sort_order: Number(row.querySelector('.js-sort-order').value || 0),
+        is_active: 1,
+    };
+    try {
+        await fetch(`${API_URL}/management/regions/${encodeURIComponent(regionCode)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        showToast(`Đã lưu vùng ${regionCode}.`);
+        await loadRegionManagement();
+    } catch (error) {
+        console.error(error);
+    }
 }

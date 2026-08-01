@@ -2243,21 +2243,53 @@ textarea.form-control {
     text-transform: uppercase;
 }
 
+.project-table {
+    width: 100%;
+    min-width: 1180px;
+    table-layout: fixed;
+}
+
+.project-table .project-col-code { width: 10%; }
+.project-table .project-col-name { width: 18%; }
+.project-table .project-col-region { width: 20%; }
+.project-table .project-col-status { width: 13%; }
+.project-table .project-col-investor { width: 17%; }
+.project-table .project-col-scale { width: 8%; }
+.project-table .project-col-quality { width: 8%; }
+.project-table .project-col-action { width: 6%; }
+
 .project-table td {
     vertical-align: middle;
 }
 
 .project-identity strong {
     color: var(--text-main);
-    display: block;
+    display: -webkit-box;
     font-size: 0.9rem;
-    max-width: 260px;
+    max-width: none;
+    overflow: hidden;
+    line-height: 1.35;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
 .project-identity span,
 .project-meta {
     color: var(--text-muted);
     font-size: 0.75rem;
+}
+
+.project-table .code-pill {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-region-cell {
+    color: #334e68;
+    font-size: .78rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
 }
 
 .code-pill {

@@ -513,7 +513,7 @@ function setProjectFilterOptions(projects) {
     )]
         .sort((a, b) => a.localeCompare(b, 'vi'));
 
-    regionSelect.innerHTML = '<option value="">Tất cả khu vực</option>' +
+    regionSelect.innerHTML = '<option value="">Tất cả Vùng</option>' +
         regions.map(region => `<option value="${escapeHtml(region)}">${escapeHtml(region)}</option>`).join('');
     statusSelect.innerHTML = '<option value="">Tất cả hiện trạng</option>' +
         statuses.map(status => {
@@ -626,7 +626,7 @@ function renderProjectOverviewTable(projects) {
                         <span>${escapeHtml(legalName || 'Chưa có tên pháp lý')}</span>
                     </div>
                 </td>
-                <td>${escapeHtml(project.khu_vuc || '—')}</td>
+                <td class="project-region-cell" title="${escapeHtml(project.khu_vuc || '')}">${escapeHtml(project.khu_vuc || '—')}</td>
                 <td><span class="status-pill">${escapeHtml(statusLabel)}</span></td>
                 <td>${escapeHtml(project.chu_dau_tu || '—')}</td>
                 <td>

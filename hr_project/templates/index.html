@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=11.4.2">
+    <link rel="stylesheet" href="/static/css/style.css?v=11.4.3">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -471,7 +471,7 @@
                         </div>
                         <div class="filter-group">
                             <select id="project-filter-region" class="filter-select" onchange="filterProjectOverview()">
-                                <option value="">Tất cả khu vực</option>
+                                <option value="">Tất cả Vùng</option>
                             </select>
                             <select id="project-filter-status" class="filter-select" onchange="filterProjectOverview()">
                                 <option value="">Tất cả hiện trạng</option>
@@ -493,11 +493,21 @@
                         </div>
                         <div class="table-responsive">
                             <table class="project-table">
+                                <colgroup>
+                                    <col class="project-col-code">
+                                    <col class="project-col-name">
+                                    <col class="project-col-region">
+                                    <col class="project-col-status">
+                                    <col class="project-col-investor">
+                                    <col class="project-col-scale">
+                                    <col class="project-col-quality">
+                                    <col class="project-col-action">
+                                </colgroup>
                                 <thead>
                                     <tr>
                                         <th>Mã dự án</th>
-                                        <th>Dự án</th>
-                                        <th>Khu vực</th>
+                                        <th>Tên dự án</th>
+                                        <th>Vùng</th>
                                         <th>Hiện trạng</th>
                                         <th>Chủ đầu tư</th>
                                         <th>Quy mô</th>
@@ -883,7 +893,7 @@
                                 <input type="text" id="project-name-input" class="form-control" placeholder="Tên đang dùng trong danh mục đầu tư" required>
                             </div>
                             <div class="form-group">
-                                <label for="project-region-input">Khu vực *</label>
+                                <label for="project-region-input">Vùng *</label>
                                 <input type="text" id="project-region-input" class="form-control" placeholder="Ví dụ: TP.HCM 1" required>
                             </div>
                             <div class="form-group">
@@ -1425,7 +1435,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=11.4.1"></script>
+    <script src="/static/js/main.js?v=11.4.2"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">

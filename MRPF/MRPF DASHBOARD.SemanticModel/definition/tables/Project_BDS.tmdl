@@ -285,10 +285,12 @@ table Project_BDS
 	column Nhóm =
 			SWITCH(
 			    TRUE(),
-			    CONTAINSSTRING(Project_BDS[project_type],"Nhà ở"),"Nhà ở",
-			    CONTAINSSTRING(Project_BDS[project_type],"Nghỉ dưỡng"),"Nghỉ dưỡng",
-			    CONTAINSSTRING(Project_BDS[project_type],"Khu công nghiệp"),"Khu công nghiệp",
-			    "Bất động sản thương mại")
+			    CONTAINSSTRING('Project_BDS'[project_type], "Nhà ở XH"), "Nhà ở xã hội",
+			    CONTAINSSTRING('Project_BDS'[project_type], "Nhà ở"), "Nhà ở",
+			    CONTAINSSTRING('Project_BDS'[project_type], "Nghỉ dưỡng"), "Nghỉ dưỡng",
+			    CONTAINSSTRING('Project_BDS'[project_type], "Khu công nghiệp"), "Khu công nghiệp",
+			    "Bất động sản thương mại"
+			)
 		lineageTag: ee658bca-24b8-4541-b776-bb9592c60d42
 		summarizeBy: none
 
@@ -473,7 +475,7 @@ table Project_BDS
 
 	column salesOpeningDate
 		dataType: dateTime
-		formatString: General Date
+		formatString: yyyy-mm-dd
 		lineageTag: 36a6406c-a7dc-4f4f-8878-6c2c8d4bad8e
 		summarizeBy: none
 		sourceColumn: salesOpeningDate
@@ -483,7 +485,13 @@ table Project_BDS
 			relationship: a31ab059-bd9e-45f7-8413-165e3747dc72
 			defaultHierarchy: LocalDateTable_9cdebaa8-cdbd-4c4d-9918-cc2dfdb2f775.'Date Hierarchy'
 
+		changedProperty = DataType
+
 		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
 
 	column endDate
 		dataType: dateTime
@@ -554,10 +562,14 @@ table Project_BDS
 		source =
 				let
 				    Source = Sql.Database("10.16.19.14", "INVESTMENT_REPORT", [Query="SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)"]),
-				    #"Filtered Rows" = Table.SelectRows(Source, each ([isDeactivated] = false)),
+				    #"Filtered Rows" = Table.SelectRows(Source, each [isDeactivated] = false),
 				    #"Split Column by Delimiter" = Table.SplitColumn(#"Filtered Rows", "phase_status", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"phase_status.1", "phase_status.2"}),
 				    #"Changed Type" = Table.TransformColumnTypes(#"Split Column by Delimiter",{{"phase_status.1", type text}, {"phase_status.2", type text}}),
-				    #"Appended Query" = Table.Combine({#"Changed Type", Nguon_Cung_Du_kien})
+				    #"Prepared Master Rows" = Table.RenameColumns(Nguon_Cung_Du_kien, {{"id", "realEstateProjectTypeId"}, {"code", "project_type_code"}}, MissingField.Ignore),
+				    #"Fact Keys" = Table.Distinct(Table.SelectColumns(#"Changed Type", {"realEstateProjectTypeId"})),
+				    #"Missing Master Rows" = Table.NestedJoin(#"Prepared Master Rows", {"realEstateProjectTypeId"}, #"Fact Keys", {"realEstateProjectTypeId"}, "_FactMatch", JoinKind.LeftAnti),
+				    #"Removed Fact Match" = Table.RemoveColumns(#"Missing Master Rows", {"_FactMatch"}),
+				    #"Appended Query" = Table.Combine({#"Changed Type", #"Removed Fact Match"})
 				in
 				    #"Appended Query"
 

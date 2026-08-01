@@ -1760,6 +1760,121 @@ def manage_masterdata_entries():
     finally:
         conn.close()
 
+
+@app.route('/api/masterdata/entries/bulk', methods=['POST'])
+def save_masterdata_entries_bulk():
+    """Lưu toàn bộ Master Data của một dự án trong một transaction.
+
+    Form Thông tin dự án có thể chứa nhiều dòng thuộc 15 sheet. Endpoint đơn lẻ
+    trước đây khiến trình duyệt phải gửi và chờ từng dòng; bulk save giữ nguyên
+    quy tắc chuẩn hóa nhưng chỉ mở một kết nối và commit một lần.
+    """
+    user = get_current_user()
+    data = request.json or {}
+    project_code = clean_master_value(data.get('project_code'))
+    entries = data.get('entries') or []
+    if not project_code:
+        return jsonify({'error': 'Vui lòng chọn dự án!'}), 400
+    if not isinstance(entries, list):
+        return jsonify({'error': 'Danh sách Master Data không hợp lệ!'}), 400
+    if len(entries) > 500:
+        return jsonify({'error': 'Mỗi lần chỉ được lưu tối đa 500 nội dung!'}), 400
+    if not check_project_region(project_code, user):
+        return jsonify({'error': 'Bạn không có quyền sửa dự án ở vùng khác!'}), 403
+
+    normalized_entries = []
+    for item in entries:
+        if not isinstance(item, dict):
+            return jsonify({'error': 'Nội dung Master Data không hợp lệ!'}), 400
+        sheet_name = clean_master_value(item.get('source_sheet'))
+        if sheet_name not in MASTERDATA_SHEETS:
+            return jsonify({'error': f'Sheet Master Data không hợp lệ: {sheet_name}'}), 400
+        entry_id = item.get('id')
+        if entry_id not in (None, ''):
+            try:
+                entry_id = int(entry_id)
+            except (TypeError, ValueError):
+                return jsonify({'error': 'ID Master Data không hợp lệ!'}), 400
+        values = normalize_master_values(item.get('values') or {}, sheet_name)
+        values['Mã dự án'] = project_code
+        normalized_entries.append({
+            'id': entry_id,
+            'source_sheet': sheet_name,
+            'values': values,
+        })
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            SELECT id, project_code, source_sheet
+            FROM masterdata_entries
+            WHERE project_code = ?
+        ''', (project_code,))
+        existing_entries = {int(row['id']): dict(row) for row in cursor.fetchall()}
+
+        for item in normalized_entries:
+            if item['id'] is None:
+                continue
+            existing = existing_entries.get(item['id'])
+            if not existing or existing['source_sheet'] != item['source_sheet']:
+                conn.rollback()
+                return jsonify({'error': 'Master Data không thuộc dự án hoặc sai danh mục!'}), 400
+
+        cursor.execute('''
+            SELECT source_sheet, COALESCE(MAX(source_row), 1) AS max_row
+            FROM masterdata_entries
+            WHERE project_code = ?
+            GROUP BY source_sheet
+        ''', (project_code,))
+        next_rows = {
+            row['source_sheet']: int(row['max_row'])
+            for row in cursor.fetchall()
+        }
+        updated_at = datetime.now().isoformat(timespec='seconds')
+        updated_by = session.get('username', '')
+        saved_ids = []
+
+        for item in normalized_entries:
+            data_json = json.dumps(item['values'], ensure_ascii=False)
+            if item['id'] is not None:
+                cursor.execute('''
+                    UPDATE masterdata_entries
+                    SET data_json = ?, updated_at = ?, updated_by = ?
+                    WHERE id = ? AND project_code = ?
+                ''', (
+                    data_json, updated_at, updated_by,
+                    item['id'], project_code
+                ))
+                saved_ids.append(item['id'])
+                continue
+
+            sheet_name = item['source_sheet']
+            source_row = next_rows.get(sheet_name, 1) + 1
+            next_rows[sheet_name] = source_row
+            cursor.execute('''
+                INSERT INTO masterdata_entries (
+                    project_code, source_sheet, source_row, data_json,
+                    updated_at, updated_by
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                project_code, sheet_name, source_row, data_json,
+                updated_at, updated_by
+            ))
+            saved_ids.append(cursor.lastrowid)
+
+        conn.commit()
+        return jsonify({
+            'success': True,
+            'saved': len(saved_ids),
+            'ids': saved_ids,
+        })
+    except Exception as ex:
+        conn.rollback()
+        return jsonify({'error': f'Không thể lưu Master Data: {ex}'}), 500
+    finally:
+        conn.close()
+
 @app.route('/api/masterdata/entries/<int:entry_id>', methods=['PUT', 'DELETE'])
 def manage_masterdata_entry(entry_id):
     user = get_current_user()

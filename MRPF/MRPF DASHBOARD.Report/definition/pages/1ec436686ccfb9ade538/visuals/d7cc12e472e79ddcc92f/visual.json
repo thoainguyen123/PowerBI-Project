@@ -92,7 +92,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
@@ -448,7 +448,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Nguồn cung sơ cấp theo giá bán'"
+                  "Value": "'Khoảng giá của các dự án sơ cấp'"
                 }
               }
             },

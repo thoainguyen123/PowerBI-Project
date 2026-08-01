@@ -6341,3 +6341,1070 @@ textarea.form-control {
     min-height: 28px;
     margin-top: auto;
 }
+
+/* Project overview · area command deck */
+#tab-project-overview .management-areas-command {
+    display: grid;
+    gap: .85rem;
+    min-width: 0;
+}
+
+#tab-project-overview .overview-show-all-areas {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: .42rem;
+    padding: .52rem .72rem;
+    color: #0f766e;
+    font-size: .68rem;
+    font-weight: 750;
+    background: #fff;
+    border: 1px solid #bcded9;
+    border-radius: 10px;
+    box-shadow: 0 10px 22px -22px rgba(15, 118, 110, .8);
+    cursor: pointer;
+    transition: background-color .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+#tab-project-overview .overview-show-all-areas i {
+    font-size: .92rem;
+}
+
+#tab-project-overview .overview-show-all-areas strong {
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+}
+
+#tab-project-overview .overview-show-all-areas:hover,
+#tab-project-overview .overview-show-all-areas.is-active {
+    background: #eaf8f5;
+    border-color: #0d9488;
+    box-shadow: 0 14px 24px -20px rgba(13, 148, 136, .75);
+}
+
+#tab-project-overview .overview-show-all-areas:focus-visible {
+    outline: 3px solid rgba(13, 148, 136, .22);
+    outline-offset: 2px;
+}
+
+#tab-project-overview .management-area-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: .65rem;
+    overflow-x: visible;
+    padding: 2px;
+    scrollbar-color: #c6d6e5 transparent;
+    scrollbar-width: thin;
+}
+
+#tab-project-overview .management-area-card {
+    position: relative;
+    display: flex;
+    height: auto;
+    min-height: 148px;
+    align-self: auto;
+    flex-direction: column;
+    padding: .8rem .85rem .75rem;
+    overflow: hidden;
+    color: var(--bod-navy-900);
+    text-align: left;
+    background: #fff;
+    border: 1px solid #dbe6f0;
+    border-top: 3px solid var(--area-accent);
+    border-radius: 13px;
+    box-shadow: 0 10px 24px -24px rgba(15, 39, 66, .8);
+    cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+#tab-project-overview .management-area-card::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    content: '';
+    background: var(--area-accent);
+    opacity: 0;
+    transition: opacity .18s ease;
+}
+
+#tab-project-overview .management-area-card:hover {
+    background: #fbfdff;
+    border-color: #bfd1e1;
+    box-shadow: 0 16px 28px -24px rgba(15, 39, 66, .65);
+}
+
+#tab-project-overview .management-area-card.is-active {
+    background: color-mix(in srgb, var(--area-accent) 7%, #fff);
+    border-color: color-mix(in srgb, var(--area-accent) 48%, #dbe6f0);
+    box-shadow: 0 16px 30px -24px color-mix(in srgb, var(--area-accent) 55%, transparent);
+}
+
+#tab-project-overview .management-area-card.is-active::after {
+    opacity: 1;
+}
+
+#tab-project-overview .management-area-card:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--area-accent) 45%, #fff);
+    outline-offset: 2px;
+}
+
+#tab-project-overview .management-area-tab-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .6rem;
+    margin-bottom: .55rem;
+}
+
+#tab-project-overview .management-area-card .area-number {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: .7rem;
+    box-shadow: 0 8px 18px -13px var(--area-accent);
+}
+
+#tab-project-overview .management-area-card .area-summary {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: .3rem;
+    color: #64748b;
+    text-align: right;
+}
+
+#tab-project-overview .management-area-card .area-summary strong {
+    color: var(--bod-navy-800);
+    font-size: 1.05rem;
+    font-variant-numeric: tabular-nums;
+}
+
+#tab-project-overview .management-area-card .area-summary small {
+    font-size: .62rem;
+    font-weight: 650;
+}
+
+#tab-project-overview .management-area-card h3 {
+    min-height: 2.35em;
+    margin: 0 0 .25rem;
+    overflow: hidden;
+    color: var(--bod-navy-900);
+    font-size: .78rem;
+    line-height: 1.18;
+    text-transform: uppercase;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-card p {
+    min-height: 2.6em;
+    margin: 0;
+    overflow: hidden;
+    color: #64748b;
+    font-size: .65rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-tab-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: .28rem;
+    margin-top: auto;
+    padding-top: .5rem;
+    color: color-mix(in srgb, var(--area-accent) 82%, #173a5e);
+    font-size: .62rem;
+    font-weight: 750;
+}
+
+#tab-project-overview .management-area-tab-meta i {
+    font-size: .8rem;
+}
+
+#tab-project-overview .management-area-panel {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #d8e4ee;
+    border-top: 3px solid var(--area-accent);
+    border-radius: 15px;
+    box-shadow: 0 18px 36px -32px rgba(15, 39, 66, .7);
+}
+
+#tab-project-overview .management-area-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 90px;
+    padding: .9rem 1rem;
+    background: linear-gradient(110deg,
+        color-mix(in srgb, var(--area-accent) 8%, #f8fbfd),
+        #fff 58%);
+    border-bottom: 1px solid #e5edf4;
+}
+
+#tab-project-overview .management-area-panel-title {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: .8rem;
+}
+
+#tab-project-overview .management-area-panel-title .area-number {
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    box-shadow: 0 10px 22px -15px var(--area-accent);
+}
+
+#tab-project-overview .management-area-panel-title .area-number-all i {
+    font-size: 1.12rem;
+}
+
+#tab-project-overview .management-area-panel-kicker {
+    display: block;
+    margin-bottom: .18rem;
+    color: var(--area-accent);
+    font-size: .58rem;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+#tab-project-overview .management-area-panel-title h3 {
+    margin: 0 0 .22rem;
+    color: var(--bod-navy-900);
+    font-size: .92rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+#tab-project-overview .management-area-panel-title p {
+    margin: 0;
+    color: #64748b;
+    font-size: .68rem;
+}
+
+#tab-project-overview .management-area-panel-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(68px, 1fr));
+    gap: .45rem;
+}
+
+#tab-project-overview .management-area-panel-summary > span {
+    display: grid;
+    min-width: 76px;
+    justify-items: center;
+    gap: .15rem;
+    padding: .52rem .65rem;
+    background: rgba(255, 255, 255, .82);
+    border: 1px solid #dce7f0;
+    border-radius: 10px;
+}
+
+#tab-project-overview .management-area-panel-summary strong {
+    color: var(--bod-navy-800);
+    font-size: .95rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+#tab-project-overview .management-area-panel-summary small {
+    color: #718399;
+    font-size: .56rem;
+    font-weight: 750;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+}
+
+#tab-project-overview .management-area-panel .area-leadership {
+    height: auto;
+    min-height: 42px;
+    padding: .55rem 1rem;
+    background: #fbfdff;
+    border-bottom-color: #e5edf4;
+    font-size: .7rem;
+}
+
+#tab-project-overview .management-area-panel .area-leadership.is-hint {
+    color: #527087;
+    background: #f5fbfa;
+}
+
+#tab-project-overview .management-area-panel .area-region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-auto-rows: 132px;
+    align-content: start;
+    gap: .6rem;
+    padding: .75rem;
+}
+
+#tab-project-overview .management-area-panel .region-command-tile {
+    height: 132px;
+    min-height: 132px;
+    padding: .68rem .72rem;
+    background: #f7fafc;
+    border-color: #d5e2ed;
+    border-radius: 11px;
+    box-shadow: 0 10px 20px -22px rgba(15, 39, 66, .8);
+}
+
+#tab-project-overview .management-area-panel .region-command-tile:hover {
+    background: #fff;
+    border-color: color-mix(in srgb, var(--area-accent) 50%, #cbdbe9);
+    box-shadow: 0 16px 26px -22px color-mix(in srgb, var(--area-accent) 45%, transparent);
+}
+
+#tab-project-overview .management-area-panel .region-command-tile h4 {
+    margin: .45rem 0 .18rem;
+    font-size: .86rem;
+}
+
+#tab-project-overview .management-area-panel .region-command-tile p {
+    font-size: .7rem;
+}
+
+#tab-project-overview .management-area-panel .region-tile-code {
+    min-width: 0;
+    overflow: hidden;
+    font-size: .63rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tab-project-overview .management-area-panel .region-tile-area {
+    flex: 0 0 auto;
+    margin-left: auto;
+    padding: .14rem .3rem;
+    color: var(--region-accent);
+    font-size: .52rem;
+    font-weight: 850;
+    line-height: 1;
+    background: color-mix(in srgb, var(--region-accent) 10%, #fff);
+    border: 1px solid color-mix(in srgb, var(--region-accent) 26%, #e2e8f0);
+    border-radius: 5px;
+}
+
+#tab-project-overview .management-area-panel .region-tile-footer span {
+    font-size: .65rem;
+}
+
+#tab-project-overview .management-area-panel.is-all .area-region-grid {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    grid-auto-rows: 118px;
+    gap: .52rem;
+}
+
+#tab-project-overview .management-area-panel.is-all .region-command-tile {
+    height: 118px;
+    min-height: 118px;
+    padding: .58rem .62rem;
+    border-top: 2px solid var(--region-accent);
+}
+
+#tab-project-overview .management-area-panel.is-all .region-command-tile:hover {
+    border-color: color-mix(in srgb, var(--region-accent) 48%, #cbdbe9);
+    border-top-color: var(--region-accent);
+    box-shadow: 0 16px 26px -22px color-mix(in srgb, var(--region-accent) 45%, transparent);
+}
+
+#tab-project-overview .management-area-panel.is-all .region-command-tile h4 {
+    margin: .34rem 0 .12rem;
+    font-size: .78rem;
+}
+
+#tab-project-overview .management-area-panel.is-all .region-command-tile p {
+    font-size: .64rem;
+}
+
+#tab-project-overview .management-area-panel.is-all .region-tile-footer span {
+    font-size: .59rem;
+}
+
+@media (max-width: 1180px) {
+    #tab-project-overview .management-area-tabs {
+        grid-template-columns: repeat(5, minmax(190px, 1fr));
+        overflow-x: auto;
+        padding-bottom: .35rem;
+    }
+
+    #tab-project-overview .management-area-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 720px) {
+    #tab-project-overview .overview-section-heading {
+        align-items: flex-start;
+        gap: .65rem;
+        flex-direction: column;
+    }
+
+    #tab-project-overview .management-area-panel-summary {
+        width: 100%;
+    }
+
+    #tab-project-overview .management-area-panel .area-region-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-auto-rows: 138px;
+    }
+
+    #tab-project-overview .management-area-panel .region-command-tile {
+        height: 138px;
+        min-height: 138px;
+    }
+
+    #tab-project-overview .management-area-panel.is-all .area-region-grid {
+        grid-auto-rows: 126px;
+    }
+
+    #tab-project-overview .management-area-panel.is-all .region-command-tile {
+        height: 126px;
+        min-height: 126px;
+    }
+}
+
+/* Project overview · Layer 3 command file */
+#tab-project-overview {
+    scroll-margin-top: 92px;
+}
+
+#project-save-button[aria-busy="true"] {
+    cursor: wait;
+    opacity: .82;
+}
+
+#overview-layer-3 .project-detail-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    min-height: 126px;
+    padding: 1.05rem 1.15rem;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(255, 255, 255, .96), rgba(255, 255, 255, .96)),
+        linear-gradient(90deg, rgba(37, 99, 235, .09) 1px, transparent 1px),
+        linear-gradient(rgba(37, 99, 235, .09) 1px, transparent 1px);
+    background-size: auto, 24px 24px, 24px 24px;
+    border: 1px solid #d7e3ed;
+    border-top: 3px solid #0d9488;
+    border-radius: 16px;
+    box-shadow: 0 18px 38px -32px rgba(15, 39, 66, .75);
+}
+
+#overview-layer-3 .project-detail-header::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 180px;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    background: radial-gradient(circle at 100% 0, rgba(13, 148, 136, .12), transparent 62%);
+}
+
+#overview-layer-3 .project-detail-header > * {
+    position: relative;
+    z-index: 1;
+}
+
+#overview-layer-3 .project-detail-header .overview-inline-back {
+    min-height: 40px;
+    padding: .55rem .7rem;
+    background: #f8fbfd;
+}
+
+#overview-layer-3 .pheader-title-box {
+    min-width: 0;
+    gap: .78rem;
+}
+
+#overview-layer-3 .pheader-icon {
+    flex: 0 0 54px;
+    width: 54px;
+    height: 54px;
+    color: #fff;
+    background: linear-gradient(145deg, #173a5e, #0d9488);
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 14px 26px -20px rgba(13, 148, 136, .9);
+}
+
+#overview-layer-3 .pheader-project-copy {
+    min-width: 0;
+}
+
+#overview-layer-3 .pheader-eyebrow {
+    display: block;
+    margin-bottom: .18rem;
+    color: #0d9488;
+    font-size: .58rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+#overview-layer-3 .pheader-name {
+    max-width: 560px;
+    margin: 0 0 .38rem;
+    overflow: hidden;
+    color: #0f2742;
+    font-size: clamp(1.18rem, 1.55vw, 1.7rem);
+    line-height: 1.18;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#overview-layer-3 .project-detail-tags {
+    gap: .32rem;
+}
+
+#overview-layer-3 .project-detail-tags span {
+    padding: .22rem .42rem;
+    color: #3d566f;
+    background: #f2f6fa;
+    border-color: #dce6ee;
+    border-radius: 6px;
+    font-size: .62rem;
+}
+
+#overview-layer-3 .project-detail-tags span:first-child {
+    color: #1d4f7a;
+    background: #edf5ff;
+    border-color: #cfe0f3;
+    font-weight: 800;
+}
+
+#overview-layer-3 .pheader-signals {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(86px, 1fr));
+    gap: .45rem;
+}
+
+#overview-layer-3 .pheader-signal,
+#overview-layer-3 .pheader-date {
+    display: grid;
+    min-height: 62px;
+    align-content: center;
+    gap: .22rem;
+    padding: .5rem .6rem;
+    background: rgba(248, 251, 253, .92);
+    border: 1px solid #dce7ef;
+    border-radius: 10px;
+}
+
+#overview-layer-3 .pheader-signal > span,
+#overview-layer-3 .pheader-date > span {
+    color: #6b7f93;
+    font-size: .52rem;
+    font-weight: 750;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+#overview-layer-3 .pheader-signal strong,
+#overview-layer-3 .pheader-date strong {
+    color: #173a5e;
+    font-size: .76rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+#overview-layer-3 .pheader-date strong {
+    display: inline-flex;
+    align-items: center;
+    gap: .32rem;
+}
+
+#overview-layer-3 .pheader-date i {
+    color: #0d9488;
+    font-size: .84rem;
+}
+
+#overview-layer-3 .pdetail-top-grid {
+    align-items: stretch;
+    grid-template-columns: minmax(420px, 1.06fr) minmax(380px, .94fr);
+    gap: .85rem;
+    margin-top: .85rem;
+}
+
+#overview-layer-3 .pdetail-card {
+    border-color: #d9e4ed;
+    border-radius: 14px;
+    box-shadow: 0 16px 34px -30px rgba(15, 39, 66, .7);
+}
+
+#overview-layer-3 .pinfo-card,
+#overview-layer-3 .porigin-summary-card {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    border-top: 3px solid #2563eb;
+}
+
+#overview-layer-3 .porigin-summary-card {
+    background:
+        radial-gradient(circle at 94% 8%, rgba(13, 148, 136, .1), transparent 34%),
+        linear-gradient(135deg, #f7fbff, #fff 72%);
+    border-top-color: #0d9488;
+}
+
+#overview-layer-3 .card-section-heading {
+    margin-bottom: .8rem;
+}
+
+#overview-layer-3 .card-section-heading > span {
+    width: 34px;
+    height: 34px;
+    color: #2563eb;
+    background: #edf5ff;
+    border: 1px solid #d8e7f7;
+}
+
+#overview-layer-3 .porigin-summary-card .card-section-heading > span {
+    color: #0d9488;
+    background: #ecf9f6;
+    border-color: #ccebe5;
+}
+
+#overview-layer-3 .card-section-heading h3 {
+    font-size: .92rem;
+}
+
+#overview-layer-3 .card-section-heading p {
+    font-size: .66rem;
+}
+
+#overview-layer-3 .pinfo-list {
+    gap: .48rem;
+}
+
+#overview-layer-3 .pinfo-item {
+    position: relative;
+    min-height: 57px;
+    align-content: center;
+    gap: .14rem;
+    padding: .55rem .62rem .55rem .72rem;
+    overflow: hidden;
+    background: #f8fafc;
+    border-color: #e3eaf1;
+    border-radius: 9px;
+}
+
+#overview-layer-3 .pinfo-item::before {
+    position: absolute;
+    top: .55rem;
+    bottom: .55rem;
+    left: 0;
+    width: 3px;
+    content: '';
+    background: #d4e3f2;
+    border-radius: 0 3px 3px 0;
+}
+
+#overview-layer-3 .pinfo-item:hover::before {
+    background: #0d9488;
+}
+
+#overview-layer-3 .pinfo-label {
+    color: #667b90;
+    font-size: .6rem;
+}
+
+#overview-layer-3 .pinfo-val {
+    color: #172f49;
+    font-size: .74rem;
+    line-height: 1.38;
+}
+
+#overview-layer-3 .porigin-body {
+    min-height: 190px;
+}
+
+#overview-layer-3 .porigin-empty {
+    gap: .75rem;
+}
+
+#overview-layer-3 .porigin-empty-icon {
+    width: 68px;
+    height: 56px;
+    color: #0d9488;
+    background: linear-gradient(145deg, #dff6f1, #f3fbf9);
+    border-color: #c6e9e2;
+    border-radius: 16px;
+    font-size: 2rem;
+}
+
+#overview-layer-3 .porigin-empty-icon::after {
+    border-color: #173a5e;
+    box-shadow: 8px 8px 0 -6px #173a5e;
+}
+
+#overview-layer-3 .porigin-empty strong {
+    color: #40566d;
+    font-size: .8rem;
+}
+
+#overview-layer-3 .ptable-card {
+    margin-top: .85rem;
+    border-top: 3px solid #173a5e;
+}
+
+#overview-layer-3 .detail-table-heading {
+    background: linear-gradient(180deg, #fff, #fbfdff);
+}
+
+#overview-layer-3 .department-chip-groups {
+    gap: .5rem;
+    padding: .62rem;
+    background: #f6f9fc;
+    border-color: #dce6ef;
+}
+
+#overview-layer-3 .department-chip-group {
+    grid-template-columns: 148px minmax(0, 1fr);
+    gap: .55rem;
+}
+
+#overview-layer-3 .department-chip-group-label {
+    align-self: center;
+    color: #49627b;
+    font-size: .6rem;
+}
+
+#overview-layer-3 .department-chip-list,
+#overview-layer-3 .department-chip-group:last-child .department-chip-list {
+    grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+    gap: .34rem;
+}
+
+#overview-layer-3 .department-chip {
+    min-height: 32px;
+    padding: .36rem .48rem;
+    font-size: .62rem;
+    border-radius: 7px;
+}
+
+#overview-layer-3 .department-chip.is-active {
+    background: linear-gradient(110deg, #173a5e, #1d4f7a);
+    border-color: #173a5e;
+    box-shadow: inset 3px 0 #2dd4bf;
+}
+
+#overview-layer-3 .detail-status-table th {
+    color: #40566d;
+    background: #f4f7fa;
+    border-color: #dce5ed;
+}
+
+#overview-layer-3 .detail-status-table td {
+    border-color: #e4ebf2;
+}
+
+@media (max-width: 1180px) {
+    #overview-layer-3 .project-detail-header {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    #overview-layer-3 .pheader-signals {
+        grid-column: 1 / -1;
+    }
+
+    #overview-layer-3 .pdetail-top-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    #overview-layer-3 .project-detail-header {
+        grid-template-columns: 1fr;
+        align-items: start;
+    }
+
+    #overview-layer-3 .pheader-title-box {
+        align-items: flex-start;
+    }
+
+    #overview-layer-3 .pheader-signals {
+        grid-template-columns: 1fr;
+    }
+
+    #overview-layer-3 .pheader-name {
+        white-space: normal;
+    }
+
+    #overview-layer-3 .department-chip-group {
+        grid-template-columns: 1fr;
+    }
+
+    #overview-layer-3 .department-chip-list,
+    #overview-layer-3 .department-chip-group:last-child .department-chip-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Project overview · five vertical area lanes */
+#tab-project-overview .management-areas-command {
+    display: block;
+    min-width: 0;
+}
+
+#tab-project-overview .management-areas-all-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(300px, 1fr));
+    align-items: stretch;
+    gap: .68rem;
+    width: 100%;
+    padding: 2px 2px .7rem;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-color: #b9ccdc transparent;
+    scrollbar-width: thin;
+    scroll-snap-type: x proximity;
+}
+
+#tab-project-overview .management-area-lane {
+    display: grid;
+    min-width: 0;
+    align-content: stretch;
+    grid-template-rows: 144px 50px 1fr;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #d7e3ed;
+    border-top: 3px solid var(--area-accent);
+    border-radius: 13px;
+    box-shadow: 0 16px 30px -28px rgba(15, 39, 66, .72);
+    scroll-snap-align: start;
+}
+
+#tab-project-overview .management-area-lane-header {
+    display: grid;
+    min-width: 0;
+    align-content: start;
+    gap: .42rem;
+    padding: .72rem .76rem .68rem;
+    background:
+        radial-gradient(circle at 100% 0, color-mix(in srgb, var(--area-accent) 11%, transparent), transparent 46%),
+        linear-gradient(180deg, #fbfdff, #f7fafc);
+    border-bottom: 1px solid #e2eaf1;
+}
+
+#tab-project-overview .management-area-lane-top,
+#tab-project-overview .management-area-lane-title {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: .55rem;
+}
+
+#tab-project-overview .management-area-lane .area-number {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    color: #fff;
+    background: var(--area-accent);
+    border-radius: 9px;
+    font-size: .66rem;
+    box-shadow: 0 9px 18px -14px var(--area-accent);
+}
+
+#tab-project-overview .management-area-lane-projects {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .24rem;
+    color: #718399;
+    white-space: nowrap;
+}
+
+#tab-project-overview .management-area-lane-projects strong {
+    color: #173a5e;
+    font-size: .98rem;
+    font-variant-numeric: tabular-nums;
+}
+
+#tab-project-overview .management-area-lane-projects small {
+    font-size: .57rem;
+    font-weight: 700;
+}
+
+#tab-project-overview .management-area-lane-title {
+    align-items: flex-start;
+}
+
+#tab-project-overview .management-area-lane-title h3 {
+    display: -webkit-box;
+    min-height: 2.25em;
+    margin: 0;
+    overflow: hidden;
+    color: #0f2742;
+    font-size: .76rem;
+    line-height: 1.16;
+    text-transform: uppercase;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-lane-title span {
+    flex: 0 0 auto;
+    padding: .18rem .34rem;
+    color: color-mix(in srgb, var(--area-accent) 82%, #173a5e);
+    font-size: .52rem;
+    font-weight: 800;
+    background: color-mix(in srgb, var(--area-accent) 8%, #fff);
+    border: 1px solid color-mix(in srgb, var(--area-accent) 20%, #e2e8f0);
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+#tab-project-overview .management-area-lane-header > p {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: #64788d;
+    font-size: .61rem;
+    line-height: 1.36;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-lane-leadership {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: .4rem;
+    padding: .52rem .7rem;
+    color: #4f657a;
+    font-size: .61rem;
+    line-height: 1.35;
+    background: #fbfdff;
+    border-bottom: 1px solid #e2eaf1;
+}
+
+#tab-project-overview .management-area-lane-leadership i {
+    flex: 0 0 auto;
+    color: var(--area-accent);
+    font-size: .86rem;
+}
+
+#tab-project-overview .management-area-lane-leadership span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-lane-leadership.is-empty {
+    color: #718399;
+}
+
+#tab-project-overview .management-area-lane-regions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 122px;
+    align-content: start;
+    gap: .48rem;
+    min-width: 0;
+    padding: .58rem;
+    background: #f8fafc;
+}
+
+#tab-project-overview .management-area-lane .region-command-tile {
+    height: 122px;
+    min-height: 122px;
+    padding: .56rem .6rem;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #d6e2ec;
+    border-top: 2px solid var(--area-accent);
+    border-radius: 9px;
+    box-shadow: 0 10px 20px -22px rgba(15, 39, 66, .8);
+}
+
+#tab-project-overview .management-area-lane .region-command-tile:hover {
+    background: #fff;
+    border-color: color-mix(in srgb, var(--area-accent) 48%, #cbdbe9);
+    border-top-color: var(--area-accent);
+    box-shadow: 0 14px 24px -21px color-mix(in srgb, var(--area-accent) 46%, transparent);
+}
+
+#tab-project-overview .management-area-lane .region-tile-top {
+    gap: .3rem;
+}
+
+#tab-project-overview .management-area-lane .region-tile-code {
+    min-width: 0;
+    overflow: hidden;
+    font-size: .55rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tab-project-overview .management-area-lane .region-tile-top i {
+    flex: 0 0 auto;
+    color: var(--area-accent);
+    font-size: .85rem;
+}
+
+#tab-project-overview .management-area-lane .region-command-tile h4 {
+    margin: .34rem 0 .12rem;
+    overflow: hidden;
+    font-size: .75rem;
+    line-height: 1.22;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tab-project-overview .management-area-lane .region-command-tile p {
+    display: -webkit-box;
+    min-height: 2.5em;
+    margin: 0;
+    overflow: hidden;
+    font-size: .61rem;
+    line-height: 1.25;
+    text-align: center;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#tab-project-overview .management-area-lane .region-tile-footer {
+    justify-content: center;
+    gap: .36rem;
+    min-height: 18px;
+    margin-top: auto;
+}
+
+#tab-project-overview .management-area-lane .region-tile-footer span {
+    font-size: .56rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 1900px) {
+    #tab-project-overview .management-areas-all-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        overflow-x: visible;
+    }
+}
+
+@media (max-width: 720px) {
+    #tab-project-overview .management-areas-all-grid {
+        grid-template-columns: repeat(5, minmax(270px, 1fr));
+    }
+
+    #tab-project-overview .management-area-lane-regions {
+        grid-template-columns: 1fr;
+    }
+}

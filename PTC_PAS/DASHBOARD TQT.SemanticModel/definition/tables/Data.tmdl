@@ -200,6 +200,120 @@ table Data
 		displayFolder: Tracking quyết toán\04. Tham chiếu thêm
 		lineageTag: 2d234267-28ad-4837-81fc-5ca518d3440e
 
+	/// Tổng giá trị hợp đồng và phát sinh gồm VAT theo filter hiện tại.
+	measure 'Giá trị HĐ + PS gồm VAT' = SUM ( Data[Giá trị HĐ + PS gồm VAT số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 4bc29028-fb58-469e-9e7e-d897f7bf0445
+
+	/// Tổng giá trị Workdone/hóa đơn chưa VAT theo mapping của template công nợ.
+	measure 'Giá trị hóa đơn chưa VAT' = SUM ( Data[Giá trị workdone chưa VAT số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 8347d0b7-76ec-4d0a-8e23-3f8f49475f5c
+
+	/// Tổng giá trị Workdone/hóa đơn gồm VAT theo mapping của template công nợ.
+	measure 'Giá trị hóa đơn gồm VAT' = SUM ( Data[Giá trị workdone gồm VAT] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: c51eb780-20a3-4410-82bc-e9f61602352d
+
+	/// Tổng giá trị tạm ứng theo filter hiện tại.
+	measure 'Giá trị tạm ứng' = SUM ( Data[Giá trị tạm ứng số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 70449c24-619b-44ce-b38c-5ea7e4ae311e
+
+	/// Tổng giá trị đã khấu trừ tạm ứng theo filter hiện tại.
+	measure '(3) Khấu trừ tạm ứng' = SUM ( Data[Giá trị khấu trừ tạm ứng số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: ab9c58bb-9954-408b-936a-821357bfc848
+
+	/// (4) Giá trị tạm ứng chưa thu hồi = Giá trị tạm ứng - (3) Khấu trừ tạm ứng.
+	measure '(4) Tạm ứng chưa thu hồi' = [Giá trị tạm ứng] - [(3) Khấu trừ tạm ứng]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 5a3f0876-5e8c-4c8c-8789-68cc6a82896b
+
+	/// (5) Giá trị công nợ đã có CPC gồm tạm ứng và Workdone, gồm VAT.
+	measure '(5) Công nợ đã có CPC' = SUM ( Data[Giá trị CPC gồm ứng + workdone số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: b2181008-5ba0-4a38-86a9-df3560d98412
+
+	/// (6) Giá trị đã thanh toán gồm tạm ứng và Workdone, gồm VAT.
+	measure '(6) Đã thanh toán' = SUM ( Data[Giá trị đã thanh toán số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 69a157b6-bc8b-47f9-a738-8ea1a442887b
+
+	/// (7) Giá trị TĐSP/Swap gồm VAT.
+	measure '(7) Giá trị Swap' = SUM ( Data[Giá trị swap số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: edbc1a0f-ffc2-4ffd-8eed-a04fa929117e
+
+	/// (8) Công nợ CPC còn lại chưa thanh toán = (5) - (6) - (7).
+	measure '(8) Công nợ CPC còn lại' = [(5) Công nợ đã có CPC] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: bc5c7109-a9e0-4207-a41c-b2b23dd0c274
+
+	/// (9) Công nợ sau khi trừ tạm ứng chưa thu hồi = (8) - (4).
+	measure '(9) Công nợ sau trừ tạm ứng' = [(8) Công nợ CPC còn lại] - [(4) Tạm ứng chưa thu hồi]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: dafbb8f9-96f2-4de7-a867-90606c761086
+
+	/// (10) Tổng nợ phải trả gồm VAT = Giá trị hóa đơn gồm VAT - (6) - (7).
+	measure '(10) Tổng nợ phải trả' = [Giá trị hóa đơn gồm VAT] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 57ce1bd7-1485-4249-a3f2-06424c04c0f7
+
+	/// (11) Tiền bảo hành giữ lại theo logic 5% ở từng dòng của template.
+	measure '(11) Tiền bảo hành giữ lại' = SUM ( Data[Tiền bảo hành giữ lại dòng] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 3ab6ceb9-5420-4910-a25d-97e2493f487a
+
+	/// (12) Tổng còn lại phải trả gồm VAT = (10) - (11).
+	measure '(12) Tổng còn lại phải trả' = [(10) Tổng nợ phải trả] - [(11) Tiền bảo hành giữ lại]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 2ae0bd27-647f-4cd2-80e0-79c4182ff959
+
+	/// (8) Công nợ CPC còn lại quy đổi sang tỷ đồng, dùng cho card và biểu đồ.
+	measure '(8) Công nợ CPC còn lại (tỷ)' = DIVIDE ( [(8) Công nợ CPC còn lại], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 6977552c-0853-4395-bc37-c71d1ae76a64
+
+	/// (9) Công nợ sau trừ tạm ứng quy đổi sang tỷ đồng, dùng cho card.
+	measure '(9) Công nợ sau trừ tạm ứng (tỷ)' = DIVIDE ( [(9) Công nợ sau trừ tạm ứng], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 47353f1b-ff46-4fe2-a8d5-7ebd5eb41c59
+
+	/// (10) Tổng nợ phải trả quy đổi sang tỷ đồng, dùng cho card.
+	measure '(10) Tổng nợ phải trả (tỷ)' = DIVIDE ( [(10) Tổng nợ phải trả], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 5814eb12-afd4-489d-bf4c-4995af8d6978
+
+	/// (11) Tiền bảo hành giữ lại quy đổi sang tỷ đồng, dùng cho card.
+	measure '(11) Tiền bảo hành giữ lại (tỷ)' = DIVIDE ( [(11) Tiền bảo hành giữ lại], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: f5d98e73-8a40-4bbe-89e3-422155b70a45
+
+	/// (12) Tổng còn lại phải trả quy đổi sang tỷ đồng, dùng cho card và biểu đồ.
+	measure '(12) Tổng còn lại phải trả (tỷ)' = DIVIDE ( [(12) Tổng còn lại phải trả], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 7415c17e-a002-4efd-86af-508eac1590c3
+
 	column STT
 		dataType: string
 		lineageTag: 2275b419-d5e8-4a34-a264-4d978d07d186
@@ -1219,14 +1333,6 @@ table Data
 
 		annotation SummarizationSetBy = Automatic
 
-	column check
-		dataType: string
-		lineageTag: e3649734-497e-4821-b495-638fdd141d30
-		summarizeBy: none
-		sourceColumn: check
-
-		annotation SummarizationSetBy = Automatic
-
 	/// Năm ký biên bản quyết toán. Đọc được cả M/D/YYYY và D.M.YYYY. Có giá trị = hợp đồng đã hoàn thành quyết toán.
 	column 'Năm ký quyết toán' =
 			VAR _s =
@@ -1281,6 +1387,83 @@ table Data
 		dataType: string
 		displayFolder: Phân loại
 		lineageTag: ea4b58a3-c5ea-42b8-8dfa-881c4fc167f3
+
+	/// Giá trị hợp đồng và phát sinh gồm VAT đã đổi từ cột text nguồn sang số để tính công nợ.
+	column 'Giá trị HĐ + PS gồm VAT số' = IFERROR ( VALUE ( Data[ GIÁ TRỊ HĐ+PS(GỒM VAT) ] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: b99329bb-b6c9-4115-aec6-c088f58f1a96
+		summarizeBy: sum
+
+	/// Giá trị Workdone/hóa đơn chưa VAT đã đổi từ cột text nguồn sang số.
+	column 'Giá trị workdone chưa VAT số' = IFERROR ( VALUE ( Data[GIÁ TRỊ WORKDONE (CHƯA GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 17b7a061-ef52-4dfb-9d5b-28adc06e62e8
+		summarizeBy: sum
+
+	/// Giá trị công nợ đã có CPC gồm ứng và Workdone, chuyển từ text sang số.
+	column 'Giá trị CPC gồm ứng + workdone số' = IFERROR ( VALUE ( Data[GIÁ TRỊ CÔNG NỢ ĐÃ CÓ CPC GỒM ỨNG +WORKDONE(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 79a1f976-0513-4569-9b7d-cce468402ddd
+		summarizeBy: sum
+
+	/// Giá trị đã thanh toán gồm VAT đã đổi từ text sang số.
+	column 'Giá trị đã thanh toán số' = IFERROR ( VALUE ( Data[GIÁ TRỊ ĐÃ THANH TOÁN(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 317667bf-219d-45a8-b3be-82edd6c089b3
+		summarizeBy: sum
+
+	/// Giá trị TĐSP/Swap gồm VAT đã đổi từ text sang số.
+	column 'Giá trị swap số' = IFERROR ( VALUE ( Data[GIÁ TRỊ TĐSP(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 18268efa-d89a-41d7-b4e5-f6af006fbee4
+		summarizeBy: sum
+
+	/// Giá trị tạm ứng đã đổi từ cột text nguồn sang số.
+	column 'Giá trị tạm ứng số' = IFERROR ( VALUE ( Data[GIÁ TRỊ TẠM ỨNG CHƯA VAT] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 7b0b3eeb-5860-4d32-9b47-b8873186da84
+		summarizeBy: sum
+
+	/// Giá trị khấu trừ tạm ứng đã đổi từ cột text nguồn sang số.
+	column 'Giá trị khấu trừ tạm ứng số' = IFERROR ( VALUE ( Data[GIÁ TRỊ KHẤU TRỪ TẠM ỨNG] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 5dca635e-e00e-4486-ab5d-9e385b0bac27
+		summarizeBy: sum
+
+	/// Tiền bảo hành giữ lại theo từng dòng: 5% giá trị Workdone/hóa đơn chưa VAT khi giá trị Workdone gồm VAT khác CPC gồm ứng và Workdone.
+	column 'Tiền bảo hành giữ lại dòng' =
+			VAR _HoaDonVAT = COALESCE ( Data[Giá trị workdone gồm VAT], 0 )
+			VAR _CPC = COALESCE ( Data[Giá trị CPC gồm ứng + workdone số], 0 )
+			VAR _HoaDonChuaVAT = COALESCE ( Data[Giá trị workdone chưa VAT số], 0 )
+			RETURN
+			    ROUND ( IF ( _HoaDonVAT <> _CPC, _HoaDonChuaVAT * 0.05, 0 ), 0 )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: e24d3980-de56-4470-b231-f08d3b1778f6
+		summarizeBy: sum
 
 	partition Data = m
 		mode: import

@@ -110,6 +110,38 @@ class ProjectOverviewApiTest(unittest.TestCase):
         )
         self.assertEqual(updated.status_code, 200)
 
+        bulk_saved = self.client.post('/api/masterdata/entries/bulk', json={
+            'project_code': project_code,
+            'entries': [
+                {
+                    'id': entry_id,
+                    'source_sheet': 'HRC',
+                    'values': values,
+                },
+                {
+                    'source_sheet': 'PLP',
+                    'values': {
+                        'Nhóm': 'Đầu tư',
+                        'Hạng mục': 'Kiểm thử lưu nhanh',
+                    },
+                },
+            ],
+        })
+        self.assertEqual(
+            bulk_saved.status_code, 200, bulk_saved.get_data(as_text=True)
+        )
+        self.assertEqual(bulk_saved.get_json()['saved'], 2)
+        bulk_inserted_id = next(
+            saved_id for saved_id in bulk_saved.get_json()['ids']
+            if saved_id != entry_id
+        )
+        self.assertEqual(
+            self.client.delete(
+                f'/api/masterdata/entries/{bulk_inserted_id}'
+            ).status_code,
+            200
+        )
+
         fact_export = self.client.get(
             f'/api/masterdata/export-fact?project_code={project_code}'
         )
@@ -184,6 +216,7 @@ class ProjectOverviewApiTest(unittest.TestCase):
     def test_project_overview_crud_and_export(self):
         home = self.client.get('/')
         self.assertEqual(home.status_code, 200)
+        self.assertIn(b'GMS Data Portal', home.data)
         self.assertIn(b'tab-projects', home.data)
         self.assertNotIn(b"switchTab('dashboard'", home.data)
         self.assertIn(b'id="tab-project-overview" class="tab-content active"', home.data)
@@ -210,6 +243,8 @@ class ProjectOverviewApiTest(unittest.TestCase):
         self.assertIn(b'modal-project', home.data)
         self.assertNotIn('Nguyễn Lê Mỹ Hưng'.encode('utf-8'), home.data)
         self.assertIn(b'id="l3-department-chips"', home.data)
+        self.assertIn(b'id="l3-profile-completeness"', home.data)
+        self.assertIn(b'id="l3-masterdata-count"', home.data)
         self.assertNotIn(b'id="l3-department-select"', home.data)
         self.assertIn('Thông tin theo phòng ban'.encode('utf-8'), home.data)
         self.assertIn('Chọn một phòng ban để xem dữ liệu liên quan'.encode('utf-8'), home.data)

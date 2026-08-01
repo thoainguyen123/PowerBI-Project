@@ -243,6 +243,16 @@ cultureInfo en-US
 			          "số hợp đồng chính": {
 			            "State": "Generated"
 			          }
+			        },
+			        {
+			          "Số hợp đồng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -302,6 +312,16 @@ cultureInfo en-US
 			          "đơn vị": {
 			            "State": "Generated",
 			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "Dự án/Đơn vị": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -446,6 +466,16 @@ cultureInfo en-US
 			          "tv": {
 			            "State": "Generated",
 			            "Weight": 0.97
+			          }
+			        },
+			        {
+			          "Nhà thầu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -1019,6 +1049,16 @@ cultureInfo en-US
 			          "tình trạng thực hiện hđ": {
 			            "State": "Generated"
 			          }
+			        },
+			        {
+			          "Tình trạng HĐ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -1295,6 +1335,16 @@ cultureInfo en-US
 			        {
 			          "khu vực chuẩn": {
 			            "State": "Generated"
+			          }
+			        },
+			        {
+			          "Khu vực": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -3742,112 +3792,6 @@ cultureInfo en-US
 			        }
 			      ]
 			    },
-			    "data.check": {
-			      "Definition": {
-			        "Binding": {
-			          "ConceptualEntity": "Data",
-			          "ConceptualProperty": "check"
-			        }
-			      },
-			      "State": "Generated",
-			      "Terms": [
-			        {
-			          "check": {
-			            "State": "Generated"
-			          }
-			        },
-			        {
-			          "cheque": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.736
-			          }
-			        },
-			        {
-			          "checkup": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.736
-			          }
-			        },
-			        {
-			          "inspection": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.736
-			          }
-			        },
-			        {
-			          "payment": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.736
-			          }
-			        },
-			        {
-			          "test": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.714
-			          }
-			        },
-			        {
-			          "tick": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.714
-			          }
-			        },
-			        {
-			          "bill": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.714
-			          }
-			        },
-			        {
-			          "safety inspection": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.571
-			          }
-			        },
-			        {
-			          "safety test": {
-			            "Type": "Noun",
-			            "State": "Suggested",
-			            "Source": {
-			              "Agent": "Thesaurus"
-			            },
-			            "Weight": 0.571
-			          }
-			        }
-			      ]
-			    },
 			    "data.năm_ký_quyết_toán": {
 			      "Definition": {
 			        "Binding": {
@@ -4256,16 +4200,6 @@ cultureInfo en-US
 			        {
 			          "(2.3) chưa phân loại KPI": {
 			            "State": "Generated"
-			          }
-			        },
-			        {
-			          "Chưa phân loại KPI": {
-			            "State": "Suggested",
-			            "Source": {
-			              "Type": "External",
-			              "Agent": "PowerBI.VisualColumnRename"
-			            },
-			            "Weight": 0.9
 			          }
 			        }
 			      ]
@@ -5211,6 +5145,247 @@ cultureInfo en-US
 			          "% hoàn thành KPI đăng ký (chặt)": {
 			            "State": "Generated",
 			            "Weight": 0.75
+			          }
+			        }
+			      ]
+			    },
+			    "data.column8_công_nợ_cpc_còn_lại_tỷ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(8) Công nợ CPC còn lại (tỷ)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(8) Công nợ CPC còn lại (tỷ)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column9_công_nợ_sau_trừ_tạm_ứng_tỷ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(9) Công nợ sau trừ tạm ứng (tỷ)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(9) Công nợ sau trừ tạm ứng (tỷ)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column10_tổng_nợ_phải_trả_tỷ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(10) Tổng nợ phải trả (tỷ)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(10) Tổng nợ phải trả (tỷ)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column11_tiền_bảo_hành_giữ_lại_tỷ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(11) Tiền bảo hành giữ lại (tỷ)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(11) Tiền bảo hành giữ lại (tỷ)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column12_tổng_còn_lại_phải_trả_tỷ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(12) Tổng còn lại phải trả (tỷ)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(12) Tổng còn lại phải trả (tỷ)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "Còn lại phải trả (tỷ đồng)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column4_tạm_ứng_chưa_thu_hồi": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(4) Tạm ứng chưa thu hồi"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(4) Tạm ứng chưa thu hồi": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column8_công_nợ_cpc_còn_lại": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(8) Công nợ CPC còn lại"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(8) CPC còn lại": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column9_công_nợ_sau_trừ_tạm_ứng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(9) Công nợ sau trừ tạm ứng"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(9) Sau trừ tạm ứng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column10_tổng_nợ_phải_trả": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(10) Tổng nợ phải trả"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(10) Tổng nợ phải trả": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column11_tiền_bảo_hành_giữ_lại": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(11) Tiền bảo hành giữ lại"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(11) Bảo hành giữ lại": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column12_tổng_còn_lại_phải_trả": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(12) Tổng còn lại phải trả"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(12) Còn lại phải trả": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ]

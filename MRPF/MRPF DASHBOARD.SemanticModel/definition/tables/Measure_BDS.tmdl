@@ -188,18 +188,13 @@ table Measure_BDS
 		formatString: #,0
 		lineageTag: 0ceee0a5-72e3-4f2c-94ee-3686261f6525
 
-	/// Tồn chưa mở bán cộng tổng sản phẩm cố định, lấy một lần theo từng đối tượng có trạng thái Dự kiến mở bán.
+	/// Tổng sản phẩm theo từng khóa loại hình dự án ở trạng thái Dự kiến mở bán hoặc Hoãn; không cộng lại tồn chưa mở bán.
 	measure 'Nguồn cung dự kiến' =
-			
 			VAR _ExpectedEntities =
 			    CALCULATETABLE(
-			        SUMMARIZE(
-			            'Project_BDS',
-			            'Project_BDS'[project_name],
-			            'Project_BDS'[phase_name],
-			            'Project_BDS'[project_type],
-			            'Project_BDS'[Nhóm],
-			            'Project_BDS'[phase_status.2]
+			        FILTER(
+			            VALUES('Project_BDS'[realEstateProjectTypeId]),
+			            NOT ISBLANK('Project_BDS'[realEstateProjectTypeId])
 			        ),
 			        REMOVEFILTERS(
 			            'Project_BDS'[Năm - Quý],
@@ -207,40 +202,23 @@ table Measure_BDS
 			            'Project_BDS'[quater],
 			            'Project_BDS'[period]
 			        ),
-			        'Project_BDS'[phase_status.2] = "Dự kiến mở bán"
+			        KEEPFILTERS(
+			            'Project_BDS'[phase_status.2] IN { "Dự kiến mở bán", "Hoãn" }
+			        )
 			    )
-			
-			VAR _ExpectedProjectProducts =
+			RETURN
 			    SUMX(
 			        _ExpectedEntities,
-			        VAR _ProjectName =
-			            'Project_BDS'[project_name]
-			        VAR _PhaseName =
-			            'Project_BDS'[phase_name]
-			        VAR _ProjectType =
-			            'Project_BDS'[project_type]
-			        VAR _Group =
-			            'Project_BDS'[Nhóm]
-			        RETURN
-			            CALCULATE(
-			                MAX('Project_BDS'[totalProducts]),
-			                REMOVEFILTERS(
-			                    'Project_BDS'[Năm - Quý],
-			                    'Project_BDS'[year],
-			                    'Project_BDS'[quater],
-			                    'Project_BDS'[period]
-			                ),
-			                'Project_BDS'[project_name] = _ProjectName,
-			                'Project_BDS'[phase_name] = _PhaseName,
-			                'Project_BDS'[project_type] = _ProjectType,
-			                'Project_BDS'[Nhóm] = _Group,
-			                'Project_BDS'[phase_status.2] = "Dự kiến mở bán"
+			        CALCULATE(
+			            MAX('Project_BDS'[totalProducts]),
+			            REMOVEFILTERS(
+			                'Project_BDS'[Năm - Quý],
+			                'Project_BDS'[year],
+			                'Project_BDS'[quater],
+			                'Project_BDS'[period]
 			            )
+			        )
 			    )
-			
-			RETURN
-			    [Tồn chưa mở bán]
-			        + _ExpectedProjectProducts
 		formatString: #,##0
 		displayFolder: Nguồn cung
 		lineageTag: dee6e144-f4c2-4b2b-bc53-2545041960cd
@@ -985,35 +963,33 @@ table Measure_BDS
 		displayFolder: Nguồn cung
 		lineageTag: c9d0e1f2-3a4b-5c6d-7e8f-9a0b1c2d3e4f
 
-	/// Tổng sản phẩm unique theo project_name, phase_name, project_type, Nhóm và phase_status.2 rồi cộng tổng lại
+	/// Tổng sản phẩm lấy một lần theo khóa realEstateProjectTypeId, không phụ thuộc bộ lọc thời gian.
 	measure 'Tổng sản phẩm' =
 			VAR _Entities =
-			    SUMMARIZE(
-			        'Project_BDS',
-			        'Project_BDS'[project_name],
-			        'Project_BDS'[phase_name],
-			        'Project_BDS'[project_type],
-			        'Project_BDS'[Nhóm],
-			        'Project_BDS'[phase_status.2]
+			    CALCULATETABLE(
+			        FILTER(
+			            VALUES('Project_BDS'[realEstateProjectTypeId]),
+			            NOT ISBLANK('Project_BDS'[realEstateProjectTypeId])
+			        ),
+			        REMOVEFILTERS(
+			            'Project_BDS'[Năm - Quý],
+			            'Project_BDS'[year],
+			            'Project_BDS'[quater],
+			            'Project_BDS'[period]
+			        )
 			    )
 			RETURN
 			    SUMX(
 			        _Entities,
-			        VAR _ProjName = 'Project_BDS'[project_name]
-			        VAR _PhaseName = 'Project_BDS'[phase_name]
-			        VAR _ProjType = 'Project_BDS'[project_type]
-			        VAR _Nhom = 'Project_BDS'[Nhóm]
-			        VAR _Status2 = 'Project_BDS'[phase_status.2]
-			        RETURN
-			            CALCULATE(
-			                MAX('Project_BDS'[totalProducts]),
-			                REMOVEFILTERS('Project_BDS'[Năm - Quý], 'Project_BDS'[year], 'Project_BDS'[quater], 'Project_BDS'[period]),
-			                'Project_BDS'[project_name] = _ProjName,
-			                'Project_BDS'[phase_name] = _PhaseName,
-			                'Project_BDS'[project_type] = _ProjType,
-			                'Project_BDS'[Nhóm] = _Nhom,
-			                'Project_BDS'[phase_status.2] = _Status2
+			        CALCULATE(
+			            MAX('Project_BDS'[totalProducts]),
+			            REMOVEFILTERS(
+			                'Project_BDS'[Năm - Quý],
+			                'Project_BDS'[year],
+			                'Project_BDS'[quater],
+			                'Project_BDS'[period]
 			            )
+			        )
 			    )
 		formatString: #,##0
 		displayFolder: Nguồn cung
@@ -1219,7 +1195,10 @@ table Measure_BDS
 		displayFolder: Giá bán
 		lineageTag: 32d8f9f9-559c-45be-b9a9-867a28c582a6
 
-	measure 'Tồn của quý này all status' = [Tổng mở bán tính tới quý đó all status] - COALESCE([Số căn đã bán lũy kế all status], 0) + [Nguồn cung dự kiến]
+	/// Tồn của quý = lũy kế mở bán trừ lũy kế đã bán; không cộng nguồn cung dự kiến để tránh đếm hai lần.
+	measure 'Tồn của quý này all status' =
+			[Tổng mở bán tính tới quý đó all status]
+			    - COALESCE([Số căn đã bán lũy kế all status], 0)
 		formatString: 0
 		displayFolder: Giá bán
 		lineageTag: 23cd5b0e-9e10-4567-bcd8-14347ae2a378

@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=11.3.3">
+    <link rel="stylesheet" href="/static/css/style.css?v=11.4.2">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -25,7 +25,7 @@
                 </div>
                 <div class="brand-title">
                     <h1>NVL Data Hub</h1>
-                    <p>Operations Data Portal</p>
+                    <p>GMS Data Portal</p>
                 </div>
                 <button class="sidebar-close" onclick="closeSidebar()" aria-label="Đóng menu">
                     <i class="bx bx-x"></i>
@@ -148,9 +148,10 @@
                         <div class="overview-section-heading">
                             <div>
                                 <h3>Sơ đồ điều hành khu vực</h3>
+                                <p id="overview-section-subtitle">Toàn bộ Khu vực và các Vùng trực thuộc trong hệ thống.</p>
                             </div>
                         </div>
-                        <div id="management-areas-container" class="management-areas-grid">
+                        <div id="management-areas-container" class="management-areas-command">
                             <div class="overview-loading"><i class="bx bx-loader-alt bx-spin"></i> Đang tải cấu hình khu vực...</div>
                         </div>
                     </div>
@@ -207,7 +208,8 @@
                             </button>
                             <div class="pheader-title-box">
                                 <div class="pheader-icon"><i class="bx bx-buildings"></i></div>
-                                <div>
+                                <div class="pheader-project-copy">
+                                    <span class="pheader-eyebrow">Hồ sơ điều hành dự án</span>
                                     <h2 class="pheader-name" id="l3-project-name">Đang tải dự án...</h2>
                                     <div class="project-detail-tags">
                                         <span id="l3-project-code">—</span>
@@ -216,7 +218,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="pheader-date"><i class="bx bx-calendar"></i><span id="l3-current-date"></span></div>
+                            <div class="pheader-signals" aria-label="Tóm tắt hồ sơ dự án">
+                                <div class="pheader-signal">
+                                    <span>Hồ sơ tổng quan</span>
+                                    <strong id="l3-profile-completeness">0/7</strong>
+                                </div>
+                                <div class="pheader-signal">
+                                    <span>Dữ liệu phòng ban</span>
+                                    <strong id="l3-masterdata-count">0 mục</strong>
+                                </div>
+                                <div class="pheader-date">
+                                    <span>Ngày dữ liệu</span>
+                                    <strong><i class="bx bx-calendar"></i><span id="l3-current-date"></span></strong>
+                                </div>
+                            </div>
                         </header>
 
                         <div class="pdetail-top-grid">
@@ -1410,7 +1425,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=11.3.0"></script>
+    <script src="/static/js/main.js?v=11.4.1"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">

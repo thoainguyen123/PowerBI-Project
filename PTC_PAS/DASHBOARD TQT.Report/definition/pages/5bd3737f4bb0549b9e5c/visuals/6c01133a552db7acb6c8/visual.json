@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "6c01133a552db7acb6c8",
   "position": {
     "x": 296,
@@ -181,14 +181,14 @@
             "labelStyle": {
               "expr": {
                 "Literal": {
-                  "Value": "'Data value, percent of total'"
+                  "Value": "'Category, percent of total'"
                 }
               }
             },
             "position": {
               "expr": {
                 "Literal": {
-                  "Value": "'preferOutside'"
+                  "Value": "'outside'"
                 }
               }
             },

@@ -1,0 +1,135 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/semanticModel/unappliedChanges/1.0.0/schema.json",
+  "conceptualSchemaSettings": {},
+  "queries": [
+    {
+      "name": "KTVM",
+      "lineageTag": "430c215c-2d55-487c-a185-55f54ae74557",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Sql.Database(\"10.16.19.14\", \"INVESTMENT_REPORT\", [Query=\"SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[macroeconomicCategory1Id]#(lf)      ,A.[macroeconomicCategory2Id]#(lf)      ,A.[macroeconomicCategory3Id]#(lf)      ,A.[reportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[levelId]#(lf)      ,A.[macroEconomicUnitId]#(lf)      ,A.[amount]#(lf)      ,A.[cityTypeId]#(lf)      ,A.[cityId]#(lf)      ,B.name AS macroeconomiccate_lv1#(lf)      ,C.name AS macroeconomiccate_lv2#(lf)      ,D.name AS macroeconomiccate_lv3#(lf)      ,E.label AS level_static#(lf)      ,F.label AS macro_economic_unit#(lf)      ,G.label AS frequency#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_macroeconomic_data] A#(lf)  LEFT JOIN mr_macroeconomic_category_l1 B ON A.macroeconomicCategory1Id = B.id#(lf)  LEFT JOIN mr_macroeconomic_category_l2 C ON A.macroeconomicCategory2Id = C.id#(lf)  LEFT JOIN mr_macroeconomic_category_l3 D ON A.macroeconomicCategory3Id = D.id#(lf)  LEFT JOIN dropdown_option E ON A.levelId = E.id AND E.dropdownCode = 'mr_business_level_type'#(lf)  LEFT JOIN dropdown_option F ON A.macroEconomicUnitId = F.id and F.dropdownCode = 'mr_macro_economic_unit'#(lf)  LEFT JOIN dropdown_option G ON A.reportingFrequencyId = G.id AND G.dropdownCode = 'mr_frequency_type'\"]),",
+        "    #\"Filtered Rows\" = Table.SelectRows(Source, each ([isDeactivated] = false)),",
+        "    #\"Merged Queries\" = Table.NestedJoin(#\"Filtered Rows\", {\"macroeconomiccate_lv3\"}, SortBank, {\"Bank\"}, \"SortBank\", JoinKind.LeftOuter),",
+        "    #\"Expanded SortBank\" = Table.ExpandTableColumn(#\"Merged Queries\", \"SortBank\", {\"STT\"}, {\"STT\"}),",
+        "    #\"Renamed Columns\" = Table.RenameColumns(#\"Expanded SortBank\",{{\"STT\", \"SortBank\"}})",
+        "in",
+        "    #\"Renamed Columns\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Sql.Database(\\\"10.16.19.14\\\", \\\"INVESTMENT_REPORT\\\", [Query=\\\"SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[macroeconomicCategory1Id]#(lf)      ,A.[macroeconomicCategory2Id]#(lf)      ,A.[macroeconomicCategory3Id]#(lf)      ,A.[reportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[levelId]#(lf)      ,A.[macroEconomicUnitId]#(lf)      ,A.[amount]#(lf)      ,A.[cityTypeId]#(lf)      ,A.[cityId]#(lf)      ,B.name AS macroeconomiccate_lv1#(lf)      ,C.name AS macroeconomiccate_lv2#(lf)      ,D.name AS macroeconomiccate_lv3#(lf)      ,E.label AS level_static#(lf)      ,F.label AS macro_economic_unit#(lf)      ,G.label AS frequency#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_macroeconomic_data] A#(lf)  LEFT JOIN mr_macroeconomic_category_l1 B ON A.macroeconomicCategory1Id = B.id#(lf)  LEFT JOIN mr_macroeconomic_category_l2 C ON A.macroeconomicCategory2Id = C.id#(lf)  LEFT JOIN mr_macroeconomic_category_l3 D ON A.macroeconomicCategory3Id = D.id#(lf)  LEFT JOIN dropdown_option E ON A.levelId = E.id AND E.dropdownCode = 'mr_business_level_type'#(lf)  LEFT JOIN dropdown_option F ON A.macroEconomicUnitId = F.id and F.dropdownCode = 'mr_macro_economic_unit'#(lf)  LEFT JOIN dropdown_option G ON A.reportingFrequencyId = G.id AND G.dropdownCode = 'mr_frequency_type'\\\"]),\\n    #\\\"Filtered Rows\\\" = Table.SelectRows(Source, each ([isDeactivated] = false)),\\n    #\\\"Merged Queries\\\" = Table.NestedJoin(#\\\"Filtered Rows\\\", {\\\"macroeconomiccate_lv3\\\"}, SortBank, {\\\"Bank\\\"}, \\\"SortBank\\\", JoinKind.LeftOuter),\\n    #\\\"Expanded SortBank\\\" = Table.ExpandTableColumn(#\\\"Merged Queries\\\", \\\"SortBank\\\", {\\\"STT\\\"}, {\\\"STT\\\"}),\\n    #\\\"Renamed Columns\\\" = Table.RenameColumns(#\\\"Expanded SortBank\\\",{{\\\"STT\\\", \\\"SortBank\\\"}})\\nin\\n    #\\\"Renamed Columns\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Measure KTVM",
+      "lineageTag": "43f15d0d-06c0-4f5f-8f0b-285705912d8e",
+      "text": [
+        "let",
+        "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlSKjQUA\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Column1\", Int64.Type}})",
+        "in",
+        "    #\"Changed Type\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\\\"i45WMlSKjQUA\\\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(Source,{{\\\"Column1\\\", Int64.Type}})\\nin\\n    #\\\"Changed Type\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Project_BDS",
+      "lineageTag": "760fbcf6-0a0b-49a5-a21c-59a70c347698",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Sql.Database(\"10.16.19.14\", \"INVESTMENT_REPORT\", [Query=\"SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)\"]),",
+        "    #\"Filtered Rows\" = Table.SelectRows(Source, each ([isDeactivated] = false)),",
+        "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Filtered Rows\", \"phase_status\", Splitter.SplitTextByDelimiter(\"-\", QuoteStyle.Csv), {\"phase_status.1\", \"phase_status.2\"}),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"phase_status.1\", type text}, {\"phase_status.2\", type text}}),",
+        "    #\"Appended Query\" = Table.Combine({#\"Changed Type\", Nguon_Cung_Du_kien})",
+        "in",
+        "    #\"Appended Query\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Sql.Database(\\\"10.16.19.14\\\", \\\"INVESTMENT_REPORT\\\", [Query=\\\"SELECT #(lf)       A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[projectReportingFrequencyId]#(lf)      ,A.[period]#(lf)      ,A.[year]#(lf)      ,A.[quantity]#(lf)      ,A.[percent]#(lf)      ,A.[amount]#(lf)      ,A.[unitId]#(lf)      ,A.[salesOpeningQuantity]#(lf)      ,B.totalProducts#(lf)      ,B.areaNFA#(lf)      ,B.areaGFA#(lf)      ,B.code as project_type_code#(lf)      ,B.scale#(lf)      ,C.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,E.name AS project_name#(lf)      ,F.label AS project_type#(lf)      ,G.label AS category#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,N.label AS frequency#(lf)      ,E.centroid.Lat as Latitude#(lf)      ,E.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision C ON B.subdivisionId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option D ON C.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project E ON B.projectId = E.id AND C.isDeactivated = 0#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option G ON E.projectCategoryId = G.id#(lf)  LEFT JOIN city H ON E.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON E.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON E.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON E.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option N ON A.projectReportingFrequencyId = N.id#(lf)\\\"]),\\n    #\\\"Filtered Rows\\\" = Table.SelectRows(Source, each ([isDeactivated] = false)),\\n    #\\\"Split Column by Delimiter\\\" = Table.SplitColumn(#\\\"Filtered Rows\\\", \\\"phase_status\\\", Splitter.SplitTextByDelimiter(\\\"-\\\", QuoteStyle.Csv), {\\\"phase_status.1\\\", \\\"phase_status.2\\\"}),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(#\\\"Split Column by Delimiter\\\",{{\\\"phase_status.1\\\", type text}, {\\\"phase_status.2\\\", type text}}),\\n    #\\\"Appended Query\\\" = Table.Combine({#\\\"Changed Type\\\", Nguon_Cung_Du_kien})\\nin\\n    #\\\"Appended Query\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Product_Project_BDS",
+      "lineageTag": "a29bbd88-b559-4fc5-a9e1-b0081cc033af",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Sql.Database(\"10.16.19.14\", \"INVESTMENT_REPORT\", [Query=\"SELECT A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[code]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[productTypeId]#(lf)      ,A.[quantity]#(lf)      ,A.[area]#(lf)      ,A.[unitId]#(lf)      ,C.name AS project_name#(lf)      ,D.name AS phase_name#(lf)      ,F.label AS project_type#(lf)      ,E.label AS product_name#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,G.label AS category#(lf)      ,M.name AS leading_company#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_type] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_project C ON B.projectId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision D ON B.subdivisionId = D.id#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option E ON A.productTypeId = E.id#(lf)  LEFT JOIN city H ON C.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON C.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON C.wardId = L.id#(lf)  LEFT JOIN dropdown_option G ON C.projectCategoryId = G.id#(lf)    LEFT JOIN mr_leading_companies M ON C.leadingCompanyId = M.id#(lf)#(lf)\"]),",
+        "    #\"Filtered Rows\" = Table.SelectRows(Source, each ([isDeactivated] = false))",
+        "in",
+        "    #\"Filtered Rows\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Sql.Database(\\\"10.16.19.14\\\", \\\"INVESTMENT_REPORT\\\", [Query=\\\"SELECT A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[code]#(lf)      ,A.[realEstateProjectTypeId]#(lf)      ,A.[productTypeId]#(lf)      ,A.[quantity]#(lf)      ,A.[area]#(lf)      ,A.[unitId]#(lf)      ,C.name AS project_name#(lf)      ,D.name AS phase_name#(lf)      ,F.label AS project_type#(lf)      ,E.label AS product_name#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,G.label AS category#(lf)      ,M.name AS leading_company#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_type] A#(lf)  LEFT JOIN mr_real_estate_project_type B ON A.realEstateProjectTypeId = B.id AND B.isDeactivated = 0#(lf)  LEFT JOIN mr_project C ON B.projectId = C.id AND C.isDeactivated = 0#(lf)  LEFT JOIN mr_subdivision D ON B.subdivisionId = D.id#(lf)  LEFT JOIN dropdown_option F ON B.projectTypeId = F.id#(lf)  LEFT JOIN dropdown_option E ON A.productTypeId = E.id#(lf)  LEFT JOIN city H ON C.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON C.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON C.wardId = L.id#(lf)  LEFT JOIN dropdown_option G ON C.projectCategoryId = G.id#(lf)    LEFT JOIN mr_leading_companies M ON C.leadingCompanyId = M.id#(lf)#(lf)\\\"]),\\n    #\\\"Filtered Rows\\\" = Table.SelectRows(Source, each ([isDeactivated] = false))\\nin\\n    #\\\"Filtered Rows\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "SortBank",
+      "lineageTag": "3bc3cc5d-3065-43c5-9a26-608b7230c526",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WCnN2UtJRMlSK1QGyM1NLMvOcEvOygUJGYCHH9KLMJIiAMVjAydMlDMgxAXNCwJpNwWxfENMMogksbA5me7iA2BYQ8wNAbEswOzgxOT8XarKhgVJsLAA=\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Bank = _t, STT = _t]),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Bank\", type text}, {\"STT\", Int64.Type}})",
+        "in",
+        "    #\"Changed Type\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\\\"i45WCnN2UtJRMlSK1QGyM1NLMvOcEvOygUJGYCHH9KLMJIiAMVjAydMlDMgxAXNCwJpNwWxfENMMogksbA5me7iA2BYQ8wNAbEswOzgxOT8XarKhgVJsLAA=\\\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Bank = _t, STT = _t]),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(Source,{{\\\"Bank\\\", type text}, {\\\"STT\\\", Int64.Type}})\\nin\\n    #\\\"Changed Type\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Measure_BDS",
+      "lineageTag": "c592e94d-7d51-4ecd-b7c7-c065ca9f5fc1",
+      "text": [
+        "let",
+        "    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\"i45WMlSKjQUA\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(Source,{{\"Column1\", Int64.Type}}),",
+        "    #\"Removed Columns\" = Table.RemoveColumns(#\"Changed Type\",{\"Column1\"})",
+        "in",
+        "    #\"Removed Columns\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText(\\\"i45WMlSKjQUA\\\", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(Source,{{\\\"Column1\\\", Int64.Type}}),\\n    #\\\"Removed Columns\\\" = Table.RemoveColumns(#\\\"Changed Type\\\",{\\\"Column1\\\"})\\nin\\n    #\\\"Removed Columns\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    },
+    {
+      "name": "Nguon_Cung_Du_kien",
+      "lineageTag": "591d396c-60a0-45db-9ef9-6cccb83c62ec",
+      "navigationStepName": "Navigation",
+      "text": [
+        "let",
+        "    Source = Sql.Database(\"10.16.19.14\", \"INVESTMENT_REPORT\", [Query=\"SELECT A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[code]#(lf)      ,A.[projectId]#(lf)      ,A.[subdivisionId]#(lf)      ,A.[projectTypeId]#(lf)      ,A.[scale]#(lf)      ,A.[mrAreaUnitId]#(lf)      ,A.[totalProducts]#(lf)      ,A.[salesOpeningDate]#(lf)      ,A.[endDate]#(lf)      ,A.[areaNFA]#(lf)      ,A.[areaGFA]#(lf)      ,A.[priorityIndustry]#(lf)      ,A.[basementFloors]#(lf)      ,A.[floors]#(lf)      ,A.[blocks]#(lf)      ,A.[priorityLevelId]#(lf)      ,B.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,C.name AS project_name#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,G.label AS category#(lf)      ,F.label AS project_type#(lf)      ,C.centroid.Lat as Latitude#(lf)      ,C.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project_type] A#(lf)  LEFT JOIN mr_subdivision B ON A.subdivisionId = B.id#(lf)  LEFT JOIN dropdown_option D ON B.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project C ON A.projectId = C.id#(lf)  LEFT JOIN city H ON C.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON C.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON C.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON C.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option G ON C.projectCategoryId = G.id#(lf)  LEFT JOIN dropdown_option F ON A.projectTypeId = F.id#(lf)  WHERE A.isDeactivated = 0\"]),",
+        "    #\"Filtered Rows\" = Table.SelectRows(Source, each ([category] = \"MRPF - NVLG\") and ([phase_status] = \"MRPF-Dự kiến mở bán\" or [phase_status] = \"MRPF-Hoãn\")),",
+        "    #\"Split Column by Delimiter\" = Table.SplitColumn(#\"Filtered Rows\", \"phase_status\", Splitter.SplitTextByDelimiter(\"-\", QuoteStyle.Csv), {\"phase_status.1\", \"phase_status.2\"}),",
+        "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Split Column by Delimiter\",{{\"phase_status.1\", type text}, {\"phase_status.2\", type text}})",
+        "in",
+        "    #\"Changed Type\""
+      ],
+      "isDirectQuery": false,
+      "lastLoadedAsTableFormulaText": "{\"IncludesReferencedQueries\":false,\"RootFormulaText\":\"let\\n    Source = Sql.Database(\\\"10.16.19.14\\\", \\\"INVESTMENT_REPORT\\\", [Query=\\\"SELECT A.[isDeactivated]#(lf)      ,A.[id]#(lf)      ,A.[createdAt]#(lf)      ,A.[updatedAt]#(lf)      ,A.[deletedAt]#(lf)      ,A.[createdById]#(lf)      ,A.[updatedById]#(lf)      ,A.[deletedById]#(lf)      ,A.[code]#(lf)      ,A.[projectId]#(lf)      ,A.[subdivisionId]#(lf)      ,A.[projectTypeId]#(lf)      ,A.[scale]#(lf)      ,A.[mrAreaUnitId]#(lf)      ,A.[totalProducts]#(lf)      ,A.[salesOpeningDate]#(lf)      ,A.[endDate]#(lf)      ,A.[areaNFA]#(lf)      ,A.[areaGFA]#(lf)      ,A.[priorityIndustry]#(lf)      ,A.[basementFloors]#(lf)      ,A.[floors]#(lf)      ,A.[blocks]#(lf)      ,A.[priorityLevelId]#(lf)      ,B.name AS phase_name#(lf)      ,D.label AS phase_status#(lf)      ,C.name AS project_name#(lf)      ,H.name AS city#(lf)      ,K.label AS city_type#(lf)      ,L.name AS ward#(lf)      ,M.name AS leading_company#(lf)      ,G.label AS category#(lf)      ,F.label AS project_type#(lf)      ,C.centroid.Lat as Latitude#(lf)      ,C.centroid.Long AS longtitude#(lf)  FROM [INVESTMENT_REPORT].[dbo].[mr_real_estate_project_type] A#(lf)  LEFT JOIN mr_subdivision B ON A.subdivisionId = B.id#(lf)  LEFT JOIN dropdown_option D ON B.subdivisionStatusId = D.id#(lf)  LEFT JOIN mr_project C ON A.projectId = C.id#(lf)  LEFT JOIN city H ON C.cityId =H.id#(lf)  LEFT JOIN dropdown_option K ON C.cityTypeId =K.id#(lf)  LEFT JOIN ward L ON C.wardId = L.id#(lf)  LEFT JOIN mr_leading_companies M ON C.leadingCompanyId = M.id#(lf)  LEFT JOIN dropdown_option G ON C.projectCategoryId = G.id#(lf)  LEFT JOIN dropdown_option F ON A.projectTypeId = F.id#(lf)  WHERE A.isDeactivated = 0\\\"]),\\n    #\\\"Filtered Rows\\\" = Table.SelectRows(Source, each ([category] = \\\"MRPF - NVLG\\\") and ([phase_status] = \\\"MRPF-Dự kiến mở bán\\\" or [phase_status] = \\\"MRPF-Hoãn\\\")),\\n    #\\\"Split Column by Delimiter\\\" = Table.SplitColumn(#\\\"Filtered Rows\\\", \\\"phase_status\\\", Splitter.SplitTextByDelimiter(\\\"-\\\", QuoteStyle.Csv), {\\\"phase_status.1\\\", \\\"phase_status.2\\\"}),\\n    #\\\"Changed Type\\\" = Table.TransformColumnTypes(#\\\"Split Column by Delimiter\\\",{{\\\"phase_status.1\\\", type text}, {\\\"phase_status.2\\\", type text}})\\nin\\n    #\\\"Changed Type\\\"\",\"ReferencedQueriesFormulaText\":{}}",
+      "loadAsTableDisabled": false,
+      "resultType": "Table",
+      "isHidden": false
+    }
+  ],
+  "queryGroups": [],
+  "culture": "en-US",
+  "firewallEnabled": true
+}

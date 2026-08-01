@@ -92,7 +92,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
@@ -327,13 +327,6 @@
                     }
                   ],
                   "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Đã bán hết'"
-                        }
-                      }
-                    ],
                     [
                       {
                         "Literal": {

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
   "name": "875cd6c72ba332347412",
   "position": {
     "x": 197.03965818789516,
@@ -59,6 +59,36 @@
               "queryRef": "Project_BDS.project_type",
               "nativeQueryRef": "Loại hình",
               "displayName": "Loại hình"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Project_BDS"
+                    }
+                  },
+                  "Property": "phase_status.2"
+                }
+              },
+              "queryRef": "Project_BDS.phase_status.2",
+              "nativeQueryRef": "Tình trạng",
+              "displayName": "Tình trạng"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Project_BDS"
+                    }
+                  },
+                  "Property": "salesOpeningDate"
+                }
+              },
+              "queryRef": "Project_BDS.salesOpeningDate",
+              "nativeQueryRef": "Thời gian mở bán",
+              "displayName": "Thời gian mở bán"
             },
             {
               "field": {
@@ -152,13 +182,13 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "Measure_BDS"
+                    "Entity": "Project_BDS"
                   }
                 },
-                "Property": "Số căn đã bán quý này"
+                "Property": "salesOpeningDate"
               }
             },
             "direction": "Descending"
@@ -293,6 +323,20 @@
           "selector": {
             "metadata": "Measure_BDS.Giá bán TB"
           }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "83.56669809521082D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Project_BDS.salesOpeningDate"
+          }
         }
       ],
       "grid": [
@@ -365,6 +409,69 @@
           },
           "selector": {
             "metadata": "Measure_BDS.Giá bán TB"
+          }
+        },
+        {
+          "properties": {
+            "dataBars": {
+              "positiveColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'#63C384'"
+                      }
+                    }
+                  }
+                }
+              },
+              "negativeColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'#97C3A6'"
+                      }
+                    }
+                  }
+                }
+              },
+              "axisColor": {
+                "solid": {
+                  "color": {
+                    "expr": {
+                      "Literal": {
+                        "Value": "'foreground'"
+                      }
+                    }
+                  }
+                }
+              },
+              "reverseDirection": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              },
+              "hideText": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              },
+              "totalMatchingOption": {
+                "expr": {
+                  "Literal": {
+                    "Value": "1L"
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Measure_BDS.Tỷ trọng số căn đã bán quý này"
           }
         }
       ],
@@ -501,14 +608,20 @@
                           "Value": "'Đang mở bán'"
                         }
                       }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Dự kiến mở bán'"
+                        }
+                      }
                     ]
                   ]
                 }
               }
             }
           ]
-        },
-        "howCreated": "User"
+        }
       },
       {
         "name": "10c4ebc6526be97bdeb8",
@@ -565,6 +678,20 @@
           }
         },
         "type": "Advanced"
+      },
+      {
+        "name": "1c79f8374b4810b6aeb2",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Project_BDS"
+              }
+            },
+            "Property": "salesOpeningDate"
+          }
+        },
+        "type": "Categorical"
       }
     ]
   }

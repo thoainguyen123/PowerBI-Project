@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "f60426d3b48698960ece",
   "position": {
     "x": 95.07352941176471,
@@ -84,5 +84,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "50a9879403773de5db9d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Measure_BDS"
+              }
+            },
+            "Property": "Measure"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

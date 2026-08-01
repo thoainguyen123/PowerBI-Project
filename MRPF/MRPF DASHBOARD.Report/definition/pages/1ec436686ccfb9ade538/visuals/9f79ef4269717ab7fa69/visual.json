@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
   "name": "9f79ef4269717ab7fa69",
   "position": {
-    "x": 13.717950886499031,
-    "y": 394.00813013176992,
+    "x": 9.0909767396908467,
+    "y": 396.84248219919556,
     "z": 7000,
     "height": 66.078247042466018,
     "width": 170.84710159979161,
@@ -186,13 +186,6 @@
                       {
                         "Literal": {
                           "Value": "'Đang mở bán'"
-                        }
-                      }
-                    ],
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Đã bán hết'"
                         }
                       }
                     ]

@@ -109,7 +109,7 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
@@ -244,21 +244,21 @@
             "preferredCategoryWidth": {
               "expr": {
                 "Literal": {
-                  "Value": "50D"
+                  "Value": "70D"
                 }
               }
             },
             "maxMarginFactor": {
               "expr": {
                 "Literal": {
-                  "Value": "20L"
+                  "Value": "15L"
                 }
               }
             },
             "concatenateLabels": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -266,6 +266,13 @@
               "expr": {
                 "Literal": {
                   "Value": "8D"
+                }
+              }
+            },
+            "innerPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "15L"
                 }
               }
             }
@@ -276,6 +283,26 @@
         {
           "properties": {
             "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "layout": [
+        {
+          "properties": {
+            "stackedGapSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            },
+            "stackedGapExplodes": {
               "expr": {
                 "Literal": {
                   "Value": "true"

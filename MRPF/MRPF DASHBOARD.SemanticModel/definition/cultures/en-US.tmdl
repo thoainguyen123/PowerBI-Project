@@ -6141,6 +6141,16 @@ cultureInfo en-US
 			            },
 			            "Weight": 0.9
 			          }
+			        },
+			        {
+			          "Tên dự án": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -10162,6 +10172,16 @@ cultureInfo en-US
 			          "phase_status.2": {
 			            "State": "Generated"
 			          }
+			        },
+			        {
+			          "Tình trạng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
 			        }
 			      ]
 			    },
@@ -11845,6 +11865,16 @@ cultureInfo en-US
 			              "Agent": "Thesaurus"
 			            },
 			            "Weight": 0.727
+			          }
+			        },
+			        {
+			          "Thời gian mở bán": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
 			          }
 			        }
 			      ],
@@ -19138,6 +19168,22 @@ cultureInfo en-US
 			          }
 			        }
 			      ]
+			    },
+			    "measure_BD.nguồn_cung_sơ_cấp_theo_giá_bán": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Measure_BDS",
+			          "ConceptualProperty": "Nguồn cung sơ cấp theo giá bán"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "nguồn cung sơ cấp theo giá bán": {
+			            "State": "Generated"
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {
@@ -21250,6 +21296,39 @@ cultureInfo en-US
 			          "State": "Generated",
 			          "Weight": 0.99,
 			          "ID": "project_BD_have_product_project_BD"
+			        }
+			      ]
+			    },
+			    "project_BD_has_measure_BD_nguồn_cung_sơ_cấp_theo_giá_bán": {
+			      "Binding": {
+			        "ConceptualEntity": "Project_BDS"
+			      },
+			      "State": "Generated",
+			      "Roles": {
+			        "project_BD": {
+			          "Target": {
+			            "Entity": "project_BD"
+			          }
+			        },
+			        "measure_BD.nguồn_cung_sơ_cấp_theo_giá_bán": {
+			          "Target": {
+			            "Entity": "measure_BD.nguồn_cung_sơ_cấp_theo_giá_bán"
+			          }
+			        }
+			      },
+			      "Phrasings": [
+			        {
+			          "Attribute": {
+			            "Subject": {
+			              "Role": "project_BD"
+			            },
+			            "Object": {
+			              "Role": "measure_BD.nguồn_cung_sơ_cấp_theo_giá_bán"
+			            }
+			          },
+			          "State": "Generated",
+			          "Weight": 0.99,
+			          "ID": "project_BD_have_nguồn_cung_sơ_cấp_theo_giá_bán"
 			        }
 			      ]
 			    },

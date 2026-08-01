@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "c5a0234cb3822b023b5c",
   "position": {
     "x": 297,
@@ -108,21 +108,6 @@
               "queryRef": "Data.(2.2) Đăng ký thêm",
               "nativeQueryRef": "Đăng ký thêm",
               "displayName": "Đăng ký thêm"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
-                  "Property": "(2.3) Chưa phân loại KPI"
-                }
-              },
-              "queryRef": "Data.(2.3) Chưa phân loại KPI",
-              "nativeQueryRef": "Chưa phân loại KPI",
-              "displayName": "Chưa phân loại KPI"
             },
             {
               "field": {
@@ -306,6 +291,16 @@
                 }
               ],
               "isToggled": true
+            },
+            {
+              "identityValues": [
+                {
+                  "Literal": {
+                    "Value": "'BÌNH THUẬN'"
+                  }
+                }
+              ],
+              "isToggled": true
             }
           ]
         }
@@ -390,20 +385,6 @@
               "expr": {
                 "Literal": {
                   "Value": "'Left'"
-                }
-              }
-            },
-            "autoExpand": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "defaultColumnWidth": {
-              "expr": {
-                "Literal": {
-                  "Value": "90D"
                 }
               }
             }
@@ -825,7 +806,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "124D"
+                  "Value": "143.99999343708214D"
                 }
               }
             }
@@ -839,7 +820,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "177D"
+                  "Value": "225.30102337082275D"
                 }
               }
             }
@@ -867,7 +848,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "110D"
+                  "Value": "135D"
                 }
               }
             }
@@ -881,7 +862,7 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "95D"
+                  "Value": "108.33333333333333D"
                 }
               }
             }
@@ -895,13 +876,27 @@
             "value": {
               "expr": {
                 "Literal": {
-                  "Value": "102D"
+                  "Value": "109.33336025296168D"
                 }
               }
             }
           },
           "selector": {
-            "metadata": "Data.(2.3) Chưa phân loại KPI"
+            "metadata": "Data.% Hoàn thành 2026"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "123.00000395049634D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Data.(2.1) KPI đã đăng ký"
           }
         }
       ]

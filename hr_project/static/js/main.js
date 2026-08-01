@@ -35,6 +35,7 @@ let state = {
     selectedOverviewRegion: null,
     selectedOverviewProject: null,
     selectedOverviewDepartment: '9.1 HRC',
+    selectedOverviewAreaCode: 'ALL',
     overviewProjectEntries: [],
     
     // Chart instances
@@ -369,13 +370,15 @@ function closeModal(modalId) {
 }
 
 // Load metadata for dropdowns
-async function loadInitialMetadata() {
+async function loadInitialMetadata(options = {}) {
     try {
-        const projRes = await fetch(`${API_URL}/projects`);
+        const includeEmployees = options.includeEmployees !== false;
+        const [projRes, empRes] = await Promise.all([
+            fetch(`${API_URL}/projects`),
+            includeEmployees ? fetch(`${API_URL}/employees`) : Promise.resolve(null),
+        ]);
         state.projects = await projRes.json();
-        
-        const empRes = await fetch(`${API_URL}/employees`);
-        state.employees = await empRes.json();
+        if (empRes) state.employees = await empRes.json();
         
         const allocProjSelect = document.getElementById('alloc-project-input');
         const transNewProjSelect = document.getElementById('trans-new-proj-input');
@@ -713,6 +716,9 @@ function preventProjectFormImplicitSubmit(event) {
 
 async function saveProject(event) {
     event.preventDefault();
+    const saveButton = document.getElementById('project-save-button');
+    if (saveButton?.disabled) return;
+    const defaultButtonContent = saveButton?.innerHTML || '<i class="bx bx-save"></i> Lưu toàn bộ hồ sơ';
     const editingCode = document.getElementById('project-edit-code').value;
     const isNewProject = !editingCode;
     const projectCode = document.getElementById('project-code-input').value.trim();
@@ -737,23 +743,38 @@ async function saveProject(event) {
         nguon_goc_du_an: document.getElementById('project-origin-input').value.trim()
     };
 
+    if (saveButton) {
+        saveButton.disabled = true;
+        saveButton.setAttribute('aria-busy', 'true');
+        saveButton.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Đang lưu hồ sơ...';
+    }
+
     try {
         const url = editingCode
             ? `${API_URL}/projects/${encodeURIComponent(editingCode)}`
             : `${API_URL}/projects`;
-        await fetch(url, {
+        const projectResponse = await fetch(url, {
             method: editingCode ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
+        if (!projectResponse.ok) {
+            const error = await projectResponse.json().catch(() => ({}));
+            throw new Error(error.error || 'Không thể lưu thông tin dự án');
+        }
 
         if (state.masterdataProjectCode === projectCode) {
             await saveAllProjectMasterdata(projectCode);
         }
 
-        await loadInitialMetadata();
-        await fetchProjectOverviewData();
-        await fetchDashboardData();
+        const refreshProjectViews = () => Promise.all([
+            loadInitialMetadata({ includeEmployees: false }),
+            fetchProjectOverviewData(),
+            fetchDashboardData(),
+            loadManagementAreas(true),
+        ]).catch(error => {
+            console.error('Không thể làm mới dữ liệu sau khi lưu dự án:', error);
+        });
 
         if (isNewProject) {
             document.getElementById('project-edit-code').value = projectCode;
@@ -762,6 +783,7 @@ async function saveProject(event) {
             document.getElementById('project-save-button').innerHTML = '<i class="bx bx-save"></i> Lưu toàn bộ hồ sơ';
             await loadMasterdataProject(projectCode);
             showToast('Đã tạo dự án. Tiếp tục nhập mục 03 rồi bấm cùng nút Lưu toàn bộ hồ sơ.');
+            void refreshProjectViews();
             document.getElementById('project-modal-masterdata-section')?.scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
@@ -771,8 +793,16 @@ async function saveProject(event) {
 
         closeModal('modal-project');
         showToast('Đã cập nhật toàn bộ hồ sơ dự án!');
+        void refreshProjectViews();
     } catch (err) {
         console.error('Lỗi khi lưu dự án:', err);
+        showToast(err.message || 'Không thể lưu hồ sơ dự án!', true);
+    } finally {
+        if (saveButton) {
+            saveButton.disabled = false;
+            saveButton.removeAttribute('aria-busy');
+            saveButton.innerHTML = defaultButtonContent;
+        }
     }
 }
 
@@ -1093,7 +1123,7 @@ async function removeProjectMasterdataContent(button) {
 async function saveAllProjectMasterdata(projectCode) {
     if (!projectCode) return;
     const rows = [...document.querySelectorAll('#project-modal-masterdata-section .project-masterdata-row')];
-    const requests = [];
+    const entries = [];
 
     rows.forEach(row => {
         const values = {};
@@ -1104,28 +1134,24 @@ async function saveAllProjectMasterdata(projectCode) {
         if (!hasData) return;
 
         const entryId = row.dataset.entryId;
-        requests.push({
-            url: entryId ? `${API_URL}/masterdata/entries/${entryId}` : `${API_URL}/masterdata/entries`,
-            method: entryId ? 'PUT' : 'POST',
-            payload: {
-                project_code: projectCode,
-                source_sheet: row.dataset.sheet,
-                values
-            }
+        entries.push({
+            id: entryId || null,
+            source_sheet: row.dataset.sheet,
+            values
         });
     });
 
-    for (const requestItem of requests) {
-        const response = await fetch(requestItem.url, {
-            method: requestItem.method,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestItem.payload)
-        });
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({}));
-            throw new Error(error.error || 'Không thể lưu nội dung dự án');
-        }
+    if (!entries.length) return { saved: 0 };
+    const response = await fetch(`${API_URL}/masterdata/entries/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_code: projectCode, entries })
+    });
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Không thể lưu nội dung dự án');
     }
+    return response.json();
 }
 
 function openMasterdataModal(entryId = null, sheetName = null) {
@@ -3697,16 +3723,21 @@ function renderOverviewLayer1() {
     if (!container) return;
 
     const areas = state.managementAreas || [];
-    document.getElementById('overview-kpi-areas').innerText = areas.length;
-    document.getElementById('overview-kpi-regions').innerText = areas.reduce(
-        (total, area) => total + (area.regions || []).length, 0
+    const allRegionRecords = areas.flatMap(area =>
+        (area.regions || []).map(region => ({ area, region }))
     );
+    document.getElementById('overview-kpi-areas').innerText = areas.length;
+    document.getElementById('overview-kpi-regions').innerText = allRegionRecords.length;
     document.getElementById('overview-kpi-projects').innerText = areas.reduce(
         (total, area) => total + Number(area.project_count || 0), 0
     ).toLocaleString('vi-VN');
     document.getElementById('overview-kpi-headcount').innerText = areas.reduce(
         (total, area) => total + Number(area.headcount || 0), 0
     ).toLocaleString('vi-VN');
+    const overviewSubtitle = document.getElementById('overview-section-subtitle');
+    if (overviewSubtitle) {
+        overviewSubtitle.innerText = `Hiển thị toàn bộ ${areas.length} Khu vực và ${allRegionRecords.length} Vùng trực thuộc.`;
+    }
 
     if (!areas.length) {
         container.innerHTML = `
@@ -3718,51 +3749,73 @@ function renderOverviewLayer1() {
         return;
     }
 
-    container.innerHTML = areas.map(area => {
-        const regions = area.regions || [];
-        const leadership = [
-            area.director_name && `GĐ: ${area.director_name}`,
-            area.deputy_director_name && `PGĐ: ${area.deputy_director_name}`,
-        ].filter(Boolean).join(' · ');
+    state.selectedOverviewAreaCode = 'ALL';
+
+    const areaLeadership = area => [
+        area.director_name && `GĐ: ${area.director_name}`,
+        area.deputy_director_name && `PGĐ: ${area.deputy_director_name}`,
+    ].filter(Boolean).join(' · ');
+
+    const renderRegionTile = (region, area) => {
+        const leader = getRegionLeader(region);
         return `
-            <article class="management-area-card" style="--area-accent:${safeAreaColor(area.accent_color)}">
-                <header class="management-area-header">
-                    <div class="area-number">${escapeHtml(area.area_code)}</div>
-                    <div>
+            <button class="region-command-tile" type="button"
+                data-region-code="${escapeHtml(region.region_code)}"
+                style="--region-accent:${safeAreaColor(area.accent_color)}"
+                onclick="selectOverviewRegionByCode(this.dataset.regionCode)">
+                <div class="region-tile-top">
+                    <span class="region-tile-code">${escapeHtml(region.region_code)}</span>
+                    <i class="bx bx-right-arrow-alt"></i>
+                </div>
+                <h4>${escapeHtml(region.short_name || region.region_name)}</h4>
+                <p>${escapeHtml(leader?.ho_ten || 'Chưa có nhân sự GMD')}</p>
+                <div class="region-tile-footer">
+                    <span><i class="bx bx-buildings"></i>${Number(region.project_count || 0)} dự án</span>
+                    <span><i class="bx bx-user"></i>${Number(region.headcount || 0)} NS</span>
+                </div>
+            </button>`;
+    };
+
+    const areaColumns = areas.map(area => {
+        const regions = area.regions || [];
+        const leadership = areaLeadership(area);
+        return `
+            <article class="management-area-lane"
+                style="--area-accent:${safeAreaColor(area.accent_color)}">
+                <header class="management-area-lane-header">
+                    <div class="management-area-lane-top">
+                        <span class="area-number">${escapeHtml(area.area_code)}</span>
+                        <span class="management-area-lane-projects">
+                            <strong>${Number(area.project_count || 0).toLocaleString('vi-VN')}</strong>
+                            <small>dự án</small>
+                        </span>
+                    </div>
+                    <div class="management-area-lane-title">
                         <h3>${escapeHtml(area.area_name)}</h3>
-                        <p>${escapeHtml(area.area_scope || 'Chưa cấu hình phạm vi')}</p>
+                        <span>${regions.length} Vùng</span>
                     </div>
-                    <div class="area-summary">
-                        <strong>${Number(area.project_count || 0).toLocaleString('vi-VN')}</strong>
-                        <span>dự án</span>
-                    </div>
+                    <p>${escapeHtml(area.area_scope || 'Chưa cấu hình phạm vi')}</p>
                 </header>
-                <div class="area-leadership ${leadership ? '' : 'is-empty'}">
+                <div class="management-area-lane-leadership ${leadership ? '' : 'is-empty'}">
                     <i class="bx bx-user-voice"></i>
                     <span>${escapeHtml(leadership || 'Chưa cấu hình Giám đốc / Phó Giám đốc khu vực')}</span>
                 </div>
-                <div class="area-region-grid">
-                    ${regions.map(region => {
-                        const leader = getRegionLeader(region);
-                        return `
-                            <button class="region-command-tile" type="button"
-                                data-region-code="${escapeHtml(region.region_code)}"
-                                onclick="selectOverviewRegionByCode(this.dataset.regionCode)">
-                                <div class="region-tile-top">
-                                    <span class="region-tile-code">${escapeHtml(region.region_code)}</span>
-                                    <i class="bx bx-right-arrow-alt"></i>
-                                </div>
-                                <h4>${escapeHtml(region.short_name || region.region_name)}</h4>
-                                <p>${escapeHtml(leader?.ho_ten || 'Chưa có nhân sự GMD')}</p>
-                                <div class="region-tile-footer">
-                                    <span><i class="bx bx-buildings"></i>${Number(region.project_count || 0)} dự án</span>
-                                    <span><i class="bx bx-user"></i>${Number(region.headcount || 0)} NS</span>
-                                </div>
-                            </button>`;
-                    }).join('')}
+                <div class="management-area-lane-regions">
+                    ${regions.map(region => renderRegionTile(region, area)).join('')}
                 </div>
             </article>`;
     }).join('');
+
+    container.innerHTML = `
+        <div class="management-areas-all-grid" aria-label="Toàn bộ Khu vực và Vùng trực thuộc">
+            ${areaColumns}
+        </div>`;
+}
+
+function selectOverviewArea(areaCode) {
+    if (areaCode !== 'ALL' && !state.managementAreas?.some(area => area.area_code === areaCode)) return;
+    state.selectedOverviewAreaCode = areaCode;
+    renderOverviewLayer1();
 }
 
 function selectOverviewRegionByCode(regionCode) {
@@ -3993,6 +4046,8 @@ async function selectOverviewProject(projectCode) {
     state.selectedOverviewDepartment = '9.1 HRC';
     state.overviewProjectEntries = [];
     document.getElementById('l3-project-name').innerText = 'Đang tải dự án...';
+    document.getElementById('l3-profile-completeness').innerText = '0/7';
+    document.getElementById('l3-masterdata-count').innerText = '0 mục';
     document.getElementById('l3-details-table-body').innerHTML =
         '<tr><td colspan="7" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải master data...</td></tr>';
 
@@ -4021,6 +4076,15 @@ async function selectOverviewProject(projectCode) {
         setText('l3-project-code', project?.ma_du_an);
         setText('l3-project-status', project?.hien_trang_dau_tu, 'Chưa phân loại');
         setText('l3-project-region', project?.khu_vuc);
+        const overviewQuality = getProjectDataQuality(project || {});
+        setText(
+            'l3-profile-completeness',
+            `${overviewQuality.score}/${PROJECT_OVERVIEW_FIELDS.length}`
+        );
+        setText(
+            'l3-masterdata-count',
+            `${entries.length.toLocaleString('vi-VN')} mục`
+        );
         setText('l3-ten-phap-ly', project?.ten_phap_ly || project?.ten_du_an);
         setText('l3-ten-thuong-mai', project?.ten_thuong_mai);
         setText('l3-chu-dau-tu', project?.chu_dau_tu);

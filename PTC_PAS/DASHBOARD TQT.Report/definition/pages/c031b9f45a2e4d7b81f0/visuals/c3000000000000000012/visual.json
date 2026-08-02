@@ -28,8 +28,8 @@
               },
               "queryRef": "Data.Khu vực chuẩn",
               "nativeQueryRef": "Khu vực",
-              "active": true,
-              "displayName": "Khu vực"
+              "displayName": "Khu vực",
+              "active": true
             }
           ]
         },
@@ -68,7 +68,8 @@
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
     "objects": {

@@ -202,85 +202,85 @@ table Data
 
 	/// Tổng giá trị hợp đồng và phát sinh gồm VAT theo filter hiện tại.
 	measure 'Giá trị HĐ + PS gồm VAT' = SUM ( Data[Giá trị HĐ + PS gồm VAT số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\01. Giá trị nguồn
 		lineageTag: 4bc29028-fb58-469e-9e7e-d897f7bf0445
 
 	/// Tổng giá trị Workdone/hóa đơn chưa VAT theo mapping của template công nợ.
 	measure 'Giá trị hóa đơn chưa VAT' = SUM ( Data[Giá trị workdone chưa VAT số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\01. Giá trị nguồn
 		lineageTag: 8347d0b7-76ec-4d0a-8e23-3f8f49475f5c
 
 	/// Tổng giá trị Workdone/hóa đơn gồm VAT theo mapping của template công nợ.
 	measure 'Giá trị hóa đơn gồm VAT' = SUM ( Data[Giá trị workdone gồm VAT] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\01. Giá trị nguồn
 		lineageTag: c51eb780-20a3-4410-82bc-e9f61602352d
 
 	/// Tổng giá trị tạm ứng theo filter hiện tại.
 	measure 'Giá trị tạm ứng' = SUM ( Data[Giá trị tạm ứng số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\01. Giá trị nguồn
 		lineageTag: 70449c24-619b-44ce-b38c-5ea7e4ae311e
 
 	/// Tổng giá trị đã khấu trừ tạm ứng theo filter hiện tại.
 	measure '(3) Khấu trừ tạm ứng' = SUM ( Data[Giá trị khấu trừ tạm ứng số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\01. Giá trị nguồn
 		lineageTag: ab9c58bb-9954-408b-936a-821357bfc848
 
 	/// (4) Giá trị tạm ứng chưa thu hồi = Giá trị tạm ứng - (3) Khấu trừ tạm ứng.
 	measure '(4) Tạm ứng chưa thu hồi' = [Giá trị tạm ứng] - [(3) Khấu trừ tạm ứng]
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: 5a3f0876-5e8c-4c8c-8789-68cc6a82896b
 
 	/// (5) Giá trị công nợ đã có CPC gồm tạm ứng và Workdone, gồm VAT.
 	measure '(5) Công nợ đã có CPC' = SUM ( Data[Giá trị CPC gồm ứng + workdone số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: b2181008-5ba0-4a38-86a9-df3560d98412
 
 	/// (6) Giá trị đã thanh toán gồm tạm ứng và Workdone, gồm VAT.
 	measure '(6) Đã thanh toán' = SUM ( Data[Giá trị đã thanh toán số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: 69a157b6-bc8b-47f9-a738-8ea1a442887b
 
 	/// (7) Giá trị TĐSP/Swap gồm VAT.
 	measure '(7) Giá trị Swap' = SUM ( Data[Giá trị swap số] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: edbc1a0f-ffc2-4ffd-8eed-a04fa929117e
 
 	/// (8) Công nợ CPC còn lại chưa thanh toán = (5) - (6) - (7).
 	measure '(8) Công nợ CPC còn lại' = [(5) Công nợ đã có CPC] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: bc5c7109-a9e0-4207-a41c-b2b23dd0c274
 
 	/// (9) Công nợ sau khi trừ tạm ứng chưa thu hồi = (8) - (4).
 	measure '(9) Công nợ sau trừ tạm ứng' = [(8) Công nợ CPC còn lại] - [(4) Tạm ứng chưa thu hồi]
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: dafbb8f9-96f2-4de7-a867-90606c761086
 
 	/// (10) Tổng nợ phải trả gồm VAT = Giá trị hóa đơn gồm VAT - (6) - (7).
 	measure '(10) Tổng nợ phải trả' = [Giá trị hóa đơn gồm VAT] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: 57ce1bd7-1485-4249-a3f2-06424c04c0f7
 
 	/// (11) Tiền bảo hành giữ lại theo logic 5% ở từng dòng của template.
 	measure '(11) Tiền bảo hành giữ lại' = SUM ( Data[Tiền bảo hành giữ lại dòng] )
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: 3ab6ceb9-5420-4910-a25d-97e2493f487a
 
 	/// (12) Tổng còn lại phải trả gồm VAT = (10) - (11).
 	measure '(12) Tổng còn lại phải trả' = [(10) Tổng nợ phải trả] - [(11) Tiền bảo hành giữ lại]
-		formatString: #,##0
+		formatString: #,##0;[Red]-#,##0;-
 		displayFolder: Công nợ\02. Chỉ tiêu template
 		lineageTag: 2ae0bd27-647f-4cd2-80e0-79c4182ff959
 
@@ -313,6 +313,34 @@ table Data
 		formatString: #,##0.0
 		displayFolder: Công nợ\03. Hiển thị tỷ đồng
 		lineageTag: 7415c17e-a002-4efd-86af-508eac1590c3
+
+	/// Trạng thái thực hiện hợp đồng tại cấp dòng chi tiết của bảng Công nợ.
+	measure 'Tình trạng HĐ (dòng)' = SELECTEDVALUE ( Data[TÌNH TRẠNG THỰC HIỆN HĐ] )
+		displayFolder: Công nợ\04. Hiển thị bảng
+
+	/// Trạng thái quyết toán chuẩn tại cấp dòng chi tiết của bảng Công nợ.
+	measure 'Tình trạng quyết toán (dòng)' = SELECTEDVALUE ( Data[Tình trạng quyết toán (chuẩn)] )
+		displayFolder: Công nợ\04. Hiển thị bảng
+
+	/// Hiển thị nội dung hợp đồng trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.
+	measure 'Nội dung gói thầu (dòng)' =
+			IF (
+			    ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] ),
+			    SELECTEDVALUE ( Data[NỘI DUNG HỢP ĐỒNG] )
+			)
+		formatString: @
+		displayFolder: Công nợ\04. Hiển thị bảng
+		lineageTag: 33d8ef85-4ccd-4fac-9c14-848ed6708e49
+
+	/// Hiển thị nguyên giá trị nguồn NGÀY KÝ HĐ trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.
+	measure 'Ngày ký HĐ (dòng)' =
+			IF (
+			    ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] ),
+			    SELECTEDVALUE ( Data[NGÀY KÝ HĐ] )
+			)
+		formatString: @
+		displayFolder: Công nợ\04. Hiển thị bảng
+		lineageTag: 249413ab-b800-4955-a4e8-5e6e017b068a
 
 	column STT
 		dataType: string

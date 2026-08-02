@@ -22,6 +22,10 @@ const palette = {
   slate: "#4F6D8A",
   coral: "#E76F51",
   coralTint: "#FAD9D1",
+  advance: "#FFFF00",
+  cpc: "#9BC2E6",
+  invoice: "#A9D18E",
+  negative: "#C00000",
 };
 
 const expr = (value) => ({ expr: { Literal: { Value: value } } });
@@ -140,6 +144,40 @@ const textbox = ({ id, position, runs, alignment = "left", pill = false }) => ({
           left: num(pill ? 12 : 0), right: num(pill ? 12 : 0),
         },
       }],
+    },
+  },
+});
+
+const groupBand = ({ id, position, label, background, color = palette.ink }) => ({
+  $schema: visualSchema,
+  name: id,
+  position,
+  visual: {
+    visualType: "textbox",
+    objects: {
+      general: [{
+        properties: {
+          paragraphs: [{
+            horizontalTextAlignment: "center",
+            textRuns: [{
+              value: label,
+              textStyle: {
+                fontFamily: "Segoe UI Semibold",
+                fontSize: "10pt",
+                fontWeight: "600",
+                color,
+              },
+            }],
+          }],
+        },
+      }],
+    },
+    visualContainerObjects: {
+      background: [{ properties: { show: bool(true), color: fill(background), transparency: num(0) } }],
+      border: [{ properties: { show: bool(true), color: fill(palette.border), width: num(1), radius: num(8) } }],
+      visualHeader: [{ properties: { show: bool(false) } }],
+      padding: [{ properties: { top: num(8), bottom: num(8), left: num(8), right: num(8) } }],
+      general: [{ properties: { altText: text(label) } }],
     },
   },
 });
@@ -279,18 +317,31 @@ const matrix = ({ id, position }) => ({
     query: {
       queryState: {
         Rows: { projections: [
-          column("Khu vực chuẩn", "Khu vực"),
-          column("TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ", "Dự án/Đơn vị"),
-          column("NT/NCC/TV ", "Nhà thầu"),
-          column("SỐ HỢP ĐỒNG CHÍNH", "Số hợp đồng"),
+          column("NT/NCC/TV ", "NT/NCC/TV"),
+          column("Khu vực chuẩn", "KHU VỰC"),
+          column("TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ", "DỰ ÁN"),
+          column("PHÁP NHÂN KÝ HĐ/PLHĐ", "PHÁP NHÂN KÝ HĐ"),
+          column("SỐ HỢP ĐỒNG CHÍNH", "SỐ HỢP ĐỒNG GỐC"),
         ] },
         Values: { projections: [
-          measure("(4) Tạm ứng chưa thu hồi", "(4) Tạm ứng chưa thu hồi"),
-          measure("(8) Công nợ CPC còn lại", "(8) CPC còn lại"),
-          measure("(9) Công nợ sau trừ tạm ứng", "(9) Sau trừ tạm ứng"),
-          measure("(10) Tổng nợ phải trả", "(10) Tổng nợ phải trả"),
-          measure("(11) Tiền bảo hành giữ lại", "(11) Bảo hành giữ lại"),
-          measure("(12) Tổng còn lại phải trả", "(12) Còn lại phải trả"),
+          measure("Nội dung gói thầu (dòng)", "NỘI DUNG GÓI THẦU"),
+          measure("Ngày ký HĐ (dòng)", "NGÀY KÝ HĐ"),
+          measure("Giá trị HĐ + PS gồm VAT", "GIÁ TRỊ HĐ+PS GỒM VAT"),
+          measure("Giá trị hóa đơn chưa VAT", "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)"),
+          measure("Giá trị hóa đơn gồm VAT", "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)"),
+          measure("Giá trị tạm ứng", "(2) GIÁ TRỊ TẠM ỨNG"),
+          measure("(3) Khấu trừ tạm ứng", "(3) KHẤU TRỪ TẠM ỨNG"),
+          measure("(4) Tạm ứng chưa thu hồi", "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI"),
+          measure("(5) Công nợ đã có CPC", "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD"),
+          measure("(6) Đã thanh toán", "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD"),
+          measure("(7) Giá trị Swap", "(7) GIÁ TRỊ SWAP"),
+          measure("(8) Công nợ CPC còn lại", "(8)=(5)-(6)-(7) CPC CÒN LẠI"),
+          measure("(9) Công nợ sau trừ tạm ứng", "(9)=(8)-(4) SAU TRỪ TẠM ỨNG"),
+          measure("(10) Tổng nợ phải trả", "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ"),
+          measure("(11) Tiền bảo hành giữ lại", "(11) TIỀN BẢO HÀNH GIỮ LẠI"),
+          measure("(12) Tổng còn lại phải trả", "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ"),
+          measure("Tình trạng HĐ (dòng)", "Tình trạng HĐ"),
+          measure("Tình trạng quyết toán (dòng)", "TÌNH TRẠNG QUYẾT TOÁN"),
         ] },
       },
       sortDefinition: {
@@ -299,15 +350,15 @@ const matrix = ({ id, position }) => ({
       },
     },
     objects: {
-      columnHeaders: [{ properties: { columnAdjustment: text("growToFit"), autoSizeColumnWidth: bool(true), backColor: fill(palette.surfaceAlt), fontColor: fill(palette.ink), fontFamily: text("Segoe UI Semibold"), fontSize: num(8), bold: bool(true), alignment: text("Center"), wordWrap: bool(true), titleAlignment: text("Left") } }],
-      rowHeaders: [{ properties: { fontFamily: text("Segoe UI"), fontSize: num(9), fontColor: fill(palette.ink), backColor: fill(palette.surface), stepped: bool(true), steppedLayoutIndentation: num(14), wordWrap: bool(false), showExpandCollapseButtons: bool(true), expandCollapseButtonsColor: fill(palette.blue) } }],
-      values: [{ properties: { fontFamily: text("Segoe UI"), fontSize: num(9), fontColorPrimary: fill(palette.ink), fontColorSecondary: fill(palette.ink), backColorPrimary: fill(palette.surface), backColorSecondary: fill("#F8FAFC"), bandedRowHeaders: bool(true) } }],
-      rowTotal: [{ properties: { fontColor: fill(palette.ink), backColor: fill("#DCEFFE"), bold: bool(true) } }],
-      columnTotal: [{ properties: { fontColor: fill(palette.ink), backColor: fill("#DCEFFE"), bold: bool(true) } }],
-      grid: [{ properties: { gridHorizontal: bool(true), gridVertical: bool(false), gridHorizontalColor: fill("#EDF2F7") } }],
+      columnHeaders: [{ properties: { columnAdjustment: text("growToFit"), autoSizeColumnWidth: bool(true), backColor: fill("#DCEBFA"), fontColor: fill(palette.ink), fontFamily: text("Segoe UI Semibold"), fontSize: num(8), bold: bool(true), alignment: text("Center"), wordWrap: bool(true), titleAlignment: text("Left") } }],
+      rowHeaders: [{ properties: { fontFamily: text("Segoe UI"), fontSize: num(8), fontColor: fill(palette.ink), backColor: fill(palette.surface), stepped: bool(false), wordWrap: bool(false), showExpandCollapseButtons: bool(true), expandCollapseButtonsColor: fill(palette.blue) } }],
+      values: [{ properties: { fontFamily: text("Segoe UI"), fontSize: num(8), fontColorPrimary: fill(palette.ink), fontColorSecondary: fill(palette.ink), backColorPrimary: fill(palette.surface), backColorSecondary: fill("#F8FAFC"), bandedRowHeaders: bool(true) } }],
+      rowTotal: [{ properties: { fontColor: fill(palette.negative), backColor: fill("#FFF7ED"), bold: bool(true) } }],
+      columnTotal: [{ properties: { fontColor: fill(palette.ink), backColor: fill("#FFF7ED"), bold: bool(true) } }],
+      grid: [{ properties: { gridHorizontal: bool(true), gridVertical: bool(true), gridHorizontalColor: fill("#D9E2EC"), gridVerticalColor: fill("#E8EEF5") } }],
     },
     visualContainerObjects: {
-      ...vco("CHI TIẾT CÔNG NỢ THEO HỢP ĐỒNG • ĐỒNG", "Matrix chi tiết công nợ theo khu vực, dự án, nhà thầu và hợp đồng; đơn vị đồng.", 8),
+      ...vco("1. CÔNG NỢ THEO NHÀ THẦU • ĐỒNG", "Bảng Công nợ 23 cột theo nhà thầu và hợp đồng, gồm nhóm theo dõi tạm ứng, công nợ theo CPC và công nợ theo hóa đơn; đơn vị đồng.", 8),
       stylePreset: [{ properties: { name: text("None") } }],
     },
   },
@@ -362,7 +413,10 @@ const visuals = [
   card({ id: "c3000000000000000011", position: { x: 1576, y: 112, z: 4000, height: 128, width: 304, tabOrder: 15000 }, measureName: "(12) Tổng còn lại phải trả (tỷ)", label: "(12) Còn lại phải trả • Tỷ đồng", color: palette.coral }),
   barChart({ id: "c3000000000000000012", position: { x: 296, y: 264, z: 5000, height: 280, width: 784, tabOrder: 16000 }, category: "Khu vực chuẩn", categoryLabel: "Khu vực", titleValue: "CÒN PHẢI TRẢ THEO KHU VỰC • TỶ ĐỒNG" }),
   barChart({ id: "c3000000000000000013", position: { x: 1096, y: 264, z: 5000, height: 280, width: 792, tabOrder: 17000 }, category: "NT/NCC/TV ", categoryLabel: "Nhà thầu", titleValue: "CÒN PHẢI TRẢ THEO NHÀ THẦU • TỶ ĐỒNG" }),
-  matrix({ id: "c3000000000000000014", position: { x: 296, y: 568, z: 6000, height: 480, width: 1592, tabOrder: 18000 } }),
+  groupBand({ id: "c3000000000000000015", position: { x: 296, y: 568, z: 6000, height: 40, width: 496, tabOrder: 18000 }, label: "THEO DÕI TẠM ỨNG • (2)–(4)", background: palette.advance }),
+  groupBand({ id: "c3000000000000000016", position: { x: 808, y: 568, z: 6000, height: 40, width: 496, tabOrder: 19000 }, label: "CÔNG NỢ THEO CPC • (5)–(9)", background: palette.cpc }),
+  groupBand({ id: "c3000000000000000017", position: { x: 1320, y: 568, z: 6000, height: 40, width: 568, tabOrder: 20000 }, label: "CÔNG NỢ THEO HÓA ĐƠN • (10)–(12)", background: palette.invoice }),
+  matrix({ id: "c3000000000000000014", position: { x: 296, y: 624, z: 7000, height: 424, width: 1592, tabOrder: 21000 } }),
 ];
 
 for (const visual of visuals) {

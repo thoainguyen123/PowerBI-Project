@@ -3,11 +3,11 @@
   "name": "c3000000000000000014",
   "position": {
     "x": 296,
-    "y": 568,
-    "z": 6000,
-    "height": 480,
+    "y": 624,
+    "z": 7000,
+    "height": 424,
     "width": 1592,
-    "tabOrder": 18000
+    "tabOrder": 21000
   },
   "visual": {
     "visualType": "pivotTable",
@@ -23,13 +23,29 @@
                       "Entity": "Data"
                     }
                   },
+                  "Property": "NT/NCC/TV "
+                }
+              },
+              "queryRef": "Data.NT/NCC/TV ",
+              "nativeQueryRef": "NT/NCC/TV",
+              "displayName": "NT/NCC/TV",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
                   "Property": "Khu vực chuẩn"
                 }
               },
               "queryRef": "Data.Khu vực chuẩn",
-              "nativeQueryRef": "Khu vực",
-              "active": true,
-              "displayName": "Khu vực"
+              "nativeQueryRef": "KHU VỰC",
+              "displayName": "KHU VỰC",
+              "active": true
             },
             {
               "field": {
@@ -43,9 +59,9 @@
                 }
               },
               "queryRef": "Data.TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ",
-              "nativeQueryRef": "Dự án/Đơn vị",
-              "active": true,
-              "displayName": "Dự án/Đơn vị"
+              "nativeQueryRef": "DỰ ÁN",
+              "displayName": "DỰ ÁN",
+              "active": true
             },
             {
               "field": {
@@ -55,13 +71,13 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "NT/NCC/TV "
+                  "Property": "PHÁP NHÂN KÝ HĐ/PLHĐ"
                 }
               },
-              "queryRef": "Data.NT/NCC/TV ",
-              "nativeQueryRef": "Nhà thầu",
-              "active": true,
-              "displayName": "Nhà thầu"
+              "queryRef": "Data.PHÁP NHÂN KÝ HĐ/PLHĐ",
+              "nativeQueryRef": "PHÁP NHÂN KÝ HĐ",
+              "displayName": "PHÁP NHÂN KÝ HĐ",
+              "active": true
             },
             {
               "field": {
@@ -75,9 +91,9 @@
                 }
               },
               "queryRef": "Data.SỐ HỢP ĐỒNG CHÍNH",
-              "nativeQueryRef": "Số hợp đồng",
-              "active": true,
-              "displayName": "Số hợp đồng"
+              "nativeQueryRef": "SỐ HỢP ĐỒNG GỐC",
+              "displayName": "SỐ HỢP ĐỒNG GỐC",
+              "active": true
             }
           ]
         },
@@ -91,12 +107,162 @@
                       "Entity": "Data"
                     }
                   },
+                  "Property": "Nội dung gói thầu (dòng)"
+                }
+              },
+              "queryRef": "Data.Nội dung gói thầu (dòng)",
+              "nativeQueryRef": "NỘI DUNG GÓI THẦU",
+              "displayName": "NỘI DUNG GÓI THẦU"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Ngày ký HĐ (dòng)"
+                }
+              },
+              "queryRef": "Data.Ngày ký HĐ (dòng)",
+              "nativeQueryRef": "NGÀY KÝ HĐ",
+              "displayName": "NGÀY KÝ HĐ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị HĐ + PS gồm VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị HĐ + PS gồm VAT",
+              "nativeQueryRef": "GIÁ TRỊ HĐ+PS GỒM VAT",
+              "displayName": "GIÁ TRỊ HĐ+PS GỒM VAT"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị hóa đơn chưa VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị hóa đơn chưa VAT",
+              "nativeQueryRef": "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)",
+              "displayName": "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị hóa đơn gồm VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị hóa đơn gồm VAT",
+              "nativeQueryRef": "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)",
+              "displayName": "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị tạm ứng"
+                }
+              },
+              "queryRef": "Data.Giá trị tạm ứng",
+              "nativeQueryRef": "(2) GIÁ TRỊ TẠM ỨNG",
+              "displayName": "(2) GIÁ TRỊ TẠM ỨNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(3) Khấu trừ tạm ứng"
+                }
+              },
+              "queryRef": "Data.(3) Khấu trừ tạm ứng",
+              "nativeQueryRef": "(3) KHẤU TRỪ TẠM ỨNG",
+              "displayName": "(3) KHẤU TRỪ TẠM ỨNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
                   "Property": "(4) Tạm ứng chưa thu hồi"
                 }
               },
               "queryRef": "Data.(4) Tạm ứng chưa thu hồi",
-              "nativeQueryRef": "(4) Tạm ứng chưa thu hồi",
-              "displayName": "(4) Tạm ứng chưa thu hồi"
+              "nativeQueryRef": "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI",
+              "displayName": "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(5) Công nợ đã có CPC"
+                }
+              },
+              "queryRef": "Data.(5) Công nợ đã có CPC",
+              "nativeQueryRef": "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD",
+              "displayName": "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(6) Đã thanh toán"
+                }
+              },
+              "queryRef": "Data.(6) Đã thanh toán",
+              "nativeQueryRef": "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD",
+              "displayName": "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(7) Giá trị Swap"
+                }
+              },
+              "queryRef": "Data.(7) Giá trị Swap",
+              "nativeQueryRef": "(7) GIÁ TRỊ SWAP",
+              "displayName": "(7) GIÁ TRỊ SWAP"
             },
             {
               "field": {
@@ -110,8 +276,8 @@
                 }
               },
               "queryRef": "Data.(8) Công nợ CPC còn lại",
-              "nativeQueryRef": "(8) CPC còn lại",
-              "displayName": "(8) CPC còn lại"
+              "nativeQueryRef": "(8)=(5)-(6)-(7) CPC CÒN LẠI",
+              "displayName": "(8)=(5)-(6)-(7) CPC CÒN LẠI"
             },
             {
               "field": {
@@ -125,8 +291,8 @@
                 }
               },
               "queryRef": "Data.(9) Công nợ sau trừ tạm ứng",
-              "nativeQueryRef": "(9) Sau trừ tạm ứng",
-              "displayName": "(9) Sau trừ tạm ứng"
+              "nativeQueryRef": "(9)=(8)-(4) SAU TRỪ TẠM ỨNG",
+              "displayName": "(9)=(8)-(4) SAU TRỪ TẠM ỨNG"
             },
             {
               "field": {
@@ -140,8 +306,8 @@
                 }
               },
               "queryRef": "Data.(10) Tổng nợ phải trả",
-              "nativeQueryRef": "(10) Tổng nợ phải trả",
-              "displayName": "(10) Tổng nợ phải trả"
+              "nativeQueryRef": "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ",
+              "displayName": "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ"
             },
             {
               "field": {
@@ -155,8 +321,8 @@
                 }
               },
               "queryRef": "Data.(11) Tiền bảo hành giữ lại",
-              "nativeQueryRef": "(11) Bảo hành giữ lại",
-              "displayName": "(11) Bảo hành giữ lại"
+              "nativeQueryRef": "(11) TIỀN BẢO HÀNH GIỮ LẠI",
+              "displayName": "(11) TIỀN BẢO HÀNH GIỮ LẠI"
             },
             {
               "field": {
@@ -170,8 +336,38 @@
                 }
               },
               "queryRef": "Data.(12) Tổng còn lại phải trả",
-              "nativeQueryRef": "(12) Còn lại phải trả",
-              "displayName": "(12) Còn lại phải trả"
+              "nativeQueryRef": "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ",
+              "displayName": "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Tình trạng HĐ (dòng)"
+                }
+              },
+              "queryRef": "Data.Tình trạng HĐ (dòng)",
+              "nativeQueryRef": "Tình trạng HĐ",
+              "displayName": "Tình trạng HĐ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Tình trạng quyết toán (dòng)"
+                }
+              },
+              "queryRef": "Data.Tình trạng quyết toán (dòng)",
+              "nativeQueryRef": "TÌNH TRẠNG QUYẾT TOÁN",
+              "displayName": "TÌNH TRẠNG QUYẾT TOÁN"
             }
           ]
         }
@@ -191,7 +387,8 @@
             },
             "direction": "Descending"
           }
-        ]
+        ],
+        "isDefaultSort": false
       }
     },
     "objects": {
@@ -217,7 +414,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#F4F7FB'"
+                      "Value": "'#DCEBFA'"
                     }
                   }
                 }
@@ -292,7 +489,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8D"
                 }
               }
             },
@@ -321,14 +518,7 @@
             "stepped": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "steppedLayoutIndentation": {
-              "expr": {
-                "Literal": {
-                  "Value": "14D"
+                  "Value": "false"
                 }
               }
             },
@@ -373,7 +563,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8D"
                 }
               }
             },
@@ -439,7 +629,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#172033'"
+                      "Value": "'#C00000'"
                     }
                   }
                 }
@@ -450,7 +640,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#DCEFFE'"
+                      "Value": "'#FFF7ED'"
                     }
                   }
                 }
@@ -485,7 +675,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#DCEFFE'"
+                      "Value": "'#FFF7ED'"
                     }
                   }
                 }
@@ -514,7 +704,7 @@
             "gridVertical": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
@@ -523,7 +713,18 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#EDF2F7'"
+                      "Value": "'#D9E2EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8EEF5'"
                     }
                   }
                 }
@@ -663,7 +864,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'CHI TIẾT CÔNG NỢ THEO HỢP ĐỒNG • ĐỒNG'"
+                  "Value": "'1. CÔNG NỢ THEO NHÀ THẦU • ĐỒNG'"
                 }
               }
             },
@@ -726,7 +927,7 @@
             "altText": {
               "expr": {
                 "Literal": {
-                  "Value": "'Matrix chi tiết công nợ theo khu vực, dự án, nhà thầu và hợp đồng; đơn vị đồng.'"
+                  "Value": "'Bảng Công nợ 23 cột theo nhà thầu và hợp đồng, gồm nhóm theo dõi tạm ứng, công nợ theo CPC và công nợ theo hóa đơn; đơn vị đồng.'"
                 }
               }
             }

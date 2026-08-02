@@ -81,7 +81,7 @@ Expected: FAIL vì matrix còn 5 Rows/18 Values và measure `Pháp nhân ký HĐ
 
 ---
 
-### Task 2: Thêm measure Pháp nhân vào semantic model
+### Task 2: Thêm measure Pháp nhân vào semantic model bằng Modeling MCP
 
 **Files:**
 - Modify: `PTC_PAS/DASHBOARD TQT.SemanticModel/definition/tables/Data.tmdl`
@@ -91,23 +91,44 @@ Expected: FAIL vì matrix còn 5 Rows/18 Values và measure `Pháp nhân ký HĐ
 - Consumes: `Data[SỐ HỢP ĐỒNG CHÍNH]` và `Data[PHÁP NHÂN KÝ HĐ/PLHĐ]`.
 - Produces: measure text `[Pháp nhân ký HĐ (dòng)]` cho matrix.
 
-- [ ] **Step 1: Thêm measure theo mẫu hợp đồng hiện tại**
+- [ ] **Step 1: Kết nối MCP với thư mục semantic model**
 
-Đặt measure trước `Nội dung gói thầu (dòng)`:
+Gọi `connection_operations` với:
 
-```tmdl
-	/// Hiển thị Pháp nhân ký HĐ trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.
-	measure 'Pháp nhân ký HĐ (dòng)' =
-			IF (
-			    ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] ),
-			    SELECTEDVALUE ( Data[PHÁP NHÂN KÝ HĐ/PLHĐ] )
-			)
-		formatString: @
-		displayFolder: Công nợ\04. Hiển thị bảng
-		lineageTag: 1b419953-9dd5-47cd-9f4a-3153ee945793
+```json
+{
+  "request": {
+    "operation": "ConnectFolder",
+    "folderPath": "C:/Users/Admin/Desktop/PowerBI Visualize/PTC_PAS/DASHBOARD TQT.SemanticModel/definition"
+  }
+}
 ```
 
-- [ ] **Step 2: Chạy verifier để xác nhận lỗi measure đã hết**
+- [ ] **Step 2: Tạo measure theo mẫu hợp đồng hiện tại**
+
+Gọi `measure_operations` với một definition có nội dung tương đương:
+
+```json
+{
+  "name": "Pháp nhân ký HĐ (dòng)",
+  "tableName": "Data",
+  "expression": "IF (\n    ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] ),\n    SELECTEDVALUE ( Data[PHÁP NHÂN KÝ HĐ/PLHĐ] )\n)",
+  "formatString": "@",
+  "displayFolder": "Công nợ\\04. Hiển thị bảng",
+  "description": "Hiển thị Pháp nhân ký HĐ trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.",
+  "lineageTag": "1b419953-9dd5-47cd-9f4a-3153ee945793"
+}
+```
+
+- [ ] **Step 3: Export model về đúng thư mục TMDL**
+
+Gọi `database_operations` với `operation: ExportToTmdlFolder`, connection vừa tạo và đích:
+
+```text
+C:/Users/Admin/Desktop/PowerBI Visualize/PTC_PAS/DASHBOARD TQT.SemanticModel/definition
+```
+
+- [ ] **Step 4: Chạy verifier để xác nhận lỗi measure đã hết**
 
 Run:
 

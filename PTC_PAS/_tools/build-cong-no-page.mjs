@@ -320,10 +320,10 @@ const matrix = ({ id, position }) => ({
           column("NT/NCC/TV ", "NT/NCC/TV"),
           column("Khu vực chuẩn", "KHU VỰC"),
           column("TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ", "DỰ ÁN"),
-          column("PHÁP NHÂN KÝ HĐ/PLHĐ", "PHÁP NHÂN KÝ HĐ"),
           column("SỐ HỢP ĐỒNG CHÍNH", "SỐ HỢP ĐỒNG GỐC"),
         ] },
         Values: { projections: [
+          measure("Pháp nhân ký HĐ (dòng)", "PHÁP NHÂN KÝ HĐ"),
           measure("Nội dung gói thầu (dòng)", "NỘI DUNG GÓI THẦU"),
           measure("Ngày ký HĐ (dòng)", "NGÀY KÝ HĐ"),
           measure("Giá trị HĐ + PS gồm VAT", "GIÁ TRỊ HĐ+PS GỒM VAT"),

@@ -245,7 +245,7 @@ cultureInfo en-US
 			          }
 			        },
 			        {
-			          "Số hợp đồng": {
+			          "SỐ HỢP ĐỒNG GỐC": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -316,6 +316,16 @@ cultureInfo en-US
 			        },
 			        {
 			          "Dự án/Đơn vị": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "DỰ ÁN": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5274,7 +5284,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(4) Tạm ứng chưa thu hồi": {
+			          "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5295,7 +5305,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(8) CPC còn lại": {
+			          "(8)=(5)-(6)-(7) CPC CÒN LẠI": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5316,7 +5326,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(9) Sau trừ tạm ứng": {
+			          "(9)=(8)-(4) SAU TRỪ TẠM ỨNG": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5337,7 +5347,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(10) Tổng nợ phải trả": {
+			          "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5358,7 +5368,7 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(11) Bảo hành giữ lại": {
+			          "(11) TIỀN BẢO HÀNH GIỮ LẠI": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",
@@ -5379,7 +5389,259 @@ cultureInfo en-US
 			      "State": "Generated",
 			      "Terms": [
 			        {
-			          "(12) Còn lại phải trả": {
+			          "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.nội_dung_gói_thầu_dòng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Nội dung gói thầu (dòng)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NỘI DUNG GÓI THẦU": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.ngày_ký_hđ_dòng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Ngày ký HĐ (dòng)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "NGÀY KÝ HĐ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.giá_trị_hđ__ps_gồm_vat": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Giá trị HĐ + PS gồm VAT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "GIÁ TRỊ HĐ+PS GỒM VAT": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.giá_trị_hóa_đơn_chưa_vat": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Giá trị hóa đơn chưa VAT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.giá_trị_hóa_đơn_gồm_vat": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Giá trị hóa đơn gồm VAT"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.giá_trị_tạm_ứng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Giá trị tạm ứng"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(2) GIÁ TRỊ TẠM ỨNG": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column3_khấu_trừ_tạm_ứng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(3) Khấu trừ tạm ứng"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(3) KHẤU TRỪ TẠM ỨNG": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column5_công_nợ_đã_có_cpc": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(5) Công nợ đã có CPC"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column6_đã_thanh_toán": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(6) Đã thanh toán"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.column7_giá_trị_swap": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "(7) Giá trị Swap"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "(7) GIÁ TRỊ SWAP": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.tình_trạng_hđ_dòng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Tình trạng HĐ (dòng)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tình trạng HĐ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "data.tình_trạng_quyết_toán_dòng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Tình trạng quyết toán (dòng)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "TÌNH TRẠNG QUYẾT TOÁN": {
 			            "State": "Suggested",
 			            "Source": {
 			              "Type": "External",

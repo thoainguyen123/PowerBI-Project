@@ -317,10 +317,12 @@ table Data
 	/// Trạng thái thực hiện hợp đồng tại cấp dòng chi tiết của bảng Công nợ.
 	measure 'Tình trạng HĐ (dòng)' = SELECTEDVALUE ( Data[TÌNH TRẠNG THỰC HIỆN HĐ] )
 		displayFolder: Công nợ\04. Hiển thị bảng
+		lineageTag: 6aa1cf2f-7653-4f28-884c-3f9f96633b1a
 
 	/// Trạng thái quyết toán chuẩn tại cấp dòng chi tiết của bảng Công nợ.
 	measure 'Tình trạng quyết toán (dòng)' = SELECTEDVALUE ( Data[Tình trạng quyết toán (chuẩn)] )
 		displayFolder: Công nợ\04. Hiển thị bảng
+		lineageTag: 4429458c-0078-4559-ba9a-676cc3dbab8c
 
 	/// Hiển thị nội dung hợp đồng trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.
 	measure 'Nội dung gói thầu (dòng)' =
@@ -341,6 +343,16 @@ table Data
 		formatString: @
 		displayFolder: Công nợ\04. Hiển thị bảng
 		lineageTag: 249413ab-b800-4955-a4e8-5e6e017b068a
+
+	/// Hiển thị Pháp nhân ký HĐ trong matrix Công nợ chỉ tại cấp Số hợp đồng gốc; để trống tại subtotal và grand total.
+	measure 'Pháp nhân ký HĐ (dòng)' =
+			IF (
+			    ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] ),
+			    SELECTEDVALUE ( Data[PHÁP NHÂN KÝ HĐ/PLHĐ] )
+			)
+		formatString: @
+		displayFolder: Công nợ\04. Hiển thị bảng
+		lineageTag: 1b419953-9dd5-47cd-9f4a-3153ee945793
 
 	column STT
 		dataType: string

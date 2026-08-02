@@ -71,22 +71,6 @@
                       "Entity": "Data"
                     }
                   },
-                  "Property": "PHÁP NHÂN KÝ HĐ/PLHĐ"
-                }
-              },
-              "queryRef": "Data.PHÁP NHÂN KÝ HĐ/PLHĐ",
-              "nativeQueryRef": "PHÁP NHÂN KÝ HĐ",
-              "displayName": "PHÁP NHÂN KÝ HĐ",
-              "active": true
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "Data"
-                    }
-                  },
                   "Property": "SỐ HỢP ĐỒNG CHÍNH"
                 }
               },
@@ -99,6 +83,21 @@
         },
         "Values": {
           "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Pháp nhân ký HĐ (dòng)"
+                }
+              },
+              "queryRef": "Data.Pháp nhân ký HĐ (dòng)",
+              "nativeQueryRef": "PHÁP NHÂN KÝ HĐ",
+              "displayName": "PHÁP NHÂN KÝ HĐ"
+            },
             {
               "field": {
                 "Measure": {

@@ -13,16 +13,23 @@ const pageRoot = path.join(
 const matrixId = 'c3000000000000000014';
 const matrixPath = path.join(pageRoot, 'visuals', matrixId, 'visual.json');
 const pagePath = path.join(pageRoot, 'page.json');
+const modelPath = path.join(
+  projectRoot,
+  'DASHBOARD TQT.SemanticModel',
+  'definition',
+  'tables',
+  'Data.tmdl',
+);
 
 const expectedRows = [
   'NT/NCC/TV ',
   'Khu vực chuẩn',
   'TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ',
-  'PHÁP NHÂN KÝ HĐ/PLHĐ',
   'SỐ HỢP ĐỒNG CHÍNH',
 ];
 
 const expectedValues = [
+  'Pháp nhân ký HĐ (dòng)',
   'Nội dung gói thầu (dòng)',
   'Ngày ký HĐ (dòng)',
   'Giá trị HĐ + PS gồm VAT',
@@ -44,6 +51,7 @@ const expectedValues = [
 ];
 
 const expectedValueLabels = [
+  'PHÁP NHÂN KÝ HĐ',
   'NỘI DUNG GÓI THẦU',
   'NGÀY KÝ HĐ',
   'GIÁ TRỊ HĐ+PS GỒM VAT',
@@ -131,10 +139,30 @@ for (const band of expectedGroupBands) {
   }
 }
 
+if (!fs.existsSync(modelPath)) {
+  failures.push(`Không tìm thấy semantic model: ${modelPath}`);
+} else {
+  const modelTmdl = fs.readFileSync(modelPath, 'utf8');
+  const legalEntityMeasure = modelTmdl.match(
+    /measure 'Pháp nhân ký HĐ \(dòng\)' =[\s\S]*?(?=\r?\n\t(?:measure|column|partition) )/,
+  )?.[0] ?? '';
+
+  if (!legalEntityMeasure) {
+    failures.push('Thiếu measure Pháp nhân ký HĐ (dòng).');
+  } else {
+    if (!legalEntityMeasure.includes('ISINSCOPE ( Data[SỐ HỢP ĐỒNG CHÍNH] )')) {
+      failures.push('Measure Pháp nhân phải dùng ISINSCOPE tại Số Hợp đồng Gốc.');
+    }
+    if (!legalEntityMeasure.includes('SELECTEDVALUE ( Data[PHÁP NHÂN KÝ HĐ/PLHĐ] )')) {
+      failures.push('Measure Pháp nhân phải lấy đúng cột nguồn bằng SELECTEDVALUE.');
+    }
+  }
+}
+
 if (failures.length > 0) {
   console.error(`FAIL: Trang Công nợ chưa khớp template (${failures.length} lỗi).`);
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
 
-console.log('PASS: Bảng Công nợ có 5 Rows, 18 Values, đủ 23 cột đúng thứ tự, tabular layout và 3 dải màu nhóm.');
+console.log('PASS: Bảng Công nợ có 4 Rows, 19 Values, đủ 23 cột đúng thứ tự, Pháp nhân đúng scope, tabular layout và 3 dải màu nhóm.');

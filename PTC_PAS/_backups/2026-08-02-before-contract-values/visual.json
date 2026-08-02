@@ -1,0 +1,954 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "c3000000000000000014",
+  "position": {
+    "x": 296,
+    "y": 624,
+    "z": 7000,
+    "height": 424,
+    "width": 1592,
+    "tabOrder": 21000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "NT/NCC/TV "
+                }
+              },
+              "queryRef": "Data.NT/NCC/TV ",
+              "nativeQueryRef": "NT/NCC/TV",
+              "displayName": "NT/NCC/TV",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Khu vực chuẩn"
+                }
+              },
+              "queryRef": "Data.Khu vực chuẩn",
+              "nativeQueryRef": "KHU VỰC",
+              "displayName": "KHU VỰC",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ"
+                }
+              },
+              "queryRef": "Data.TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ",
+              "nativeQueryRef": "DỰ ÁN",
+              "displayName": "DỰ ÁN",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "PHÁP NHÂN KÝ HĐ/PLHĐ"
+                }
+              },
+              "queryRef": "Data.PHÁP NHÂN KÝ HĐ/PLHĐ",
+              "nativeQueryRef": "PHÁP NHÂN KÝ HĐ",
+              "displayName": "PHÁP NHÂN KÝ HĐ",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "SỐ HỢP ĐỒNG CHÍNH"
+                }
+              },
+              "queryRef": "Data.SỐ HỢP ĐỒNG CHÍNH",
+              "nativeQueryRef": "SỐ HỢP ĐỒNG GỐC",
+              "displayName": "SỐ HỢP ĐỒNG GỐC",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "NỘI DUNG HỢP ĐỒNG"
+                }
+              },
+              "queryRef": "Data.NỘI DUNG HỢP ĐỒNG",
+              "nativeQueryRef": "NỘI DUNG GÓI THẦU",
+              "displayName": "NỘI DUNG GÓI THẦU",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "NGÀY KÝ HĐ"
+                }
+              },
+              "queryRef": "Data.NGÀY KÝ HĐ",
+              "nativeQueryRef": "NGÀY KÝ HĐ",
+              "displayName": "NGÀY KÝ HĐ",
+              "active": true
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị HĐ + PS gồm VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị HĐ + PS gồm VAT",
+              "nativeQueryRef": "GIÁ TRỊ HĐ+PS GỒM VAT",
+              "displayName": "GIÁ TRỊ HĐ+PS GỒM VAT"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị hóa đơn chưa VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị hóa đơn chưa VAT",
+              "nativeQueryRef": "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)",
+              "displayName": "GIÁ TRỊ HÓA ĐƠN (CHƯA GỒM VAT)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị hóa đơn gồm VAT"
+                }
+              },
+              "queryRef": "Data.Giá trị hóa đơn gồm VAT",
+              "nativeQueryRef": "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)",
+              "displayName": "(1) GIÁ TRỊ HÓA ĐƠN (GỒM VAT)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Giá trị tạm ứng"
+                }
+              },
+              "queryRef": "Data.Giá trị tạm ứng",
+              "nativeQueryRef": "(2) GIÁ TRỊ TẠM ỨNG",
+              "displayName": "(2) GIÁ TRỊ TẠM ỨNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(3) Khấu trừ tạm ứng"
+                }
+              },
+              "queryRef": "Data.(3) Khấu trừ tạm ứng",
+              "nativeQueryRef": "(3) KHẤU TRỪ TẠM ỨNG",
+              "displayName": "(3) KHẤU TRỪ TẠM ỨNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(4) Tạm ứng chưa thu hồi"
+                }
+              },
+              "queryRef": "Data.(4) Tạm ứng chưa thu hồi",
+              "nativeQueryRef": "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI",
+              "displayName": "(4)=(2)-(3) TẠM ỨNG CHƯA THU HỒI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(5) Công nợ đã có CPC"
+                }
+              },
+              "queryRef": "Data.(5) Công nợ đã có CPC",
+              "nativeQueryRef": "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD",
+              "displayName": "(5) CÔNG NỢ ĐÃ CÓ CPC GỒM TẠM ỨNG + WD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(6) Đã thanh toán"
+                }
+              },
+              "queryRef": "Data.(6) Đã thanh toán",
+              "nativeQueryRef": "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD",
+              "displayName": "(6) ĐÃ THANH TOÁN GỒM ỨNG + WD"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(7) Giá trị Swap"
+                }
+              },
+              "queryRef": "Data.(7) Giá trị Swap",
+              "nativeQueryRef": "(7) GIÁ TRỊ SWAP",
+              "displayName": "(7) GIÁ TRỊ SWAP"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(8) Công nợ CPC còn lại"
+                }
+              },
+              "queryRef": "Data.(8) Công nợ CPC còn lại",
+              "nativeQueryRef": "(8)=(5)-(6)-(7) CPC CÒN LẠI",
+              "displayName": "(8)=(5)-(6)-(7) CPC CÒN LẠI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(9) Công nợ sau trừ tạm ứng"
+                }
+              },
+              "queryRef": "Data.(9) Công nợ sau trừ tạm ứng",
+              "nativeQueryRef": "(9)=(8)-(4) SAU TRỪ TẠM ỨNG",
+              "displayName": "(9)=(8)-(4) SAU TRỪ TẠM ỨNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(10) Tổng nợ phải trả"
+                }
+              },
+              "queryRef": "Data.(10) Tổng nợ phải trả",
+              "nativeQueryRef": "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ",
+              "displayName": "(10)=(1)-(6)-(7) TỔNG NỢ PHẢI TRẢ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(11) Tiền bảo hành giữ lại"
+                }
+              },
+              "queryRef": "Data.(11) Tiền bảo hành giữ lại",
+              "nativeQueryRef": "(11) TIỀN BẢO HÀNH GIỮ LẠI",
+              "displayName": "(11) TIỀN BẢO HÀNH GIỮ LẠI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "(12) Tổng còn lại phải trả"
+                }
+              },
+              "queryRef": "Data.(12) Tổng còn lại phải trả",
+              "nativeQueryRef": "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ",
+              "displayName": "(12)=(10)-(11) CÒN LẠI PHẢI TRẢ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Tình trạng HĐ (dòng)"
+                }
+              },
+              "queryRef": "Data.Tình trạng HĐ (dòng)",
+              "nativeQueryRef": "Tình trạng HĐ",
+              "displayName": "Tình trạng HĐ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Tình trạng quyết toán (dòng)"
+                }
+              },
+              "queryRef": "Data.Tình trạng quyết toán (dòng)",
+              "nativeQueryRef": "TÌNH TRẠNG QUYẾT TOÁN",
+              "displayName": "TÌNH TRẠNG QUYẾT TOÁN"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Data"
+                  }
+                },
+                "Property": "(12) Tổng còn lại phải trả"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": false
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DCEBFA'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "titleAlignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "stepped": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showExpandCollapseButtons": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "expandCollapseButtonsColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#2B8FD8'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F8FAFC'"
+                    }
+                  }
+                }
+              }
+            },
+            "bandedRowHeaders": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#C00000'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFF7ED'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnTotal": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFF7ED'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D9E2EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8EEF5'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "16D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'1. CÔNG NỢ THEO NHÀ THẦU • ĐỒNG'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#172033'"
+                    }
+                  }
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bảng Công nợ 23 cột theo nhà thầu và hợp đồng, gồm nhóm theo dõi tạm ứng, công nợ theo CPC và công nợ theo hóa đơn; đơn vị đồng.'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1627 @@
+table Data
+	lineageTag: 5ae4b80b-a693-414e-b542-ba6aeb077eb9
+
+	/// Số HĐ thuộc phạm vi quyết toán. Dùng KPI QUYẾT TOÁN; riêng nguồn Hồ Tràm fallback sang HĐ có NGÀY MỤC TIÊU.
+	measure 'Số HĐ cần quyết toán' =
+			CALCULATE(
+			    COUNTROWS(Data),
+			    Data[Thuộc phạm vi quyết toán] = TRUE()
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 9639839e-bdf7-4962-91fe-352b8252e2fd
+
+	/// Số HĐ thuộc phạm vi quyết toán có năm mục tiêu bằng năm hiện tại.
+	measure 'Số HĐ cần quyết toán (năm nay)' =
+			CALCULATE(
+			    [Số HĐ cần quyết toán],
+			    Data[Năm mục tiêu] = YEAR(TODAY())
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 680dcc39-2c65-4006-a0ae-93249c299933
+
+	/// Số HĐ thuộc phạm vi quyết toán có tình trạng 'Đã quyết toán'.
+	measure 'Số HĐ hoàn thành' =
+			CALCULATE(
+			    [Số HĐ cần quyết toán],
+			    Data[TÌNH TRẠNG QUYẾT TOÁN] = "Đã quyết toán"
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: b991a008-7b8b-44ea-97a5-0d18340df600
+
+	/// Tỷ lệ HĐ đã quyết toán trên tổng HĐ thuộc phạm vi.
+	measure '% Hoàn thành' =
+			DIVIDE(
+			    [Số HĐ hoàn thành],
+			    [Số HĐ cần quyết toán]
+			)
+		formatString: 0.0%
+		displayFolder: KPI quyết toán
+		lineageTag: bd4af6de-d836-43ba-a0bb-089ae0f999a4
+
+	measure 'Hôm nay' =
+			
+			"Ngày " &
+			DAY(TODAY()) &
+			" tháng " &
+			MONTH(TODAY()) &
+			" năm " &
+			YEAR(TODAY())
+		lineageTag: 1496c56c-ec7a-4b71-a761-657cc45f5c57
+
+	/// Năm kỳ báo cáo. Mọi measure 2026 đều tham chiếu measure này - sang năm chỉ cần sửa 1 chỗ thành 2027.
+	measure 'Năm báo cáo' = 2026
+		formatString: 0
+		displayFolder: Tracking quyết toán\00. Tham số
+		lineageTag: 89907072-6fee-429b-90a6-61719de11b2a
+
+	/// (1) Số hợp đồng cần quyết toán = có NGÀY MỤC TIÊU hợp lệ (mọi năm). Ô trống hoặc rác (N/A, chữ) không được tính.
+	measure '(1) Số HĐ cần quyết toán' =
+			CALCULATE (
+			    COUNTROWS ( Data ),
+			    NOT ISBLANK ( Data[Năm mục tiêu] )
+			)
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: b7a8cfac-2b95-4436-a8a5-73c824afa134
+
+	/// (2) Số lượng cần quyết toán kỳ báo cáo = NGÀY MỤC TIÊU thuộc năm 2026.
+	measure '(2) Số HĐ cần quyết toán 2026' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: 5d7f758b-f71e-41f2-b669-e2f5bba45b5d
+
+	/// (2.1) Trong (2), phần có KPI QUYẾT TOÁN = 'KPI 417'.
+	measure '(2.1) KPI đã đăng ký' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam,
+			        Data[Nhóm KPI quyết toán] = "KPI đã đăng ký"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: ce0c6fa3-e822-4ebe-b9cf-b0ed4a31a5bf
+
+	/// (2.2) Trong (2), phần có KPI QUYẾT TOÁN = 'Ngoài 417'.
+	measure '(2.2) Đăng ký thêm' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam,
+			        Data[Nhóm KPI quyết toán] = "Đăng ký thêm"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: 33907bf9-caa8-4525-8451-39b13813bf75
+
+	/// Phần còn lại của (2) không thuộc (2.1) hay (2.2) - cột KPI QUYẾT TOÁN đang trống hoặc ghi KPI 2027/2028. Thêm để kiểm tra cân đối: (2) = (2.1) + (2.2) + (2.3).
+	measure '(2.3) Chưa phân loại KPI' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam,
+			        NOT Data[Nhóm KPI quyết toán] IN { "KPI đã đăng ký", "Đăng ký thêm" }
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: ec6113a3-f53b-4154-ad02-dadce520b10f
+
+	/// (3) Hoàn thành = có NGÀY KÝ BIÊN BẢN QUYẾT TOÁN từ 2026 trở đi, trong số HĐ có mục tiêu 2026. Là tử số của cả hai tỷ lệ % hoàn thành.
+	measure '(3) Số HĐ hoàn thành 2026' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam,
+			        Data[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\01. Số lượng
+		lineageTag: 84bef4e3-c6fd-468c-b111-78cd8c72bf82
+
+	/// (3) / (2.1). Lưu ý: tử số (3) gồm mọi HĐ hoàn thành trong kỳ 2026, kể cả nhóm 'Ngoài 417', nên tỷ lệ có thể vượt 100%.
+	measure '% Hoàn thành theo KPI đã đăng ký' = DIVIDE ( [(3) Số HĐ hoàn thành 2026], [(2.1) KPI đã đăng ký] )
+		formatString: 0.0%
+		displayFolder: Tracking quyết toán\02. Tỷ lệ
+		lineageTag: 8f7ec36e-171f-43bd-898a-cfb5f0923b35
+
+	/// (3) / (2).
+	measure '% Hoàn thành 2026' = DIVIDE ( [(3) Số HĐ hoàn thành 2026], [(2) Số HĐ cần quyết toán 2026] )
+		formatString: 0.0%
+		displayFolder: Tracking quyết toán\02. Tỷ lệ
+		lineageTag: 07a588a8-92aa-4060-aa4c-f3836255d11d
+
+	/// Tổng GIÁ TRỊ WORKDONE (gồm VAT) của đúng những gói đã hoàn thành ở (3).
+	measure 'Giá trị đã quyết toán 2026' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        SUM ( Data[Giá trị workdone gồm VAT] ),
+			        Data[Năm mục tiêu] = _Nam,
+			        Data[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\03. Giá trị
+		lineageTag: 3f9001f2-2631-40d4-af61-f7c4daa7a373
+
+	/// Bản mở rộng của (3): mọi HĐ ký biên bản từ 2026, kể cả HĐ có mục tiêu năm khác hoặc không có mục tiêu. KHÔNG dùng làm tử số cho % vì sẽ vượt mẫu số.
+	measure '(3b) Số HĐ hoàn thành (ký từ 2026, mọi kỳ)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\04. Tham chiếu thêm
+		lineageTag: 84d5ac15-4875-4773-a96c-d75eb7533810
+
+	/// Giá trị workdone tương ứng với (3b).
+	measure 'Giá trị đã quyết toán (ký từ 2026, mọi kỳ)' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        SUM ( Data[Giá trị workdone gồm VAT] ),
+			        Data[Năm ký quyết toán] >= _Nam
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\04. Tham chiếu thêm
+		lineageTag: 73e2f5cb-31e8-492c-abe8-dc47ea8df7fc
+
+	/// Phần của (3) nằm đúng trong nhóm KPI 417. Dùng khi muốn tỷ lệ KPI không bao giờ vượt 100%.
+	measure '(3.1) Số HĐ hoàn thành thuộc KPI đã đăng ký' =
+			VAR _Nam = [Năm báo cáo]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( Data ),
+			        Data[Năm mục tiêu] = _Nam,
+			        Data[Năm ký quyết toán] >= _Nam,
+			        Data[Nhóm KPI quyết toán] = "KPI đã đăng ký"
+			    )
+		formatString: #,##0
+		displayFolder: Tracking quyết toán\04. Tham chiếu thêm
+		lineageTag: 14c346cd-7bbb-4436-b504-3faaacc48f6c
+
+	/// (3.1) / (2.1) - cùng nhóm KPI 417 ở cả tử số và mẫu số nên luôn <= 100%. Phương án thay thế cho [% Hoàn thành theo KPI đã đăng ký].
+	measure '% Hoàn thành KPI đăng ký (chặt)' = DIVIDE ( [(3.1) Số HĐ hoàn thành thuộc KPI đã đăng ký], [(2.1) KPI đã đăng ký] )
+		formatString: 0.0%
+		displayFolder: Tracking quyết toán\04. Tham chiếu thêm
+		lineageTag: 2d234267-28ad-4837-81fc-5ca518d3440e
+
+	/// Tổng giá trị hợp đồng và phát sinh gồm VAT theo filter hiện tại.
+	measure 'Giá trị HĐ + PS gồm VAT' = SUM ( Data[Giá trị HĐ + PS gồm VAT số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 4bc29028-fb58-469e-9e7e-d897f7bf0445
+
+	/// Tổng giá trị Workdone/hóa đơn chưa VAT theo mapping của template công nợ.
+	measure 'Giá trị hóa đơn chưa VAT' = SUM ( Data[Giá trị workdone chưa VAT số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 8347d0b7-76ec-4d0a-8e23-3f8f49475f5c
+
+	/// Tổng giá trị Workdone/hóa đơn gồm VAT theo mapping của template công nợ.
+	measure 'Giá trị hóa đơn gồm VAT' = SUM ( Data[Giá trị workdone gồm VAT] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: c51eb780-20a3-4410-82bc-e9f61602352d
+
+	/// Tổng giá trị tạm ứng theo filter hiện tại.
+	measure 'Giá trị tạm ứng' = SUM ( Data[Giá trị tạm ứng số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: 70449c24-619b-44ce-b38c-5ea7e4ae311e
+
+	/// Tổng giá trị đã khấu trừ tạm ứng theo filter hiện tại.
+	measure '(3) Khấu trừ tạm ứng' = SUM ( Data[Giá trị khấu trừ tạm ứng số] )
+		formatString: #,##0
+		displayFolder: Công nợ\01. Giá trị nguồn
+		lineageTag: ab9c58bb-9954-408b-936a-821357bfc848
+
+	/// (4) Giá trị tạm ứng chưa thu hồi = Giá trị tạm ứng - (3) Khấu trừ tạm ứng.
+	measure '(4) Tạm ứng chưa thu hồi' = [Giá trị tạm ứng] - [(3) Khấu trừ tạm ứng]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 5a3f0876-5e8c-4c8c-8789-68cc6a82896b
+
+	/// (5) Giá trị công nợ đã có CPC gồm tạm ứng và Workdone, gồm VAT.
+	measure '(5) Công nợ đã có CPC' = SUM ( Data[Giá trị CPC gồm ứng + workdone số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: b2181008-5ba0-4a38-86a9-df3560d98412
+
+	/// (6) Giá trị đã thanh toán gồm tạm ứng và Workdone, gồm VAT.
+	measure '(6) Đã thanh toán' = SUM ( Data[Giá trị đã thanh toán số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 69a157b6-bc8b-47f9-a738-8ea1a442887b
+
+	/// (7) Giá trị TĐSP/Swap gồm VAT.
+	measure '(7) Giá trị Swap' = SUM ( Data[Giá trị swap số] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: edbc1a0f-ffc2-4ffd-8eed-a04fa929117e
+
+	/// (8) Công nợ CPC còn lại chưa thanh toán = (5) - (6) - (7).
+	measure '(8) Công nợ CPC còn lại' = [(5) Công nợ đã có CPC] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: bc5c7109-a9e0-4207-a41c-b2b23dd0c274
+
+	/// (9) Công nợ sau khi trừ tạm ứng chưa thu hồi = (8) - (4).
+	measure '(9) Công nợ sau trừ tạm ứng' = [(8) Công nợ CPC còn lại] - [(4) Tạm ứng chưa thu hồi]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: dafbb8f9-96f2-4de7-a867-90606c761086
+
+	/// (10) Tổng nợ phải trả gồm VAT = Giá trị hóa đơn gồm VAT - (6) - (7).
+	measure '(10) Tổng nợ phải trả' = [Giá trị hóa đơn gồm VAT] - [(6) Đã thanh toán] - [(7) Giá trị Swap]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 57ce1bd7-1485-4249-a3f2-06424c04c0f7
+
+	/// (11) Tiền bảo hành giữ lại theo logic 5% ở từng dòng của template.
+	measure '(11) Tiền bảo hành giữ lại' = SUM ( Data[Tiền bảo hành giữ lại dòng] )
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 3ab6ceb9-5420-4910-a25d-97e2493f487a
+
+	/// (12) Tổng còn lại phải trả gồm VAT = (10) - (11).
+	measure '(12) Tổng còn lại phải trả' = [(10) Tổng nợ phải trả] - [(11) Tiền bảo hành giữ lại]
+		formatString: #,##0
+		displayFolder: Công nợ\02. Chỉ tiêu template
+		lineageTag: 2ae0bd27-647f-4cd2-80e0-79c4182ff959
+
+	/// (8) Công nợ CPC còn lại quy đổi sang tỷ đồng, dùng cho card và biểu đồ.
+	measure '(8) Công nợ CPC còn lại (tỷ)' = DIVIDE ( [(8) Công nợ CPC còn lại], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 6977552c-0853-4395-bc37-c71d1ae76a64
+
+	/// (9) Công nợ sau trừ tạm ứng quy đổi sang tỷ đồng, dùng cho card.
+	measure '(9) Công nợ sau trừ tạm ứng (tỷ)' = DIVIDE ( [(9) Công nợ sau trừ tạm ứng], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 47353f1b-ff46-4fe2-a8d5-7ebd5eb41c59
+
+	/// (10) Tổng nợ phải trả quy đổi sang tỷ đồng, dùng cho card.
+	measure '(10) Tổng nợ phải trả (tỷ)' = DIVIDE ( [(10) Tổng nợ phải trả], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 5814eb12-afd4-489d-bf4c-4995af8d6978
+
+	/// (11) Tiền bảo hành giữ lại quy đổi sang tỷ đồng, dùng cho card.
+	measure '(11) Tiền bảo hành giữ lại (tỷ)' = DIVIDE ( [(11) Tiền bảo hành giữ lại], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: f5d98e73-8a40-4bbe-89e3-422155b70a45
+
+	/// (12) Tổng còn lại phải trả quy đổi sang tỷ đồng, dùng cho card và biểu đồ.
+	measure '(12) Tổng còn lại phải trả (tỷ)' = DIVIDE ( [(12) Tổng còn lại phải trả], 1000000000 )
+		formatString: #,##0.0
+		displayFolder: Công nợ\03. Hiển thị tỷ đồng
+		lineageTag: 7415c17e-a002-4efd-86af-508eac1590c3
+
+	column STT
+		dataType: string
+		lineageTag: 2275b419-d5e8-4a34-a264-4d978d07d186
+		summarizeBy: none
+		sourceColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HĐ SAP/SỐ HĐ CHÍNH'
+		dataType: string
+		lineageTag: 3135ab13-fb81-4282-a64f-0f1d1102ab5a
+		summarizeBy: none
+		sourceColumn: SỐ HĐ SAP/SỐ HĐ CHÍNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HỢP ĐỒNG CHÍNH'
+		dataType: string
+		lineageTag: b130cdd2-ef2a-4a92-b5e4-79443799dc9e
+		summarizeBy: none
+		sourceColumn: SỐ HỢP ĐỒNG CHÍNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ PLHĐ'
+		dataType: string
+		lineageTag: 67adf589-3567-4e0e-be2d-81a3d3605b80
+		summarizeBy: none
+		sourceColumn: SỐ PLHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DỰ ÁN'
+		dataType: string
+		lineageTag: 641f0b32-a879-466a-9ddb-59dfa6f40acc
+		summarizeBy: none
+		sourceColumn: DỰ ÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ'
+		dataType: string
+		lineageTag: 906fa2b9-a16b-488c-b3eb-6a26bd245649
+		summarizeBy: none
+		sourceColumn: TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KHU VỰC'
+		dataType: string
+		lineageTag: 2eec02a7-ae5a-4ef7-a461-f73f59ebf27f
+		summarizeBy: none
+		sourceColumn: KHU VỰC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HẠNG MỤC HH-DV'
+		dataType: string
+		lineageTag: 73ddcb7e-4eb5-4528-b6ef-55c76a91fbff
+		summarizeBy: none
+		sourceColumn: HẠNG MỤC HH-DV
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NỘI DUNG HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 1147b0f3-263e-4d87-a64f-d8108cef2179
+		summarizeBy: none
+		sourceColumn: NỘI DUNG HỢP ĐỒNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LOẠI HĐ'
+		dataType: string
+		lineageTag: 7b801eeb-e4fc-43a3-95c4-c9bd3d95f4cc
+		summarizeBy: none
+		sourceColumn: LOẠI HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÁP NHÂN KÝ HĐ/PLHĐ'
+		dataType: string
+		lineageTag: 43e5194b-1b7d-429d-9aac-32a4183db8c1
+		summarizeBy: none
+		sourceColumn: PHÁP NHÂN KÝ HĐ/PLHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NT/NCC/TV '
+		dataType: string
+		lineageTag: 5f72c005-dabc-419c-b65e-9081f7f36d67
+		summarizeBy: none
+		sourceColumn: "NT/NCC/TV "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẮT ĐẦU HIỆU LỰC HĐ'
+		dataType: string
+		lineageTag: 36ff02b5-e8fe-48b6-ab8e-63bd859b4135
+		summarizeBy: none
+		sourceColumn: NGÀY BẮT ĐẦU HIỆU LỰC HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TIẾN ĐỘ THỰC HIỆN HĐ(ngày)'
+		dataType: string
+		lineageTag: 469b513b-6ca9-429f-8d3d-88c1f50dcc8e
+		summarizeBy: none
+		sourceColumn: TIẾN ĐỘ THỰC HIỆN HĐ(ngày)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HẾT HẠN THỰC HIỆN HĐ'
+		dataType: string
+		lineageTag: 3c651c41-0c49-4e36-8278-1ec58ca8bbc8
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HẠN THỰC HIỆN HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' GIÁ TRỊ HỢP ĐỒNG(CHƯA GỒM VAT) '
+		dataType: string
+		lineageTag: 756e3de2-a7d4-4161-91c7-964ec5062ba7
+		summarizeBy: none
+		sourceColumn: " GIÁ TRỊ HỢP ĐỒNG(CHƯA GỒM VAT) "
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' TỔNG GIÁ TRỊ HĐ BAO GỒM PHÁT SINH CHƯA VATM VAT) '
+		dataType: string
+		lineageTag: de69fb8e-94a1-427f-ae05-a436034d8e44
+		summarizeBy: none
+		sourceColumn: " TỔNG GIÁ TRỊ HĐ BAO GỒM PHÁT SINH CHƯA VATM VAT) "
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' GIÁ TRỊ ĐIỀU CHỈNH/PHÁT SINH(CHƯA GỒM VAT) '
+		dataType: string
+		lineageTag: 18082ff5-6de4-4ae8-a492-ffa3a50b733b
+		summarizeBy: none
+		sourceColumn: " GIÁ TRỊ ĐIỀU CHỈNH/PHÁT SINH(CHƯA GỒM VAT) "
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' THUẾ VAT '
+		dataType: string
+		lineageTag: 0bd3e778-961c-4139-a827-34449fc37f31
+		summarizeBy: none
+		sourceColumn: " THUẾ VAT "
+
+		annotation SummarizationSetBy = Automatic
+
+	column ' GIÁ TRỊ HĐ+PS(GỒM VAT) '
+		dataType: string
+		lineageTag: 2c8f2279-7987-47ed-bee7-5e79dff7c2d1
+		summarizeBy: none
+		sourceColumn: " GIÁ TRỊ HĐ+PS(GỒM VAT) "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ WORKDONE (CHƯA GỒM VAT)'
+		dataType: string
+		lineageTag: 470ad803-e69a-4aca-b5f5-76112d96a49e
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ WORKDONE (CHƯA GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ WORKDONE(GỒM VAT)'
+		dataType: string
+		lineageTag: 15cba2ee-8386-4be4-973a-232862ca7977
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ WORKDONE(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ CHƯA THỰC HIỆN(GỒM VAT)'
+		dataType: string
+		lineageTag: e07de8ef-7ac3-45d1-a121-38184449f5d4
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ HĐ CHƯA THỰC HIỆN(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ CÔNG NỢ ĐÃ CÓ CPC GỒM ỨNG +WORKDONE(GỒM VAT)'
+		dataType: string
+		lineageTag: 1b1faf92-c9bc-4195-bd10-0ecf743f7838
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ CÔNG NỢ ĐÃ CÓ CPC GỒM ỨNG +WORKDONE(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ ĐÃ THANH TOÁN(GỒM VAT)'
+		dataType: string
+		lineageTag: 8b324c65-ba7c-4918-8a4d-63a6e61c893f
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ ĐÃ THANH TOÁN(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ TĐSP(GỒM VAT)'
+		dataType: string
+		lineageTag: 502481d7-3180-4367-b567-4eb08eb33f43
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ TĐSP(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ CÔNG NỢ CHƯA THANH TOÁN(GỒM VAT)'
+		dataType: string
+		lineageTag: fea41682-f92c-4f2e-8e59-60c685978308
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ CÔNG NỢ CHƯA THANH TOÁN(GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ TẠM ỨNG CHƯA VAT'
+		dataType: string
+		lineageTag: 5857065c-b4db-4f38-b0b8-abf62cf35552
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ TẠM ỨNG CHƯA VAT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ KHẤU TRỪ TẠM ỨNG'
+		dataType: string
+		lineageTag: d59dd76f-32d7-4b70-96ee-4084041b4f2a
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ KHẤU TRỪ TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ TẠM ỨNG CÒN LẠI CHƯA KHẤU TRỪ'
+		dataType: string
+		lineageTag: 16adc660-3249-4a0c-bd05-7f41a5e5b80b
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ TẠM ỨNG CÒN LẠI CHƯA KHẤU TRỪ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI'
+		dataType: string
+		lineageTag: 936d1374-b1db-43b8-b6d3-64ff11dc3d63
+		summarizeBy: none
+		sourceColumn: NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÂN KHU (TỔNG)'
+		dataType: string
+		lineageTag: 83b684c8-e8c2-4299-8e5b-1c3155d8b69d
+		summarizeBy: none
+		sourceColumn: PHÂN KHU (TỔNG)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÂN KHU (CHI TIẾT)'
+		dataType: string
+		lineageTag: b7880af3-ead0-4089-8698-68e76f6165a1
+		summarizeBy: none
+		sourceColumn: PHÂN KHU (CHI TIẾT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG THỰC HIỆN HĐ'
+		dataType: string
+		lineageTag: 49040d4b-d595-4b78-9d88-341056eae032
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG THỰC HIỆN HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG QUYẾT TOÁN'
+		dataType: string
+		lineageTag: 07ec0480-1117-420d-b0e7-8f69e7660bb5
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG QUYẾT TOÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY KÝ BIÊN BẢN QUYẾT TOÁN'
+		dataType: string
+		lineageTag: f0ebc397-1549-4537-98b0-b5ac4190e429
+		summarizeBy: none
+		sourceColumn: NGÀY KÝ BIÊN BẢN QUYẾT TOÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC XÂY DỰNG/CUNG ỨNG'
+		dataType: string
+		lineageTag: 201e5eb9-168b-44e3-a785-f385c292e12c
+		summarizeBy: none
+		sourceColumn: PIC XÂY DỰNG/CUNG ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC MEP'
+		dataType: string
+		lineageTag: 4a73e351-cdd4-4720-9522-71ac6b5dde02
+		summarizeBy: none
+		sourceColumn: PIC MEP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC SITE1'
+		dataType: string
+		lineageTag: 517824d0-de58-454e-8a04-95917965eb88
+		summarizeBy: none
+		sourceColumn: PIC SITE1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC SITE2'
+		dataType: string
+		lineageTag: 0c9412ce-3ca2-40c2-be62-d31fcf27605a
+		summarizeBy: none
+		sourceColumn: PIC SITE2
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÂN LOẠI BỘ PHẬN'
+		dataType: string
+		lineageTag: 37d7a037-e263-40a0-9d31-8fa97a5f5dbd
+		summarizeBy: none
+		sourceColumn: PHÂN LOẠI BỘ PHẬN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÂN LOẠI THEO BỘ MÔN'
+		dataType: string
+		lineageTag: 064b7bfa-b067-4312-880d-2ad7bf913039
+		summarizeBy: none
+		sourceColumn: PHÂN LOẠI THEO BỘ MÔN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phân loại ưu tiên'
+		dataType: string
+		lineageTag: 91eb6144-ffbf-4537-b191-455289890ac9
+		summarizeBy: none
+		sourceColumn: Phân loại ưu tiên
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY MỤC TIÊU'
+		dataType: string
+		lineageTag: 2f8e37e9-c3ba-47a7-ad8d-7e58af26602e
+		summarizeBy: none
+		sourceColumn: NGÀY MỤC TIÊU
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LÝ DO KHÔNG ĐẠT'
+		dataType: string
+		lineageTag: 0369f51e-cc2e-477f-aac9-830fa3c43880
+		summarizeBy: none
+		sourceColumn: LÝ DO KHÔNG ĐẠT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI QUYẾT TOÁN'
+		dataType: string
+		lineageTag: 1904afec-624f-4643-a187-b83fcdf59111
+		summarizeBy: none
+		sourceColumn: KPI QUYẾT TOÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Năm của NGÀY MỤC TIÊU, lấy 4 ký tự cuối nên đọc được cả định dạng M/D/YYYY lẫn D/M/YYYY sai (vd 31/06/2027). Trả BLANK cho ô rỗng hoặc rác (N/A, chữ, năm ngoài 2000-2100).
+	column 'Năm mục tiêu' =
+			VAR _s =
+			    TRIM ( SUBSTITUTE ( SUBSTITUTE ( Data[NGÀY MỤC TIÊU], UNICHAR ( 10 ), "" ), UNICHAR ( 13 ), "" ) )
+			VAR _y =
+			    IFERROR ( VALUE ( RIGHT ( _s, 4 ) ), BLANK () )
+			RETURN
+			    IF ( _y >= 2000 && _y <= 2100, _y )
+		dataType: int64
+		formatString: 0
+		lineageTag: 97c7598c-d553-4d6a-a941-5b181ba23d72
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Cột tương thích cho các báo cáo cũ. Trang PIC mới dùng bảng 'Phân công PIC' để không bỏ sót HĐ có đồng thời PIC Xây dựng/Cung ứng và PIC MEP.
+	column 'PIC phụ trách' = COALESCE(Data[PIC XÂY DỰNG/CUNG ỨNG], Data[PIC MEP])
+		dataType: string
+		isHidden
+		lineageTag: a29a3e55-6a8d-4afa-a55e-51b78ac46828
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nhãn kỳ mục tiêu dùng cho slicer; thay giá trị 1900 bằng nhãn dễ hiểu 'Chưa có mục tiêu'.
+	column 'Kỳ mục tiêu' = IF(ISBLANK(Data[NGÀY MỤC TIÊU]), "Chưa có mục tiêu", FORMAT(Data[NGÀY MỤC TIÊU], "yyyy"))
+		dataType: string
+		displayFolder: Phân loại
+		lineageTag: 0d4cea20-41cb-40b0-b67d-26085ee7ecb1
+		summarizeBy: none
+
+	/// Khu vực đã chuẩn hóa cho báo cáo. Gộp typo 'HỔ TRÀM' vào 'HỒ TRÀM' và dùng tên file Hồ Tràm làm fallback khi khu vực trống.
+	column 'Khu vực chuẩn' =
+			VAR _KhuVuc = UPPER(TRIM(COALESCE(Data[KHU VỰC], "")))
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        _KhuVuc = "HỔ TRÀM", "HỒ TRÀM",
+			        _KhuVuc = "" && CONTAINSSTRING(UPPER(Data[File]), "HO TRAM"), "HỒ TRÀM",
+			        _KhuVuc = "", "Chưa xác định",
+			        Data[KHU VỰC]
+			    )
+		dataType: string
+		displayFolder: Phân loại
+		lineageTag: c5fd8162-6113-483b-9009-19e58bbf1373
+		summarizeBy: none
+
+	/// Cờ nghiệp vụ cho báo cáo quyết toán: dùng KPI QUYẾT TOÁN; riêng file Hồ Tràm fallback sang NGÀY MỤC TIÊU vì cột KPI của nguồn này trống toàn bộ.
+	column 'Thuộc phạm vi quyết toán' =
+			NOT ISBLANK(Data[KPI QUYẾT TOÁN])
+			    || (
+			        CONTAINSSTRING(UPPER(Data[File]), "HO TRAM")
+			            && NOT ISBLANK(Data[NGÀY MỤC TIÊU])
+			    )
+		dataType: boolean
+		isHidden
+		lineageTag: d37631ad-3682-460c-9e0e-c110b97ac5e5
+		summarizeBy: none
+
+	column File
+		dataType: string
+		lineageTag: 78043037-40fa-483b-9284-472b0f65db32
+		summarizeBy: none
+		sourceColumn: File
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HỢP ĐỒNG (CHƯA GỒM VAT)'
+		dataType: string
+		lineageTag: 6a80b48e-cd57-4980-a6e0-cd900f3711be
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ HỢP ĐỒNG (CHƯA GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ ĐIỀU CHỈNH/PHÁT SINH(CHƯA GỒM VAT)'
+		dataType: string
+		lineageTag: ceb2a5d6-c42c-4c1e-9865-be6daae9a7a9
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ ĐIỀU CHỈNH/PHÁT SINH(CHƯA GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TỔNG GIÁ TRỊ HĐ BAO GỒM PHÁT SINH CHƯA VATM VAT)'
+		dataType: string
+		lineageTag: 25e7d42c-9841-40b1-919c-bb45a6f54d1e
+		summarizeBy: none
+		sourceColumn: TỔNG GIÁ TRỊ HĐ BAO GỒM PHÁT SINH CHƯA VATM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'THUẾ VAT'
+		dataType: string
+		lineageTag: 773be9da-cc92-4fcf-87b2-291415d232f1
+		summarizeBy: none
+		sourceColumn: THUẾ VAT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ+PS (GỒM VAT)'
+		dataType: string
+		lineageTag: 2431bdcc-362a-4935-8fe8-8c5d80095eff
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ HĐ+PS (GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KHẤU TRỪ TẠM ỨNG'
+		dataType: string
+		lineageTag: 3c348dd2-f013-4027-bf16-f8bc52b5b5ee
+		summarizeBy: none
+		sourceColumn: KHẤU TRỪ TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG THI CÔNG / THỰC HIỆN'
+		dataType: string
+		lineageTag: 995b63da-94f2-4a1d-ac87-a573c64a01be
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG THI CÔNG / THỰC HIỆN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GHI CHÚ'
+		dataType: string
+		lineageTag: 304fff29-c12b-4ad6-93b0-365e5243ce4b
+		summarizeBy: none
+		sourceColumn: GHI CHÚ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column48
+		dataType: string
+		lineageTag: ab5b539c-ffb6-4648-aac6-3b341551d04c
+		summarizeBy: none
+		sourceColumn: Column48
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 3b48c53f-dca4-4226-a6a1-a1ad485319d5
+		summarizeBy: none
+		sourceColumn: SỐ HỢP ĐỒNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN VIẾT TẮT DỰ ÁN'
+		dataType: string
+		lineageTag: 2b38bff0-c231-41a8-ad54-b45af8ee396e
+		summarizeBy: none
+		sourceColumn: TÊN VIẾT TẮT DỰ ÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HẾT HIỆU LỰC HĐ'
+		dataType: string
+		lineageTag: ea30a5f5-3925-41b4-8aa4-c828bf48f398
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HIỆU LỰC HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column49
+		dataType: string
+		lineageTag: f1ee46dd-df7d-467e-a4cf-7e35b5e2fe3b
+		summarizeBy: none
+		sourceColumn: Column49
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column50
+		dataType: string
+		lineageTag: 3c8f1e25-ac06-492d-bd5c-c2b4039151cd
+		summarizeBy: none
+		sourceColumn: Column50
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column51
+		dataType: string
+		lineageTag: e5d91a90-3ade-4114-a6f5-df82e13ec1ad
+		summarizeBy: none
+		sourceColumn: Column51
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HĐ SAP/NGOÀI SAP'
+		dataType: string
+		lineageTag: 1c02ed0e-6072-47f9-ac6b-19d85d615c0a
+		summarizeBy: none
+		sourceColumn: SỐ HĐ SAP/NGOÀI SAP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NỘI DUNG GÓI THẦU'
+		dataType: string
+		lineageTag: 274dbec9-c209-44ba-bd31-fd3c59584c7d
+		summarizeBy: none
+		sourceColumn: NỘI DUNG GÓI THẦU
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN NHÀ THẦU'
+		dataType: string
+		lineageTag: be190c75-cc6a-4da3-bbaf-aaf985f7f850
+		summarizeBy: none
+		sourceColumn: TÊN NHÀ THẦU
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY KÝ HĐ'
+		dataType: string
+		lineageTag: 3753741f-25c5-4532-823c-e6615b3c1ae2
+		summarizeBy: none
+		sourceColumn: NGÀY KÝ HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẢO LÃNH THỰC HIỆN HĐ'
+		dataType: string
+		lineageTag: fc64a77a-3a99-4b2e-96d2-b964b43640a6
+		summarizeBy: none
+		sourceColumn: NGÀY BẢO LÃNH THỰC HIỆN HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẢO LÃNH TẠM ỨNG'
+		dataType: string
+		lineageTag: b196645b-c362-411e-ae2a-19aacb9057e3
+		summarizeBy: none
+		sourceColumn: NGÀY BẢO LÃNH TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẢO LÃNH BẢO HÀNH'
+		dataType: string
+		lineageTag: 3f6178c3-c1ce-4d3f-b44c-306819835bfe
+		summarizeBy: none
+		sourceColumn: NGÀY BẢO LÃNH BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ PHÁT SINH(CHƯA GỒM VAT)'
+		dataType: string
+		lineageTag: da1d8ca7-1957-4be5-a8ef-dd0673f28d7d
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ PHÁT SINH(CHƯA GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ+PS (CHƯA GỒM VAT)'
+		dataType: string
+		lineageTag: 92ffa620-619f-479f-b55d-f635569c41d7
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ HĐ+PS (CHƯA GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ VAT'
+		dataType: string
+		lineageTag: 9fe0f9b1-45e5-4517-844e-8af4e98f7e89
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ VAT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ TẠM ỨNG CHƯA KHẤU TRỪ'
+		dataType: string
+		lineageTag: 18a05519-c435-4ea1-ac62-83f4a60b910d
+		summarizeBy: none
+		sourceColumn: GIÁ TRỊ TẠM ỨNG CHƯA KHẤU TRỪ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT'
+		dataType: string
+		lineageTag: 51959cf5-fcd2-4543-8680-bb0b9f1d6a70
+		summarizeBy: none
+		sourceColumn: TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY KÝ TOC/BBGH'
+		dataType: string
+		lineageTag: 3ee41076-54f9-471f-81a8-e815c7b5d9d7
+		summarizeBy: none
+		sourceColumn: NGÀY KÝ TOC/BBGH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'THỜI GIAN BẢO HÀNH'
+		dataType: string
+		lineageTag: f7c1d865-e8ec-4414-b803-1493c981f12c
+		summarizeBy: none
+		sourceColumn: THỜI GIAN BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HẾT HẠN BẢO HÀNH'
+		dataType: string
+		lineageTag: 5cf1b013-ff16-47c6-80ff-d9640e09860f
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HẠN BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HÌNH THỨC'
+		dataType: string
+		lineageTag: e1bdce3e-f8ca-421c-b8a5-264d46dc794a
+		summarizeBy: none
+		sourceColumn: HÌNH THỨC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CHỦ ĐẦU TƯ / BÊN GIAO THẦU'
+		dataType: string
+		lineageTag: 00183c4b-d17e-40ba-ae1b-9f93a4173f2a
+		summarizeBy: none
+		sourceColumn: CHỦ ĐẦU TƯ / BÊN GIAO THẦU
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Biên Bản Quyết Toán- Ngày Ký'
+		dataType: string
+		lineageTag: 6e1b1a22-7155-4d57-9f52-526aeb288db6
+		summarizeBy: none
+		sourceColumn: Biên Bản Quyết Toán- Ngày Ký
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI 2026'
+		dataType: string
+		lineageTag: 11ce524f-ea65-47c6-a2b4-a19239a2c173
+		summarizeBy: none
+		sourceColumn: KPI 2026
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC Manager'
+		dataType: string
+		lineageTag: 96dacd4b-c994-4418-b62c-208af06bfff6
+		summarizeBy: none
+		sourceColumn: PIC Manager
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC phụ trách- XD'
+		dataType: string
+		lineageTag: 3d84e5b6-0140-48e4-bb26-691c446f4313
+		summarizeBy: none
+		sourceColumn: PIC phụ trách- XD
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC phụ trách- MEP'
+		dataType: string
+		lineageTag: f3d012c9-18cb-464a-81c9-1565faf05158
+		summarizeBy: none
+		sourceColumn: PIC phụ trách- MEP
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC phụ trách- PRO Supply'
+		dataType: string
+		lineageTag: c26e4fee-ccc2-49fc-83e3-d1889788e9bc
+		summarizeBy: none
+		sourceColumn: PIC phụ trách- PRO Supply
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC phụ trách- Tư Vấn'
+		dataType: string
+		lineageTag: 34b16e30-59f9-4078-b291-40ab7970072c
+		summarizeBy: none
+		sourceColumn: PIC phụ trách- Tư Vấn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngày Nhà thầu nộp Hồ sơ'
+		dataType: string
+		lineageTag: 0b885995-f501-4344-8ce8-59ec47cecddb
+		summarizeBy: none
+		sourceColumn: Ngày Nhà thầu nộp Hồ sơ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngày hoàn thành thực tế'
+		dataType: string
+		lineageTag: 19df79f3-3401-43b8-8514-8ec779cbbabe
+		summarizeBy: none
+		sourceColumn: Ngày hoàn thành thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1. Tình trạng phát hành bản vẽ forcons (XD&MEP)'
+		dataType: string
+		lineageTag: 03cc1ca4-1113-48dd-b2aa-d6b1337c466c
+		summarizeBy: none
+		sourceColumn: 1. Tình trạng phát hành bản vẽ forcons (XD&MEP)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. Hồ sơ nghiệm thu (Vật tư, lắp đặt) / Bản vẽ hoàn công'
+		dataType: string
+		lineageTag: 1a5c9638-1c5c-482a-a66a-f41632617c90
+		summarizeBy: none
+		sourceColumn: 2. Hồ sơ nghiệm thu (Vật tư, lắp đặt) / Bản vẽ hoàn công
+
+		annotation SummarizationSetBy = Automatic
+
+	column '3. TOC / Hoàn thành'
+		dataType: string
+		lineageTag: 8d203399-b36e-4647-92b3-ac665a3a0431
+		summarizeBy: none
+		sourceColumn: 3. TOC / Hoàn thành
+
+		annotation SummarizationSetBy = Automatic
+
+	column '4. Bảng tổng hợp giao nhận vật tư do CĐT cấp (XD&MEP)'
+		dataType: string
+		lineageTag: d25b7e85-e111-4766-885a-11ac822578a4
+		summarizeBy: none
+		sourceColumn: 4. Bảng tổng hợp giao nhận vật tư do CĐT cấp (XD&MEP)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '5. Tổng hợp phạt /  Khấu trừ các loại'
+		dataType: string
+		lineageTag: 15140102-3a75-4e2d-9328-32743e1bef89
+		summarizeBy: none
+		sourceColumn: 5. Tổng hợp phạt /  Khấu trừ các loại
+
+		annotation SummarizationSetBy = Automatic
+
+	column '6. Tỷ lệ khấu trừ defect (Nếu có)'
+		dataType: string
+		lineageTag: 2c709499-3dcb-4b22-9c82-b2c226234919
+		summarizeBy: none
+		sourceColumn: 6. Tỷ lệ khấu trừ defect (Nếu có)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '7. Xác nhận khối lượng/đầu mục (XD+MEP)'
+		dataType: string
+		lineageTag: 3f872fd0-924c-43bb-992e-8015344e9e97
+		summarizeBy: none
+		sourceColumn: 7. Xác nhận khối lượng/đầu mục (XD+MEP)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '8. Tờ trình giải trình tiến độ (Nếu có)'
+		dataType: string
+		lineageTag: 6ad7edd5-0216-456c-bb9d-af96b3e9f173
+		summarizeBy: none
+		sourceColumn: 8. Tờ trình giải trình tiến độ (Nếu có)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1. PYC, GT VON (Các đợt)'
+		dataType: string
+		lineageTag: 04fc2db2-335e-48a9-9043-993fa6525684
+		summarizeBy: none
+		sourceColumn: 1. PYC, GT VON (Các đợt)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. PYC, GTPS lần cuối, chỉ thị, KLPS cuối (XD&MEP)'
+		dataType: string
+		lineageTag: 5fad2d22-ae7d-4899-9014-8e59a44729c0
+		summarizeBy: none
+		sourceColumn: 2. PYC, GTPS lần cuối, chỉ thị, KLPS cuối (XD&MEP)
+
+		annotation SummarizationSetBy = Automatic
+
+	column '1. Ngày phát hành Công văn Yêu cầu Nhà thầu Quyết toán'
+		dataType: string
+		lineageTag: 72dce787-1156-4fe2-9339-a694184b5c5f
+		summarizeBy: none
+		sourceColumn: 1. Ngày phát hành Công văn Yêu cầu Nhà thầu Quyết toán
+
+		annotation SummarizationSetBy = Automatic
+
+	column '2. Ngày chốt xong Khối lượng Quyết toán'
+		dataType: string
+		lineageTag: 0d5630f5-58b2-4940-9f36-a0ecec5810a1
+		summarizeBy: none
+		sourceColumn: 2. Ngày chốt xong Khối lượng Quyết toán
+
+		annotation SummarizationSetBy = Automatic
+
+	column '3. Ngày trình Chấp thuận quyết toán'
+		dataType: string
+		lineageTag: 7756ca92-cbfc-41a8-b6c4-06eef196514e
+		summarizeBy: none
+		sourceColumn: 3. Ngày trình Chấp thuận quyết toán
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vướng mắc - Mức độ'
+		dataType: string
+		lineageTag: 8c8004f0-c162-400b-8de2-6595adca69ab
+		summarizeBy: none
+		sourceColumn: Vướng mắc - Mức độ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vướng mắc- Phòng Ban'
+		dataType: string
+		lineageTag: d2c91ee9-b04a-4aa3-bd56-6e616ad58826
+		summarizeBy: none
+		sourceColumn: Vướng mắc- Phòng Ban
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vướng mắc- Chi tiết'
+		dataType: string
+		lineageTag: 09800fda-fa75-4c3f-867f-fa378a9ed541
+		summarizeBy: none
+		sourceColumn: Vướng mắc- Chi tiết
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Vướng mắc- Đề xuất xử lý'
+		dataType: string
+		lineageTag: 416f0981-dc16-4f67-8b88-41da93373753
+		summarizeBy: none
+		sourceColumn: Vướng mắc- Đề xuất xử lý
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Working Contact Info'
+		dataType: string
+		lineageTag: 3c87b532-5006-428e-a22c-a89450905792
+		summarizeBy: none
+		sourceColumn: Working Contact Info
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KÝ QUA GMC'
+		dataType: string
+		lineageTag: cb36e628-35ef-4c04-b2fa-1dcd1766682e
+		summarizeBy: none
+		sourceColumn: KÝ QUA GMC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HĐ KÝ GMC'
+		dataType: string
+		lineageTag: 86bda72c-ff17-4217-86ab-88c42f04f0f4
+		summarizeBy: none
+		sourceColumn: HĐ KÝ GMC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DỰ ÁN/ĐƠN VỊ'
+		dataType: string
+		lineageTag: 22bb0a50-ffaf-45a5-bc5a-2f7e59f8bd2a
+		summarizeBy: none
+		sourceColumn: DỰ ÁN/ĐƠN VỊ
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column47
+		dataType: string
+		lineageTag: 0951944c-84ba-4dc3-9299-8b6028b282fa
+		summarizeBy: none
+		sourceColumn: Column47
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CỤM LAND/PLAY/STAY'
+		dataType: string
+		lineageTag: cd21a229-c6f0-4848-a1d0-6a6905b794e5
+		summarizeBy: none
+		sourceColumn: CỤM LAND/PLAY/STAY
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column52
+		dataType: string
+		lineageTag: f420c4e2-4040-427e-a3d4-2dbe7b1f8165
+		summarizeBy: none
+		sourceColumn: Column52
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column53
+		dataType: string
+		lineageTag: fad2f50b-2330-4f6f-bc49-490a25095efa
+		summarizeBy: none
+		sourceColumn: Column53
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column54
+		dataType: string
+		lineageTag: e1d9f0f9-3d65-4174-969b-38304b7216c8
+		summarizeBy: none
+		sourceColumn: Column54
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column55
+		dataType: string
+		lineageTag: b3d37bb1-90d3-4873-8e89-dae805fcf989
+		summarizeBy: none
+		sourceColumn: Column55
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column56
+		dataType: string
+		lineageTag: ea2d1e70-dfb2-488a-a5ba-6186009400b0
+		summarizeBy: none
+		sourceColumn: Column56
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column57
+		dataType: string
+		lineageTag: b388ca5b-2977-4f03-83e6-5fbfe66a1152
+		summarizeBy: none
+		sourceColumn: Column57
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column58
+		dataType: string
+		lineageTag: 199125c0-b272-44bc-a694-2394a68c0cc2
+		summarizeBy: none
+		sourceColumn: Column58
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phân loại ưu tiên4'
+		dataType: string
+		lineageTag: 58a61def-96f5-4643-a872-b3ca69d37b5a
+		summarizeBy: none
+		sourceColumn: Phân loại ưu tiên4
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 2d34f7ab-99f6-49ca-8072-b235da1c8044
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG HỢP ĐỒNG
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Năm ký biên bản quyết toán. Đọc được cả M/D/YYYY và D.M.YYYY. Có giá trị = hợp đồng đã hoàn thành quyết toán.
+	column 'Năm ký quyết toán' =
+			VAR _s =
+			    TRIM ( SUBSTITUTE ( SUBSTITUTE ( Data[NGÀY KÝ BIÊN BẢN QUYẾT TOÁN], UNICHAR ( 10 ), "" ), UNICHAR ( 13 ), "" ) )
+			VAR _y =
+			    IFERROR ( VALUE ( RIGHT ( _s, 4 ) ), BLANK () )
+			RETURN
+			    IF ( _y >= 2000 && _y <= 2100, _y )
+		dataType: int64
+		formatString: 0
+		displayFolder: Phân loại
+		lineageTag: b33b7ae4-56f5-4304-987f-1f5db32b828e
+
+	/// Chuẩn hóa cột KPI QUYẾT TOÁN (đã TRIM + UPPER để gộp các giá trị thừa khoảng trắng). 'Khác' gồm KPI 2027/2028...
+	column 'Nhóm KPI quyết toán' =
+			VAR _k =
+			    UPPER ( TRIM ( COALESCE ( Data[KPI QUYẾT TOÁN], "" ) ) )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _k = "KPI 417", "KPI đã đăng ký",
+			        _k = "NGOÀI 417", "Đăng ký thêm",
+			        _k = "", "Chưa phân loại",
+			        "Khác"
+			    )
+		dataType: string
+		displayFolder: Phân loại
+		lineageTag: 0e849c2e-f70f-4b2c-ac89-712f1f619f8c
+
+	/// GIÁ TRỊ WORKDONE(GỒM VAT) đã đổi sang kiểu số để tính tổng (cột gốc lưu dạng text).
+	column 'Giá trị workdone gồm VAT' = IFERROR ( VALUE ( Data[GIÁ TRỊ WORKDONE(GỒM VAT)] ), BLANK () )
+		dataType: double
+		formatString: #,##0
+		displayFolder: Giá trị
+		lineageTag: c9c806b0-2de6-48af-b959-2ec6f487d217
+
+	/// TÌNH TRẠNG QUYẾT TOÁN đã chuẩn hóa: TRIM khoảng trắng thừa, gộp biến thể viết khác nhau, ô trống thành 'Chưa cập nhật'. Dùng cho biểu đồ tròn / cột chồng.
+	column 'Tình trạng quyết toán (chuẩn)' =
+			VAR _t =
+			    TRIM ( COALESCE ( Data[TÌNH TRẠNG QUYẾT TOÁN], "" ) )
+			VAR _u = UPPER ( _t )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        _u = "", "Chưa cập nhật",
+			        _u = "ĐÃ QUYẾT TOÁN", "Đã quyết toán",
+			        _u IN { "ĐÃ QUYẾT TOÁN/ THANH LÝ", "ĐÃ QUYẾT TOÁN/THANH LÝ" }, "Đã quyết toán/thanh lý",
+			        _u IN { "NT ĐÃ NỘP (THẤT LẠC HS)", "NT ĐÃ NỘP(THẤT LẠC HS)" }, "NT đã nộp (thất lạc HS)",
+			        _u = "HOÀN THÀNH", "Hoàn thành",
+			        _t
+			    )
+		dataType: string
+		displayFolder: Phân loại
+		lineageTag: ea4b58a3-c5ea-42b8-8dfa-881c4fc167f3
+
+	/// Giá trị hợp đồng và phát sinh gồm VAT đã đổi từ cột text nguồn sang số để tính công nợ.
+	column 'Giá trị HĐ + PS gồm VAT số' = IFERROR ( VALUE ( Data[ GIÁ TRỊ HĐ+PS(GỒM VAT) ] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: b99329bb-b6c9-4115-aec6-c088f58f1a96
+		summarizeBy: sum
+
+	/// Giá trị Workdone/hóa đơn chưa VAT đã đổi từ cột text nguồn sang số.
+	column 'Giá trị workdone chưa VAT số' = IFERROR ( VALUE ( Data[GIÁ TRỊ WORKDONE (CHƯA GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 17b7a061-ef52-4dfb-9d5b-28adc06e62e8
+		summarizeBy: sum
+
+	/// Giá trị công nợ đã có CPC gồm ứng và Workdone, chuyển từ text sang số.
+	column 'Giá trị CPC gồm ứng + workdone số' = IFERROR ( VALUE ( Data[GIÁ TRỊ CÔNG NỢ ĐÃ CÓ CPC GỒM ỨNG +WORKDONE(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 79a1f976-0513-4569-9b7d-cce468402ddd
+		summarizeBy: sum
+
+	/// Giá trị đã thanh toán gồm VAT đã đổi từ text sang số.
+	column 'Giá trị đã thanh toán số' = IFERROR ( VALUE ( Data[GIÁ TRỊ ĐÃ THANH TOÁN(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 317667bf-219d-45a8-b3be-82edd6c089b3
+		summarizeBy: sum
+
+	/// Giá trị TĐSP/Swap gồm VAT đã đổi từ text sang số.
+	column 'Giá trị swap số' = IFERROR ( VALUE ( Data[GIÁ TRỊ TĐSP(GỒM VAT)] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 18268efa-d89a-41d7-b4e5-f6af006fbee4
+		summarizeBy: sum
+
+	/// Giá trị tạm ứng đã đổi từ cột text nguồn sang số.
+	column 'Giá trị tạm ứng số' = IFERROR ( VALUE ( Data[GIÁ TRỊ TẠM ỨNG CHƯA VAT] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 7b0b3eeb-5860-4d32-9b47-b8873186da84
+		summarizeBy: sum
+
+	/// Giá trị khấu trừ tạm ứng đã đổi từ cột text nguồn sang số.
+	column 'Giá trị khấu trừ tạm ứng số' = IFERROR ( VALUE ( Data[GIÁ TRỊ KHẤU TRỪ TẠM ỨNG] ), BLANK () )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: 5dca635e-e00e-4486-ab5d-9e385b0bac27
+		summarizeBy: sum
+
+	/// Tiền bảo hành giữ lại theo từng dòng: 5% giá trị Workdone/hóa đơn chưa VAT khi giá trị Workdone gồm VAT khác CPC gồm ứng và Workdone.
+	column 'Tiền bảo hành giữ lại dòng' =
+			VAR _HoaDonVAT = COALESCE ( Data[Giá trị workdone gồm VAT], 0 )
+			VAR _CPC = COALESCE ( Data[Giá trị CPC gồm ứng + workdone số], 0 )
+			VAR _HoaDonChuaVAT = COALESCE ( Data[Giá trị workdone chưa VAT số], 0 )
+			RETURN
+			    ROUND ( IF ( _HoaDonVAT <> _CPC, _HoaDonChuaVAT * 0.05, 0 ), 0 )
+		dataType: double
+		isHidden
+		formatString: #,##0
+		displayFolder: Công nợ\Cột số
+		lineageTag: e24d3980-de56-4470-b231-f08d3b1778f6
+		summarizeBy: sum
+
+	partition Data = m
+		mode: import
+		source = ```
+				let
+				    Source =
+				        SharePoint.Contents(
+				            "https://novaland.sharepoint.com/sites/PRT",
+				            [ApiVersion = 15]
+				        ),
+				
+				    Documents =
+				        Source{[Name = "Documents"]}[Content],
+				
+				    PRC =
+				        Documents{[Name = "PRC"]}[Content],
+				
+				    NovaGen =
+				        PRC{[Name = "00. NovaGen"]}[Content],
+				
+				    NghiepVu =
+				        NovaGen{[Name = "07. Các nghiệp vụ"]}[Content],
+				
+				    PAS =
+				        NghiepVu{[Name = "05. PAS"]}[Content],
+				
+				    TheoDoiFolder =
+				        PAS{[Name = "01. THEO DOI HD & CPC"]}[Content],
+				
+				    #"Filtered Rows" =
+				        Table.SelectRows(
+				            TheoDoiFolder,
+				            each
+				                [Extension] <> null
+				                and List.Contains(
+				                    {".xlsx", ".xlsm", ".xls"},
+				                    Text.Lower([Extension])
+				                )
+				                and not Text.StartsWith([Name], "~$")
+				                and Text.StartsWith(
+				                    Text.Upper(Text.Trim([Name])),
+				                    "THEO DOI HD"
+				                )
+				        ),
+				
+				    #"Kept Columns" =
+				        Table.SelectColumns(
+				            #"Filtered Rows",
+				            {"Name", "Content"}
+				        ),
+				
+				    #"Added Workbook" =
+				        Table.AddColumn(
+				            #"Kept Columns",
+				            "Workbook",
+				            each try Excel.Workbook([Content], null, true) otherwise null
+				        ),
+				
+				    #"Removed Invalid Workbooks" =
+				        Table.SelectRows(
+				            #"Added Workbook",
+				            each [Workbook] <> null
+				        ),
+				
+				    #"Expanded Workbook" =
+				        Table.ExpandTableColumn(
+				            #"Removed Invalid Workbooks",
+				            "Workbook",
+				            {"Item", "Kind", "Hidden", "Data"},
+				            {"SheetName", "Kind", "Hidden", "Data"}
+				        ),
+				
+				    #"Filtered Sheet" =
+				        Table.SelectRows(
+				            #"Expanded Workbook",
+				            each
+				                [Kind] = "Sheet"
+				                and Text.Upper(Text.Trim([SheetName])) = "THEO DÕI HĐ"
+				                and ([Hidden] = false or [Hidden] = null)
+				        ),
+				
+				#"Cleaned Each Sheet" =
+				        Table.AddColumn(
+				            #"Filtered Sheet",
+				            "CleanData",
+				            each
+				                let
+				                    FileName = [Name],
+				                    RawData = [Data],
+				
+				                    // Tìm vị trí dòng có ô đầu tiên = "STT" -> đó chính là dòng header thật
+				                    FirstColName = Table.ColumnNames(RawData){0},
+				                    HeaderRowIndex =
+				                        List.PositionOf(
+				                            List.Transform(
+				                                Table.Column(RawData, FirstColName),
+				                                each Text.Trim(Text.From(_ ?? "" ))
+				                            ),
+				                            "STT"
+				                        ),
+				
+				                    // Nếu tìm thấy thì skip tới đúng dòng đó, không thì giữ nguyên
+				                    SkippedToHeader =
+				                        if HeaderRowIndex = -1 then
+				                            RawData
+				                        else
+				                            Table.Skip(RawData, HeaderRowIndex),
+				
+				                    ReplacedErrors =
+				                        Table.ReplaceErrorValues(
+				                            SkippedToHeader,
+				                            List.Transform(
+				                                Table.ColumnNames(SkippedToHeader),
+				                                each {_, null}
+				                            )
+				                        ),
+				
+				                    PromotedHeaders =
+				                        Table.PromoteHeaders(
+				                            ReplacedErrors,
+				                            [PromoteAllScalars = true]
+				                        ),
+				
+				                    ReplacedErrorsAfterHeaders =
+				                        Table.ReplaceErrorValues(
+				                            PromotedHeaders,
+				                            List.Transform(
+				                                Table.ColumnNames(PromotedHeaders),
+				                                each {_, null}
+				                            )
+				                        ),
+				
+				                    AddedFileName =
+				                        Table.AddColumn(
+				                            ReplacedErrorsAfterHeaders,
+				                            "Source.FileName",
+				                            each FileName,
+				                            type text
+				                        )
+				                in
+				                    AddedFileName
+				        ),
+				
+				    #"Combined Data" =
+				        if Table.RowCount(#"Cleaned Each Sheet") = 0 then
+				            #table({}, {})
+				        else
+				            Table.Combine(
+				                #"Cleaned Each Sheet"[CleanData]
+				            ),
+				        
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Combined Data", {"STT"}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Removed Errors",{{"Source.FileName", "File"}})
+				in
+				    #"Renamed Columns"
+				```
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

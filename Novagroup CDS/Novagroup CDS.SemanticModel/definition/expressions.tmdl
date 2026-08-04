@@ -1,0 +1,23 @@
+expression 'Errors in Project' =
+		let
+		Source = Project,
+		  #"Detected Type Mismatches" = let
+		    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),
+		    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),
+		    fieldNames = Record.FieldNames(recordTypeFields),
+		    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),
+		    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = "The type of the value does not match the type of the column.", Detail = v], fieldTypes{i}})
+		in
+		    Table.TransformColumns(Source, pairs),
+		  #"Added Index" = Table.AddIndexColumn(#"Detected Type Mismatches", "Row Number" ,1),
+		  #"Kept Errors" = Table.SelectRowsWithErrors(#"Added Index", {"ID", "code", "status", "project_code", "project_title", "project_id", "assign_ids", "department_0", "department_1", "department_2", "department_3", "department_4", "follower_ids", "start_plan", "end_plan", "rating_point", "rating_score", "rating_percent", "rating_desc", "is_assign_hour", "no_allow_file_on_success", "time_plan", "time_real", "start", "end", "out_date", "out_date_completed", "priority", "date_created", "date_updated", "desc", "department_ids", "parent_id", "parent_title", "parent_code", "type_id", "is_sub", "deep_level", "method", "process_type_id", "process_name", "owner_ids", "owner_id", "tasklist_id", "parent_group", "gettask_ids", "progress_type", "progress_number", "progress_total", "progress_unit", "department_created_id", "duration_time", "process_node_id", "repeat_template_id", "phase_id", "progress_note", "proportion", "created_by_id", "process_node_doings", "deadline_list", "diploma_id", "workflow_type", "is_overdue_task", "date_pause_end", "rating_num_fail", "status_after_report", "tag_ids", "process_step", "last_comments", "num_file", "cf7", "cf10", "cf13", "cf16", "cf19", "cf22", "cf25", "cf26", "cf82", "cf91", "title", "Index", "parent_title.1", "percent", "tags_NVLG"}),
+		  #"Reordered Columns" = Table.ReorderColumns(#"Kept Errors", {"Row Number", "ID", "code", "status", "project_code", "project_title", "project_id", "assign_ids", "department_0", "department_1", "department_2", "department_3", "department_4", "follower_ids", "start_plan", "end_plan", "rating_point", "rating_score", "rating_percent", "rating_desc", "is_assign_hour", "no_allow_file_on_success", "time_plan", "time_real", "start", "end", "out_date", "out_date_completed", "priority", "date_created", "date_updated", "desc", "department_ids", "parent_id", "parent_title", "parent_code", "type_id", "is_sub", "deep_level", "method", "process_type_id", "process_name", "owner_ids", "owner_id", "tasklist_id", "parent_group", "gettask_ids", "progress_type", "progress_number", "progress_total", "progress_unit", "department_created_id", "duration_time", "process_node_id", "repeat_template_id", "phase_id", "progress_note", "proportion", "created_by_id", "process_node_doings", "deadline_list", "diploma_id", "workflow_type", "is_overdue_task", "date_pause_end", "rating_num_fail", "status_after_report", "tag_ids", "process_step", "last_comments", "num_file", "cf7", "cf10", "cf13", "cf16", "cf19", "cf22", "cf25", "cf26", "cf82", "cf91", "title", "Index", "parent_title.1", "percent", "tags_NVLG"})
+		in
+		    #"Reordered Columns"
+	lineageTag: d57c01ab-b936-4a4f-baea-e19bbb22be11
+	queryGroup: 'Query Errors - 7/30/2026 3:12:45 PM'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

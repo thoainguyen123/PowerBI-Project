@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "0a11ce10000000000001",
   "position": {
     "x": 32,
     "y": 32,
     "z": 1000,
     "height": 80,
-    "width": 856,
+    "width": 256,
     "tabOrder": 1000
   },
   "visual": {
@@ -19,12 +19,12 @@
               {
                 "textRuns": [
                   {
-                    "value": "TIẾN ĐỘ CDS VÀ CÁC NGOẠI LỆ CẦN ƯU TIÊN",
+                    "value": "TIẾN ĐỘ CDS",
                     "textStyle": {
+                      "fontWeight": "bold",
                       "fontFamily": "Segoe UI Semibold",
                       "fontSize": "22pt",
-                      "color": "#0F2B46",
-                      "fontWeight": "bold"
+                      "color": "#0f2b46"
                     }
                   }
                 ]
@@ -32,12 +32,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Số hóa & AI · trạng thái thực hiện · công việc quá hạn",
-                    "textStyle": {
-                      "fontFamily": "Segoe UI",
-                      "fontSize": "11pt",
-                      "color": "#5B7083"
-                    }
+                    "value": ""
                   }
                 ]
               }

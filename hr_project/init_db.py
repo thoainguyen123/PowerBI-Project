@@ -37,6 +37,8 @@ def init_database():
         tinh_moi TEXT,
         loai_hinh TEXT,
         muc_do_uu_tien TEXT,
+        area_code TEXT,
+        region_code TEXT,
         updated_at TEXT,
         updated_by TEXT
     )

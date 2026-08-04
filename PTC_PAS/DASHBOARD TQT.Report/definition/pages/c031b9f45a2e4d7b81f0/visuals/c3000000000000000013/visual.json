@@ -28,8 +28,8 @@
               },
               "queryRef": "Data.NT/NCC/TV ",
               "nativeQueryRef": "Nhà thầu",
-              "displayName": "Nhà thầu",
-              "active": true
+              "active": true,
+              "displayName": "Nhà thầu"
             }
           ]
         },
@@ -68,8 +68,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "objects": {

@@ -29,6 +29,21 @@
               "queryRef": "Data.Năm mục tiêu",
               "nativeQueryRef": "Năm mục tiêu",
               "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Data"
+                    }
+                  },
+                  "Property": "Quý mục tiêu"
+                }
+              },
+              "queryRef": "Data.Quý mục tiêu",
+              "nativeQueryRef": "Quý mục tiêu",
+              "active": true
             }
           ]
         }

@@ -6,7 +6,12 @@ model Model
 		legacyRedirects
 		returnErrorValuesAsNull
 
-annotation PBI_QueryOrder = ["Project","Deep lv 1","Project_a"]
+/// Errors in queries that were loaded on 7/30/2026 3:12:45 PM.
+queryGroup 'Query Errors - 7/30/2026 3:12:45 PM'
+
+	annotation PBI_QueryGroupOrder = 0
+
+annotation PBI_QueryOrder = ["Project","Deep lv 1","Project_a","Errors in Project"]
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 

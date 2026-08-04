@@ -5651,6 +5651,27 @@ cultureInfo en-US
 			          }
 			        }
 			      ]
+			    },
+			    "data.pháp_nhân_ký_hđ_dòng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Data",
+			          "ConceptualProperty": "Pháp nhân ký HĐ (dòng)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "PHÁP NHÂN KÝ HĐ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
 			    }
 			  },
 			  "Relationships": {

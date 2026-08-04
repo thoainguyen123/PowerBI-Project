@@ -236,6 +236,22 @@ table 'Phân công PIC'
 		isNameInferred
 		sourceColumn: [Tình trạng quyết toán (chuẩn)]
 
+	column 'Quý mục tiêu'
+		lineageTag: 8f912456-1b23-4c56-9d89-0a1b2c3d4e5f
+		isNameInferred
+		sourceColumn: [Quý mục tiêu]
+
+	hierarchy 'Kỳ mục tiêu phân cấp'
+		lineageTag: e8a91254-4b21-4f81-9b12-58ab12345679
+
+		level 'Năm'
+			lineageTag: 22345678-1234-1234-1234-123456789a01
+			column: 'Năm mục tiêu'
+
+		level 'Quý'
+			lineageTag: 22345678-1234-1234-1234-123456789a02
+			column: 'Quý mục tiêu'
+
 	partition 'Phân công PIC' = calculated
 		mode: import
 		source =
@@ -254,6 +270,7 @@ table 'Phân công PIC'
 				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
 				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
 				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Quý mục tiêu", Data[Quý mục tiêu],
 				        "Năm ký quyết toán", Data[Năm ký quyết toán],
 				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
 				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],
@@ -277,6 +294,7 @@ table 'Phân công PIC'
 				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
 				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
 				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Quý mục tiêu", Data[Quý mục tiêu],
 				        "Năm ký quyết toán", Data[Năm ký quyết toán],
 				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
 				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],

@@ -1,0 +1,20 @@
+relationship d9a50dd7-55e4-47cc-a6ec-5a4a5f47a525
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'NGÀY BẮT ĐẦU HIỆU LỰC HĐ'
+	toColumn: LocalDateTable_22a7e44d-c911-48e3-816f-11bf271e4716.Date
+
+relationship a8410c12-019b-4045-baf5-924a79f9a0a9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI'
+	toColumn: LocalDateTable_b6d80b60-c11c-431c-9bfd-e50f7397e227.Date
+
+relationship 384febcf-8581-4f8c-8680-420c15b35f10
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'NGÀY KÝ BIÊN BẢN QUYẾT TOÁN'
+	toColumn: LocalDateTable_9aa40266-55d9-4f5e-9e45-e7d8dfa7152e.Date
+
+relationship 0e1a33f7-39e0-4896-924d-6ca222107815
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'NGÀY MỤC TIÊU'
+	toColumn: LocalDateTable_5e05e95e-fb0f-466e-87cf-ae730c4f3684.Date
+

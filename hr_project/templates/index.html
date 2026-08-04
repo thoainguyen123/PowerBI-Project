@@ -7,7 +7,7 @@
     <!-- Boxicons CSS for icons -->
     <link href="/static/vendor/boxicons/css/boxicons.min.css?v=2.1.4" rel="stylesheet">
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="/static/css/style.css?v=11.4.3">
+    <link rel="stylesheet" href="/static/css/style.css?v=11.6.0">
     <!-- Chart.js -->
     <script src="/static/vendor/chart/chart.umd.min.js?v=4.4.7"></script>
 
@@ -148,7 +148,6 @@
                         <div class="overview-section-heading">
                             <div>
                                 <h3>Sơ đồ điều hành khu vực</h3>
-                                <p id="overview-section-subtitle">Toàn bộ Khu vực và các Vùng trực thuộc trong hệ thống.</p>
                             </div>
                         </div>
                         <div id="management-areas-container" class="management-areas-command">
@@ -209,7 +208,7 @@
                             <div class="pheader-title-box">
                                 <div class="pheader-icon"><i class="bx bx-buildings"></i></div>
                                 <div class="pheader-project-copy">
-                                    <span class="pheader-eyebrow">Hồ sơ điều hành dự án</span>
+                                    <span class="pheader-eyebrow">Thông tin dự án</span>
                                     <h2 class="pheader-name" id="l3-project-name">Đang tải dự án...</h2>
                                     <div class="project-detail-tags">
                                         <span id="l3-project-code">—</span>
@@ -219,14 +218,6 @@
                                 </div>
                             </div>
                             <div class="pheader-signals" aria-label="Tóm tắt hồ sơ dự án">
-                                <div class="pheader-signal">
-                                    <span>Hồ sơ tổng quan</span>
-                                    <strong id="l3-profile-completeness">0/7</strong>
-                                </div>
-                                <div class="pheader-signal">
-                                    <span>Dữ liệu phòng ban</span>
-                                    <strong id="l3-masterdata-count">0 mục</strong>
-                                </div>
                                 <div class="pheader-date">
                                     <span>Ngày dữ liệu</span>
                                     <strong><i class="bx bx-calendar"></i><span id="l3-current-date"></span></strong>
@@ -244,10 +235,9 @@
                                     <div class="pinfo-item"><span class="pinfo-label">Tên pháp lý</span><strong class="pinfo-val" id="l3-ten-phap-ly">—</strong></div>
                                     <div class="pinfo-item"><span class="pinfo-label">Tên thương mại</span><strong class="pinfo-val" id="l3-ten-thuong-mai">—</strong></div>
                                     <div class="pinfo-item"><span class="pinfo-label">Chủ đầu tư</span><strong class="pinfo-val" id="l3-chu-dau-tu">—</strong></div>
-                                    <div class="pinfo-item"><span class="pinfo-label">Loại hình</span><strong class="pinfo-val" id="l3-loai-hinh">—</strong></div>
+                                    <div class="pinfo-item"><span class="pinfo-label">Địa điểm</span><strong class="pinfo-val" id="l3-dia-diem">—</strong></div>
                                     <div class="pinfo-item"><span class="pinfo-label">Quy mô</span><strong class="pinfo-val" id="l3-quy-mo">—</strong></div>
                                     <div class="pinfo-item"><span class="pinfo-label">Số lượng sản phẩm</span><strong class="pinfo-val" id="l3-so-luong">—</strong></div>
-                                    <div class="pinfo-item pinfo-address"><span class="pinfo-label">Địa điểm</span><strong class="pinfo-val" id="l3-dia-diem">—</strong></div>
                                 </div>
                             </article>
 
@@ -293,9 +283,18 @@
                     <div>
                         <span class="eyebrow">QUẢN TRỊ CẤU TRÚC</span>
                         <h2>Quản lý khu vực</h2>
-                        <p>Cấu hình 5 khu vực, phân vùng và đầu mối điều hành hiển thị trên dashboard.</p>
                     </div>
-                    <button class="btn btn-secondary" type="button" onclick="loadRegionManagement()"><i class="bx bx-refresh"></i> Làm mới</button>
+                    <div class="hero-actions" style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="btn btn-primary" type="button" onclick="openAddAreaModal()">
+                            <i class="bx bx-plus"></i> Thêm khu vực lớn
+                        </button>
+                        <button class="btn btn-primary" type="button" onclick="openAddRegionModal()">
+                            <i class="bx bx-plus-circle"></i> Thêm vùng con
+                        </button>
+                        <button class="btn btn-secondary" type="button" onclick="loadRegionManagement()">
+                            <i class="bx bx-refresh"></i> Làm mới
+                        </button>
+                    </div>
                 </div>
                 <div id="region-management-container" class="region-management-grid">
                     <div class="overview-loading"><i class="bx bx-loader-alt bx-spin"></i> Đang tải cấu hình...</div>
@@ -423,7 +422,7 @@
                             <i class="bx bx-download"></i> Xuất Excel Hồ Sơ
                         </a>
                         <a class="btn btn-secondary" id="masterdata-export-excel" href="/api/masterdata/export-template">
-                            <i class="bx bx-file"></i> Tải Mẫu Excel 16 Sheet
+                            <i class="bx bx-download"></i> Xuất toàn bộ và đồng bộ dữ liệu
                         </a>
                         <button class="btn btn-primary" onclick="openProjectModal()">
                             <i class="bx bx-plus"></i> Thêm dự án
@@ -808,7 +807,7 @@
                         <h2>Workbook dự án &amp; master data</h2>
                         <p>Xuất một workbook gồm sheet “Tổng quan dự án” và toàn bộ 15 sheet master theo mẫu NVLG_PROJECT.</p>
                         <a class="btn btn-primary" href="/api/masterdata/export-template">
-                            <i class="bx bx-download"></i> Tải workbook 16 sheet
+                            <i class="bx bx-download"></i> Xuất toàn bộ và đồng bộ dữ liệu
                         </a>
                     </div>
                     <div class="sync-card export-card">
@@ -893,9 +892,26 @@
                                 <input type="text" id="project-name-input" class="form-control" placeholder="Tên đang dùng trong danh mục đầu tư" required>
                             </div>
                             <div class="form-group">
-                                <label for="project-region-input">Vùng *</label>
-                                <input type="text" id="project-region-input" class="form-control" placeholder="Ví dụ: TP.HCM 1" required>
+                                <label for="project-area-code-input">Khu vực lớn *</label>
+                                <div style="display: flex; gap: 0.35rem;">
+                                    <select id="project-area-code-input" class="form-control" onchange="onProjectAreaSelectChange()" required>
+                                        <option value="">-- Chọn Khu vực --</option>
+                                    </select>
+                                    <button type="button" class="btn btn-secondary" onclick="openAddAreaModal()" title="Thêm khu vực lớn mới" style="padding: 0 0.6rem; font-weight: bold;">+</button>
+                                    <button type="button" class="btn btn-secondary" onclick="openEditAreaModalFromSelect()" title="Chỉnh sửa khu vực đang chọn" style="padding: 0 0.6rem;"><i class="bx bx-edit-alt"></i></button>
+                                </div>
                             </div>
+                            <div class="form-group">
+                                <label for="project-region-code-input">Vùng con trực thuộc *</label>
+                                <div style="display: flex; gap: 0.35rem;">
+                                    <select id="project-region-code-input" class="form-control" onchange="onProjectRegionSelectChange()" required>
+                                        <option value="">-- Chọn Vùng con --</option>
+                                    </select>
+                                    <button type="button" class="btn btn-secondary" onclick="openAddRegionModal()" title="Thêm vùng con mới" style="padding: 0 0.6rem; font-weight: bold;">+</button>
+                                    <button type="button" class="btn btn-secondary" onclick="openEditRegionModalFromSelect()" title="Chỉnh sửa vùng con đang chọn" style="padding: 0 0.6rem;"><i class="bx bx-edit-alt"></i></button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="project-region-input">
                             <div class="form-group">
                                 <label for="project-status-input">Hiện trạng đầu tư</label>
                                 <select id="project-status-input" class="form-control">
@@ -913,10 +929,6 @@
                             <div class="form-group">
                                 <label for="project-corporation-input">Tổng công ty</label>
                                 <input type="text" id="project-corporation-input" class="form-control" placeholder="NVLG, NSG, NVG...">
-                            </div>
-                            <div class="form-group">
-                                <label for="project-type-input">Loại hình</label>
-                                <input type="text" id="project-type-input" class="form-control" placeholder="Khu đô thị, chung cư...">
                             </div>
                             <div class="form-group">
                                 <label for="project-priority-input">Mức độ ưu tiên</label>
@@ -1435,7 +1447,7 @@
     </div>
 
     <!-- JS Scripts -->
-    <script src="/static/js/main.js?v=11.4.2"></script>
+    <script src="/static/js/main.js?v=11.5.4"></script>
 
     <!-- PROJECT MASTER DATA INTEGRATED MODAL -->
     <div class="modal-overlay" id="modal-project-masterdata" style="display: none;">
@@ -1488,13 +1500,157 @@
             <div class="modal-footer" style="display: flex; justify-content: space-between; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color);">
                 <div style="display: flex; gap: 0.5rem;">
                     <a class="btn btn-secondary" id="modal-masterdata-export-excel" href="/api/masterdata/export-template">
-                        <i class="bx bx-file"></i> Tải Mẫu Excel 16 Sheet
+                        <i class="bx bx-download"></i> Xuất toàn bộ và đồng bộ dữ liệu
                     </a>
                     <a class="btn btn-secondary" id="modal-masterdata-export-csv" href="/api/masterdata/export-fact">
                         <i class="bx bx-download"></i> Xuất CSV
                     </a>
                 </div>
                 <button class="btn btn-primary" onclick="closeProjectMasterDataModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 11: ADD MANAGEMENT AREA -->
+    <div class="modal-overlay" id="modal-add-area" style="display: none;">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3>Thêm Khu Vực Quản Lý Mới</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-area')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-area" onsubmit="saveNewArea(event)">
+                    <div class="form-group">
+                        <label for="new-area-code-input">Mã khu vực * (Ví dụ: KV6)</label>
+                        <input type="text" id="new-area-code-input" class="form-control" placeholder="Mã định danh duy nhất (ví dụ: KV6)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-area-name-input">Tên khu vực *</label>
+                        <input type="text" id="new-area-name-input" class="form-control" placeholder="Ví dụ: KHU VỰC 6 · TÂY NGUYÊN" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-area-scope-input">Phạm vi địa lý</label>
+                        <input type="text" id="new-area-scope-input" class="form-control" placeholder="Ví dụ: Đắk Lắk · Gia Lai · Kontum">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-add-area')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Tạo Khu vực</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 12: ADD MANAGEMENT REGION -->
+    <div class="modal-overlay" id="modal-add-region" style="display: none;">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3>Thêm Vùng Con Mới</h3>
+                <button class="modal-close" onclick="closeModal('modal-add-region')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-add-region" onsubmit="saveNewRegion(event)">
+                    <div class="form-group">
+                        <label for="new-region-parent-area">Trực thuộc Khu vực lớn *</label>
+                        <select id="new-region-parent-area" class="form-control" required>
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-region-preset-select">Chọn Vùng từ danh mục Vùng chuẩn *</label>
+                        <select id="new-region-preset-select" class="form-control" onchange="onNewRegionPresetSelectChange()">
+                            <!-- JS populated from REGION_DEFINITIONS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-region-name-input">Tên vùng con (đầy đủ) *</label>
+                        <input type="text" id="new-region-name-input" class="form-control" placeholder="Ví dụ: Vùng TP.HCM 1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-region-short-name-input">Tên ngắn (hiển thị trên dropdown)</label>
+                        <input type="text" id="new-region-short-name-input" class="form-control" placeholder="Ví dụ: HCM 1">
+                        <small style="color: var(--text-muted); font-size: 0.75rem;">Để trống sẽ tự dùng tên đầy đủ</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-region-code-input">Mã vùng định danh (tự sinh nếu để trống)</label>
+                        <input type="text" id="new-region-code-input" class="form-control" placeholder="Ví dụ: GMD.HCM1-NVLG">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-add-region')">Hủy</button>
+                        <button type="submit" class="btn btn-primary"><i class="bx bx-plus-circle"></i> Tạo Vùng con</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 13: EDIT MANAGEMENT AREA -->
+    <div class="modal-overlay" id="modal-edit-area" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Chỉnh Sửa Khu Vực Quản Lý</h3>
+                <button class="modal-close" onclick="closeModal('modal-edit-area')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-area" onsubmit="saveEditArea(event)">
+                    <input type="hidden" id="edit-area-code-input">
+                    <div class="form-group">
+                        <label>Mã khu vực</label>
+                        <input type="text" id="edit-area-code-display" class="form-control" readonly style="background: rgba(255,255,255,0.04);">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-area-name-input">Tên khu vực *</label>
+                        <input type="text" id="edit-area-name-input" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-area-scope-input">Phạm vi địa lý</label>
+                        <input type="text" id="edit-area-scope-input" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-area-director-select">Giám đốc / Lãnh đạo khu vực</label>
+                        <select id="edit-area-director-select" class="form-control">
+                            <!-- JS populated from state.employees -->
+                        </select>
+                        <input type="hidden" id="edit-area-director-input">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-edit-area')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 14: EDIT MANAGEMENT REGION -->
+    <div class="modal-overlay" id="modal-edit-region" style="display: none;">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Chỉnh Sửa Vùng Con</h3>
+                <button class="modal-close" onclick="closeModal('modal-edit-region')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="form-edit-region" onsubmit="saveEditRegion(event)">
+                    <input type="hidden" id="edit-region-code-input">
+                    <div class="form-group">
+                        <label for="edit-region-parent-area">Trực thuộc Khu vực *</label>
+                        <select id="edit-region-parent-area" class="form-control" required>
+                            <!-- JS populated -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-region-name-input">Tên vùng con *</label>
+                        <input type="text" id="edit-region-name-input" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-region-short-name-input">Tên viết tắt / Hiển thị ngắn</label>
+                        <input type="text" id="edit-region-short-name-input" class="form-control">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn" onclick="closeModal('modal-edit-region')">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

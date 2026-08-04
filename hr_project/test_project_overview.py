@@ -70,8 +70,8 @@ class ProjectOverviewApiTest(unittest.TestCase):
             self.assertTrue(config_by_sheet[sheet_name]['dynamic_item_field'])
             self.assertTrue(config_by_sheet[sheet_name]['dynamic_content_field'])
         self.assertIn('Nội dung', config_by_sheet['IDD']['headers'])
-        self.assertIn('Nội dung', config_by_sheet['DMD']['headers'])
-        self.assertIn('Nội dung', config_by_sheet['PCD']['headers'])
+        self.assertIn('Hiện trạng hồ sơ', config_by_sheet['DMD']['headers'])
+        self.assertIn('Hiện trạng thi công (%)', config_by_sheet['PCD']['headers'])
 
         project_code = 'TEST.MD.001'
         created_project = self.create_test_project(project_code)
@@ -173,8 +173,7 @@ class ProjectOverviewApiTest(unittest.TestCase):
                 'source_sheet': 'DMD',
                 'values': {
                     'Hạng mục': 'Quy hoạch',
-                    'Nội dung': content,
-                    'Hiện trạng hồ sơ': 'Đang thực hiện'
+                    'Hiện trạng hồ sơ': content
                 }
             })
             self.assertEqual(
@@ -188,7 +187,7 @@ class ProjectOverviewApiTest(unittest.TestCase):
         ).get_json()
         self.assertEqual(len(dynamic_entries), 2)
         self.assertEqual(
-            {entry['values']['Nội dung'] for entry in dynamic_entries},
+            {entry['values']['Hiện trạng hồ sơ'] for entry in dynamic_entries},
             {'Thiết kế ý tưởng', 'Thiết kế cơ sở'}
         )
 
@@ -199,7 +198,7 @@ class ProjectOverviewApiTest(unittest.TestCase):
             row for row in csv.DictReader(StringIO(dynamic_fact.data.decode('utf-8-sig')))
             if row['source_sheet'] == 'DMD'
         ]
-        self.assertEqual({row['hang_muc'] for row in dynamic_rows}, {
+        self.assertEqual({row['hien_trang'] for row in dynamic_rows}, {
             'Thiết kế ý tưởng', 'Thiết kế cơ sở'
         })
         self.assertTrue(all('Quy hoạch' in row['phan_nhom'] for row in dynamic_rows))
@@ -239,12 +238,12 @@ class ProjectOverviewApiTest(unittest.TestCase):
         self.assertIn(b'id="tab-region-config"', home.data)
         self.assertIn(b'class="grid-stats allocation-kpis"', home.data)
         self.assertIn(b'href="/api/masterdata/export-template"', home.data)
-        self.assertIn('Tải workbook 16 sheet'.encode('utf-8'), home.data)
+        self.assertIn('Xuất toàn bộ và đồng bộ dữ liệu'.encode('utf-8'), home.data)
         self.assertIn(b'modal-project', home.data)
         self.assertNotIn('Nguyễn Lê Mỹ Hưng'.encode('utf-8'), home.data)
         self.assertIn(b'id="l3-department-chips"', home.data)
-        self.assertIn(b'id="l3-profile-completeness"', home.data)
-        self.assertIn(b'id="l3-masterdata-count"', home.data)
+        self.assertNotIn(b'id="l3-profile-completeness"', home.data)
+        self.assertNotIn(b'id="l3-masterdata-count"', home.data)
         self.assertNotIn(b'id="l3-department-select"', home.data)
         self.assertIn('Thông tin theo phòng ban'.encode('utf-8'), home.data)
         self.assertIn('Chọn một phòng ban để xem dữ liệu liên quan'.encode('utf-8'), home.data)
@@ -373,6 +372,84 @@ class ProjectOverviewApiTest(unittest.TestCase):
             stats_after['total'],
             stats_before.get_json()['total'] + 1
         )
+
+        # Test filtered export with search term / project_codes
+        filtered_export = self.client.get(
+            '/api/masterdata/export-template?project_codes=TEST.CDX.001'
+        )
+        self.assertEqual(filtered_export.status_code, 200)
+        filtered_wb = openpyxl.load_workbook(BytesIO(filtered_export.data), data_only=True)
+        overview_rows = list(filtered_wb['Tổng quan dự án'].iter_rows(values_only=True))
+        self.assertEqual(len(overview_rows), 2)  # Header + 1 filtered project row
+        self.assertEqual(overview_rows[1][0], 'TEST.CDX.001')
+
+    def test_management_areas_and_regions_crud(self):
+        try:
+            # 1. Test POST create area
+            res_area = self.client.post('/api/management/areas', json={
+                'area_code': 'KV99',
+                'area_name': 'KHU VỰC 99 · TEST',
+                'area_scope': 'Thử nghiệm'
+            })
+            self.assertEqual(res_area.status_code, 200, res_area.get_data(as_text=True))
+            self.assertEqual(res_area.get_json()['area_code'], 'KV99')
+
+            # 2. Test POST create region
+            res_region = self.client.post('/api/management/regions', json={
+                'area_code': 'KV99',
+                'region_name': 'Vùng Test 99',
+                'region_code': 'GMD.TEST99-NVLG'
+            })
+            self.assertEqual(res_region.status_code, 200, res_region.get_data(as_text=True))
+            self.assertEqual(res_region.get_json()['region_code'], 'GMD.TEST99-NVLG')
+
+            # 3. Test GET tree
+            res_tree = self.client.get('/api/overview/areas')
+            self.assertEqual(res_tree.status_code, 200)
+            tree = res_tree.get_json()
+            kv99 = next((a for a in tree if a['area_code'] == 'KV99'), None)
+            self.assertIsNotNone(kv99)
+            self.assertEqual(kv99['area_name'], 'KHU VỰC 99 · TEST')
+            self.assertTrue(any(r['region_code'] == 'GMD.TEST99-NVLG' for r in kv99['regions']))
+
+            # 4. Create project with area_code and region_code
+            res_proj = self.client.post('/api/projects', json={
+                'ma_du_an': 'TEST.KV99.001',
+                'ten_du_an': 'Dự án KV99',
+                'khu_vuc': 'Vùng Test 99',
+                'area_code': 'KV99',
+                'region_code': 'GMD.TEST99-NVLG',
+                'hien_trang_dau_tu': 'Đang nghiên cứu'
+            })
+            self.assertEqual(res_proj.status_code, 200, res_proj.get_data(as_text=True))
+
+            # 5. Test PUT update area & region
+            res_put_area = self.client.put('/api/management/areas/KV99', json={
+                'area_name': 'KHU VỰC 99 · ĐÃ SỬA',
+                'director_name': 'Nguyễn Văn A'
+            })
+            self.assertEqual(res_put_area.status_code, 200)
+
+            res_put_region = self.client.put('/api/management/regions/GMD.TEST99-NVLG', json={
+                'region_name': 'Vùng Test 99 Đã Sửa',
+                'short_name': 'Test 99 Updated'
+            })
+            self.assertEqual(res_put_region.status_code, 200)
+
+            tree_after = self.client.get('/api/overview/areas').get_json()
+            kv99_after = next((a for a in tree_after if a['area_code'] == 'KV99'), None)
+            self.assertEqual(kv99_after['area_name'], 'KHU VỰC 99 · ĐÃ SỬA')
+            self.assertEqual(kv99_after['director_name'], 'Nguyễn Văn A')
+        finally:
+            # Clean up created test data so other tests receive expected DB state
+            from app import get_db_connection
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            cursor.execute('DELETE FROM projects WHERE ma_du_an = ?', ('TEST.KV99.001',))
+            cursor.execute('DELETE FROM management_regions WHERE region_code = ?', ('GMD.TEST99-NVLG',))
+            cursor.execute('DELETE FROM management_areas WHERE area_code = ?', ('KV99',))
+            conn.commit()
+            conn.close()
 
 
 if __name__ == '__main__':

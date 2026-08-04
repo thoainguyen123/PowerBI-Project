@@ -28,8 +28,8 @@
               },
               "queryRef": "Data.NT/NCC/TV ",
               "nativeQueryRef": "NT/NCC/TV",
-              "displayName": "NT/NCC/TV",
-              "active": true
+              "active": true,
+              "displayName": "NT/NCC/TV"
             },
             {
               "field": {
@@ -44,8 +44,8 @@
               },
               "queryRef": "Data.Khu vực chuẩn",
               "nativeQueryRef": "KHU VỰC",
-              "displayName": "KHU VỰC",
-              "active": true
+              "active": true,
+              "displayName": "KHU VỰC"
             },
             {
               "field": {
@@ -60,8 +60,8 @@
               },
               "queryRef": "Data.TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ",
               "nativeQueryRef": "DỰ ÁN",
-              "displayName": "DỰ ÁN",
-              "active": true
+              "active": true,
+              "displayName": "DỰ ÁN"
             },
             {
               "field": {
@@ -76,8 +76,8 @@
               },
               "queryRef": "Data.SỐ HỢP ĐỒNG CHÍNH",
               "nativeQueryRef": "SỐ HỢP ĐỒNG GỐC",
-              "displayName": "SỐ HỢP ĐỒNG GỐC",
-              "active": true
+              "active": true,
+              "displayName": "SỐ HỢP ĐỒNG GỐC"
             }
           ]
         },
@@ -386,8 +386,7 @@
             },
             "direction": "Descending"
           }
-        ],
-        "isDefaultSort": false
+        ]
       }
     },
     "objects": {

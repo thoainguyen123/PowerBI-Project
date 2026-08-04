@@ -11,16 +11,62 @@ table Project
 			```
 		lineageTag: daedb5b1-013d-400e-8e16-300592feb758
 
-	measure 'Measure 3' = ```
+	measure 'Measure 3' =
 			
-			VAR x = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "Số Hóa") && Project[deep_level] = "Cấp 2")
-			VAR y = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "AI") && Project[deep_level] = "Cấp 2")
+			VAR x =
+			    COALESCE(
+			        CALCULATE(
+			            MAX(Project[percent]),
+			            CONTAINSSTRING(Project[title], "Số Hóa"),
+			            Project[deep_level] = "Cấp 2"
+			        ),
+			        0
+			    )
 			
-			RETURN 
-			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) & 
+			VAR y =
+			    COALESCE(
+			        CALCULATE(
+			            MAX(Project[percent]),
+			            CONTAINSSTRING(Project[title], "AI"),
+			            Project[deep_level] = "Cấp 2"
+			        ),
+			        0
+			    )
+			
+			RETURN
+			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) &
 			    "AI: " & FORMAT(y, "0%")
-			```
 		lineageTag: 18c309b4-4758-47f4-86c4-66ab3b05c7c0
+
+	/// Chỉ số hoàn thành AI & Số hóa dành riêng cho Novaland
+	measure 'Chỉ số hoàn thành AI & Số hóa Novaland' =
+			
+			VAR x =
+			    COALESCE(
+			        CALCULATE(
+			            AVERAGE(Project[percent]),
+			            CONTAINSSTRING(Project[title], "Số Hóa"),
+			            Project[progress_type] = "Theo % người dùng tự cập nhật",
+			            Project[tags_NVLG] = "NVLG"
+			        ),
+			        0
+			    )
+			
+			VAR y =
+			    COALESCE(
+			        CALCULATE(
+			            AVERAGE(Project[percent]),
+			            CONTAINSSTRING(Project[title], "AI"),
+			            Project[progress_type] = "Theo % người dùng tự cập nhật",
+			            Project[tags_NVLG] = "NVLG"
+			        ),
+			        0
+			    )
+			
+			RETURN
+			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) &
+			    "AI: " & FORMAT(y, "0%")
+		lineageTag: a1b2c3d4-e5f6-7890-abcd-ef1234567890
 
 	column ID
 		dataType: string
@@ -760,6 +806,73 @@ table Project
 
 	column 'Xem chi tiết' = "Xem chi tiết"
 		lineageTag: e7efc180-8250-45d4-a9b5-72abc1f60ca3
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column tags_NVLG =
+			
+			VAR _Code = Project[code]
+			
+			VAR _HasTag =
+			    CONTAINSSTRING(Project[tag_ids], "NVLG")
+			        || CONTAINSSTRING(Project[tag_ids], "NVG")
+			
+			VAR _IsDirect = _HasTag
+			
+			-- Lấy danh sách các code trực tiếp có NVLG hoặc NVG
+			VAR _DirectNVLGCodes =
+			    CALCULATETABLE(
+			        VALUES(Project[code]),
+			        FILTER(
+			            ALL(Project),
+			            (
+			                CONTAINSSTRING(Project[tag_ids], "NVLG")
+			                || CONTAINSSTRING(Project[tag_ids], "NVG")
+			            )
+			            && NOT(ISBLANK(Project[code]))
+			        )
+			    )
+			
+			-- Lấy danh sách parent_code của các dòng NVLG/NVG
+			VAR _ParentCodes =
+			    CALCULATETABLE(
+			        VALUES(Project[parent_code]),
+			        FILTER(
+			            ALL(Project),
+			            Project[code] IN _DirectNVLGCodes
+			                && NOT(ISBLANK(Project[parent_code]))
+			        )
+			    )
+			
+			VAR _GrandParentCodes =
+			    CALCULATETABLE(
+			        VALUES(Project[parent_code]),
+			        FILTER(
+			            ALL(Project),
+			            Project[code] IN _ParentCodes
+			                && NOT(ISBLANK(Project[parent_code]))
+			        )
+			    )
+			
+			VAR _GreatGrandParentCodes =
+			    CALCULATETABLE(
+			        VALUES(Project[parent_code]),
+			        FILTER(
+			            ALL(Project),
+			            Project[code] IN _GrandParentCodes
+			                && NOT(ISBLANK(Project[parent_code]))
+			        )
+			    )
+			
+			VAR _IsAncestor =
+			    _Code IN _ParentCodes
+			        || _Code IN _GrandParentCodes
+			        || _Code IN _GreatGrandParentCodes
+			
+			RETURN
+			    IF(_IsDirect || _IsAncestor, "NVLG", BLANK())
+		lineageTag: b8c9d0e1-2f3a-4b5c-6d7e-8f9a0b1c2d3e
 		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic

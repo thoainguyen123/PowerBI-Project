@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
   "name": "0a11ce1000000000000b",
   "position": {
-    "x": 32,
-    "y": 800,
+    "x": 32.5,
+    "y": 305,
     "z": 11000,
-    "height": 704,
-    "width": 1336,
+    "height": 697.5,
+    "width": 1335,
     "tabOrder": 11000
   },
   "visual": {
@@ -88,18 +88,13 @@
         "sort": [
           {
             "field": {
-              "Aggregation": {
+              "Column": {
                 "Expression": {
-                  "Column": {
-                    "Expression": {
-                      "SourceRef": {
-                        "Entity": "Project"
-                      }
-                    },
-                    "Property": "percent"
+                  "SourceRef": {
+                    "Entity": "Project"
                   }
                 },
-                "Function": 1
+                "Property": "title"
               }
             },
             "direction": "Ascending"
@@ -425,6 +420,22 @@
             "metadata": "Sum(Project.percent)"
           }
         }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "918.7142837684116D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Project.title"
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -550,14 +561,14 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
             },
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Công việc quá hạn cần rà soát'"
+                  "Value": "'Công việc'"
                 }
               }
             },
@@ -659,45 +670,6 @@
           }
         },
         "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "p",
-              "Entity": "Project",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "is_overdue_task"
-                      }
-                    }
-                  ],
-                  "Values": [
-                    [
-                      {
-                        "Literal": {
-                          "Value": "'Có'"
-                        }
-                      }
-                    ]
-                  ]
-                }
-              }
-            }
-          ]
-        },
         "howCreated": "User"
       }
     ]

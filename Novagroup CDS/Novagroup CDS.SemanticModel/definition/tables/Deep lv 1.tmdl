@@ -1,15 +1,31 @@
 table 'Deep lv 1'
 	lineageTag: 35289fc5-9e53-4bcd-b29d-34284c4dd469
 
-	measure 'Measure 2' = ```
+	measure 'Measure 2' =
 			
-			VAR x = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "Số Hóa") && Project[deep_level] = "Cấp 1")
-			VAR y = CALCULATE(MAX(Project[percent]), CONTAINSSTRING(Project[title], "AI") && Project[deep_level] = "Cấp 1")
+			VAR x =
+			    COALESCE(
+			        CALCULATE(
+			            MAX(Project[percent]),
+			            CONTAINSSTRING(Project[title], "Số Hóa"),
+			            Project[deep_level] = "Cấp 1"
+			        ),
+			        0
+			    )
 			
-			RETURN 
-			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) & 
+			VAR y =
+			    COALESCE(
+			        CALCULATE(
+			            MAX(Project[percent]),
+			            CONTAINSSTRING(Project[title], "AI"),
+			            Project[deep_level] = "Cấp 1"
+			        ),
+			        0
+			    )
+			
+			RETURN
+			    "Số Hóa: " & FORMAT(x, "0%") & UNICHAR(10) &
 			    "AI: " & FORMAT(y, "0%")
-			```
 		lineageTag: 809c05f5-f9cc-40e0-918a-8f98a844dc63
 
 	column ID

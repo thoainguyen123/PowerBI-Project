@@ -439,9 +439,374 @@ async function loadInitialMetadata(options = {}) {
                 `<option value="${escapeHtml(e.ma_nhan_vien)}">${escapeHtml(e.ho_ten)} (${escapeHtml(e.ma_nhan_vien)})</option>`
             ).join('');
         }
+        await loadManagementAreasAndRegions();
     } catch (err) {
         console.error('Lỗi khi tải metadata:', err);
         showToast('Không thể tải thông tin dự án/nhân sự!', true);
+    }
+}
+
+// ----------------------------------------------------
+// MANAGEMENT AREAS & REGIONS CASCADING DROPDOWNS LOGIC
+// ----------------------------------------------------
+let managementAreasAndRegions = [];
+
+async function loadManagementAreasAndRegions() {
+    try {
+        const res = await fetch(`${API_URL}/overview/areas`);
+        if (res.ok) {
+            managementAreasAndRegions = await res.json();
+            populateProjectAreaDropdown();
+        }
+    } catch (err) {
+        console.error('Lỗi tải danh mục khu vực:', err);
+    }
+}
+
+function populateProjectAreaDropdown() {
+    const areaSelect = document.getElementById('project-area-code-input');
+    if (!areaSelect) return;
+    
+    const currVal = areaSelect.value;
+    let html = '<option value="">-- Chọn Khu vực lớn --</option>';
+    managementAreasAndRegions.forEach(area => {
+        html += `<option value="${escapeHtml(area.area_code)}">${escapeHtml(area.area_name)} (${escapeHtml(area.area_code)})</option>`;
+    });
+    areaSelect.innerHTML = html;
+    if (currVal) areaSelect.value = currVal;
+}
+
+function onProjectAreaSelectChange() {
+    const areaSelect = document.getElementById('project-area-code-input');
+    const regionSelect = document.getElementById('project-region-code-input');
+    if (!areaSelect || !regionSelect) return;
+    
+    const selectedAreaCode = areaSelect.value;
+    regionSelect.innerHTML = '<option value="">-- Chọn Vùng con --</option>';
+    
+    if (!selectedAreaCode) {
+        updateProjectRegionHiddenInput();
+        return;
+    }
+    
+    const area = managementAreasAndRegions.find(a => a.area_code === selectedAreaCode);
+    if (area && area.regions) {
+        let html = '<option value="">-- Chọn Vùng con --</option>';
+        area.regions.forEach(r => {
+            html += `<option value="${escapeHtml(r.region_code)}" data-name="${escapeHtml(r.region_name)}">${escapeHtml(r.region_name)} (${escapeHtml(r.short_name || r.region_code)})</option>`;
+        });
+        regionSelect.innerHTML = html;
+    }
+    updateProjectRegionHiddenInput();
+}
+
+function onProjectRegionSelectChange() {
+    updateProjectRegionHiddenInput();
+}
+
+function updateProjectRegionHiddenInput() {
+    const areaSelect = document.getElementById('project-area-code-input');
+    const regionSelect = document.getElementById('project-region-code-input');
+    const hiddenRegionInput = document.getElementById('project-region-input');
+    if (!hiddenRegionInput) return;
+    
+    const areaCode = areaSelect?.value || '';
+    const regionCode = regionSelect?.value || '';
+    let textVal = '';
+    
+    if (regionCode) {
+        const area = managementAreasAndRegions.find(a => a.area_code === areaCode);
+        const region = area?.regions?.find(r => r.region_code === regionCode);
+        if (region) {
+            textVal = region.region_name;
+        }
+    } else if (areaCode) {
+        const area = managementAreasAndRegions.find(a => a.area_code === areaCode);
+        if (area) textVal = area.area_name;
+    }
+    hiddenRegionInput.value = textVal;
+}
+
+function openAddAreaModal() {
+    openModal('modal-add-area');
+}
+
+async function saveNewArea(e) {
+    e.preventDefault();
+    const area_code = document.getElementById('new-area-code-input').value.trim().toUpperCase();
+    const area_name = document.getElementById('new-area-name-input').value.trim();
+    const area_scope = document.getElementById('new-area-scope-input').value.trim();
+    
+    try {
+        const res = await fetch(`${API_URL}/management/areas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ area_code, area_name, area_scope })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Thêm khu vực mới thành công!');
+            closeModal('modal-add-area');
+            document.getElementById('form-add-area').reset();
+            await loadManagementAreasAndRegions();
+            await loadRegionManagement();
+            const areaSelect = document.getElementById('project-area-code-input');
+            if (areaSelect) {
+                areaSelect.value = area_code;
+                onProjectAreaSelectChange();
+            }
+        } else {
+            showToast(result.error || 'Lỗi khi tạo khu vực!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+async function openAddRegionModal(presetAreaCode) {
+    // Ưu tiên dùng state.managementAreas (đã được load từ renderRegionManagement / loadManagementAreas)
+    // Fallback sang managementAreasAndRegions nếu chưa có
+    if (!state.managementAreas?.length && !managementAreasAndRegions?.length) {
+        await loadManagementAreasAndRegions();
+    }
+    const areas = (state.managementAreas?.length ? state.managementAreas : managementAreasAndRegions) || [];
+    const parentSelect = document.getElementById('new-region-parent-area');
+    if (parentSelect) {
+        parentSelect.innerHTML = areas.map(a => 
+            `<option value="${escapeHtml(a.area_code)}">${escapeHtml(a.area_name)} (${escapeHtml(a.area_code)})</option>`
+        ).join('');
+        // presetAreaCode có priority cao nhất (từ nút Thêm vùng con trong thẻ khu vực)
+        const targetArea = presetAreaCode || document.getElementById('project-area-code-input')?.value;
+        if (targetArea) parentSelect.value = targetArea;
+    }
+    
+    const presetSelect = document.getElementById('new-region-preset-select');
+    if (presetSelect && typeof REGION_DEFINITIONS !== 'undefined') {
+        presetSelect.innerHTML = '<option value="">-- Chọn từ danh mục 30 Vùng chuẩn --</option>' + 
+            REGION_DEFINITIONS.filter(r => r.name).map(r => 
+                `<option value="${escapeHtml(r.name)}" data-code="${escapeHtml(r.code)}">${escapeHtml(r.name)} (${escapeHtml(r.code || 'Mã tự sinh')})</option>`
+            ).join('');
+    }
+    // Reset form
+    document.getElementById('new-region-name-input').value = '';
+    document.getElementById('new-region-code-input').value = '';
+    const shortNameInput = document.getElementById('new-region-short-name-input');
+    if (shortNameInput) shortNameInput.value = '';
+    openModal('modal-add-region');
+}
+
+function onNewRegionPresetSelectChange() {
+    const presetSelect = document.getElementById('new-region-preset-select');
+    const selectedOption = presetSelect?.options[presetSelect.selectedIndex];
+    if (!selectedOption || !presetSelect.value) return;
+    
+    const name = presetSelect.value;
+    const code = selectedOption.getAttribute('data-code') || '';
+    
+    document.getElementById('new-region-name-input').value = name;
+    document.getElementById('new-region-code-input').value = code;
+}
+
+async function saveNewRegion(e) {
+    e.preventDefault();
+    const area_code = document.getElementById('new-region-parent-area').value;
+    const region_name = document.getElementById('new-region-name-input').value.trim();
+    const region_code = document.getElementById('new-region-code-input').value.trim();
+    const short_name = (document.getElementById('new-region-short-name-input')?.value || '').trim() || region_name;
+    
+    if (!area_code) {
+        showToast('Vui lòng chọn Khu vực lớn!', true);
+        return;
+    }
+    if (!region_name) {
+        showToast('Vui lòng nhập Tên vùng con!', true);
+        return;
+    }
+    
+    try {
+        const res = await fetch(`${API_URL}/management/regions`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ area_code, region_name, region_code, short_name })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast(`Đã thêm vùng con "${region_name}" vào ${area_code}!`);
+            closeModal('modal-add-region');
+            document.getElementById('form-add-region').reset();
+            // Reload cả hai nguồn dữ liệu
+            await Promise.all([loadManagementAreasAndRegions(), loadManagementAreas(true)]);
+            await loadRegionManagement();
+            // Cập nhật dropdown khu vực nếu đang mở form dự án
+            const areaSelect = document.getElementById('project-area-code-input');
+            if (areaSelect && areaSelect.value === area_code) {
+                onProjectAreaSelectChange();
+                if (result.region_code) {
+                    const regionSelect = document.getElementById('project-region-code-input');
+                    if (regionSelect) {
+                        regionSelect.value = result.region_code;
+                        onProjectRegionSelectChange();
+                    }
+                }
+            }
+        } else {
+            showToast(result.error || 'Lỗi khi tạo vùng con!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+function openEditAreaModalFromSelect() {
+    const areaCode = document.getElementById('project-area-code-input')?.value;
+    if (!areaCode) {
+        showToast('Vui lòng chọn 1 Khu vực lớn để chỉnh sửa!', true);
+        return;
+    }
+    openEditAreaModal(areaCode);
+}
+
+function openEditAreaModal(areaCode) {
+    const area = managementAreasAndRegions.find(a => a.area_code === areaCode);
+    if (!area) {
+        showToast('Không tìm thấy thông tin khu vực!', true);
+        return;
+    }
+    document.getElementById('edit-area-code-input').value = area.area_code;
+    document.getElementById('edit-area-code-display').value = `${area.area_name} (${area.area_code})`;
+    document.getElementById('edit-area-name-input').value = area.area_name || '';
+    document.getElementById('edit-area-scope-input').value = area.area_scope || '';
+    
+    const dirSelect = document.getElementById('edit-area-director-select');
+    if (dirSelect) {
+        let html = '<option value="">-- Chọn Giám đốc / Lãnh đạo từ danh sách Nhân sự --</option>';
+        (state.employees || []).forEach(emp => {
+            html += `<option value="${escapeHtml(emp.ho_ten)}">${escapeHtml(emp.ho_ten)} (${escapeHtml(emp.ma_nhan_vien)})</option>`;
+        });
+        dirSelect.innerHTML = html;
+        if (area.director_name) {
+            dirSelect.value = area.director_name;
+        }
+    }
+    openModal('modal-edit-area');
+}
+
+async function saveEditArea(e) {
+    e.preventDefault();
+    const areaCode = document.getElementById('edit-area-code-input').value;
+    const area_name = document.getElementById('edit-area-name-input').value.trim();
+    const area_scope = document.getElementById('edit-area-scope-input').value.trim();
+    const dirSelect = document.getElementById('edit-area-director-select');
+    const director_name = dirSelect?.value || document.getElementById('edit-area-director-input')?.value || '';
+
+    try {
+        const res = await fetch(`${API_URL}/management/areas/${encodeURIComponent(areaCode)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ area_name, area_scope, director_name })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Cập nhật thông tin khu vực thành công!');
+            closeModal('modal-edit-area');
+            await Promise.all([
+                loadManagementAreasAndRegions(),
+                loadManagementAreas(true),
+                fetchProjectOverviewData()
+            ]);
+            const areaSelect = document.getElementById('project-area-code-input');
+            if (areaSelect) {
+                areaSelect.value = areaCode;
+                onProjectAreaSelectChange();
+            }
+        } else {
+            showToast(result.error || 'Không thể cập nhật khu vực!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
+    }
+}
+
+function openEditRegionModalFromSelect() {
+    const regionCode = document.getElementById('project-region-code-input')?.value;
+    if (!regionCode) {
+        showToast('Vui lòng chọn 1 Vùng con để chỉnh sửa!', true);
+        return;
+    }
+    openEditRegionModal(regionCode);
+}
+
+function openEditRegionModal(regionCode) {
+    let foundRegion = null;
+    let parentAreaCode = '';
+    for (const area of managementAreasAndRegions) {
+        const r = area.regions?.find(x => x.region_code === regionCode);
+        if (r) {
+            foundRegion = r;
+            parentAreaCode = area.area_code;
+            break;
+        }
+    }
+    if (!foundRegion) {
+        showToast('Không tìm thấy thông tin vùng con!', true);
+        return;
+    }
+    
+    const parentSelect = document.getElementById('edit-region-parent-area');
+    if (parentSelect) {
+        parentSelect.innerHTML = managementAreasAndRegions.map(a => 
+            `<option value="${escapeHtml(a.area_code)}">${escapeHtml(a.area_name)} (${escapeHtml(a.area_code)})</option>`
+        ).join('');
+        parentSelect.value = parentAreaCode;
+    }
+
+    document.getElementById('edit-region-code-input').value = foundRegion.region_code;
+    document.getElementById('edit-region-name-input').value = foundRegion.region_name || '';
+    document.getElementById('edit-region-short-name-input').value = foundRegion.short_name || foundRegion.region_name || '';
+    openModal('modal-edit-region');
+}
+
+async function saveEditRegion(e) {
+    e.preventDefault();
+    const regionCode = document.getElementById('edit-region-code-input').value;
+    const area_code = document.getElementById('edit-region-parent-area').value;
+    const region_name = document.getElementById('edit-region-name-input').value.trim();
+    const short_name = document.getElementById('edit-region-short-name-input').value.trim();
+
+    try {
+        const res = await fetch(`${API_URL}/management/regions/${encodeURIComponent(regionCode)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ area_code, region_name, short_name })
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showToast('Cập nhật vùng con thành công!');
+            closeModal('modal-edit-region');
+            await Promise.all([
+                loadManagementAreasAndRegions(),
+                loadManagementAreas(true),
+                fetchProjectOverviewData()
+            ]);
+            const areaSelect = document.getElementById('project-area-code-input');
+            if (areaSelect) {
+                areaSelect.value = area_code;
+                onProjectAreaSelectChange();
+                const regionSelect = document.getElementById('project-region-code-input');
+                if (regionSelect) {
+                    regionSelect.value = regionCode;
+                    onProjectRegionSelectChange();
+                }
+            }
+        } else {
+            showToast(result.error || 'Không thể cập nhật vùng con!', true);
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối máy chủ!', true);
     }
 }
 
@@ -555,10 +920,11 @@ function filterProjectOverview() {
     const searchInput = document.getElementById('project-search-input');
     if (!searchInput) return;
 
-    const query = normalizeSearch(searchInput.value);
-    const region = document.getElementById('project-filter-region').value;
-    const status = document.getElementById('project-filter-status').value;
-    const quality = document.getElementById('project-filter-quality').value;
+    const rawQuery = searchInput.value.trim();
+    const query = normalizeSearch(rawQuery);
+    const region = document.getElementById('project-filter-region')?.value || '';
+    const status = document.getElementById('project-filter-status')?.value || '';
+    const quality = document.getElementById('project-filter-quality')?.value || '';
 
     const filtered = state.projectOverview.filter(project => {
         const searchable = normalizeSearch([
@@ -579,6 +945,21 @@ function filterProjectOverview() {
     filtered.sort((a, b) => String(a.ma_du_an).localeCompare(
         String(b.ma_du_an), 'vi', { numeric: true }
     ));
+
+    const exportBtn = document.getElementById('masterdata-export-excel');
+    if (exportBtn) {
+        const params = new URLSearchParams();
+        if (rawQuery) params.set('q', rawQuery);
+        if (region) params.set('region', region);
+        if (status) params.set('status', status);
+
+        if (filtered.length < state.projectOverview.length && filtered.length > 0) {
+            params.set('project_codes', filtered.map(p => p.ma_du_an).join(','));
+        }
+        const qs = params.toString();
+        exportBtn.href = `/api/masterdata/export-template${qs ? '?' + qs : ''}`;
+    }
+
     renderProjectOverviewTable(filtered);
 }
 
@@ -603,10 +984,15 @@ function renderProjectOverviewTable(projects) {
         const statusLabel = PROJECT_STATUS_LABELS[projectStatus]
             || projectStatus
             || 'Chưa phân loại';
-        const displayName = project.ten_thuong_mai || project.ten_phap_ly || project.ten_du_an || 'Chưa có tên';
-        const legalName = project.ten_phap_ly && project.ten_phap_ly !== displayName
-            ? project.ten_phap_ly
-            : project.ten_du_an;
+        const displayName = project.ten_du_an || project.ten_thuong_mai || project.ten_phap_ly || 'Chưa có tên';
+        let legalName = '';
+        if (project.ten_thuong_mai && project.ten_thuong_mai !== displayName) {
+            legalName = project.ten_thuong_mai;
+        } else if (project.ten_phap_ly && project.ten_phap_ly !== displayName) {
+            legalName = project.ten_phap_ly;
+        } else {
+            legalName = displayName;
+        }
         const scale = project.tong_dien_tich_ha
             ? `${escapeHtml(project.tong_dien_tich_ha)} ha`
             : '—';
@@ -639,8 +1025,11 @@ function renderProjectOverviewTable(projects) {
                         ${quality.complete ? 'Đủ dữ liệu' : `${quality.score}/7 trường`}
                     </span>
                 </td>
-                <td class="action-column">
-                    <button class="btn-icon" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa hồ sơ dự án">
+                <td class="action-column" style="display: flex; gap: 0.35rem; align-items: center; justify-content: flex-end;">
+                    <a class="btn-icon download" href="/api/masterdata/export-template?project_code=${encodeURIComponent(project.ma_du_an)}" title="Tải xuống Excel 16 sheet dự án ${escapeHtml(displayName)}" style="text-decoration: none;">
+                        <i class="bx bx-download"></i>
+                    </a>
+                    <button class="btn-icon edit" data-project-code="${escapeHtml(project.ma_du_an)}" onclick="editProjectOverview(this.dataset.projectCode)" title="Chỉnh sửa hồ sơ dự án">
                         <i class="bx bx-edit-alt"></i>
                     </button>
                 </td>
@@ -671,6 +1060,30 @@ async function editProjectOverview(projectCode, focusMasterdata = false) {
         document.getElementById('project-code-input').readOnly = true;
         document.getElementById('project-name-input').value = project.ten_du_an || '';
         document.getElementById('project-region-input').value = project.khu_vuc || '';
+        
+        const areaCode = project.area_code || '';
+        const regionCode = project.region_code || '';
+        const areaSelect = document.getElementById('project-area-code-input');
+        if (areaSelect) {
+            if (areaCode) {
+                areaSelect.value = areaCode;
+            } else if (project.khu_vuc) {
+                const matchedArea = managementAreasAndRegions.find(a => 
+                    a.area_name.toLowerCase().includes(project.khu_vuc.toLowerCase()) ||
+                    a.regions?.some(r => r.region_name.toLowerCase().includes(project.khu_vuc.toLowerCase()))
+                );
+                if (matchedArea) areaSelect.value = matchedArea.area_code;
+            }
+            onProjectAreaSelectChange();
+            if (regionCode) {
+                const regionSelect = document.getElementById('project-region-code-input');
+                if (regionSelect) {
+                    regionSelect.value = regionCode;
+                    onProjectRegionSelectChange();
+                }
+            }
+        }
+
         const statusSelect = document.getElementById('project-status-input');
         const projectStatus = project.hien_trang_dau_tu || 'Chưa phân loại';
         if (![...statusSelect.options].some(option => option.value === projectStatus)) {
@@ -679,7 +1092,7 @@ async function editProjectOverview(projectCode, focusMasterdata = false) {
         statusSelect.value = projectStatus;
         document.getElementById('project-group-input').value = project.nhom_du_an || '';
         document.getElementById('project-corporation-input').value = project.tong_cong_ty || '';
-        document.getElementById('project-type-input').value = project.loai_hinh || '';
+        if (document.getElementById('project-type-input')) document.getElementById('project-type-input').value = project.loai_hinh || '';
         document.getElementById('project-priority-input').value = project.muc_do_uu_tien || '';
         document.getElementById('project-old-province-input').value = project.tinh_cu || '';
         document.getElementById('project-new-province-input').value = project.tinh_moi || '';
@@ -726,10 +1139,12 @@ async function saveProject(event) {
         ma_du_an: projectCode,
         ten_du_an: document.getElementById('project-name-input').value.trim(),
         khu_vuc: document.getElementById('project-region-input').value.trim(),
+        area_code: document.getElementById('project-area-code-input')?.value || '',
+        region_code: document.getElementById('project-region-code-input')?.value || '',
         hien_trang_dau_tu: document.getElementById('project-status-input').value,
         nhom_du_an: document.getElementById('project-group-input').value.trim(),
         tong_cong_ty: document.getElementById('project-corporation-input').value.trim(),
-        loai_hinh: document.getElementById('project-type-input').value.trim(),
+        loai_hinh: document.getElementById('project-type-input')?.value?.trim() || '',
         muc_do_uu_tien: document.getElementById('project-priority-input').value.trim(),
         tinh_cu: document.getElementById('project-old-province-input').value.trim(),
         tinh_moi: document.getElementById('project-new-province-input').value.trim(),
@@ -977,7 +1392,7 @@ function renderMasterdataField(config, header, value, fieldId, inputClass) {
                    list="${escapeHtml(listId)}"${parentAttribute}
                    value="${escapeHtml(value.current)}"
                    placeholder="Nhập hoặc chọn ${escapeHtml(label.toLowerCase())}"
-                   ${isParent ? 'oninput="syncMasterdataDependentChoices(this)"' : ''}>
+                   ${isParent ? 'oninput="syncMasterdataDependentChoices(this); updateProjectMasterdataRowHeadings(this.closest(\'.masterdata-section-card\'))"' : ''}>
             <datalist id="${escapeHtml(listId)}">
                 ${choices.map(option => `<option value="${escapeHtml(option)}"></option>`).join('')}
             </datalist>`;
@@ -992,7 +1407,7 @@ function renderMasterdataField(config, header, value, fieldId, inputClass) {
             <select id="${escapeHtml(fieldId)}" class="form-control ${inputClass}"
                     data-header="${escapeHtml(header)}" data-sheet="${escapeHtml(config.sheet)}"
                     ${dependencyAttribute}
-                    ${isDependencyParent ? 'onchange="syncMasterdataDependentChoices(this)"' : ''}>
+                    ${isDependencyParent ? 'onchange="syncMasterdataDependentChoices(this); updateProjectMasterdataRowHeadings(this.closest(\'.masterdata-section-card\'))"' : ''}>
                 <option value="">Chọn ${escapeHtml(label.toLowerCase())}</option>
                 ${choices.map(option => `
                     <option value="${escapeHtml(option)}" ${option === value.current ? 'selected' : ''}>
@@ -1031,14 +1446,14 @@ function syncMasterdataDependentChoices(source) {
 function renderProjectMasterdataInlineRow(config, entry = null, rowIndex = 0) {
     const visibleHeaders = config.headers.filter(header => header !== 'Mã dự án');
     const rowToken = entry?.id || `draft-${config.sheet}-${++masterdataDraftRowCounter}`;
-    const itemName = entry?.values?.[config.dynamic_item_field] || '';
+    const headingText = `Nội dung ${rowIndex + 1}`;
     return `
         <div class="project-masterdata-row"
              data-sheet="${escapeHtml(config.sheet)}"
              data-entry-id="${entry?.id || ''}">
             ${config.repeatable ? `
                 <div class="project-masterdata-row-heading">
-                    <span>${itemName ? `Mục: ${escapeHtml(itemName)}` : `Nội dung ${rowIndex + 1}`}</span>
+                    <span>${headingText}</span>
                     <button type="button" class="project-masterdata-remove"
                             onclick="removeProjectMasterdataContent(this)"
                             aria-label="Xóa nội dung này">
@@ -1069,13 +1484,26 @@ function renderProjectMasterdataInlineRow(config, entry = null, rowIndex = 0) {
         </div>`;
 }
 
+function updateProjectMasterdataRowHeadings(section) {
+    if (!section) return;
+    const rows = [...section.querySelectorAll('.project-masterdata-row')];
+    rows.forEach((row, index) => {
+        const headingSpan = row.querySelector('.project-masterdata-row-heading > span');
+        if (headingSpan) {
+            headingSpan.innerText = `Nội dung ${index + 1}`;
+        }
+    });
+}
+
 function updateProjectMasterdataSectionCount(section) {
     if (!section) return;
     const rows = section.querySelectorAll('.project-masterdata-row').length;
     const count = section.querySelector('.masterdata-section-count');
-    if (!count) return;
-    count.innerText = `${rows} nội dung`;
-    count.classList.toggle('has-data', rows > 0);
+    if (count) {
+        count.innerText = `${rows} nội dung`;
+        count.classList.toggle('has-data', rows > 0);
+    }
+    updateProjectMasterdataRowHeadings(section);
 }
 
 function addProjectMasterdataContent(sheetName) {
@@ -3631,13 +4059,13 @@ async function selectOverviewProject(projectCode) {
         }
     }
 
-    const name = p?.ten_thuong_mai || p?.ten_phap_ly || p?.ten_du_an || projectCode;
+    const name = p?.ten_du_an || p?.ten_thuong_mai || p?.ten_phap_ly || projectCode;
     document.getElementById('l3-project-name').innerText = name;
     document.getElementById('l3-ten-phap-ly').innerText = p?.ten_phap_ly || name;
     document.getElementById('l3-ten-thuong-mai').innerText = p?.ten_thuong_mai || name;
     document.getElementById('l3-chu-dau-tu').innerText = p?.chu_dau_tu || 'Công ty TNHH Bất động sản Đà Lạt Valley';
     document.getElementById('l3-quy-mo').innerText = p?.tong_dien_tich_ha ? `${p.tong_dien_tich_ha} ha` : '85.08 ha';
-    document.getElementById('l3-so-luong').innerText = p?.so_luong_san_pham ? `${p.so_luong_san_pham} căn NOTM` : '2586 căn NOTM';
+    document.getElementById('l3-so-luong').innerText = p?.so_luong_san_pham || '2586 căn NOTM';
     document.getElementById('l3-dia-diem').innerText = p?.dia_diem_du_an || p?.khu_vuc || 'Phường Long Hưng, Thành phố Đồng Nai';
     
     if (p?.nguon_goc_du_an) {
@@ -3666,8 +4094,7 @@ async function renderProjectOverviewDashboard() {
    ========================================================================== */
 
 function safeAreaColor(value) {
-    const color = String(value || '').trim();
-    return /^#[0-9a-f]{6}$/i.test(color) ? color : '#0f766e';
+    return '#0f766e';
 }
 
 function findManagementRegion(regionCode) {
@@ -3734,10 +4161,6 @@ function renderOverviewLayer1() {
     document.getElementById('overview-kpi-headcount').innerText = areas.reduce(
         (total, area) => total + Number(area.headcount || 0), 0
     ).toLocaleString('vi-VN');
-    const overviewSubtitle = document.getElementById('overview-section-subtitle');
-    if (overviewSubtitle) {
-        overviewSubtitle.innerText = `Hiển thị toàn bộ ${areas.length} Khu vực và ${allRegionRecords.length} Vùng trực thuộc.`;
-    }
 
     if (!areas.length) {
         container.innerHTML = `
@@ -3765,7 +4188,10 @@ function renderOverviewLayer1() {
                 onclick="selectOverviewRegionByCode(this.dataset.regionCode)">
                 <div class="region-tile-top">
                     <span class="region-tile-code">${escapeHtml(region.region_code)}</span>
-                    <i class="bx bx-right-arrow-alt"></i>
+                    <div style="display: flex; gap: 0.25rem; align-items: center;">
+                        <span title="Chỉnh sửa vùng con" style="cursor: pointer; padding: 2px;" onclick="event.stopPropagation(); openEditRegionModal('${escapeHtml(region.region_code)}')"><i class="bx bx-edit-alt"></i></span>
+                        <i class="bx bx-right-arrow-alt"></i>
+                    </div>
                 </div>
                 <h4>${escapeHtml(region.short_name || region.region_name)}</h4>
                 <p>${escapeHtml(leader?.ho_ten || 'Chưa có nhân sự GMD')}</p>
@@ -3785,10 +4211,15 @@ function renderOverviewLayer1() {
                 <header class="management-area-lane-header">
                     <div class="management-area-lane-top">
                         <span class="area-number">${escapeHtml(area.area_code)}</span>
-                        <span class="management-area-lane-projects">
-                            <strong>${Number(area.project_count || 0).toLocaleString('vi-VN')}</strong>
-                            <small>dự án</small>
-                        </span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <button type="button" class="btn-icon" title="Chỉnh sửa Khu vực" style="background: rgba(255,255,255,0.1); border: none; color: inherit; cursor: pointer; border-radius: 4px; padding: 2px 6px;" onclick="event.stopPropagation(); openEditAreaModal('${escapeHtml(area.area_code)}')">
+                                <i class="bx bx-edit-alt"></i>
+                            </button>
+                            <span class="management-area-lane-projects">
+                                <strong>${Number(area.project_count || 0).toLocaleString('vi-VN')}</strong>
+                                <small>dự án</small>
+                            </span>
+                        </div>
                     </div>
                     <div class="management-area-lane-title">
                         <h3>${escapeHtml(area.area_name)}</h3>
@@ -3862,9 +4293,9 @@ function renderKanbanColumn(items, columnId, countId) {
             onclick="selectOverviewProject(this.dataset.projectCode)">
             <span class="project-kanban-code">${escapeHtml(project.ma_du_an)}</span>
             <strong>${escapeHtml(
-                project.ten_thuong_mai
+                project.ten_du_an
+                || project.ten_thuong_mai
                 || project.ten_phap_ly
-                || project.ten_du_an
                 || project.ma_du_an
             )}</strong>
             <i class="bx bx-chevron-right"></i>
@@ -4004,6 +4435,63 @@ function renderProjectDetailTable() {
     const sheets = new Set(configs.map(config => config.sheet));
     const rows = (state.overviewProjectEntries || [])
         .filter(entry => sheets.has(entry.source_sheet));
+    const tableHead = document.getElementById('l3-details-table-head');
+    const body = document.getElementById('l3-details-table-body');
+
+    if (state.selectedOverviewDepartment === '9.2 FAC') {
+        const headers = ['Mục', 'Nội dung', 'Hiện trạng / Đã có TBTD', 'Điều chỉnh / Chưa có TBTD', 'Ngày hoàn thành / Dự kiến', 'Chi tiết', 'Ghi chú'];
+        tableHead.innerHTML = `<tr>${headers.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr>`;
+        document.getElementById('l3-detail-count').innerText = `${rows.length.toLocaleString('vi-VN')} mục`;
+        
+        if (!rows.length) {
+            body.innerHTML = `<tr><td colspan="7" class="no-data"><i class="bx bx-data"></i> Phòng ban này chưa có dữ liệu chi tiết.</td></tr>`;
+            return;
+        }
+
+        body.innerHTML = rows.map(entry => {
+            let muc = '';
+            let noiDung = '';
+            let hienTrang = '';
+            let dieuChinh = '';
+            let ngayHoanThanh = '';
+            let chiTiet = entry.values?.['Chi tiết'] || '';
+            let ghiChu = entry.values?.['Ghi chú'] || '';
+
+            if (entry.source_sheet === 'FS') {
+                muc = 'FS';
+                noiDung = entry.values?.['Phiên bản'] || '';
+                hienTrang = entry.values?.['Hiện trạng FS'] || '';
+                dieuChinh = entry.values?.['Điều chỉnh (nếu có)'] || '';
+                ngayHoanThanh = formatProjectDate(entry.values?.['Ngày hoàn thành']);
+            } else if (entry.source_sheet === 'HDV') {
+                muc = 'HDV';
+                noiDung = entry.values?.['Nội dung'] || 'Thông báo tín dụng';
+                hienTrang = entry.values?.['Đã có thông báo tín dụng'] || '';
+                dieuChinh = entry.values?.['Chưa có thông báo tín dụng'] || '';
+                ngayHoanThanh = formatProjectDate(entry.values?.['Dự kiến có thông báo tín dụng']);
+            } else {
+                muc = entry.source_sheet || '9.2 FAC';
+                noiDung = entry.values?.['Phiên bản'] || entry.values?.['Nội dung'] || '';
+                hienTrang = entry.values?.['Hiện trạng FS'] || entry.values?.['Đã có thông báo tín dụng'] || '';
+                dieuChinh = entry.values?.['Điều chỉnh (nếu có)'] || entry.values?.['Chưa có thông báo tín dụng'] || '';
+                ngayHoanThanh = formatProjectDate(entry.values?.['Ngày hoàn thành'] || entry.values?.['Dự kiến có thông báo tín dụng']);
+            }
+
+            return `
+                <tr>
+                    <td><strong>${escapeHtml(muc)}</strong></td>
+                    <td>${escapeHtml(noiDung || '—')}</td>
+                    <td>${escapeHtml(hienTrang || '—')}</td>
+                    <td>${escapeHtml(dieuChinh || '—')}</td>
+                    <td>${escapeHtml(ngayHoanThanh || '—')}</td>
+                    <td>${escapeHtml(chiTiet || '—')}</td>
+                    <td>${escapeHtml(ghiChu || '—')}</td>
+                </tr>
+            `;
+        }).join('');
+        return;
+    }
+
     const headers = [];
     configs.forEach(config => config.headers
         .filter(header => header !== 'Mã dự án')
@@ -4011,10 +4499,8 @@ function renderProjectDetailTable() {
             if (!headers.includes(header)) headers.push(header);
         }));
     const fieldLabels = Object.assign({}, ...configs.map(config => config.field_labels || {}));
-    const tableHead = document.getElementById('l3-details-table-head');
-    const body = document.getElementById('l3-details-table-body');
-    const columnCount = Math.max(headers.length + 1, 1);
-    tableHead.innerHTML = `<tr><th>STT</th>${headers.map(header =>
+    const columnCount = Math.max(headers.length, 1);
+    tableHead.innerHTML = `<tr>${headers.map(header =>
         `<th>${escapeHtml(fieldLabels[header] || header)}</th>`
     ).join('')}</tr>`;
     document.getElementById('l3-detail-count').innerText =
@@ -4026,9 +4512,8 @@ function renderProjectDetailTable() {
             </td></tr>`;
         return;
     }
-    body.innerHTML = rows.map((entry, index) => `
+    body.innerHTML = rows.map(entry => `
         <tr>
-            <td><span class="detail-row-number">${index + 1}</span></td>
             ${headers.map(header => {
                 let value = entry.values?.[header] || '';
                 if (header === 'Ngày hoàn thành' || header === 'Ngày tổ chức') {
@@ -4045,11 +4530,19 @@ async function selectOverviewProject(projectCode) {
     state.selectedOverviewProject = projectCode;
     state.selectedOverviewDepartment = '9.1 HRC';
     state.overviewProjectEntries = [];
-    document.getElementById('l3-project-name').innerText = 'Đang tải dự án...';
-    document.getElementById('l3-profile-completeness').innerText = '0/7';
-    document.getElementById('l3-masterdata-count').innerText = '0 mục';
-    document.getElementById('l3-details-table-body').innerHTML =
-        '<tr><td colspan="7" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải master data...</td></tr>';
+
+    const setText = (id, value, fallback = '—') => {
+        const element = document.getElementById(id);
+        if (element) element.innerText = String(value || fallback);
+    };
+
+    setText('l3-project-name', 'Đang tải dự án...');
+    setText('l3-profile-completeness', '0/7');
+    setText('l3-masterdata-count', '0 mục');
+    if (document.getElementById('l3-details-table-body')) {
+        document.getElementById('l3-details-table-body').innerHTML =
+            '<tr><td colspan="7" class="no-data"><i class="bx bx-loader-alt bx-spin"></i> Đang tải master data...</td></tr>';
+    }
 
     let project = (state.projects || []).find(item => item.ma_du_an === projectCode);
     try {
@@ -4064,14 +4557,11 @@ async function selectOverviewProject(projectCode) {
         const entries = entriesResponse.ok ? await entriesResponse.json() : [];
         if (!state.masterdataConfig?.length) await loadMasterdataConfig();
 
-        const displayName = project?.ten_thuong_mai
+        const displayName = project?.ten_du_an
+            || project?.ten_thuong_mai
             || project?.ten_phap_ly
-            || project?.ten_du_an
             || projectCode;
-        const setText = (id, value, fallback = '—') => {
-            const element = document.getElementById(id);
-            if (element) element.innerText = String(value || fallback);
-        };
+
         setText('l3-project-name', displayName);
         setText('l3-project-code', project?.ma_du_an);
         setText('l3-project-status', project?.hien_trang_dau_tu, 'Chưa phân loại');
@@ -4095,9 +4585,7 @@ async function selectOverviewProject(projectCode) {
         );
         setText(
             'l3-so-luong',
-            project?.so_luong_san_pham
-                ? `${project.so_luong_san_pham} sản phẩm`
-                : ''
+            project?.so_luong_san_pham || ''
         );
         setText('l3-dia-diem', project?.dia_diem_du_an || project?.khu_vuc);
         const originText = String(project?.nguon_goc_du_an || '').trim();
@@ -4108,13 +4596,25 @@ async function selectOverviewProject(projectCode) {
             originElement.hidden = !originText;
         }
         if (originEmpty) originEmpty.hidden = Boolean(originText);
+        let latestTimestamp = project?.updated_at ? new Date(project.updated_at).getTime() : 0;
+        if (isNaN(latestTimestamp)) latestTimestamp = 0;
+        entries.forEach(entry => {
+            if (entry.updated_at) {
+                const t = new Date(entry.updated_at).getTime();
+                if (!isNaN(t) && t > latestTimestamp) {
+                    latestTimestamp = t;
+                }
+            }
+        });
+        const latestDate = latestTimestamp ? new Date(latestTimestamp) : new Date();
+
         setText(
             'l3-current-date',
             new Intl.DateTimeFormat('vi-VN', {
                 day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
-            }).format(new Date())
+            }).format(latestDate)
         );
         state.overviewProjectEntries = entries;
         renderOverviewDepartmentSelector();
@@ -4147,41 +4647,97 @@ function renderRegionManagement() {
         container.innerHTML = '<div class="overview-empty">Chưa có cấu hình khu vực.</div>';
         return;
     }
-    container.innerHTML = areas.map(area => `
-        <article class="region-config-card" style="--area-accent:${safeAreaColor(area.accent_color)}">
+
+    const empOptions = (state.employees || []).map(emp =>
+        `<option value="${escapeHtml(emp.ho_ten)}">${escapeHtml(emp.ho_ten)} (${escapeHtml(emp.ma_nhan_vien)})</option>`
+    ).join('');
+    
+    let datalistHtml = `<datalist id="region-mgmt-emp-list">${empOptions}</datalist>`;
+
+    container.innerHTML = datalistHtml + areas.map(area => `
+        <article class="region-config-card" style="--area-accent:${safeAreaColor(area.accent_color)}; margin-bottom: 1.5rem;">
             <form onsubmit="saveManagementArea(event, ${escapeJsArg(area.area_code)})">
-                <div class="region-config-heading">
-                    <span>${escapeHtml(area.area_code)}</span>
-                    <div><h3>${escapeHtml(area.area_name)}</h3><p>${(area.regions || []).length} vùng đang hoạt động</p></div>
-                    <button class="btn btn-primary btn-sm" type="submit"><i class="bx bx-save"></i> Lưu khu vực</button>
+                <div class="region-config-heading" style="display: flex; justify-content: space-between; align-items: center; background: rgba(15, 118, 110, 0.05); padding: 0.75rem 1rem; border-radius: 12px; margin-bottom: 1rem;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <span style="background: var(--area-accent, #0f766e); color: #fff; padding: 0.4rem 0.75rem; border-radius: 8px; font-weight: bold; font-size: 0.9rem;">${escapeHtml(area.area_code)}</span>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.05rem; font-weight: 700;">${escapeHtml(area.area_name)}</h3>
+                            <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">${(area.regions || []).length} vùng đang hoạt động</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="openAddRegionModalForArea('${escapeHtml(area.area_code)}')">
+                            <i class="bx bx-plus-circle"></i> Thêm vùng con
+                        </button>
+                        <button class="btn btn-primary btn-sm" type="submit" style="font-weight: 600; padding: 0.4rem 1rem;">
+                            <i class="bx bx-save"></i> Lưu khu vực
+                        </button>
+                        <button class="btn btn-danger btn-sm" type="button" onclick="deleteManagementArea('${escapeHtml(area.area_code)}')" title="Xóa khu vực này">
+                            <i class="bx bx-trash"></i> Xóa
+                        </button>
+                    </div>
                 </div>
-                <div class="region-config-fields">
-                    <label>Tên khu vực<input class="form-control" name="area_name" value="${escapeHtml(area.area_name)}"></label>
-                    <label>Phạm vi vùng<input class="form-control" name="area_scope" value="${escapeHtml(area.area_scope || '')}"></label>
-                    <label>Giám đốc khu vực<input class="form-control" name="director_name" value="${escapeHtml(area.director_name || '')}"></label>
-                    <label>Phó Giám đốc khu vực<input class="form-control" name="deputy_director_name" value="${escapeHtml(area.deputy_director_name || '')}"></label>
-                    <label>Phụ trách Pháp lý<input class="form-control" name="legal_lead" value="${escapeHtml(area.legal_lead || '')}"></label>
-                    <label>Phụ trách Đầu tư<input class="form-control" name="investment_lead" value="${escapeHtml(area.investment_lead || '')}"></label>
-                    <label>Phụ trách Đối ngoại<input class="form-control" name="external_relations_lead" value="${escapeHtml(area.external_relations_lead || '')}"></label>
+                <div class="region-config-fields" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.85rem; padding: 0 0.5rem 1rem 0.5rem;">
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Tên khu vực lớn
+                        <input class="form-control" name="area_name" value="${escapeHtml(area.area_name)}" style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Phạm vi vùng địa lý
+                        <input class="form-control" name="area_scope" value="${escapeHtml(area.area_scope || '')}" placeholder="Ví dụ: TP.HCM · Bà Rịa..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Giám đốc khu vực
+                        <input class="form-control" name="director_name" list="region-mgmt-emp-list" value="${escapeHtml(area.director_name || '')}" placeholder="Chọn hoặc nhập họ tên..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Phó Giám đốc khu vực
+                        <input class="form-control" name="deputy_director_name" list="region-mgmt-emp-list" value="${escapeHtml(area.deputy_director_name || '')}" placeholder="Chọn hoặc nhập họ tên..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Phụ trách Pháp lý
+                        <input class="form-control" name="legal_lead" list="region-mgmt-emp-list" value="${escapeHtml(area.legal_lead || '')}" placeholder="Chọn hoặc nhập họ tên..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Phụ trách Đầu tư
+                        <input class="form-control" name="investment_lead" list="region-mgmt-emp-list" value="${escapeHtml(area.investment_lead || '')}" placeholder="Chọn hoặc nhập họ tên..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
+                    <label style="font-weight: 600; font-size: 0.8rem; color: var(--text-color);">Phụ trách Đối ngoại
+                        <input class="form-control" name="external_relations_lead" list="region-mgmt-emp-list" value="${escapeHtml(area.external_relations_lead || '')}" placeholder="Chọn hoặc nhập họ tên..." style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 7px 10px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-top: 4px;">
+                    </label>
                 </div>
             </form>
-            <div class="region-config-table-wrap">
-                <table class="region-config-table">
-                    <thead><tr><th>Mã vùng</th><th>Tên hiển thị</th><th>Tên đối chiếu dữ liệu</th><th>Thứ tự</th><th>Thao tác</th></tr></thead>
+            <div class="region-config-table-wrap" style="padding: 0 0.5rem 0.5rem 0.5rem;">
+                <table class="region-config-table" style="width: 100%; border-collapse: separate; border-spacing: 0;">
+                    <thead>
+                        <tr style="background: rgba(0,0,0,0.02);">
+                            <th style="padding: 8px 12px; font-size: 0.75rem;">Mã vùng con</th>
+                            <th style="padding: 8px 12px; font-size: 0.75rem;">Tên hiển thị ngắn</th>
+                            <th style="padding: 8px 12px; font-size: 0.75rem;">Tên vùng đầy đủ</th>
+                            <th style="padding: 8px 12px; font-size: 0.75rem; width: 90px;">Thứ tự</th>
+                            <th style="padding: 8px 12px; font-size: 0.75rem; width: 140px; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${(area.regions || []).map(region => `
                             <tr data-region-code="${escapeHtml(region.region_code)}">
-                                <td><code>${escapeHtml(region.region_code)}</code></td>
-                                <td><input class="form-control js-short-name" value="${escapeHtml(region.short_name || '')}"></td>
-                                <td><input class="form-control js-region-name" value="${escapeHtml(region.region_name || '')}"></td>
-                                <td><input class="form-control js-sort-order" type="number" value="${Number(region.sort_order || 0)}"></td>
-                                <td><button class="btn-icon" type="button" onclick="saveManagementRegion(this)"><i class="bx bx-check"></i></button></td>
+                                <td style="padding: 6px 12px;"><code style="font-weight: bold; color: var(--primary); font-size: 0.85rem;">${escapeHtml(region.region_code)}</code></td>
+                                <td style="padding: 6px 12px;"><input class="form-control js-short-name" value="${escapeHtml(region.short_name || '')}" style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 5px 8px; border-radius: 5px; font-size: 0.85rem; width: 100%;"></td>
+                                <td style="padding: 6px 12px;"><input class="form-control js-region-name" value="${escapeHtml(region.region_name || '')}" style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 5px 8px; border-radius: 5px; font-size: 0.85rem; width: 100%;"></td>
+                                <td style="padding: 6px 12px;"><input class="form-control js-sort-order" type="number" value="${Number(region.sort_order || 0)}" style="border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 5px 8px; border-radius: 5px; font-size: 0.85rem; width: 100%;"></td>
+                                <td style="padding: 6px 12px; text-align: center; display: flex; gap: 4px; justify-content: center;">
+                                    <button class="btn btn-secondary btn-sm" type="button" onclick="saveManagementRegion(this)" title="Lưu dòng vùng con này" style="padding: 4px 8px; font-size: 0.75rem;">
+                                        <i class="bx bx-save"></i> Lưu
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" type="button" onclick="deleteManagementRegion(this)" title="Xóa vùng con này" style="padding: 4px 8px; font-size: 0.75rem;">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                </td>
                             </tr>`).join('')}
                     </tbody>
                 </table>
             </div>
         </article>
     `).join('');
+}
+
+async function openAddRegionModalForArea(areaCode) {
+    // Truyền areaCode trực tiếp vào openAddRegionModal để set select đúng sau khi populate
+    await openAddRegionModal(areaCode);
 }
 
 async function loadRegionManagement() {
@@ -4203,6 +4759,27 @@ async function saveManagementArea(event, areaCode) {
         await loadRegionManagement();
     } catch (error) {
         console.error(error);
+        showToast(`Lỗi khi lưu khu vực ${areaCode}`, true);
+    }
+}
+
+async function deleteManagementArea(areaCode) {
+    if (!confirm(`Bạn có chắc chắn muốn xóa Khu vực ${areaCode} cùng tất cả các Vùng con trực thuộc?`)) return;
+    try {
+        const res = await fetch(`${API_URL}/management/areas/${encodeURIComponent(areaCode)}`, {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            showToast(`Đã xóa khu vực ${areaCode}.`);
+            await loadManagementAreasAndRegions();
+            await loadRegionManagement();
+        } else {
+            const err = await res.json();
+            showToast(err.error || 'Lỗi khi xóa khu vực!', true);
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Lỗi kết nối máy chủ!', true);
     }
 }
 
@@ -4226,5 +4803,29 @@ async function saveManagementRegion(button) {
         await loadRegionManagement();
     } catch (error) {
         console.error(error);
+        showToast(`Lỗi khi lưu vùng ${regionCode}`, true);
+    }
+}
+
+async function deleteManagementRegion(button) {
+    const row = button.closest('tr');
+    const regionCode = row?.dataset.regionCode;
+    if (!regionCode) return;
+    if (!confirm(`Bạn có chắc chắn muốn xóa Vùng con ${regionCode}?`)) return;
+    try {
+        const res = await fetch(`${API_URL}/management/regions/${encodeURIComponent(regionCode)}`, {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            showToast(`Đã xóa vùng con ${regionCode}.`);
+            await loadManagementAreasAndRegions();
+            await loadRegionManagement();
+        } else {
+            const err = await res.json();
+            showToast(err.error || 'Lỗi khi xóa vùng con!', true);
+        }
+    } catch (error) {
+        console.error(error);
+        showToast('Lỗi kết nối máy chủ!', true);
     }
 }

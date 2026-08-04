@@ -297,6 +297,8 @@ PROJECT_OVERVIEW_COLUMNS = {
     'tinh_moi': 'TEXT',
     'loai_hinh': 'TEXT',
     'muc_do_uu_tien': 'TEXT',
+    'area_code': 'TEXT',
+    'region_code': 'TEXT',
     'updated_at': 'TEXT',
     'updated_by': 'TEXT'
 }
@@ -319,28 +321,28 @@ MANAGEMENT_AREA_SEED = [
         'area_name': 'KHU VỰC 2 · TP ĐỒNG NAI + TỈNH LÂM ĐỒNG',
         'area_scope': 'Đồng Nai · Đà Lạt · Phan Thiết · Khánh Hòa · Stay · Play',
         'sort_order': 2,
-        'accent_color': '#2563eb',
+        'accent_color': '#0f766e',
     },
     {
         'area_code': 'KV3',
         'area_name': 'KHU VỰC 3',
         'area_scope': 'ĐBSCL · Tây Ninh · Khu công nghiệp · Phú Quốc',
         'sort_order': 3,
-        'accent_color': '#7c3aed',
+        'accent_color': '#0f766e',
     },
     {
         'area_code': 'KV4',
         'area_name': 'KHU VỰC 4',
         'area_scope': 'Miền Trung · Miền Bắc',
         'sort_order': 4,
-        'accent_color': '#d97706',
+        'accent_color': '#0f766e',
     },
     {
         'area_code': 'KV5',
         'area_name': 'KHU VỰC 5',
         'area_scope': 'Hạ tầng · Metro',
         'sort_order': 5,
-        'accent_color': '#dc2626',
+        'accent_color': '#0f766e',
     },
 ]
 
@@ -435,15 +437,15 @@ MASTERDATA_SHEETS = {
     },
     'DMD': {
         'nhom': '4.2 DMD', 'sort': 12, 'phan_nhom': 'Thiết kế',
-        'item': 'Nội dung', 'legacy_item': 'Hạng mục', 'subgroup': 'Hạng mục',
-        'dynamic_item_field': 'Hạng mục', 'dynamic_content_field': 'Nội dung',
-        'headers': ['Mã dự án', 'Hạng mục', 'Nội dung', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
+        'item': 'Hạng mục', 'subgroup': 'Hạng mục',
+        'dynamic_item_field': 'Hạng mục', 'dynamic_content_field': 'Hiện trạng hồ sơ',
+        'headers': ['Mã dự án', 'Hạng mục', 'Hiện trạng hồ sơ', 'Điều chỉnh (nếu có)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     },
     'PCD': {
         'nhom': '4.3 PCD', 'sort': 13, 'phan_nhom': 'Thi công',
-        'item': 'Nội dung', 'legacy_item': 'Mục', 'subgroup': 'Mục',
-        'dynamic_item_field': 'Mục', 'dynamic_content_field': 'Nội dung',
-        'headers': ['Mã dự án', 'Mục', 'Nội dung', 'Hiện trạng thi công (%)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
+        'item': 'Mục', 'subgroup': 'Mục',
+        'dynamic_item_field': 'Mục', 'dynamic_content_field': 'Hiện trạng thi công (%)',
+        'headers': ['Mã dự án', 'Mục', 'Hiện trạng thi công (%)', 'Ngày hoàn thành', 'Chi tiết', 'Ghi chú']
     },
     'OM': {
         'nhom': '4.4 OM', 'sort': 14, 'phan_nhom': 'Bàn giao nhà', 'hang_muc': 'Bàn giao nhà',
@@ -1462,13 +1464,15 @@ def manage_projects():
         tinh_moi = str(data.get('tinh_moi', '')).strip()
         loai_hinh = str(data.get('loai_hinh', '')).strip()
         muc_do_uu_tien = str(data.get('muc_do_uu_tien', '')).strip()
+        area_code = str(data.get('area_code', '')).strip()
+        region_code = str(data.get('region_code', '')).strip()
         updated_at = datetime.now().isoformat(timespec='seconds')
         updated_by = session.get('username', '')
         
         if not ma_da or not ten_da:
             return jsonify({'error': 'Mã dự án và Tên dự án là bắt buộc!'}), 400
             
-        if user['role'] != 'admin' and user['region_keyword'] not in khu_vuc:
+        if user['role'] != 'admin' and khu_vuc and user['region_keyword'] not in khu_vuc:
             return jsonify({'error': 'Bạn không có quyền tạo dự án ở vùng khác!'}), 403
             
         try:
@@ -1479,17 +1483,17 @@ def manage_projects():
                     ten_phap_ly, ten_thuong_mai, chu_dau_tu, dia_diem_du_an,
                     tong_dien_tich_ha, so_luong_san_pham, nguon_goc_du_an,
                     source_stt, tong_cong_ty, tinh_cu, tinh_moi, loai_hinh,
-                    muc_do_uu_tien,
+                    muc_do_uu_tien, area_code, region_code,
                     updated_at, updated_by
                 ) VALUES (
-                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                 )
             ''', (
                 ma_da, ten_da, khu_vuc, hien_trang_dau_tu, nhom_du_an, quan_ly,
                 ten_phap_ly, ten_thuong_mai, chu_dau_tu, dia_diem,
                 dien_tich, so_san_pham, nguon_goc,
                 source_stt, tong_cong_ty, tinh_cu, tinh_moi, loai_hinh,
-                muc_do_uu_tien, updated_at, updated_by
+                muc_do_uu_tien, area_code, region_code, updated_at, updated_by
             ))
             project_id = cursor.lastrowid
             conn.commit()
@@ -1566,7 +1570,7 @@ def export_project_overview():
     for project in projects:
         worksheet.append([
             project.get('ma_du_an'),
-            project.get('ten_phap_ly') or project.get('ten_du_an'),
+            project.get('ten_du_an') or project.get('ten_phap_ly'),
             project.get('ten_thuong_mai'),
             project.get('chu_dau_tu'),
             project.get('dia_diem_du_an'),
@@ -1616,7 +1620,7 @@ def manage_single_project(ma_du_an):
         'ten_phap_ly', 'ten_thuong_mai', 'chu_dau_tu', 'dia_diem_du_an',
         'tong_dien_tich_ha', 'so_luong_san_pham', 'nguon_goc_du_an',
         'source_stt', 'tong_cong_ty', 'tinh_cu', 'tinh_moi', 'loai_hinh',
-        'muc_do_uu_tien'
+        'muc_do_uu_tien', 'area_code', 'region_code'
     ]
     values = {
         field: str(data.get(field, current.get(field) or '')).strip()
@@ -1625,7 +1629,7 @@ def manage_single_project(ma_du_an):
     if not values['ten_du_an']:
         conn.close()
         return jsonify({'error': 'Tên dự án là bắt buộc!'}), 400
-    if user['role'] != 'admin' and user['region_keyword'] not in values['khu_vuc']:
+    if user['role'] != 'admin' and values['khu_vuc'] and user['region_keyword'] not in values['khu_vuc']:
         conn.close()
         return jsonify({'error': 'Bạn không có quyền chuyển dự án sang vùng khác!'}), 403
 
@@ -1637,6 +1641,7 @@ def manage_single_project(ma_du_an):
             dia_diem_du_an = ?, tong_dien_tich_ha = ?, so_luong_san_pham = ?,
             nguon_goc_du_an = ?, source_stt = ?, tong_cong_ty = ?,
             tinh_cu = ?, tinh_moi = ?, loai_hinh = ?, muc_do_uu_tien = ?,
+            area_code = ?, region_code = ?,
             updated_at = ?, updated_by = ?
         WHERE ma_du_an = ?
     ''', (
@@ -1647,6 +1652,7 @@ def manage_single_project(ma_du_an):
         values['so_luong_san_pham'], values['nguon_goc_du_an'],
         values['source_stt'], values['tong_cong_ty'], values['tinh_cu'],
         values['tinh_moi'], values['loai_hinh'], values['muc_do_uu_tien'],
+        values['area_code'], values['region_code'],
         datetime.now().isoformat(timespec='seconds'), session.get('username', ''),
         ma_du_an
     ))
@@ -1968,9 +1974,77 @@ def export_fact_masterdata():
 def export_masterdata_template():
     user = get_current_user()
     project_code = clean_master_value(request.args.get('project_code'))
-    rows = get_masterdata_export_rows(user, project_code)
-    if rows is None:
-        return jsonify({'error': 'Bạn không có quyền xuất dự án ở vùng khác!'}), 403
+    project_codes_param = clean_master_value(request.args.get('project_codes'))
+    search_q = clean_master_value(request.args.get('q') or request.args.get('search'))
+    region = clean_master_value(request.args.get('region'))
+    status = clean_master_value(request.args.get('status'))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    project_conditions = []
+    project_params = []
+
+    if project_code:
+        project_conditions.append('ma_du_an = ?')
+        project_params.append(project_code)
+    elif project_codes_param:
+        codes = [c.strip() for c in project_codes_param.split(',') if c.strip()]
+        if codes:
+            placeholders = ', '.join(['?'] * len(codes))
+            project_conditions.append(f'ma_du_an IN ({placeholders})')
+            project_params.extend(codes)
+
+    if user['role'] != 'admin':
+        project_conditions.append('khu_vuc LIKE ?')
+        project_params.append(f"%{user['region_keyword']}%")
+
+    if region:
+        project_conditions.append('khu_vuc = ?')
+        project_params.append(region)
+
+    if status:
+        project_conditions.append('hien_trang_dau_tu = ?')
+        project_params.append(status)
+
+    project_where = f"WHERE {' AND '.join(project_conditions)}" if project_conditions else ''
+    cursor.execute(
+        f'SELECT * FROM projects {project_where} ORDER BY ma_du_an ASC',
+        tuple(project_params)
+    )
+    projects = [dict(row) for row in cursor.fetchall()]
+
+    if search_q and not project_codes_param:
+        search_lower = search_q.lower()
+        projects = [
+            p for p in projects
+            if search_lower in ' '.join(filter(None, [
+                p.get('ma_du_an'), p.get('ten_du_an'), p.get('ten_phap_ly'),
+                p.get('ten_thuong_mai'), p.get('chu_dau_tu'), p.get('dia_diem_du_an')
+            ])).lower()
+        ]
+
+    matched_codes = [p['ma_du_an'] for p in projects]
+
+    if not matched_codes:
+        rows = []
+    else:
+        placeholders = ', '.join(['?'] * len(matched_codes))
+        cursor.execute(f'''
+            SELECT m.* FROM masterdata_entries m
+            WHERE m.project_code IN ({placeholders})
+            ORDER BY m.project_code ASC, m.source_sheet ASC, m.source_row ASC
+        ''', tuple(matched_codes))
+        rows = [dict(row) for row in cursor.fetchall()]
+
+    conn.close()
+
+    rows.sort(key=lambda row: (
+        row['project_code'],
+        MASTERDATA_SHEETS.get(row['source_sheet'], {}).get('sort', 999),
+        row['source_sheet'], row['source_row']
+    ))
+
     if not os.path.exists(MASTERDATA_TEMPLATE_PATH):
         return jsonify({'error': 'Không tìm thấy workbook template trên máy chủ!'}), 500
 
@@ -1989,27 +2063,12 @@ def export_masterdata_template():
     overview = workbook['Tổng quan dự án']
     if overview.max_row > 1:
         overview.delete_rows(2, overview.max_row - 1)
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    project_params = []
-    project_conditions = []
-    if project_code:
-        project_conditions.append('ma_du_an = ?')
-        project_params.append(project_code)
-    if user['role'] != 'admin':
-        project_conditions.append('khu_vuc LIKE ?')
-        project_params.append(f"%{user['region_keyword']}%")
-    project_where = f"WHERE {' AND '.join(project_conditions)}" if project_conditions else ''
-    cursor.execute(
-        f'SELECT * FROM projects {project_where} ORDER BY ma_du_an ASC',
-        tuple(project_params)
-    )
-    projects = [dict(row) for row in cursor.fetchall()]
-    conn.close()
+
     for project in projects:
         overview.append([
             project.get('ma_du_an'),
-            project.get('ten_phap_ly') or project.get('ten_du_an'),
+            project.get('ten_du_an') or project.get('ten_phap_ly'),
+            project.get('ten_phap_ly'),
             project.get('ten_thuong_mai'),
             project.get('chu_dau_tu'),
             project.get('dia_diem_du_an'),
@@ -2020,10 +2079,16 @@ def export_masterdata_template():
     output = BytesIO()
     workbook.save(output)
     output.seek(0)
+    filename = 'Workbook_Tong_Quan_Va_Master_Data_Du_An.xlsx'
+    if search_q:
+        safe_q = "".join(c for c in search_q if c.isalnum() or c in (' ', '_', '-')).strip()
+        if safe_q:
+            filename = f'Workbook_Du_An_{safe_q}.xlsx'
+
     return send_file(
         output,
         as_attachment=True,
-        download_name='Template_Nhap_Lieu_Master_Data_Du_An.xlsx',
+        download_name=filename,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
@@ -2365,6 +2430,148 @@ def update_management_region(region_code):
     conn.commit()
     conn.close()
     return jsonify({'success': True, 'region_code': region_code})
+
+
+@app.route('/api/management/areas', methods=['POST'])
+def create_management_area():
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được tạo mới khu vực!'}), 403
+    data = request.json or {}
+    area_code = str(data.get('area_code', '')).strip().upper()
+    area_name = str(data.get('area_name', '')).strip()
+    area_scope = str(data.get('area_scope', '')).strip()
+    accent_color = str(data.get('accent_color', '#0f766e')).strip()
+    director_name = str(data.get('director_name', '')).strip()
+    
+    if not area_code or not area_name:
+        return jsonify({'error': 'Mã khu vực và Tên khu vực là bắt buộc!'}), 400
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT * FROM management_areas WHERE area_code = ?', (area_code,))
+        existing = cursor.fetchone()
+        if existing:
+            cursor.execute('''
+                UPDATE management_areas SET
+                    area_name = ?, area_scope = ?, accent_color = ?, director_name = ?,
+                    updated_at = ?, updated_by = ?
+                WHERE area_code = ?
+            ''', (
+                area_name, area_scope, accent_color, director_name,
+                datetime.now().isoformat(timespec='seconds'), session.get('username', ''),
+                area_code
+            ))
+        else:
+            cursor.execute('SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM management_areas')
+            next_sort = cursor.fetchone()['next_sort']
+            cursor.execute('''
+                INSERT INTO management_areas (
+                    area_code, area_name, area_scope, sort_order, accent_color,
+                    director_name, updated_at, updated_by
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                area_code, area_name, area_scope, next_sort, accent_color,
+                director_name, datetime.now().isoformat(timespec='seconds'),
+                session.get('username', '')
+            ))
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'area_code': area_code})
+    except Exception as ex:
+        conn.close()
+        return jsonify({'error': f'Không thể tạo khu vực: {ex}'}), 400
+
+
+@app.route('/api/management/regions', methods=['POST'])
+def create_management_region():
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được tạo mới vùng!'}), 403
+    data = request.json or {}
+    area_code = str(data.get('area_code', '')).strip().upper()
+    region_code = str(data.get('region_code', '')).strip()
+    region_name = str(data.get('region_name', '')).strip()
+    short_name = str(data.get('short_name', region_name)).strip()
+    
+    if not area_code or not region_name:
+        return jsonify({'error': 'Mã khu vực và Tên vùng là bắt buộc!'}), 400
+        
+    if not region_code:
+        region_code = f"GMD.{region_name.upper().replace(' ', '')}-NVLG"
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('SELECT * FROM management_regions WHERE region_code = ?', (region_code,))
+        existing = cursor.fetchone()
+        if existing:
+            cursor.execute('''
+                UPDATE management_regions SET
+                    area_code = ?, region_name = ?, short_name = ?, is_active = 1,
+                    updated_at = ?, updated_by = ?
+                WHERE region_code = ?
+            ''', (
+                area_code, region_name, short_name,
+                datetime.now().isoformat(timespec='seconds'), session.get('username', ''),
+                region_code
+            ))
+        else:
+            cursor.execute('''
+                SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM management_regions WHERE area_code = ?
+            ''', (area_code,))
+            next_sort = cursor.fetchone()['next_sort']
+            cursor.execute('''
+                INSERT INTO management_regions (
+                    region_code, area_code, region_name, short_name, sort_order, is_active,
+                    updated_at, updated_by
+                ) VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+            ''', (
+                region_code, area_code, region_name, short_name, next_sort,
+                datetime.now().isoformat(timespec='seconds'), session.get('username', '')
+            ))
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'region_code': region_code})
+    except Exception as ex:
+        conn.close()
+        return jsonify({'error': f'Không thể tạo vùng: {ex}'}), 400
+
+
+@app.route('/api/management/areas/<area_code>', methods=['DELETE'])
+def delete_management_area(area_code):
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được xóa khu vực!'}), 403
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('DELETE FROM management_regions WHERE area_code = ?', (area_code,))
+        cursor.execute('DELETE FROM management_areas WHERE area_code = ?', (area_code,))
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'area_code': area_code})
+    except Exception as ex:
+        conn.close()
+        return jsonify({'error': f'Không thể xóa khu vực: {ex}'}), 400
+
+
+@app.route('/api/management/regions/<path:region_code>', methods=['DELETE'])
+def delete_management_region(region_code):
+    user = get_current_user()
+    if user['role'] != 'admin':
+        return jsonify({'error': 'Chỉ Admin được xóa vùng con!'}), 403
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('DELETE FROM management_regions WHERE region_code = ?', (region_code,))
+        conn.commit()
+        conn.close()
+        return jsonify({'success': True, 'region_code': region_code})
+    except Exception as ex:
+        conn.close()
+        return jsonify({'error': f'Không thể xóa vùng con: {ex}'}), 400
 
 
 # API: Allocations (Org) CRUD

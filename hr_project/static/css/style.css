@@ -6919,8 +6919,9 @@ textarea.form-control {
 }
 
 #overview-layer-3 .pheader-signals {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(86px, 1fr));
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
     gap: .45rem;
 }
 

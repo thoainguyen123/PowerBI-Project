@@ -339,5 +339,37 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "8a018241c006a9e3adb9",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Năm mục tiêu"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "4ae4a686726242028d21",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Quý mục tiêu"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

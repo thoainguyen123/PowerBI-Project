@@ -28,8 +28,8 @@
               },
               "queryRef": "Data.TÌNH TRẠNG THỰC HIỆN HĐ",
               "nativeQueryRef": "Tình trạng HĐ",
-              "displayName": "Tình trạng HĐ",
-              "active": true
+              "active": true,
+              "displayName": "Tình trạng HĐ"
             }
           ]
         }
@@ -155,6 +155,19 @@
               "expr": {
                 "Literal": {
                   "Value": "2D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "selfFilterEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }
@@ -293,5 +306,23 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "145e9ca2a56ea1697263",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "TÌNH TRẠNG THỰC HIỆN HĐ"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

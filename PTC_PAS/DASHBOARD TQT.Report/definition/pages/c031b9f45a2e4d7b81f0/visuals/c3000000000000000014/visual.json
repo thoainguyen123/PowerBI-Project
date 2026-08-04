@@ -730,6 +730,75 @@
             }
           }
         }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "perRowLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "levelSubtotalEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Data.NT/NCC/TV "
+          }
+        },
+        {
+          "properties": {
+            "levelSubtotalEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Data.SỐ HỢP ĐỒNG CHÍNH"
+          }
+        },
+        {
+          "properties": {
+            "levelSubtotalEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Data.TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ"
+          }
+        },
+        {
+          "properties": {
+            "levelSubtotalEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Data.Khu vực chuẩn"
+          }
+        }
       ]
     },
     "visualContainerObjects": {
@@ -946,5 +1015,331 @@
         }
       ]
     }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "5f611c5e0d29b47b3317",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "NT/NCC/TV "
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "c74da39673680ddd9503",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Khu vực chuẩn"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "a63e5695e7060b35079a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4812fce134d900d98629",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "SỐ HỢP ĐỒNG CHÍNH"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "6e5ac72090ce177933e1",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Pháp nhân ký HĐ (dòng)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "00a98c2f06e1171384be",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Nội dung gói thầu (dòng)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9aba8400ad2195d23c42",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Ngày ký HĐ (dòng)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "511c527a911a1c44635c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Giá trị HĐ + PS gồm VAT"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "e5930af8e000e3139a5c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Giá trị hóa đơn chưa VAT"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "3cd7c91d084b1021a4d6",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Giá trị hóa đơn gồm VAT"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "028f57a9ed60ae0422c9",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Giá trị tạm ứng"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "0c931f501e0e9234e148",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(3) Khấu trừ tạm ứng"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1c5b9c2f039cb5849bca",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(4) Tạm ứng chưa thu hồi"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5d6c0a05c2d81d0781d4",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(5) Công nợ đã có CPC"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "7b0d5a9826d8d0919151",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(6) Đã thanh toán"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "59b59b09275aad818a1e",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(7) Giá trị Swap"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "6c6cabbd8e505a3c3ad1",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(8) Công nợ CPC còn lại"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "ae7a103b8e5b05d026ec",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(9) Công nợ sau trừ tạm ứng"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "eb475d090ca078a8739a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(10) Tổng nợ phải trả"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "cb238fc28906b20a40d7",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(11) Tiền bảo hành giữ lại"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "d1a6ebd800e9cbb02492",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "(12) Tổng còn lại phải trả"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "6b5a3305b04216e0a867",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Tình trạng HĐ (dòng)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "4e20da883a989da6c0ec",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Data"
+              }
+            },
+            "Property": "Tình trạng quyết toán (dòng)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

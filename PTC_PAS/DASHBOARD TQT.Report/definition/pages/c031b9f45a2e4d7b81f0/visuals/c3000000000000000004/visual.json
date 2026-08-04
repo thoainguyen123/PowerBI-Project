@@ -28,8 +28,8 @@
               },
               "queryRef": "Data.NT/NCC/TV ",
               "nativeQueryRef": "Nhà thầu",
-              "displayName": "Nhà thầu",
-              "active": true
+              "active": true,
+              "displayName": "Nhà thầu"
             }
           ]
         }
@@ -155,6 +155,19 @@
               "expr": {
                 "Literal": {
                   "Value": "2D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "selfFilterEnabled": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }

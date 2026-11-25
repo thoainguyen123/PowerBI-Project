@@ -1,0 +1,34 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+/// Errors in queries that were loaded on 8/25/2026 10:42:01 AM.
+queryGroup 'Query Errors - 8/25/2026 10:42:01 AM'
+
+	annotation PBI_QueryGroupOrder = 0
+
+/// Errors in queries that were loaded on 8/25/2026 10:45:44 AM.
+queryGroup 'Query Errors - 8/25/2026 10:45:44 AM'
+
+	annotation PBI_QueryGroupOrder = 1
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Tab tình trạng thực hiện NS","Ngân sách gói thầu","Tab tình trạng thực hiện BOQ","Errors in Ngân sách gói thầu","Errors in Ngân sách gói thầu (2)"]
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+ref table 'Tab tình trạng thực hiện NS'
+ref table 'Ngân sách gói thầu'
+ref table 'Cơ cấu ngân sách'
+ref table DateTableTemplate_ac7fc369-75bd-4ef2-8194-3c2f48ef8106
+ref table LocalDateTable_605d5065-371c-461a-9e8b-a9a601b4a19e
+ref table 'Tab tình trạng thực hiện BOQ'
+
+ref cultureInfo en-US
+

@@ -1,0 +1,571 @@
+/// Bảng phân công theo vai trò, tạo một dòng cho mỗi lượt HĐ-PIC. Một HĐ có cả PIC Xây dựng/Cung ứng và PIC MEP sẽ xuất hiện hai lượt để không mất trách nhiệm phối hợp.
+table 'Phân công PIC'
+	lineageTag: e4ece5ba-98d8-42f5-9fdb-ca0b7971d330
+
+	/// Số lượt HĐ thuộc phạm vi quyết toán theo PIC; bao gồm fallback ngày mục tiêu của nguồn Hồ Tràm.
+	measure 'Số lượt HĐ cần quyết toán' =
+			CALCULATE(
+			    COUNTROWS('Phân công PIC'),
+			    NOT ISBLANK('Phân công PIC'[Ngày mục tiêu])
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: cf0dc78b-72b7-46a1-b773-0db54645d1f0
+
+	/// Số lượt HĐ thuộc phạm vi theo PIC có năm mục tiêu bằng năm hiện tại.
+	measure 'Số lượt HĐ cần quyết toán (năm nay)' =
+			CALCULATE(
+			    [Số lượt HĐ cần quyết toán],
+			    'Phân công PIC'[Năm mục tiêu] = YEAR(TODAY())
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 2ae6e687-6091-442d-99f7-2bc58eb5ced4
+
+	/// Số lượt HĐ thuộc phạm vi theo PIC có tình trạng 'Đã quyết toán'.
+	measure 'Số lượt HĐ hoàn thành' =
+			CALCULATE(
+			    [Số lượt HĐ cần quyết toán],
+			    'Phân công PIC'[Tình trạng quyết toán] = "Đã quyết toán"
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: 2c784507-cd82-4686-87cf-08726dc40d86
+
+	/// Tỷ lệ hoàn thành theo lượt HĐ thuộc phạm vi được phân công cho PIC.
+	measure '% Hoàn thành PIC' =
+			DIVIDE(
+			    [Số lượt HĐ hoàn thành],
+			    [Số lượt HĐ cần quyết toán]
+			)
+		formatString: 0.00%
+		displayFolder: KPI quyết toán
+		lineageTag: 70813dfb-a52a-480c-a3d2-9fd403b7d3b0
+
+	/// (1) Tổng số lượt phân công có ngày mục tiêu; không bị giới hạn bởi slicer Kỳ mục tiêu.
+	measure '(1) Số lượt cần quyết toán' =
+			CALCULATE (
+			    COUNTROWS ( 'Phân công PIC' ),
+			    NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] ),
+			    REMOVEFILTERS ( 'Phân công PIC'[Năm mục tiêu] ),
+			    REMOVEFILTERS ( 'Phân công PIC'[Quý mục tiêu] ),
+			    REMOVEFILTERS ( 'Phân công PIC'[Kỳ mục tiêu] )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: 97de1068-05ee-44ed-bd63-6c5337defc02
+
+	/// Measure alias tương thích cho các visual đang dùng tên cũ '(2) Số lượt cần quyết toán 2026'.
+	measure '(2) Số lượt cần quyết toán 2026' = [(2) Số lượt cần quyết toán theo kỳ]
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: c6e8fcd8-12dc-4b0c-96ef-2f8e67c7ea92
+
+	/// (2.1) KPI đã đăng ký theo PIC: Lượt phân công có Ngày mục tiêu trong kỳ và KPI quyết toán chứa chữ 'KPI'.
+	measure '(2.1) KPI đã đăng ký (PIC)' =
+			CALCULATE (
+			    COUNTROWS ( 'Phân công PIC' ),
+			    KEEPFILTERS ( NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] ) ),
+			    KEEPFILTERS ( CONTAINSSTRING ( UPPER ( COALESCE ( 'Phân công PIC'[KPI quyết toán], "" ) ), "KPI" ) )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: 11a41e12-8e41-425c-bbf7-b9833aa8b208
+
+	/// (2.2) Đăng ký thêm theo PIC: Lượt phân công có Ngày mục tiêu trong kỳ và KPI quyết toán chứa chữ 'NGOÀI'.
+	measure '(2.2) Đăng ký thêm (PIC)' =
+			CALCULATE (
+			    COUNTROWS ( 'Phân công PIC' ),
+			    KEEPFILTERS ( NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] ) ),
+			    KEEPFILTERS ( CONTAINSSTRING ( UPPER ( COALESCE ( 'Phân công PIC'[KPI quyết toán], "" ) ), "NGOÀI" ) )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: 0a1f7e11-f093-4559-ad34-96dc5140c3ce
+
+	/// Phần còn lại để cân đối: (2) = (2.1) + (2.2) + (2.3).
+	measure '(2.3) Chưa phân loại KPI (PIC)' =
+			COUNTROWS (
+			    FILTER (
+			        'Phân công PIC',
+			        NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] )
+			            && NOT 'Phân công PIC'[Nhóm KPI quyết toán] IN { "KPI đã đăng ký", "Đăng ký thêm" }
+			    )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: 04e16605-4e37-40d8-ac92-42ed59f8070e
+
+	/// Measure alias tương thích cho các visual đang dùng tên cũ '(3) Số lượt hoàn thành 2026'.
+	measure '(3) Số lượt hoàn thành 2026' = [(3) Số lượt hoàn thành trong kỳ]
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: 83a81616-7ba3-4542-8dab-baba86f7c766
+
+	/// Measure alias tương thích cho tên cũ.
+	measure '% Hoàn thành theo KPI đã đăng ký (PIC)' = [% Hoàn thành KPI (PIC)]
+		formatString: 0.00%
+		displayFolder: Tracking theo PIC\03. Tỷ lệ % (Cột 6, 8)
+		lineageTag: ec3878e2-6aaa-4370-b342-aec5712f3263
+
+	/// Measure alias tương thích cho tên cũ.
+	measure '% Hoàn thành 2026 (PIC)' = [% Hoàn thành trong kỳ (PIC)]
+		formatString: 0.00%
+		displayFolder: Tracking theo PIC\03. Tỷ lệ % (Cột 6, 8)
+		lineageTag: e1da3afd-c86a-4c38-b755-ed41abafdafd
+
+	/// Measure alias tương thích cho tên cũ.
+	measure 'Giá trị đã quyết toán 2026 (PIC)' = [Giá trị quyết toán trong kỳ (PIC)]
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\04. Giá trị (Cột 11)
+		lineageTag: dd2b57d3-5953-47d3-803e-a14847d0e213
+
+	/// Measure alias tương thích cho tên cũ.
+	measure '(3.1) Số lượt hoàn thành thuộc KPI đã đăng ký' = [(3.1) Lượt hoàn thành theo KPI (PIC)]
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: 82390f8d-f60a-4926-b34f-9d01af510afd
+
+	/// (3.1) / (2.1) theo PIC - luôn <= 100%.
+	measure '% Hoàn thành KPI đăng ký (chặt) (PIC)' = DIVIDE ( [(3.1) Lượt hoàn thành theo KPI (PIC)], [(2.1) KPI đã đăng ký (PIC)] )
+		formatString: 0.00%
+		displayFolder: Tracking theo PIC\03. Tỷ lệ % (Cột 6, 8)
+		lineageTag: 71cf155d-30a3-47ba-9ab3-85bebfd929dd
+
+	measure 'Số lượng gói (Ngày mục tiêu) PIC' =
+			CALCULATE(
+			    COUNTROWS('Phân công PIC'),
+			    USERELATIONSHIP(DimDate[Năm Quý Sort], 'Phân công PIC'[Muctieukey])
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: b6375c46-2ea6-44df-a486-fbf8f596a169
+
+	measure 'Số lượng gói (Ngày quyết toán) PIC' =
+			CALCULATE(
+			    COUNTROWS('Phân công PIC'),
+			    USERELATIONSHIP(DimDate[Năm Quý Sort], 'Phân công PIC'[QuyetToankey])
+			)
+		formatString: 0
+		displayFolder: KPI quyết toán
+		lineageTag: b545011b-80e1-4bbd-b61e-aaaedccb7b86
+
+	/// (2) Kế hoạch theo kỳ: Lượt phân công có ngày mục tiêu trong kỳ slicer đang chọn.
+	measure '(2) Số lượt cần quyết toán theo kỳ' =
+			CALCULATE (
+			    COUNTROWS ( 'Phân công PIC' ),
+			    KEEPFILTERS ( NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] ) )
+			)
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\01. Kế hoạch (Cột 1-4)
+		lineageTag: b1e51240-a1b2-4c89-b001-c85240de0103
+
+	/// (3.2) Lượt hoàn thành đạt mục tiêu (PIC): NGÀY DUYỆT CTQT <= NGÀY MỤC TIÊU, cả duyệt và mục tiêu nằm trong kỳ slicer đang chọn.
+	measure '(3.2) Lượt hoàn thành đạt mục tiêu (PIC)' =
+			VAR _LocNam = ISFILTERED ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _LocQuy = ISFILTERED ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _NamDaChon = VALUES ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _QuyDaChon = VALUES ( 'Phân công PIC'[Quý mục tiêu] )
+			RETURN
+			    COUNTROWS (
+			        FILTER (
+			            'Phân công PIC',
+			            NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] )
+			                && NOT ISBLANK ( 'Phân công PIC'[Năm ký quyết toán] )
+			                && 'Phân công PIC'[Đạt tiến độ mục tiêu] = TRUE ()
+			                && ( NOT _LocNam || 'Phân công PIC'[Năm ký quyết toán] IN _NamDaChon )
+			                && ( NOT _LocQuy || 'Phân công PIC'[Quý quyết toán] IN _QuyDaChon )
+			                && ( NOT _LocNam || 'Phân công PIC'[Năm mục tiêu] IN _NamDaChon )
+			                && ( NOT _LocQuy || 'Phân công PIC'[Quý mục tiêu] IN _QuyDaChon )
+			        )
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: a7b8c9d0-1234-5678-90ab-cdef01234567
+
+	/// (3.3) Lượt hoàn thành vượt mục tiêu (PIC): NGÀY DUYỆT CTQT <= NGÀY MỤC TIÊU, duyệt trong kỳ slicer, mục tiêu ở kỳ tương lai.
+	measure '(3.3) Lượt hoàn thành vượt mục tiêu (PIC)' =
+			VAR _LocNam = ISFILTERED ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _LocQuy = ISFILTERED ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _NamDaChon = VALUES ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _QuyDaChon = VALUES ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _MaxNam = MAXX ( _NamDaChon, 'Phân công PIC'[Năm mục tiêu] )
+			VAR _MaxQuy = MAXX ( _QuyDaChon, IFERROR ( VALUE ( RIGHT ( 'Phân công PIC'[Quý mục tiêu], 1 ) ), 4 ) )
+			VAR _MaxSlicerSort =
+			    IF (
+			        _LocQuy && NOT ISBLANK ( _MaxQuy ) && NOT ISBLANK ( _MaxNam ),
+			        _MaxNam * 10 + _MaxQuy,
+			        IF ( _LocNam && NOT ISBLANK ( _MaxNam ), _MaxNam * 10 + 4, BLANK () )
+			    )
+			RETURN
+			    IF (
+			        NOT _LocNam && NOT _LocQuy,
+			        0,
+			        CALCULATE (
+			            COUNTROWS (
+			                FILTER (
+			                    'Phân công PIC',
+			                    NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] )
+			                        && NOT ISBLANK ( 'Phân công PIC'[Năm ký quyết toán] )
+			                        && 'Phân công PIC'[Đạt tiến độ mục tiêu] = TRUE ()
+			                        && ( NOT _LocNam || 'Phân công PIC'[Năm ký quyết toán] IN _NamDaChon )
+			                        && ( NOT _LocQuy || 'Phân công PIC'[Quý quyết toán] IN _QuyDaChon )
+			                        && (
+			                            VAR _TargetSort = 'Phân công PIC'[Năm mục tiêu] * 10 + IFERROR ( VALUE ( RIGHT ( 'Phân công PIC'[Quý mục tiêu], 1 ) ), 4 )
+			                            RETURN _TargetSort > _MaxSlicerSort
+			                        )
+			                )
+			            ),
+			            REMOVEFILTERS ( 'Phân công PIC'[Năm mục tiêu] ),
+			            REMOVEFILTERS ( 'Phân công PIC'[Quý mục tiêu] ),
+			            REMOVEFILTERS ( 'Phân công PIC'[Kỳ mục tiêu] )
+			        )
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: b8c9d0e1-2345-6789-01bc-def012345678
+
+	/// (3) Số lượt hoàn thành trong kỳ: Tổng số lượt hoàn thành đạt mục tiêu và vượt mục tiêu trong kỳ slicer đang chọn.
+	measure '(3) Số lượt hoàn thành trong kỳ' = COALESCE ( [(3.2) Lượt hoàn thành đạt mục tiêu (PIC)], 0 ) + COALESCE ( [(3.3) Lượt hoàn thành vượt mục tiêu (PIC)], 0 )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: 93a81616-7ba3-4542-8dab-baba86f7c765
+
+	/// (3.1) Lượt hoàn thành theo KPI (PIC): NGÀY DUYỆT CTQT <= NGÀY MỤC TIÊU, cả duyệt và mục tiêu nằm trong kỳ slicer đang chọn và KPI quyết toán chứa 'KPI'.
+	measure '(3.1) Lượt hoàn thành theo KPI (PIC)' =
+			VAR _LocNam = ISFILTERED ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _LocQuy = ISFILTERED ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _NamDaChon = VALUES ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _QuyDaChon = VALUES ( 'Phân công PIC'[Quý mục tiêu] )
+			RETURN
+			    COUNTROWS (
+			        FILTER (
+			            'Phân công PIC',
+			            NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] )
+			                && NOT ISBLANK ( 'Phân công PIC'[Năm ký quyết toán] )
+			                && 'Phân công PIC'[Đạt tiến độ mục tiêu] = TRUE ()
+			                && CONTAINSSTRING ( UPPER ( COALESCE ( 'Phân công PIC'[KPI quyết toán], "" ) ), "KPI" )
+			                && ( NOT _LocNam || 'Phân công PIC'[Năm ký quyết toán] IN _NamDaChon )
+			                && ( NOT _LocQuy || 'Phân công PIC'[Quý quyết toán] IN _QuyDaChon )
+			                && ( NOT _LocNam || 'Phân công PIC'[Năm mục tiêu] IN _NamDaChon )
+			                && ( NOT _LocQuy || 'Phân công PIC'[Quý mục tiêu] IN _QuyDaChon )
+			        )
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\02. Hoàn thành (Cột 5, 7, 9, 10)
+		lineageTag: 92390f8d-f60a-4926-b34f-9d01af510afc
+
+	/// Tỷ lệ hoàn thành của nhóm KPI đã đăng ký theo PIC.
+	measure '% Hoàn thành KPI (PIC)' = DIVIDE ( [(3.1) Lượt hoàn thành theo KPI (PIC)], [(2.1) KPI đã đăng ký (PIC)] )
+		formatString: 0.00%
+		displayFolder: Tracking theo PIC\03. Tỷ lệ % (Cột 6, 8)
+		lineageTag: fc3878e2-6aaa-4370-b342-aec5712f3262
+
+	/// (3) / (2) theo từng PIC trong kỳ.
+	measure '% Hoàn thành trong kỳ (PIC)' = DIVIDE ( [(3) Số lượt hoàn thành trong kỳ], [(2) Số lượt cần quyết toán theo kỳ] )
+		formatString: 0.00%
+		displayFolder: Tracking theo PIC\03. Tỷ lệ % (Cột 6, 8)
+		lineageTag: f1da3afd-c86a-4c38-b755-ed41abafdafc
+
+	/// Tổng giá trị HĐ + PS gồm VAT theo PIC cho các lượt hoàn thành trong kỳ.
+	measure 'Giá trị quyết toán trong kỳ (PIC)' =
+			VAR _LocNam = ISFILTERED ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _LocQuy = ISFILTERED ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _NamDaChon = VALUES ( 'Phân công PIC'[Năm mục tiêu] )
+			VAR _QuyDaChon = VALUES ( 'Phân công PIC'[Quý mục tiêu] )
+			VAR _MaxNam = MAXX ( _NamDaChon, 'Phân công PIC'[Năm mục tiêu] )
+			VAR _MaxQuy = MAXX ( _QuyDaChon, IFERROR ( VALUE ( RIGHT ( 'Phân công PIC'[Quý mục tiêu], 1 ) ), 4 ) )
+			VAR _MaxSlicerSort =
+			    IF (
+			        _LocQuy && NOT ISBLANK ( _MaxQuy ) && NOT ISBLANK ( _MaxNam ),
+			        _MaxNam * 10 + _MaxQuy,
+			        IF ( _LocNam && NOT ISBLANK ( _MaxNam ), _MaxNam * 10 + 4, BLANK () )
+			    )
+			RETURN
+			    CALCULATE (
+			        SUMX (
+			            FILTER (
+			                'Phân công PIC',
+			                NOT ISBLANK ( 'Phân công PIC'[Ngày mục tiêu] )
+			                    && NOT ISBLANK ( 'Phân công PIC'[Năm ký quyết toán] )
+			                    && 'Phân công PIC'[Đạt tiến độ mục tiêu] = TRUE ()
+			                    && ( NOT _LocNam || 'Phân công PIC'[Năm ký quyết toán] IN _NamDaChon )
+			                    && ( NOT _LocQuy || 'Phân công PIC'[Quý quyết toán] IN _QuyDaChon )
+			                    && (
+			                        NOT _LocNam
+			                            || (
+			                                VAR _TargetSort = 'Phân công PIC'[Năm mục tiêu] * 10 + IFERROR ( VALUE ( RIGHT ( 'Phân công PIC'[Quý mục tiêu], 1 ) ), 4 )
+			                                RETURN ( 'Phân công PIC'[Năm mục tiêu] IN _NamDaChon && ( NOT _LocQuy || 'Phân công PIC'[Quý mục tiêu] IN _QuyDaChon ) )
+			                                    || ( _TargetSort > _MaxSlicerSort )
+			                            )
+			                    )
+			            ),
+			            'Phân công PIC'[Giá trị HĐ + PS gồm VAT]
+			        ),
+			        REMOVEFILTERS ( 'Phân công PIC'[Năm mục tiêu] ),
+			        REMOVEFILTERS ( 'Phân công PIC'[Quý mục tiêu] ),
+			        REMOVEFILTERS ( 'Phân công PIC'[Kỳ mục tiêu] )
+			    )
+		formatString: #,##0
+		displayFolder: Tracking theo PIC\04. Giá trị (Cột 11)
+		lineageTag: ed2b57d3-5953-47d3-803e-a14847d0e212
+
+	column 'Mã hợp đồng'
+		lineageTag: 5c9584f8-1b00-4f3d-9203-dfe799b4d125
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mã hợp đồng]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC phụ trách'
+		lineageTag: 4baed899-8e02-41bc-afbb-1d6d09ce37ac
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC phụ trách]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nhóm PIC'
+		lineageTag: e97b1dcc-d7f9-41ce-a6fb-028693cb47be
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nhóm PIC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Khu vực'
+		lineageTag: 84a030a1-9756-4fe4-9d39-1cab6dbd7836
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Khu vực]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dự án'
+		lineageTag: e074772c-1fe8-4560-9cdf-a35252f8228d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Dự án]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Kỳ mục tiêu'
+		lineageTag: e3d6329d-e99a-49e6-8f42-578960f279a4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Kỳ mục tiêu]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Năm mục tiêu'
+		formatString: 0
+		lineageTag: 62344c8d-335c-42b7-8fc7-6042d3a7c7d8
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Năm mục tiêu]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI quyết toán'
+		lineageTag: 7cec411e-58f1-4dec-87dc-81b37ec5050e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KPI quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tình trạng quyết toán'
+		lineageTag: be248471-272e-4597-91ac-69c4a4cc6043
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tình trạng quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column File
+		lineageTag: 5fa411ef-e8f2-4494-b83c-0ec8679c834d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [File]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Thuộc phạm vi quyết toán'
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: b120f353-ca33-4eda-b334-0110fee89fbc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Thuộc phạm vi quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Năm ký quyết toán'
+		formatString: 0
+		lineageTag: af47dfe1-ec79-4682-b6f6-1f01d5bd067c
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Năm ký quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nhóm KPI quyết toán'
+		lineageTag: 911e813b-f6fc-4148-8cd1-eaa881ea5844
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Nhóm KPI quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Giá trị workdone gồm VAT'
+		lineageTag: 34f9009d-dd8d-4714-889b-dcc6db3fb16a
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Giá trị workdone gồm VAT]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Tình trạng quyết toán (chuẩn)'
+		lineageTag: 7eaf7040-f461-418d-9e4d-8b73cb74206b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tình trạng quyết toán (chuẩn)]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quý mục tiêu'
+		lineageTag: 8f912456-1b23-4c56-9d89-0a1b2c3d4e5f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quý mục tiêu]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Quý quyết toán'
+		lineageTag: ea860346-f917-4be7-940c-d8db8b3b3882
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quý quyết toán]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Muctieukey = 'Phân công PIC'[Năm mục tiêu]&RIGHT('Phân công PIC'[Quý mục tiêu],1)
+		lineageTag: 78fd174f-3962-4f2e-8e1b-92fec4c4ede9
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column QuyetToankey = 'Phân công PIC'[Năm ký quyết toán]&RIGHT('Phân công PIC'[Quý quyết toán],1)
+		lineageTag: 817edd57-f5d6-4b8e-8e6d-1e50122af82c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Giá trị HĐ + PS gồm VAT'
+		lineageTag: f2ba0521-f81f-43f6-9ed4-5f1717bb2722
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Giá trị HĐ + PS gồm VAT]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Đạt tiến độ mục tiêu'
+		dataType: boolean
+		displayFolder: Tracking theo PIC\Tiến độ mục tiêu
+		lineageTag: 71cf155d-30a3-47ba-9ab3-85bebfd929da
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Đạt tiến độ mục tiêu]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngày mục tiêu'
+		dataType: string
+		displayFolder: Tracking theo PIC\Tiến độ mục tiêu
+		lineageTag: 71cf155d-30a3-47ba-9ab3-85bebfd929db
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ngày mục tiêu]
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'Kỳ mục tiêu phân cấp'
+		lineageTag: e8a91254-4b21-4f81-9b12-58ab12345679
+
+		level Năm
+			lineageTag: 22345678-1234-1234-1234-123456789a01
+			column: 'Năm mục tiêu'
+
+		level Quý
+			lineageTag: 22345678-1234-1234-1234-123456789a02
+			column: 'Quý mục tiêu'
+
+	partition 'Phân công PIC' = calculated
+		mode: import
+		source =
+				
+				VAR _XayDung =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            Data,
+				            NOT ISBLANK ( Data[PIC XÂY DỰNG/CUNG ỨNG] )
+				                && TRIM ( Data[PIC XÂY DỰNG/CUNG ỨNG] ) <> ""
+				        ),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT ( Data[STT], "0" ),
+				        "PIC phụ trách", TRIM ( Data[PIC XÂY DỰNG/CUNG ỨNG] ),
+				        "Nhóm PIC", "Xây dựng/Cung ứng",
+				        "File", Data[File],
+				        "Khu vực", Data[Khu vực chuẩn],
+				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
+				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
+				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Quý mục tiêu", Data[Quý mục tiêu],
+				        "Ngày mục tiêu", Data[NGÀY MỤC TIÊU],
+				        "Năm ký quyết toán", Data[Năm ký quyết toán],
+				        "Quý quyết toán", Data[Quý quyết toán],
+				        "Đạt tiến độ mục tiêu", Data[Đạt tiến độ mục tiêu],
+				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
+				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],
+				        "Giá trị HĐ + PS gồm VAT", Data[Giá trị HĐ + PS gồm VAT số],
+				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
+				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN],
+				        "Tình trạng quyết toán (chuẩn)", Data[TÌNH TRẠNG QUYẾT TOÁN (chuẩn)]
+				    )
+				
+				VAR _MEP =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            Data,
+				            NOT ISBLANK ( Data[PIC MEP] )
+				                && TRIM ( Data[PIC MEP] ) <> ""
+				        ),
+				        "Mã hợp đồng", Data[File] & "|" & FORMAT ( Data[STT], "0" ),
+				        "PIC phụ trách", TRIM ( Data[PIC MEP] ),
+				        "Nhóm PIC", "MEP",
+				        "File", Data[File],
+				        "Khu vực", Data[Khu vực chuẩn],
+				        "Dự án", Data[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ],
+				        "Kỳ mục tiêu", Data[Kỳ mục tiêu],
+				        "Năm mục tiêu", Data[Năm mục tiêu],
+				        "Quý mục tiêu", Data[Quý mục tiêu],
+				        "Ngày mục tiêu", Data[NGÀY MỤC TIÊU],
+				        "Năm ký quyết toán", Data[Năm ký quyết toán],
+				        "Quý quyết toán", Data[Quý quyết toán],
+				        "Đạt tiến độ mục tiêu", Data[Đạt tiến độ mục tiêu],
+				        "Nhóm KPI quyết toán", Data[Nhóm KPI quyết toán],
+				        "Giá trị workdone gồm VAT", Data[Giá trị workdone gồm VAT],
+				        "Giá trị HĐ + PS gồm VAT", Data[Giá trị HĐ + PS gồm VAT số],
+				        "Thuộc phạm vi quyết toán", Data[Thuộc phạm vi quyết toán],
+				        "KPI quyết toán", Data[KPI QUYẾT TOÁN],
+				        "Tình trạng quyết toán", Data[TÌNH TRẠNG QUYẾT TOÁN],
+				        "Tình trạng quyết toán (chuẩn)", Data[TÌNH TRẠNG QUYẾT TOÁN (chuẩn)]
+				    )
+				
+				RETURN
+				    UNION ( _XayDung, _MEP )
+

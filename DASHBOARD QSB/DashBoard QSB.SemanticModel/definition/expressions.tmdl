@@ -1,0 +1,46 @@
+expression 'Errors in Ngân sách gói thầu' =
+		let
+		Source = #"Ngân sách gói thầu",
+		  #"Detected Type Mismatches" = let
+		    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),
+		    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),
+		    fieldNames = Record.FieldNames(recordTypeFields),
+		    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),
+		    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = "The type of the value does not match the type of the column.", Detail = v], fieldTypes{i}})
+		in
+		    Table.TransformColumns(Source, pairs),
+		  #"Added Index" = Table.AddIndexColumn(#"Detected Type Mismatches", "Row Number" ,1),
+		  #"Kept Errors" = Table.SelectRowsWithErrors(#"Added Index", {"Cụm", "Dự án", "Gói thầu", "Số căn", "Khu", "Ngân sách gói thầu(A)", "Đã giao thầu(B)", "Ngân sách gói thầu còn lại(A-B)", "Tỉ lệ còn lại(%)"}),
+		  #"Reordered Columns" = Table.ReorderColumns(#"Kept Errors", {"Row Number", "Cụm", "Dự án", "Gói thầu", "Số căn", "Khu", "Ngân sách gói thầu(A)", "Đã giao thầu(B)", "Ngân sách gói thầu còn lại(A-B)", "Tỉ lệ còn lại(%)"})
+		in
+		    #"Reordered Columns"
+	lineageTag: 35edd587-4945-4da3-add0-6c4391a556a0
+	queryGroup: 'Query Errors - 8/25/2026 10:42:01 AM'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'Errors in Ngân sách gói thầu (2)' =
+		let
+		Source = #"Ngân sách gói thầu",
+		  #"Detected Type Mismatches" = let
+		    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),
+		    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),
+		    fieldNames = Record.FieldNames(recordTypeFields),
+		    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),
+		    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = "The type of the value does not match the type of the column.", Detail = v], fieldTypes{i}})
+		in
+		    Table.TransformColumns(Source, pairs),
+		  #"Added Index" = Table.AddIndexColumn(#"Detected Type Mismatches", "Row Number" ,1),
+		  #"Kept Errors" = Table.SelectRowsWithErrors(#"Added Index", {"Cụm", "Dự án", "Gói thầu", "Số căn", "Khu", "Ngân sách gói thầu(A)", "Đã giao thầu(B)", "Ngân sách gói thầu còn lại(A-B)", "Tỉ lệ còn lại(%)"}),
+		  #"Reordered Columns" = Table.ReorderColumns(#"Kept Errors", {"Row Number", "Cụm", "Dự án", "Gói thầu", "Số căn", "Khu", "Ngân sách gói thầu(A)", "Đã giao thầu(B)", "Ngân sách gói thầu còn lại(A-B)", "Tỉ lệ còn lại(%)"})
+		in
+		  #"Reordered Columns"
+	lineageTag: 3f2ec382-f8e4-4952-a099-350984fafd79
+	queryGroup: 'Query Errors - 8/25/2026 10:45:44 AM'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

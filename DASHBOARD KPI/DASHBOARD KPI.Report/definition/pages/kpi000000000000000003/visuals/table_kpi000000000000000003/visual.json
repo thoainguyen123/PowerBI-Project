@@ -1,0 +1,763 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "table_kpi000000000000000003",
+  "position": {
+    "x": 262,
+    "y": 900,
+    "z": 40000,
+    "height": 520,
+    "width": 1634,
+    "tabOrder": 40000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "MÃ CÔNG VIỆC"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.MÃ CÔNG VIỆC",
+              "nativeQueryRef": "STT",
+              "displayName": "STT"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "MÃ DỰ ÁN"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.MÃ DỰ ÁN",
+              "nativeQueryRef": "MÃ DỰ ÁN",
+              "displayName": "MÃ DỰ ÁN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "KHU VỰC"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.KHU VỰC",
+              "nativeQueryRef": "CỤM DỰ ÁN",
+              "displayName": "CỤM DỰ ÁN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "PHÒNG"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.PHÒNG",
+              "nativeQueryRef": "PHÒNG",
+              "displayName": "PHÒNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "BỘ PHẬN"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.BỘ PHẬN",
+              "nativeQueryRef": "BỘ PHẬN",
+              "displayName": "BỘ PHẬN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "HẠNG MỤC CUNG ỨNG - ĐẤU THẦU"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.HẠNG MỤC CUNG ỨNG - ĐẤU THẦU",
+              "nativeQueryRef": "HẠNG MỤC",
+              "displayName": "HẠNG MỤC"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "TĐT PIC hiển thị lưới"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.TĐT PIC hiển thị lưới",
+              "nativeQueryRef": "PIC",
+              "displayName": "PIC"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "NGÀY MỤC TIÊU BAN ĐẦU"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.NGÀY MỤC TIÊU BAN ĐẦU",
+              "nativeQueryRef": "MỤC TIÊU BAN ĐẦU",
+              "displayName": "MỤC TIÊU BAN ĐẦU"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "MỤC TIÊU ĐIỀU CHỈNH"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.MỤC TIÊU ĐIỀU CHỈNH",
+              "nativeQueryRef": "MỤC TIÊU ĐIỀU CHỈNH",
+              "displayName": "MỤC TIÊU ĐIỀU CHỈNH"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "NGÀY MỤC TIÊU TRUNG GIAN"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.NGÀY MỤC TIÊU TRUNG GIAN",
+              "nativeQueryRef": "MỤC TIÊU TRUNG GIAN",
+              "displayName": "MỤC TIÊU TRUNG GIAN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "CƠ SỞ GHI NHẬN"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.CƠ SỞ GHI NHẬN",
+              "nativeQueryRef": "CƠ SỞ GHI NHẬN",
+              "displayName": "CƠ SỞ GHI NHẬN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "NGÀY HOÀN THÀNH"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.NGÀY HOÀN THÀNH",
+              "nativeQueryRef": "KẾT QUẢ",
+              "displayName": "KẾT QUẢ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "TĐT Điểm hiển thị lưới"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.TĐT Điểm hiển thị lưới",
+              "nativeQueryRef": "TỶ LỆ TIẾN ĐỘ GỐC",
+              "displayName": "TỶ LỆ TIẾN ĐỘ GỐC"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "TÌNH TRẠNG"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.TÌNH TRẠNG",
+              "nativeQueryRef": "TÌNH TRẠNG",
+              "displayName": "TÌNH TRẠNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "TÌNH TRẠNG CỤ THỂ"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.TÌNH TRẠNG CỤ THỂ",
+              "nativeQueryRef": "TÌNH TRẠNG CỤ THỂ",
+              "displayName": "TÌNH TRẠNG CỤ THỂ"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Tiến độ thầu"
+                    }
+                  },
+                  "Property": "GIẢI TRÌNH"
+                }
+              },
+              "queryRef": "KPI Tiến độ thầu.GIẢI TRÌNH",
+              "nativeQueryRef": "GIẢI TRÌNH",
+              "displayName": "GIẢI TRÌNH"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F0F5FA'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F8FAFC'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D9E2EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8EEF5'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DCE5F0'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "label": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TỶ LỆ TIẾN ĐỘ BÌNH QUÂN'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DCEEFF'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CHI TIẾT TẤT CẢ GÓI TRONG KỲ (CÓ ĐIỂM / KHÔNG ĐIỂM)'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Mỗi gói ghi nhận một kỳ: theo mục tiêu hoặc vượt mục tiêu khi hoàn thành sớm ở kỳ trước'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

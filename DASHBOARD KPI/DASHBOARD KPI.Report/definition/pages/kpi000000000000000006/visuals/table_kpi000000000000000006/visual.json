@@ -1,0 +1,843 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "table_kpi000000000000000006",
+  "position": {
+    "x": 262,
+    "y": 556,
+    "z": 13000,
+    "height": 510,
+    "width": 1634,
+    "tabOrder": 13000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "DÒNG NGUỒN"
+                }
+              },
+              "queryRef": "KPI GHBL.DÒNG NGUỒN",
+              "nativeQueryRef": "DÒNG NGUỒN",
+              "displayName": "DÒNG NGUỒN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "KHU VỰC"
+                }
+              },
+              "queryRef": "KPI GHBL.KHU VỰC",
+              "nativeQueryRef": "KHU VỰC",
+              "displayName": "KHU VỰC"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "DỰ ÁN"
+                }
+              },
+              "queryRef": "KPI GHBL.DỰ ÁN",
+              "nativeQueryRef": "DỰ ÁN",
+              "displayName": "DỰ ÁN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "SỐ HỢP ĐỒNG"
+                }
+              },
+              "queryRef": "KPI GHBL.SỐ HỢP ĐỒNG",
+              "nativeQueryRef": "SỐ HỢP ĐỒNG",
+              "displayName": "SỐ HỢP ĐỒNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "SỐ PLHĐ"
+                }
+              },
+              "queryRef": "KPI GHBL.SỐ PLHĐ",
+              "nativeQueryRef": "SỐ PLHĐ",
+              "displayName": "SỐ PLHĐ"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "NHÀ THẦU"
+                }
+              },
+              "queryRef": "KPI GHBL.NHÀ THẦU",
+              "nativeQueryRef": "NHÀ THẦU",
+              "displayName": "NHÀ THẦU"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "LOẠI BẢO LÃNH"
+                }
+              },
+              "queryRef": "KPI GHBL.LOẠI BẢO LÃNH",
+              "nativeQueryRef": "LOẠI BẢO LÃNH",
+              "displayName": "LOẠI BẢO LÃNH"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "PIC"
+                }
+              },
+              "queryRef": "KPI GHBL.PIC",
+              "nativeQueryRef": "PIC",
+              "displayName": "PIC"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "NGÀY HẾT HẠN CŨ"
+                }
+              },
+              "queryRef": "KPI GHBL.NGÀY HẾT HẠN CŨ",
+              "nativeQueryRef": "NGÀY HẾT HẠN CŨ",
+              "displayName": "NGÀY HẾT HẠN CŨ"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "NGÀY BẮT ĐẦU MỚI"
+                }
+              },
+              "queryRef": "KPI GHBL.NGÀY BẮT ĐẦU MỚI",
+              "nativeQueryRef": "NGÀY BẮT ĐẦU MỚI",
+              "displayName": "NGÀY BẮT ĐẦU MỚI"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "NGÀY HẾT HẠN MỚI"
+                }
+              },
+              "queryRef": "KPI GHBL.NGÀY HẾT HẠN MỚI",
+              "nativeQueryRef": "NGÀY HẾT HẠN MỚI",
+              "displayName": "NGÀY HẾT HẠN MỚI"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "TÌNH TRẠNG"
+                }
+              },
+              "queryRef": "KPI GHBL.TÌNH TRẠNG",
+              "nativeQueryRef": "TÌNH TRẠNG",
+              "displayName": "TÌNH TRẠNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "LÝ DO MIỄN"
+                }
+              },
+              "queryRef": "KPI GHBL.LÝ DO MIỄN",
+              "nativeQueryRef": "LÝ DO MIỄN",
+              "displayName": "LÝ DO MIỄN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "NỘI DUNG HỢP ĐỒNG"
+                }
+              },
+              "queryRef": "KPI GHBL.NỘI DUNG HỢP ĐỒNG",
+              "nativeQueryRef": "NỘI DUNG HỢP ĐỒNG",
+              "displayName": "NỘI DUNG HỢP ĐỒNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "PHÁP NHÂN"
+                }
+              },
+              "queryRef": "KPI GHBL.PHÁP NHÂN",
+              "nativeQueryRef": "PHÁP NHÂN",
+              "displayName": "PHÁP NHÂN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "GIÁ TRỊ HĐ+PS GỒM VAT"
+                }
+              },
+              "queryRef": "KPI GHBL.GIÁ TRỊ HĐ+PS GỒM VAT",
+              "nativeQueryRef": "GIÁ TRỊ HĐ+PS GỒM VAT",
+              "displayName": "GIÁ TRỊ HĐ+PS GỒM VAT"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "GIÁ TRỊ BẢO LÃNH"
+                }
+              },
+              "queryRef": "KPI GHBL.GIÁ TRỊ BẢO LÃNH",
+              "nativeQueryRef": "GIÁ TRỊ BẢO LÃNH",
+              "displayName": "GIÁ TRỊ BẢO LÃNH"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI GHBL"
+                    }
+                  },
+                  "Property": "GHBL Điểm dòng"
+                }
+              },
+              "queryRef": "KPI GHBL.GHBL Điểm dòng",
+              "nativeQueryRef": "ĐIỂM HOÀN THÀNH",
+              "displayName": "ĐIỂM HOÀN THÀNH"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI GHBL"
+                  }
+                },
+                "Property": "SỐ HỢP ĐỒNG"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI GHBL"
+                  }
+                },
+                "Property": "SỐ PLHĐ"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI GHBL"
+                  }
+                },
+                "Property": "LOẠI BẢO LÃNH"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI GHBL"
+                  }
+                },
+                "Property": "DÒNG NGUỒN"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F0F5FA'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F8FAFC'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D9E2EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8EEF5'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DCE5F0'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "label": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tổng điểm trung bình'"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DBEAFE'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CHI TIẾT TỪNG LƯỢT BẢO LÃNH / GIA HẠN'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chi tiết bảo lãnh'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

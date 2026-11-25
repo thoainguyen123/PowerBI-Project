@@ -1,0 +1,970 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "a473a00f92fd94547cdb",
+  "position": {
+    "x": 264,
+    "y": 248,
+    "z": 5000,
+    "height": 800,
+    "width": 1632,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "STT"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.STT",
+              "nativeQueryRef": "STT",
+              "active": true,
+              "displayName": "STT"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Tình trạng"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Tình trạng",
+              "nativeQueryRef": "Tình trạng",
+              "displayName": "Tình trạng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Dự án BĐS"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Dự án BĐS",
+              "nativeQueryRef": "Dự án BĐS",
+              "displayName": "Dự án BĐS"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Nhà thầu"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Nhà thầu",
+              "nativeQueryRef": "Nhà thầu",
+              "displayName": "Nhà thầu"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Ngày ký cấn trừ"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Ngày ký cấn trừ",
+              "nativeQueryRef": "Ngày ký cấn trừ",
+              "displayName": "Ngày ký cấn trừ"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Tổng số căn"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Tổng số căn",
+              "nativeQueryRef": "Số căn",
+              "displayName": "Số căn"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP BĐS tỷ đồng"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP BĐS tỷ đồng",
+              "nativeQueryRef": "Tổng GT BĐS · Tỷ đồng",
+              "displayName": "Tổng GT BĐS · Tỷ đồng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Công nợ tỷ đồng"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Công nợ tỷ đồng",
+              "nativeQueryRef": "GT công nợ cấn trừ / giãn nợ · Tỷ đồng",
+              "displayName": "GT công nợ cấn trừ / giãn nợ · Tỷ đồng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Link minh chứng"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Link minh chứng",
+              "nativeQueryRef": "Link minh chứng",
+              "displayName": "Link minh chứng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới PIC"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới PIC",
+              "nativeQueryRef": "PIC",
+              "displayName": "PIC"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới Phòng"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới Phòng",
+              "nativeQueryRef": "Phòng",
+              "displayName": "Phòng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới PIC TP"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới PIC TP",
+              "nativeQueryRef": "PIC TP",
+              "displayName": "PIC TP"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Lưới HRBP Note"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Lưới HRBP Note",
+              "nativeQueryRef": "HRBP Note",
+              "displayName": "HRBP Note"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Quý hoàn thành"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Quý hoàn thành",
+              "nativeQueryRef": "Quý hoàn thành",
+              "displayName": "Quý hoàn thành"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TDSP Nguồn"
+                    }
+                  },
+                  "Property": "TDSP Năm hoàn thành"
+                }
+              },
+              "queryRef": "KPI TDSP Nguồn.TDSP Năm hoàn thành",
+              "nativeQueryRef": "Năm",
+              "displayName": "Năm"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI TDSP Nguồn"
+                  }
+                },
+                "Property": "STT"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EFF5FB'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "48D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.STT"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Tình trạng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Dự án BĐS"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Nhà thầu"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Ngày ký cấn trừ"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Tổng số căn"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP BĐS tỷ đồng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Công nợ tỷ đồng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Link minh chứng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "184D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới PIC"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới Phòng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "184D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới PIC TP"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Lưới HRBP Note"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Quý hoàn thành"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TDSP Nguồn.TDSP Năm hoàn thành"
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "stepped": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showExpandCollapseButtons": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F5F8FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridHorizontalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "rowSubtotalsLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TỔNG'"
+                }
+              }
+            },
+            "rowSubtotalsPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bottom'"
+                }
+              }
+            },
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E7F1FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "applyToHeaders": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CHI TIẾT TRAO ĐỔI SẢN PHẨM / GIÃN NỢ'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Lưới chi tiết theo mẫu Excel, có tổng cuối bảng và xuất dữ liệu.'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

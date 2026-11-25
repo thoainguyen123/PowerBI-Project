@@ -1,0 +1,78 @@
+/// Nguồn SharePoint DANH MUC; bảng nguồn chuẩn hóa phục vụ bốn trang KPI mới. Giữ từng dòng gốc và các giá trị rỗng; chưa có quan hệ hay công thức chấm điểm.
+table 'KPI Danh mục'
+	isHidden
+	lineageTag: f6ae6f29-78b4-4709-b5dc-3e2bc2304353
+
+	column 'Mã CV'
+		dataType: string
+		lineageTag: 4941724f-194d-4180-b649-163d5d3ef385
+		summarizeBy: none
+		sourceColumn: Mã CV
+
+	column 'Tên CV'
+		dataType: string
+		lineageTag: c7f82d62-d15c-434b-941f-0cc4ef333a73
+		summarizeBy: none
+		sourceColumn: Tên CV
+
+	column 'Mô tả chi tiết'
+		dataType: string
+		lineageTag: c8b5ae47-b4f9-4410-9ff7-4cc5b46b6e55
+		summarizeBy: none
+		sourceColumn: Mô tả chi tiết
+
+	column 'Chỉ số đo lường KPI'
+		dataType: string
+		lineageTag: 3cd75be4-fdbd-4abe-90dd-57638ea37846
+		summarizeBy: none
+		sourceColumn: Chỉ số đo lường KPI
+
+	column 'Đơn vị tính'
+		dataType: string
+		lineageTag: ca6b4390-bff4-48e7-a32d-63513ac82e4f
+		summarizeBy: none
+		sourceColumn: Đơn vị tính
+
+	column 'Công thức tính'
+		dataType: string
+		lineageTag: 72b15397-72eb-4fc0-bc8e-bb72ca214fc6
+		summarizeBy: none
+		sourceColumn: Công thức tính
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: cfecdfbd-4c33-4baa-9bc0-ecd0f1dadb69
+		summarizeBy: none
+		sourceColumn: Dòng nguồn
+
+	/// Quy tắc nguồn kết quả trong DANH MUC: CHUNG, BAN - PHÒNG, BAN - PIC.
+	column 'Phạm vi ghi nhận'
+		dataType: string
+		lineageTag: f6f32c15-814e-42f8-86d6-cd9e5fcf6261
+		sourceColumn: Phạm vi ghi nhận
+
+	partition 'KPI Danh mục' = m
+		mode: import
+		source =
+				let
+				    URL="https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'CF0C399F-E797-43AF-AAB1-1BC25EE82126')/$value",
+				    Sheet="DANH MUC",
+				    HeaderKey="MÃ CV",
+				    Mapping={{0,"Mã CV","String"},{1,"Tên CV","String"},{2,"Mô tả chi tiết","String"},{3,"Chỉ số đo lường KPI","String"},{4,"Đơn vị tính","String"},{5,"Công thức tính","String"},{6,"Phạm vi ghi nhận","String"}},
+				    ValidRow=(r as record) as logical => Norm(Record.Field(r,"Mã CV"))<>"",
+				    Workbook = Excel.Workbook(Web.Contents(URL),null,true),
+				    Raw = Workbook{[Item=Sheet,Kind="Sheet"]}[Data],
+				    Norm = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")),{" ", Character.FromNumber(160), "#(lf)", "#(cr)", "#(tab)"})),
+				    HeaderRow = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)),(r)=>Norm(r{0})=Norm(HeaderKey)),true),
+				    Checked = if HeaderRow<0 then error Error.Record("KPI source","Không tìm thấy tiêu đề " & HeaderKey & " trong " & Sheet,null) else Raw,
+				    Indexed = Table.AddIndexColumn(Checked,"Dòng nguồn",1,1,Int64.Type),
+				    Body = Table.Skip(Indexed,HeaderRow+1),
+				    SourceNames = Table.ColumnNames(Raw),
+				    Projected = Table.FromColumns(List.Combine({List.Transform(Mapping,(m)=>Table.Column(Body,SourceNames{m{0}})),{Table.Column(Body,"Dòng nguồn")}}),List.Combine({List.Transform(Mapping,each _{1}),{"Dòng nguồn"}})),
+				    Selected = Table.SelectRows(Projected,each ValidRow(_)),
+				    Txt = (v as any) as nullable text => if v=null then null else Text.Trim(Text.From(v)),
+				    Num = (v as any) as nullable number => if v=null or Text.Trim(Text.From(v))="" then null else try Number.From(v,"en-US") otherwise null,
+				    Dt = (v as any) as nullable date => if v=null or Text.Trim(Text.From(v))="" then null else if Value.Is(v,type text) then try Date.FromText(Text.Trim(v),[Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted = Table.TransformColumns(Selected,List.Transform(Mapping,(m)=>{m{1},if m{2}="DateTime" then Dt else if m{2}="Decimal" or m{2}="Int64" then Num else Txt,if m{2}="DateTime" then type date else if m{2}="Int64" then Int64.Type else if m{2}="Decimal" then type number else type text}))
+				in Converted
+

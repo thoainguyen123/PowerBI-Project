@@ -1,0 +1,78 @@
+/// Dữ liệu nhập tay theo Mã CV, Quý, Năm và PIC từ sheet BI DATA của NVLG_PTC_2026.xlsx trên SharePoint. Bảng nguồn độc lập, chưa nối vào các công thức TEMPLATE KPI hiện tại.
+table BI_Data
+	lineageTag: 61d7145a-fb6e-44e6-b2f2-e2fd2b77c3df
+
+	column 'Mã CV'
+		dataType: string
+		lineageTag: eeafd123-f417-4dde-810c-aace402d761e
+		sourceColumn: Mã CV
+
+	column 'Mô tả CV'
+		dataType: string
+		lineageTag: b1c31763-5a36-4e63-9021-773ca0d1850a
+		sourceColumn: Mô tả CV
+
+	column Quý
+		dataType: int64
+		lineageTag: 0752558f-0822-4949-aa15-2c30f8fe3c1c
+		summarizeBy: none
+		sourceColumn: Quý
+
+	column Năm
+		dataType: int64
+		lineageTag: 76e812f4-9a76-4065-839c-da148465afc0
+		summarizeBy: none
+		sourceColumn: Năm
+
+	/// Nội dung gốc từ Excel: điểm nhập tay hoặc công thức text. Giữ nguyên công thức TDDT; kết quả số nằm ở Điểm hoàn thành tính toán.
+	column 'Điểm hoàn thành'
+		dataType: string
+		lineageTag: b009474f-1a9b-4ae3-84d7-8ca4348b0970
+		summarizeBy: none
+		sourceColumn: Điểm hoàn thành
+
+	column PIC
+		dataType: string
+		lineageTag: 4845e6b6-3a7b-4cae-8a84-3762f650d404
+		sourceColumn: PIC
+
+	/// TDDT: bình quân điểm từng công việc đã áp dụng OPEX 100% tỷ lệ / gói khác 80% tỷ lệ + 20% PCD; không kết hợp PCD lần hai. Nhận công thức text dấu phẩy/dấu chấm và PDC/PCD. Mã khác giữ số nguồn.
+	column 'Điểm hoàn thành tính toán' =
+			VAR _Code=UPPER(TRIM('BI_Data'[Mã CV]))
+			VAR _Quarter='BI_Data'[Quý]
+			VAR _Year='BI_Data'[Năm]
+			VAR _Raw=TRIM('BI_Data'[Điểm hoàn thành])
+			VAR _Formula=SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(UPPER(_Raw)," ",""),UNICHAR(160),""),UNICHAR(9),""),",",".")
+			VAR _Expected="=0.2*PCD"&FORMAT(_Quarter,"0")&"+0.8*"&UNICHAR(34)&"TIẾNĐỘTHẦU"&UNICHAR(34)
+			VAR _ValidQuarter=_Quarter>=1 && _Quarter<=4 && NOT ISBLANK(_Year)
+			VAR _Start=IF(_ValidQuarter,DATE(_Year,(_Quarter-1)*3+1,1))
+			VAR _End=IF(_ValidQuarter,EOMONTH(_Start,2))
+			VAR _Tender=IF(_Code="TDDT" && _ValidQuarter,
+			    CALCULATE([TĐT Điểm bình quân],REMOVEFILTERS('BI_Data'),
+			        FILTER(ALL('Kỳ đánh giá đấu thầu'),'Kỳ đánh giá đấu thầu'[Ngày]>=_Start && 'Kỳ đánh giá đấu thầu'[Ngày]<=_End)))
+			RETURN IF(_Code="TDDT",
+			    IF(_ValidQuarter && (_Formula=_Expected || _Formula=SUBSTITUTE(_Expected,"PCD","PDC")),_Tender,BLANK()),
+			    IF(ISBLANK(_Raw) || LEN(_Raw)=0,BLANK(),IFERROR(VALUE(_Raw),BLANK())))
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 57a4aa95-9fb8-4775-b3c4-a8cfc3dbfbdc
+		summarizeBy: none
+
+	partition BI_Data = m
+		mode: import
+		source =
+				let
+				    Workbook = Excel.Workbook(Web.Contents("https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'D4FA6E74-1B84-40F9-BBC6-E5A2BA0586C6')/$value"), null, true),
+				    Normalize = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.Trim(Text.From(v ?? ""))), {" ", "_", Character.FromNumber(160)})),
+				    Matches = Table.SelectRows(Workbook, each [Kind] = "Sheet" and Normalize([Item]) = "BIDATA"),
+				    Raw = if Table.RowCount(Matches) <> 1 then error "Không tìm thấy duy nhất sheet BI DATA trong NVLG_PTC_2026.xlsx" else Matches{0}[Data],
+				    HeaderIndex = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)), each Normalize(_{0}) = Normalize("Mã CV")), true),
+				    Body = if HeaderIndex < 0 then error "Không tìm thấy tiêu đề Mã CV trong sheet BI DATA" else Table.Skip(Raw, HeaderIndex + 1),
+				    Names = {"Mã CV", "Mô tả CV", "Quý", "Năm", "Điểm hoàn thành", "PIC"},
+				    Selected = Table.FromColumns(List.FirstN(Table.ToColumns(Body),6), Names),
+				    Nonblank = Table.SelectRows(Selected, each Normalize([Mã CV]) <> ""),
+				    TextCleaned = Table.TransformColumns(Nonblank, List.Transform({"Mã CV", "Mô tả CV", "PIC", "Điểm hoàn thành"}, (c) => {c, each if _ = null then null else Text.Trim(Text.From(_, "en-US")), type text})),
+				    Typed = Table.TransformColumnTypes(TextCleaned, {{"Quý", Int64.Type}, {"Năm", Int64.Type}}, "en-US")
+				in
+				    Typed
+

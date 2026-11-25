@@ -1,0 +1,108 @@
+/// Nguồn SharePoint DMNV; bảng nguồn chuẩn hóa phục vụ bốn trang KPI mới. Giữ từng dòng gốc và các giá trị rỗng; chưa có quan hệ hay công thức chấm điểm.
+table 'KPI Nhân sự'
+	isHidden
+	lineageTag: 8d2f1c2d-5d58-4a89-8b19-e111eb7ad839
+
+	column 'Mã NV'
+		dataType: string
+		lineageTag: 5797735b-cdc4-457f-812e-8ee85e75e053
+		summarizeBy: none
+		sourceColumn: Mã NV
+
+	column 'Mã NV chuẩn'
+		dataType: string
+		lineageTag: 15cf899a-771e-42f8-beee-e31248832ca1
+		summarizeBy: none
+		sourceColumn: Mã NV chuẩn
+
+	column 'Họ và tên'
+		dataType: string
+		lineageTag: fcf224a8-e33c-40ff-855f-d3389f6a0a7d
+		summarizeBy: none
+		sourceColumn: Họ và tên
+
+	column Phòng
+		dataType: string
+		lineageTag: 58ca3492-651e-4b9e-8f7f-593b0438fc68
+		summarizeBy: none
+		sourceColumn: Phòng
+
+	column 'Chức vụ'
+		dataType: string
+		lineageTag: 54293877-9d9b-44be-96c4-30d3bad29c50
+		summarizeBy: none
+		sourceColumn: Chức vụ
+
+	column 'Quản lý trực tiếp'
+		dataType: string
+		lineageTag: 2652f5aa-fb58-4112-8b4b-47248564314e
+		summarizeBy: none
+		sourceColumn: Quản lý trực tiếp
+
+	column 'Mã quản lý cấp 2'
+		dataType: string
+		lineageTag: 6ba1288d-e65f-4b9f-8db7-124b17b7878a
+		summarizeBy: none
+		sourceColumn: Mã quản lý cấp 2
+
+	column 'Quản lý cấp 2'
+		dataType: string
+		lineageTag: 564649b6-c287-411f-815a-66021100498e
+		summarizeBy: none
+		sourceColumn: Quản lý cấp 2
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: f78b1371-95f8-4171-ac89-edd349c70f6e
+		summarizeBy: none
+		sourceColumn: Dòng nguồn
+
+	/// Khóa quản lý trực tiếp tra theo tên DMNV; quản lý ngoài danh mục để rỗng.
+	column 'Mã quản lý trực tiếp' = VAR _Manager='KPI Nhân sự'[Quản lý trực tiếp] RETURN LOOKUPVALUE('KPI Nhân sự'[Mã NV chuẩn],'KPI Nhân sự'[Họ và tên],_Manager)
+		dataType: string
+		lineageTag: a39f1a51-3f40-45a0-8b05-5b9edef17f1a
+
+	/// Đường dẫn tổ chức nhiều cấp; dùng gộp nguồn nhân viên dưới quyền và tính một lần theo mã công việc gốc.
+	column 'Đường dẫn quản lý' = PATH('KPI Nhân sự'[Mã NV chuẩn],'KPI Nhân sự'[Mã quản lý trực tiếp])
+		dataType: string
+		isHidden
+		lineageTag: c328e332-996b-41eb-ae78-01997154ac6d
+
+	column 'Cấp tính điểm'
+		dataType: string
+		lineageTag: 803c4051-d884-4cc5-9eab-fb282a2fa5c6
+		summarizeBy: none
+		sourceColumn: Cấp tính điểm
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI Nhân sự' = m
+		mode: import
+		source =
+				let
+				    URL="https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'CF0C399F-E797-43AF-AAB1-1BC25EE82126')/$value",
+				    Sheet="DMNV",
+				    HeaderKey="Mã NV",
+				    Mapping={{0,"Mã NV","String"},{1,"Mã NV chuẩn","String"},{2,"Họ và tên","String"},{3,"Phòng","String"},{4,"Chức vụ","String"},{5,"Quản lý trực tiếp","String"},{6,"Quản lý cấp 2","String"},{7,"Cấp tính điểm","String"}},
+				    ValidRow=(r as record) as logical => Norm(Record.Field(r,"Mã NV"))<>"" and Norm(Record.Field(r,"Họ và tên"))<>"",
+				    Workbook = Excel.Workbook(Web.Contents(URL),null,true),
+				    Raw = Workbook{[Item=Sheet,Kind="Sheet"]}[Data],
+				    Norm = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")),{" ", Character.FromNumber(160), "#(lf)", "#(cr)", "#(tab)"})),
+				    HeaderRow = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)),(r)=>Norm(r{0})=Norm(HeaderKey)),true),
+				    Checked = if HeaderRow<0 then error Error.Record("KPI source","Không tìm thấy tiêu đề " & HeaderKey & " trong " & Sheet,null) else Raw,
+				    Indexed = Table.AddIndexColumn(Checked,"Dòng nguồn",1,1,Int64.Type),
+				    Body = Table.Skip(Indexed,HeaderRow+1),
+				    SourceNames = Table.ColumnNames(Raw),
+				    Projected = Table.FromColumns(List.Combine({List.Transform(Mapping,(m)=>Table.Column(Body,SourceNames{m{0}})),{Table.Column(Body,"Dòng nguồn")}}),List.Combine({List.Transform(Mapping,each _{1}),{"Dòng nguồn"}})),
+				    Selected = Table.SelectRows(Projected,each ValidRow(_)),
+				    Txt = (v as any) as nullable text => if v=null then null else Text.Trim(Text.From(v)),
+				    Num = (v as any) as nullable number => if v=null or Text.Trim(Text.From(v))="" then null else try Number.From(v,"en-US") otherwise null,
+				    Dt = (v as any) as nullable date => if v=null or Text.Trim(Text.From(v))="" then null else if Value.Is(v,type text) then try Date.FromText(Text.Trim(v),[Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted = Table.TransformColumns(Selected,List.Transform(Mapping,(m)=>{m{1},if m{2}="DateTime" then Dt else if m{2}="Decimal" or m{2}="Int64" then Num else Txt,if m{2}="DateTime" then type date else if m{2}="Int64" then Int64.Type else if m{2}="Decimal" then type number else type text})),
+				    WithManagerId = Table.AddColumn(Converted,"Mã quản lý cấp 2",each null,type text)
+				in WithManagerId
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

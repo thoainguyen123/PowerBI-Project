@@ -1,0 +1,44 @@
+/// Bảng kỳ độc lập cho slicer. Không liên kết cứng ngày mục tiêu/hoàn thành; measure xét tập ngày do người dùng chọn.
+table 'Kỳ đánh giá đấu thầu'
+	lineageTag: cd769836-8fa3-45b3-abce-1c9ddbc4cbfb
+
+	/// Ngày thuộc kỳ đánh giá đang chọn, không áp quan hệ cứng vào một ngày của gói.
+	column Ngày
+		formatString: dd/MM/yyyy
+		lineageTag: 4c535045-a72d-4f3d-92d9-a289e417e5f8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Ngày]
+
+		variation Variation
+			isDefault
+			relationship: 505387a0-22d7-419f-95b6-683f6bed293e
+			defaultHierarchy: LocalDateTable_8fd6ea34-e10b-4011-bff8-d0c039c46ab1.'Date Hierarchy'
+
+	/// Chọn một năm để đánh giá toàn năm, không chấm từng quý cộng lại.
+	column Năm
+		lineageTag: 5cf2154b-a98e-42c7-a09c-5f5527284864
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Năm]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Có thể chọn một hoặc nhiều quý trong slicer; phạm vi điểm theo tập ngày lựa chọn.
+	column Quý
+		lineageTag: 8620a8bb-1781-48e0-b7c5-389dee1f1e75
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quý]
+
+	/// Tháng thuộc kỳ; hỗ trợ thu hẹp kỳ đánh giá theo slicer.
+	column Tháng
+		lineageTag: 6b1e073f-a762-4d97-aa81-ca21f63b6e54
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tháng]
+
+	partition 'Kỳ đánh giá đấu thầu' = calculated
+		mode: import
+		source = VAR _Dates = UNION(SELECTCOLUMNS('KPI Tiến độ thầu', "D", 'KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN]), SELECTCOLUMNS('KPI Tiến độ thầu', "D", 'KPI Tiến độ thầu'[NGÀY HOÀN THÀNH])) VAR _Min = MINX(FILTER(_Dates, NOT ISBLANK([D])), [D]) VAR _Max = MAXX(_Dates, [D]) RETURN SELECTCOLUMNS(ADDCOLUMNS(CALENDAR(DATE(YEAR(COALESCE(_Min,TODAY())),1,1),DATE(YEAR(COALESCE(_Max,TODAY())),12,31)), "Y", YEAR([Date]), "Q", "Quý " & QUARTER([Date]), "M", "Tháng " & FORMAT(MONTH([Date]),"00")), "Ngày", [Date], "Năm", [Y], "Quý", [Q], "Tháng", [M])
+

@@ -1,0 +1,70 @@
+/// Tổng hợp công nợ chi phí hoạt động theo hợp đồng từ sheet TONG CONG NO; một dòng cho mỗi số hợp đồng.
+table 'OPEX Tổng công nợ'
+	lineageTag: 7f9ec662-a7c2-4fcd-9212-4e417d24f231
+
+	/// Mã hợp đồng duy nhất dùng làm phía một của quan hệ.
+	column 'Số hợp đồng'
+		dataType: string
+		isUnique
+		lineageTag: dae142fe-4175-43d8-9688-ef5a46437a08
+		summarizeBy: none
+		sourceColumn: Số hợp đồng
+
+	column 'Giá trị tạm ứng chưa khấu trừ'
+		dataType: double
+		isHidden
+		lineageTag: f6ad7f7b-c270-41a3-9bfb-1cda4873b758
+		summarizeBy: none
+		sourceColumn: Giá trị tạm ứng chưa khấu trừ
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'OPEX Tổng công nợ' = m
+		mode: import
+		source =
+				let
+				    NormalizeName = (Value as any) as text =>
+				        Text.Upper(Text.Remove(Text.Clean(Text.Trim(Text.From(Value ?? ""))), {" ", Character.FromNumber(160), "#(tab)", "#(cr)", "#(lf)"})),
+				    FindColumn = (InputTable as table, Candidates as list) as nullable text =>
+				        let
+				            Existing = Table.ColumnNames(InputTable),
+				            Matches = List.Transform(Candidates, (Candidate) => List.First(List.Select(Existing, (Col) => NormalizeName(Col) = NormalizeName(Candidate)), null))
+				        in
+				            List.First(List.RemoveNulls(Matches), null),
+				    ToNumber = (Value as any) as nullable number =>
+				        if Value = null then null
+				        else if Value.Is(Value, type number) then Number.From(Value)
+				        else
+				            let CleanText = Text.Replace(Text.Replace(Text.Trim(Text.From(Value)), ",", ""), " ", "")
+				            in try Number.FromText(CleanText, "en-US") otherwise null,
+				    Source = SharePoint.Contents("https://novaland.sharepoint.com/sites/PRT", [ApiVersion = 15]),
+				    Documents = Source{[Name = "Documents"]}[Content],
+				    PRC = Documents{[Name = "PRC"]}[Content],
+				    NovaGen = PRC{[Name = "00. NovaGen"]}[Content],
+				    NghiepVu = NovaGen{[Name = "07. Các nghiệp vụ"]}[Content],
+				    PAS = NghiepVu{[Name = "05. PAS"]}[Content],
+				    Folder = PAS{[Name = "01. THEO DOI HD & CPC"]}[Content],
+				    FileBinary = Folder{[Name = "THEO DOI CONG NO CHI PHI HOAT DONG.xlsx"]}[Content],
+				    Workbook = Excel.Workbook(FileBinary, null, true),
+				    Raw = Workbook{[Item = "TONG CONG NO", Kind = "Sheet"]}[Data],
+				    Safe = Table.ReplaceErrorValues(Raw, List.Transform(Table.ColumnNames(Raw), each {_, null})),
+				    Skipped = Table.Skip(Safe, 4),
+				    Promoted = Table.PromoteHeaders(Skipped, [PromoteAllScalars = true]),
+				    ContractColumn = FindColumn(Promoted, {"SỐ HỢP ĐỒNG"}),
+				    AdvanceColumn = FindColumn(Promoted, {"GIÁ TRỊ TẠM ỨNG CHƯA KHẤU TRỪ"}),
+				    Selected = Table.SelectColumns(Promoted, List.RemoveNulls({ContractColumn, AdvanceColumn})),
+				    Renamed = Table.RenameColumns(Selected, List.RemoveNulls({
+				        if ContractColumn = null then null else {ContractColumn, "Số hợp đồng"},
+				        if AdvanceColumn = null then null else {AdvanceColumn, "Giá trị tạm ứng chưa khấu trừ"}
+				    }), MissingField.Ignore),
+				    EnsuredContract = if Table.HasColumns(Renamed, {"Số hợp đồng"}) then Renamed else Table.AddColumn(Renamed, "Số hợp đồng", each null, type text),
+				    EnsuredAdvance = if Table.HasColumns(EnsuredContract, {"Giá trị tạm ứng chưa khấu trừ"}) then EnsuredContract else Table.AddColumn(EnsuredContract, "Giá trị tạm ứng chưa khấu trừ", each null, type number),
+				    Cleaned = Table.TransformColumns(EnsuredAdvance, {
+				        {"Số hợp đồng", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"Giá trị tạm ứng chưa khấu trừ", ToNumber, type number}
+				    }),
+				    Filtered = Table.SelectRows(Cleaned, each [Số hợp đồng] <> null and [Số hợp đồng] <> "" and NormalizeName([Số hợp đồng]) <> NormalizeName("SỐ HỢP ĐỒNG")),
+				    Grouped = Table.Group(Filtered, {"Số hợp đồng"}, {{"Giá trị tạm ứng chưa khấu trừ", each List.Sum(List.RemoveNulls([Giá trị tạm ứng chưa khấu trừ])), type number}})
+				in
+				    Grouped
+

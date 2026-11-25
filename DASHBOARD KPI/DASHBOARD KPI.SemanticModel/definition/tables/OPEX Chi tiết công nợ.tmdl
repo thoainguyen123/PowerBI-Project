@@ -1,0 +1,341 @@
+/// Chi tiết từng hồ sơ công nợ chi phí hoạt động từ sheet CHI TIET CONG NO; một hợp đồng có thể có nhiều dòng thanh toán.
+table 'OPEX Chi tiết công nợ'
+	lineageTag: 03806d00-54a3-4679-83c3-c9e117f30f29
+
+	/// Tổng giá trị công nợ gồm VAT của các dòng chi tiết trong ngữ cảnh lọc.
+	measure 'OPEX Công nợ gồm VAT' = SUM('OPEX Chi tiết công nợ'[Giá trị công nợ gồm VAT])
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: 94384956-f743-4cbc-b553-6819a006bd85
+
+	/// Tổng số tiền đã thanh toán cộng giá trị trao đổi sản phẩm.
+	measure 'OPEX Giá trị đã thanh toán' = SUM('OPEX Chi tiết công nợ'[Số tiền đã thanh toán]) + SUM('OPEX Chi tiết công nợ'[Giá trị trao đổi sản phẩm])
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: 5b618590-520e-48a2-b3ab-9461da7af64b
+
+	/// Tổng giá trị công nợ chưa thanh toán trong ngữ cảnh lọc.
+	measure 'OPEX Công nợ chưa thanh toán' = SUM('OPEX Chi tiết công nợ'[Giá trị công nợ chưa thanh toán])
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: dd558cb8-01bd-4853-9e82-a8c8d401b1ca
+
+	/// Tổng tạm ứng chưa khấu trừ từ bảng tổng; khi dùng bộ lọc của bảng chi tiết, measure áp dụng danh sách số hợp đồng tương ứng.
+	measure 'OPEX Tạm ứng chưa thu hồi' =
+			VAR _HasDetailFilter =
+			    ISFILTERED('OPEX Chi tiết công nợ'[Nhà cung cấp])
+			        || ISFILTERED('OPEX Chi tiết công nợ'[Pháp nhân ký HĐ])
+			        || ISFILTERED('OPEX Chi tiết công nợ'[Năm đến hạn])
+			        || ISFILTERED('OPEX Chi tiết công nợ'[Quý đến hạn])
+			        || ISFILTERED('OPEX Chi tiết công nợ'[Payment PIC])
+			VAR _Contracts = VALUES('OPEX Chi tiết công nợ'[Số hợp đồng])
+			RETURN
+			    IF(
+			        _HasDetailFilter,
+			        CALCULATE(
+			            SUM('OPEX Tổng công nợ'[Giá trị tạm ứng chưa khấu trừ]),
+			            TREATAS(_Contracts, 'OPEX Tổng công nợ'[Số hợp đồng])
+			        ),
+			        SUM('OPEX Tổng công nợ'[Giá trị tạm ứng chưa khấu trừ])
+			    )
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: a1eb6ad4-5435-4d22-9bd3-ba68bf0959c7
+
+	measure 'OPEX Công nợ gồm VAT (tỷ)' = DIVIDE ( [OPEX Công nợ gồm VAT], 1000000000 )
+		formatString: #,##0.0;-#,##0.0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: 342f897a-e2c6-48f2-beb2-5849bd261007
+
+	measure 'OPEX Giá trị đã thanh toán (tỷ)' = DIVIDE ( [OPEX Giá trị đã thanh toán], 1000000000 )
+		formatString: #,##0.0;-#,##0.0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: 698b6014-6233-4041-a60f-86494407fe2c
+
+	measure 'OPEX Công nợ chưa thanh toán (tỷ)' = DIVIDE ( [OPEX Công nợ chưa thanh toán], 1000000000 )
+		formatString: #,##0.0;-#,##0.0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: bc817734-885d-4791-803b-b53bdc26fbe5
+
+	measure 'OPEX Tạm ứng chưa thu hồi (tỷ)' = DIVIDE ( [OPEX Tạm ứng chưa thu hồi], 1000000000 )
+		formatString: #,##0.0;-#,##0.0;-
+		displayFolder: Công nợ hoạt động\KPI
+		lineageTag: 4b891ab7-a82c-4cf6-b98d-e05c56160f98
+
+	/// Hiển thị các nội dung thanh toán của hợp đồng tại cấp chi tiết trong matrix.
+	measure 'OPEX Nội dung thanh toán (chi tiết)' =
+			IF (
+			    ISINSCOPE ( 'OPEX Chi tiết công nợ'[Số hợp đồng] ),
+			    CONCATENATEX (
+			        VALUES ( 'OPEX Chi tiết công nợ'[Nội dung thanh toán] ),
+			        'OPEX Chi tiết công nợ'[Nội dung thanh toán],
+			        " | ",
+			        'OPEX Chi tiết công nợ'[Nội dung thanh toán], ASC
+			    ),
+			    BLANK ()
+			)
+		displayFolder: Công nợ hoạt động\Chi tiết
+		lineageTag: 8554640f-a159-4335-b3d0-028e0cc7e647
+
+	/// Hiển thị các ngày đến hạn thanh toán của hợp đồng tại cấp chi tiết trong matrix.
+	measure 'OPEX Ngày đến hạn thanh toán (chi tiết)' =
+			IF (
+			    ISINSCOPE ( 'OPEX Chi tiết công nợ'[Số hợp đồng] ),
+			    CONCATENATEX (
+			        VALUES ( 'OPEX Chi tiết công nợ'[Ngày đến hạn thanh toán] ),
+			        FORMAT ( 'OPEX Chi tiết công nợ'[Ngày đến hạn thanh toán], "dd/MM/yyyy" ),
+			        " | ",
+			        'OPEX Chi tiết công nợ'[Ngày đến hạn thanh toán], ASC
+			    ),
+			    BLANK ()
+			)
+		displayFolder: Công nợ hoạt động\Chi tiết
+		lineageTag: d4dde6d7-f197-4d9d-801c-8732cdda6e4a
+
+	/// Tổng riêng cột Số tiền đã thanh toán của sheet chi tiết công nợ.
+	measure 'OPEX Số tiền đã thanh toán' = SUM ( 'OPEX Chi tiết công nợ'[Số tiền đã thanh toán] )
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\Chi tiết
+		lineageTag: 0db1cb1d-0a5b-4c3e-90fa-cf7f925f998c
+
+	/// Tổng riêng cột Giá trị trao đổi sản phẩm của sheet chi tiết công nợ.
+	measure 'OPEX Giá trị trao đổi sản phẩm' = SUM ( 'OPEX Chi tiết công nợ'[Giá trị trao đổi sản phẩm] )
+		formatString: #,##0;-#,##0;-
+		displayFolder: Công nợ hoạt động\Chi tiết
+		lineageTag: 5cb3110b-86b9-4f6a-854f-7fccbe075450
+
+	/// Hiển thị các Payment PIC phụ trách hợp đồng tại cấp chi tiết trong matrix.
+	measure 'OPEX Payment PIC (chi tiết)' =
+			IF (
+			    ISINSCOPE ( 'OPEX Chi tiết công nợ'[Số hợp đồng] ),
+			    CONCATENATEX (
+			        VALUES ( 'OPEX Chi tiết công nợ'[Payment PIC] ),
+			        'OPEX Chi tiết công nợ'[Payment PIC],
+			        " | ",
+			        'OPEX Chi tiết công nợ'[Payment PIC], ASC
+			    ),
+			    BLANK ()
+			)
+		displayFolder: Công nợ hoạt động\Chi tiết
+		lineageTag: d6e73a30-4a3a-44f6-9947-a2cf82f6df28
+
+	/// Mã hợp đồng liên kết với bảng tổng công nợ.
+	column 'Số hợp đồng'
+		dataType: string
+		lineageTag: ada5216e-97a3-404b-97db-4b87eb13b2d1
+		summarizeBy: none
+		sourceColumn: Số hợp đồng
+
+	/// Nhà cung cấp hoặc đối tác nhận thanh toán.
+	column 'Nhà cung cấp'
+		dataType: string
+		lineageTag: fec8d58c-4184-45b7-8085-0f70e6c7f5c9
+		summarizeBy: none
+		sourceColumn: Nhà cung cấp
+
+	/// Công ty hoặc pháp nhân chịu trách nhiệm chi trả.
+	column 'Pháp nhân ký HĐ'
+		dataType: string
+		lineageTag: ea1f8590-962f-4cc8-9231-96dfa3952a98
+		summarizeBy: none
+		sourceColumn: Pháp nhân ký HĐ
+
+	/// Nội dung của hồ sơ thanh toán.
+	column 'Nội dung thanh toán'
+		dataType: string
+		lineageTag: 2ac19fa3-de71-4d31-b63a-9ac7e6ced780
+		summarizeBy: none
+		sourceColumn: Nội dung thanh toán
+
+	column 'Giá trị công nợ gồm VAT'
+		dataType: double
+		isHidden
+		lineageTag: 4994ab49-c3fc-4b1f-924f-6f73b0db7afd
+		summarizeBy: sum
+		sourceColumn: Giá trị công nợ gồm VAT
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Ngày hồ sơ đến hạn thanh toán.
+	column 'Ngày đến hạn thanh toán'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 982e0a27-e32c-4fc7-b62f-1f9e7ef5e5ac
+		summarizeBy: none
+		sourceColumn: Ngày đến hạn thanh toán
+
+		variation Variation
+			isDefault
+			relationship: 65f0e4d8-8893-4ca4-a767-71f8bbc6e23e
+			defaultHierarchy: LocalDateTable_837d440d-bdd6-412c-90be-9a4b6111bede.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Số tiền đã thanh toán'
+		dataType: double
+		isHidden
+		lineageTag: 269d0c97-baa2-4797-b8b3-5193e17406bd
+		summarizeBy: sum
+		sourceColumn: Số tiền đã thanh toán
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Giá trị trao đổi sản phẩm'
+		dataType: double
+		isHidden
+		lineageTag: 356305e4-e3db-4c86-8e3f-d595e6cab711
+		summarizeBy: sum
+		sourceColumn: Giá trị trao đổi sản phẩm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Giá trị công nợ chưa thanh toán'
+		dataType: double
+		isHidden
+		lineageTag: f69bdfba-9fcd-4913-ad63-96c5364cc97c
+		summarizeBy: sum
+		sourceColumn: Giá trị công nợ chưa thanh toán
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Nhân sự Payment phụ trách hồ sơ.
+	column 'Payment PIC'
+		dataType: string
+		lineageTag: 15cc457b-2e96-457e-851a-444c25d6a708
+		summarizeBy: none
+		sourceColumn: Payment PIC
+
+	/// Năm của ngày đến hạn thanh toán.
+	column 'Năm đến hạn'
+		dataType: int64
+		lineageTag: 99f32718-4006-4ab1-8dca-0b7b14dd7c08
+		summarizeBy: sum
+		sourceColumn: Năm đến hạn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Số quý đến hạn'
+		dataType: int64
+		isHidden
+		lineageTag: 2baf2ae9-8ec8-4a7e-9150-890b77a406a3
+		summarizeBy: sum
+		sourceColumn: Số quý đến hạn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Quý của ngày đến hạn thanh toán.
+	column 'Quý đến hạn'
+		dataType: string
+		lineageTag: ff09ed81-9dac-429f-949c-bdf100d066a2
+		summarizeBy: none
+		sourceColumn: Quý đến hạn
+		sortByColumn: 'Số quý đến hạn'
+
+	/// Nhãn quý và năm của hạn thanh toán.
+	column 'Kỳ đến hạn'
+		dataType: string
+		lineageTag: 57920e74-2f06-4263-b2a6-9304370650f8
+		summarizeBy: none
+		sourceColumn: Kỳ đến hạn
+		sortByColumn: 'Thứ tự kỳ đến hạn'
+
+	column 'Thứ tự kỳ đến hạn'
+		dataType: int64
+		isHidden
+		lineageTag: 1f37296b-5c6d-4f7d-86cc-996df4ec24ae
+		summarizeBy: sum
+		sourceColumn: Thứ tự kỳ đến hạn
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Phân cấp thời gian đến hạn theo Năm rồi Quý.
+	hierarchy 'Hạn thanh toán'
+		lineageTag: 6df9ede3-b21d-4059-a909-ad6c09a54937
+
+		level Năm
+			lineageTag: 06bbd265-ed0c-44f3-8818-570514ec1613
+			column: 'Năm đến hạn'
+
+		level Quý
+			lineageTag: dde27e24-f76b-48d7-9ebb-a38614157082
+			column: 'Quý đến hạn'
+
+	partition 'OPEX Chi tiết công nợ' = m
+		mode: import
+		source =
+				let
+				    NormalizeName = (Value as any) as text =>
+				        Text.Upper(Text.Remove(Text.Clean(Text.Trim(Text.From(Value ?? ""))), {" ", Character.FromNumber(160), "#(tab)", "#(cr)", "#(lf)"})),
+				    FindColumn = (InputTable as table, Candidates as list) as nullable text =>
+				        let
+				            Existing = Table.ColumnNames(InputTable),
+				            Matches = List.Transform(Candidates, (Candidate) => List.First(List.Select(Existing, (Col) => NormalizeName(Col) = NormalizeName(Candidate)), null))
+				        in
+				            List.First(List.RemoveNulls(Matches), null),
+				    ToNumber = (Value as any) as nullable number =>
+				        if Value = null then null
+				        else if Value.Is(Value, type number) then Number.From(Value)
+				        else
+				            let CleanText = Text.Replace(Text.Replace(Text.Trim(Text.From(Value)), ",", ""), " ", "")
+				            in try Number.FromText(CleanText, "en-US") otherwise null,
+				    Source = SharePoint.Contents("https://novaland.sharepoint.com/sites/PRT", [ApiVersion = 15]),
+				    Documents = Source{[Name = "Documents"]}[Content],
+				    PRC = Documents{[Name = "PRC"]}[Content],
+				    NovaGen = PRC{[Name = "00. NovaGen"]}[Content],
+				    NghiepVu = NovaGen{[Name = "07. Các nghiệp vụ"]}[Content],
+				    PAS = NghiepVu{[Name = "05. PAS"]}[Content],
+				    Folder = PAS{[Name = "01. THEO DOI HD & CPC"]}[Content],
+				    FileBinary = Folder{[Name = "THEO DOI CONG NO CHI PHI HOAT DONG.xlsx"]}[Content],
+				    Workbook = Excel.Workbook(FileBinary, null, true),
+				    Raw = Workbook{[Item = "CHI TIET CONG NO", Kind = "Sheet"]}[Data],
+				    Safe = Table.ReplaceErrorValues(Raw, List.Transform(Table.ColumnNames(Raw), each {_, null})),
+				    Skipped = Table.Skip(Safe, 4),
+				    Promoted = Table.PromoteHeaders(Skipped, [PromoteAllScalars = true]),
+				    Mappings = {
+				        {"Số hợp đồng", {"SỐ HỢP ĐỒNG"}},
+				        {"Nhà cung cấp", {"NHÀ CUNG CẤP"}},
+				        {"Pháp nhân ký HĐ", {"PHÁP NHÂN KÝ HĐ"}},
+				        {"Nội dung thanh toán", {"NỘI DUNG THANH TOÁN"}},
+				        {"Giá trị công nợ gồm VAT", {"GIÁ TRỊ CÔNG NỢ GỒM VAT"}},
+				        {"Ngày đến hạn thanh toán", {"NGÀY ĐẾN HẠN TT", "NGÀY ĐẾN HẠN THANH TOÁN"}},
+				        {"Số tiền đã thanh toán", {"SỐ TIỀN ĐÃ THANH TOÁN"}},
+				        {"Giá trị trao đổi sản phẩm", {"GIÁ TRỊ TRAO ĐỔI SẢN PHẨM"}},
+				        {"Giá trị công nợ chưa thanh toán", {"GIÁ TRỊ CÔNG NỢ CHƯA THANH TOÁN"}},
+				        {"Payment PIC", {"PAYMENT PIC"}}
+				    },
+				    ExistingMappings = List.Select(List.Transform(Mappings, (Map) => {FindColumn(Promoted, Map{1}), Map{0}}), each _{0} <> null),
+				    Selected = Table.SelectColumns(Promoted, List.Transform(ExistingMappings, each _{0})),
+				    Renamed = Table.RenameColumns(Selected, ExistingMappings, MissingField.Ignore),
+				    Required = List.Transform(Mappings, each _{0}),
+				    Ensured = List.Accumulate(Required, Renamed, (State, Col) => if Table.HasColumns(State, {Col}) then State else Table.AddColumn(State, Col, each null, type any)),
+				    Filtered = Table.SelectRows(Ensured, each let Contract = try Text.Trim(Text.From([Số hợp đồng])) otherwise "" in Contract <> "" and NormalizeName(Contract) <> NormalizeName("SỐ HỢP ĐỒNG")),
+				    TypedText = Table.TransformColumns(Filtered, {
+				        {"Số hợp đồng", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"Nhà cung cấp", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"Pháp nhân ký HĐ", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"Nội dung thanh toán", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"Payment PIC", each try Text.Trim(Text.From(_)) otherwise null, type text}
+				    }),
+				    TypedAmounts = Table.TransformColumns(TypedText, {
+				        {"Giá trị công nợ gồm VAT", ToNumber, type number},
+				        {"Số tiền đã thanh toán", ToNumber, type number},
+				        {"Giá trị trao đổi sản phẩm", ToNumber, type number},
+				        {"Giá trị công nợ chưa thanh toán", ToNumber, type number}
+				    }),
+				    TypedDate = Table.TransformColumns(TypedAmounts, {{"Ngày đến hạn thanh toán", each try Date.From(_) otherwise null, type date}}),
+				    AddedYear = Table.AddColumn(TypedDate, "Năm đến hạn", each if [Ngày đến hạn thanh toán] = null then null else Date.Year([Ngày đến hạn thanh toán]), Int64.Type),
+				    AddedQuarterNumber = Table.AddColumn(AddedYear, "Số quý đến hạn", each if [Ngày đến hạn thanh toán] = null then null else Date.QuarterOfYear([Ngày đến hạn thanh toán]), Int64.Type),
+				    AddedQuarter = Table.AddColumn(AddedQuarterNumber, "Quý đến hạn", each if [Số quý đến hạn] = null then null else "Quý " & Text.From([Số quý đến hạn]), type text),
+				    AddedPeriod = Table.AddColumn(AddedQuarter, "Kỳ đến hạn", each if [Năm đến hạn] = null or [Số quý đến hạn] = null then "Chưa xác định" else "Quý " & Text.From([Số quý đến hạn]) & " - " & Text.From([Năm đến hạn]), type text),
+				    AddedSort = Table.AddColumn(AddedPeriod, "Thứ tự kỳ đến hạn", each if [Năm đến hạn] = null or [Số quý đến hạn] = null then 99999 else [Năm đến hạn] * 10 + [Số quý đến hạn], Int64.Type)
+				in
+				    AddedSort
+

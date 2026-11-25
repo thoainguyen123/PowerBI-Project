@@ -1,0 +1,894 @@
+/// Nguồn SharePoint DANG KY KPI; bảng nguồn chuẩn hóa phục vụ bốn trang KPI mới. Giữ từng dòng gốc và các giá trị rỗng; chưa có quan hệ hay công thức chấm điểm.
+table 'KPI Đăng ký'
+	lineageTag: 5f664d5a-d0c6-48ea-901a-b7c48a65d8b0
+
+	measure 'Template Dòng hiển thị' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Dates=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _SinglePIC=COUNTROWS(ALLSELECTED('KPI Đăng ký'[PIC]))=1
+			RETURN IF(_SinglePIC && NOT ISBLANK(_Y) && (NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Dates,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y))>0),1,BLANK())
+		formatString: 0
+		displayFolder: TEMPLATE KPI
+		lineageTag: 7a2ca0b7-0b64-4d8f-a0c5-19d3c44403c9
+
+	/// Cộng trọng số theo từng dòng đăng ký của PIC và năm; không cộng theo từng quý.
+	measure 'Template Trọng số' = SUMX(FILTER(VALUES('KPI Đăng ký'[Dòng nguồn]),[Template Dòng hiển thị]=1),CALCULATE(MAX('KPI Đăng ký'[Trọng số])))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: aaf66a85-be9b-4a9c-9d10-dbcd773aaa88
+
+	measure 'Template STT' = IF(ISINSCOPE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1,RANKX(ALLSELECTED('KPI Đăng ký'[Dòng nguồn]),CALCULATE(MAX('KPI Đăng ký'[Dòng nguồn])),,ASC,DENSE))
+		formatString: 0
+		displayFolder: TEMPLATE KPI
+		lineageTag: 29092d5c-0693-4a19-a7a4-463e210af005
+
+	/// VLOOKUP Mã CV trong DANH MUC: lấy lần xuất hiện đầu tiên theo dòng nguồn Excel.
+	measure 'Template Mô tả công việc' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Row=TOPN(1,FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code),'KPI Danh mục'[Dòng nguồn],ASC)
+			RETURN IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,CONCATENATEX(_Row,'KPI Danh mục'[Tên CV],""))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 81ecd6ce-c6b4-4121-8e8b-cf4291f4dab5
+
+	/// VLOOKUP Mã CV trong DANH MUC: lấy lần xuất hiện đầu tiên theo dòng nguồn Excel.
+	measure 'Template Mô tả chi tiết' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Row=TOPN(1,FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code),'KPI Danh mục'[Dòng nguồn],ASC)
+			RETURN IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,CONCATENATEX(_Row,'KPI Danh mục'[Mô tả chi tiết],""))
+		displayFolder: TEMPLATE KPI
+		lineageTag: df749742-a476-46d4-b62c-15a304292c40
+
+	/// VLOOKUP Mã CV trong DANH MUC: lấy lần xuất hiện đầu tiên theo dòng nguồn Excel.
+	measure 'Template Chỉ số đo lường' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Row=TOPN(1,FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code),'KPI Danh mục'[Dòng nguồn],ASC)
+			RETURN IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,CONCATENATEX(_Row,'KPI Danh mục'[Chỉ số đo lường KPI],""))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 743428e5-286c-4864-988d-2c9cbf29045a
+
+	/// Đơn vị từ dòng đăng ký của PIC; dự phòng danh mục nếu trống. Thống nhất với cách tính kết quả theo quý/lũy kế.
+	measure 'Template Đơn vị' = IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,[Template Đơn vị tính áp dụng])
+		displayFolder: TEMPLATE KPI
+		lineageTag: 79b4ca31-a5c3-4d89-bd16-5d88f0f3d715
+
+	/// VLOOKUP Mã CV trong DANH MUC: lấy lần xuất hiện đầu tiên theo dòng nguồn Excel.
+	measure 'Template Công thức tính' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Row=TOPN(1,FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code),'KPI Danh mục'[Dòng nguồn],ASC)
+			RETURN IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,CONCATENATEX(_Row,'KPI Danh mục'[Công thức tính],""))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 8923b25a-99de-4734-bff5-c20662f17b51
+
+	/// Mục tiêu quý từ đăng ký; đọc ngưỡng số có dấu ≤/≥/</> và giữ dấu khi hiển thị. Đơn vị % chuẩn hóa sang thang 100. Không tự cộng các quý.
+	measure 'Template Mục tiêu Q1' =
+			VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q1]))
+			VAR _SignLength=SWITCH(TRUE(),LEFT(_Raw,2)="<="||LEFT(_Raw,2)=">=",2,LEFT(_Raw,1) IN {"≤","≥","<",">"},1,0)
+			VAR _NumberText=TRIM(MID(_Raw,_SignLength+1,LEN(_Raw)+1))
+			VAR _HasPercent=RIGHT(_NumberText,1)="%"
+			VAR _NumericText=IF(_HasPercent,TRIM(LEFT(_NumberText,LEN(_NumberText)-1)),_NumberText)
+			VAR _Value=IF(LEN(_NumericText)=0,BLANK(),IFERROR(VALUE(_NumericText),BLANK()))
+			VAR _Percent=CONTAINSSTRING([Template Đơn vị tính áp dụng],"%")
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1,
+			IF(_HasPercent,IF(_Percent,_Value,DIVIDE(_Value,100)),IF(_Percent && _Value>0 && _Value<=1,_Value*100,_Value)))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 5a07599a-2902-4916-9e31-0b6c1050f658
+
+		formatStringDefinition =
+				VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q1]))
+				VAR _Sign=SWITCH(TRUE(),LEFT(_Raw,2)="<=","≤",LEFT(_Raw,2)=">=","≥",LEFT(_Raw,1)="≤","≤",LEFT(_Raw,1)="≥","≥",LEFT(_Raw,1)="<","<",LEFT(_Raw,1)=">",">","")
+				VAR _Base=IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+				RETURN IF(_Sign<>"",UNICHAR(34)&_Sign&" "&UNICHAR(34)&_Base,_Base)
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Kết quả Q1' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=1))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Kết quả Q1],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		displayFolder: TEMPLATE KPI
+		lineageTag: aaaa8291-23b5-40b0-9cc3-92d6ecc6e04e
+
+		formatStringDefinition = IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+
+	/// Tối ưu 16/11/2026: QTHD dùng điểm trang trực tiếp; chỉ tính kết quả và mục tiêu đăng ký cho các mã cần sử dụng.
+	measure 'Template Tỷ lệ Q1' =
+			SUMX(FILTER(VALUES('KPI Đăng ký'[Dòng nguồn]),[Template Dòng hiển thị]=1),
+			VAR _Weight=CONVERT(CALCULATE(MAX('KPI Đăng ký'[Trọng số])),DOUBLE)
+			VAR _Code=CALCULATE(SELECTEDVALUE('KPI Đăng ký'[Mã CV]))
+			RETURN IF(_Code="QTHD",[Template Điểm QTHD Q1]*_Weight,
+			VAR _Result=[Template Kết quả Q1]
+			VAR _Target=[Template Mục tiêu Q1]
+			VAR _Unit=CALCULATE([Template Đơn vị tính áp dụng])
+			VAR _Rate=IF(CONTAINSSTRING(_Unit,"%"),DIVIDE(_Result,100),DIVIDE(_Result,_Target))
+			VAR _Score=IF(_Code="TDSP" && NOT ISBLANK(_Rate),MIN(_Rate,1.2),_Rate)
+			RETURN IF(NOT ISBLANK(_Result),_Score*_Weight)))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: 507d98ae-62f6-459b-91e7-eca2a9b88ba9
+
+	/// Mục tiêu quý từ đăng ký; đọc ngưỡng số có dấu ≤/≥/</> và giữ dấu khi hiển thị. Đơn vị % chuẩn hóa sang thang 100. Không tự cộng các quý.
+	measure 'Template Mục tiêu Q2' =
+			VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q2]))
+			VAR _SignLength=SWITCH(TRUE(),LEFT(_Raw,2)="<="||LEFT(_Raw,2)=">=",2,LEFT(_Raw,1) IN {"≤","≥","<",">"},1,0)
+			VAR _NumberText=TRIM(MID(_Raw,_SignLength+1,LEN(_Raw)+1))
+			VAR _HasPercent=RIGHT(_NumberText,1)="%"
+			VAR _NumericText=IF(_HasPercent,TRIM(LEFT(_NumberText,LEN(_NumberText)-1)),_NumberText)
+			VAR _Value=IF(LEN(_NumericText)=0,BLANK(),IFERROR(VALUE(_NumericText),BLANK()))
+			VAR _Percent=CONTAINSSTRING([Template Đơn vị tính áp dụng],"%")
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1,
+			IF(_HasPercent,IF(_Percent,_Value,DIVIDE(_Value,100)),IF(_Percent && _Value>0 && _Value<=1,_Value*100,_Value)))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 4ec86b8f-292d-4ddf-af94-fadfbe6fb680
+
+		formatStringDefinition =
+				VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q2]))
+				VAR _Sign=SWITCH(TRUE(),LEFT(_Raw,2)="<=","≤",LEFT(_Raw,2)=">=","≥",LEFT(_Raw,1)="≤","≤",LEFT(_Raw,1)="≥","≥",LEFT(_Raw,1)="<","<",LEFT(_Raw,1)=">",">","")
+				VAR _Base=IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+				RETURN IF(_Sign<>"",UNICHAR(34)&_Sign&" "&UNICHAR(34)&_Base,_Base)
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Kết quả Q2' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=2))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Kết quả Q2],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		displayFolder: TEMPLATE KPI
+		lineageTag: f17e237c-1b8f-40e6-b193-081862a3fca4
+
+		formatStringDefinition = IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+
+	/// Tối ưu 16/11/2026: QTHD dùng điểm trang trực tiếp; chỉ tính kết quả và mục tiêu đăng ký cho các mã cần sử dụng.
+	measure 'Template Tỷ lệ Q2' =
+			SUMX(FILTER(VALUES('KPI Đăng ký'[Dòng nguồn]),[Template Dòng hiển thị]=1),
+			VAR _Weight=CONVERT(CALCULATE(MAX('KPI Đăng ký'[Trọng số])),DOUBLE)
+			VAR _Code=CALCULATE(SELECTEDVALUE('KPI Đăng ký'[Mã CV]))
+			RETURN IF(_Code="QTHD",[Template Điểm QTHD Q2]*_Weight,
+			VAR _Result=[Template Kết quả Q2]
+			VAR _Target=[Template Mục tiêu Q2]
+			VAR _Unit=CALCULATE([Template Đơn vị tính áp dụng])
+			VAR _Rate=IF(CONTAINSSTRING(_Unit,"%"),DIVIDE(_Result,100),DIVIDE(_Result,_Target))
+			VAR _Score=IF(_Code="TDSP" && NOT ISBLANK(_Rate),MIN(_Rate,1.2),_Rate)
+			RETURN IF(NOT ISBLANK(_Result),_Score*_Weight)))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: 891c2c56-8157-430c-acdc-884f1ceac90b
+
+	/// Mục tiêu quý từ đăng ký; đọc ngưỡng số có dấu ≤/≥/</> và giữ dấu khi hiển thị. Đơn vị % chuẩn hóa sang thang 100. Không tự cộng các quý.
+	measure 'Template Mục tiêu Q3' =
+			VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q3]))
+			VAR _SignLength=SWITCH(TRUE(),LEFT(_Raw,2)="<="||LEFT(_Raw,2)=">=",2,LEFT(_Raw,1) IN {"≤","≥","<",">"},1,0)
+			VAR _NumberText=TRIM(MID(_Raw,_SignLength+1,LEN(_Raw)+1))
+			VAR _HasPercent=RIGHT(_NumberText,1)="%"
+			VAR _NumericText=IF(_HasPercent,TRIM(LEFT(_NumberText,LEN(_NumberText)-1)),_NumberText)
+			VAR _Value=IF(LEN(_NumericText)=0,BLANK(),IFERROR(VALUE(_NumericText),BLANK()))
+			VAR _Percent=CONTAINSSTRING([Template Đơn vị tính áp dụng],"%")
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1,
+			IF(_HasPercent,IF(_Percent,_Value,DIVIDE(_Value,100)),IF(_Percent && _Value>0 && _Value<=1,_Value*100,_Value)))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 4caecb17-5c38-4401-917b-1edf8adeb804
+
+		formatStringDefinition =
+				VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q3]))
+				VAR _Sign=SWITCH(TRUE(),LEFT(_Raw,2)="<=","≤",LEFT(_Raw,2)=">=","≥",LEFT(_Raw,1)="≤","≤",LEFT(_Raw,1)="≥","≥",LEFT(_Raw,1)="<","<",LEFT(_Raw,1)=">",">","")
+				VAR _Base=IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+				RETURN IF(_Sign<>"",UNICHAR(34)&_Sign&" "&UNICHAR(34)&_Base,_Base)
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Kết quả Q3' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=3))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Kết quả Q3],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 17475d56-0a37-4f7c-bd9c-113b19ac902f
+
+		formatStringDefinition = IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+
+	/// Tối ưu 16/11/2026: QTHD dùng điểm trang trực tiếp; chỉ tính kết quả và mục tiêu đăng ký cho các mã cần sử dụng.
+	measure 'Template Tỷ lệ Q3' =
+			SUMX(FILTER(VALUES('KPI Đăng ký'[Dòng nguồn]),[Template Dòng hiển thị]=1),
+			VAR _Weight=CONVERT(CALCULATE(MAX('KPI Đăng ký'[Trọng số])),DOUBLE)
+			VAR _Code=CALCULATE(SELECTEDVALUE('KPI Đăng ký'[Mã CV]))
+			RETURN IF(_Code="QTHD",[Template Điểm QTHD Q3]*_Weight,
+			VAR _Result=[Template Kết quả Q3]
+			VAR _Target=[Template Mục tiêu Q3]
+			VAR _Unit=CALCULATE([Template Đơn vị tính áp dụng])
+			VAR _Rate=IF(CONTAINSSTRING(_Unit,"%"),DIVIDE(_Result,100),DIVIDE(_Result,_Target))
+			VAR _Score=IF(_Code="TDSP" && NOT ISBLANK(_Rate),MIN(_Rate,1.2),_Rate)
+			RETURN IF(NOT ISBLANK(_Result),_Score*_Weight)))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: 48f01909-5bfd-465b-a0ab-91bc8ae6bd54
+
+	/// Mục tiêu quý từ đăng ký; đọc ngưỡng số có dấu ≤/≥/</> và giữ dấu khi hiển thị. Đơn vị % chuẩn hóa sang thang 100. Không tự cộng các quý.
+	measure 'Template Mục tiêu Q4' =
+			VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q4]))
+			VAR _SignLength=SWITCH(TRUE(),LEFT(_Raw,2)="<="||LEFT(_Raw,2)=">=",2,LEFT(_Raw,1) IN {"≤","≥","<",">"},1,0)
+			VAR _NumberText=TRIM(MID(_Raw,_SignLength+1,LEN(_Raw)+1))
+			VAR _HasPercent=RIGHT(_NumberText,1)="%"
+			VAR _NumericText=IF(_HasPercent,TRIM(LEFT(_NumberText,LEN(_NumberText)-1)),_NumberText)
+			VAR _Value=IF(LEN(_NumericText)=0,BLANK(),IFERROR(VALUE(_NumericText),BLANK()))
+			VAR _Percent=CONTAINSSTRING([Template Đơn vị tính áp dụng],"%")
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1,
+			IF(_HasPercent,IF(_Percent,_Value,DIVIDE(_Value,100)),IF(_Percent && _Value>0 && _Value<=1,_Value*100,_Value)))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 60ce9bec-087a-4681-b363-2e1d30e4a71f
+
+		formatStringDefinition =
+				VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q4]))
+				VAR _Sign=SWITCH(TRUE(),LEFT(_Raw,2)="<=","≤",LEFT(_Raw,2)=">=","≥",LEFT(_Raw,1)="≤","≤",LEFT(_Raw,1)="≥","≥",LEFT(_Raw,1)="<","<",LEFT(_Raw,1)=">",">","")
+				VAR _Base=IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+				RETURN IF(_Sign<>"",UNICHAR(34)&_Sign&" "&UNICHAR(34)&_Base,_Base)
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Kết quả Q4' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=4))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Kết quả Q4],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		displayFolder: TEMPLATE KPI
+		lineageTag: c101dade-f0e6-48ff-a308-f2dd7436c509
+
+		formatStringDefinition = IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+
+	/// Tối ưu 16/11/2026: QTHD dùng điểm trang trực tiếp; chỉ tính kết quả và mục tiêu đăng ký cho các mã cần sử dụng.
+	measure 'Template Tỷ lệ Q4' =
+			SUMX(FILTER(VALUES('KPI Đăng ký'[Dòng nguồn]),[Template Dòng hiển thị]=1),
+			VAR _Weight=CONVERT(CALCULATE(MAX('KPI Đăng ký'[Trọng số])),DOUBLE)
+			VAR _Code=CALCULATE(SELECTEDVALUE('KPI Đăng ký'[Mã CV]))
+			RETURN IF(_Code="QTHD",[Template Điểm QTHD Q4]*_Weight,
+			VAR _Result=[Template Kết quả Q4]
+			VAR _Target=[Template Mục tiêu Q4]
+			VAR _Unit=CALCULATE([Template Đơn vị tính áp dụng])
+			VAR _Rate=IF(CONTAINSSTRING(_Unit,"%"),DIVIDE(_Result,100),DIVIDE(_Result,_Target))
+			VAR _Score=IF(_Code="TDSP" && NOT ISBLANK(_Rate),MIN(_Rate,1.2),_Rate)
+			RETURN IF(NOT ISBLANK(_Result),_Score*_Weight)))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: e089aedc-4eea-458b-ab68-610b4384ff12
+
+	measure 'Template Mã CV' = IF(ISINSCOPE('KPI Đăng ký'[STT theo PIC]) && [Template Dòng hiển thị]=1,SELECTEDVALUE('KPI Đăng ký'[Mã CV]))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 094f1815-3cef-4653-a14f-621017e8f85d
+
+	/// Mục tiêu năm lấy mục tiêu Q4, giữ dấu so sánh và đơn vị của đăng ký.
+	measure 'Template Mục tiêu năm' = [Template Mục tiêu Q4]
+		displayFolder: TEMPLATE KPI
+		lineageTag: 08c387ed-1b7b-4bd1-ae2d-fc466a3f1f34
+
+		formatStringDefinition =
+				VAR _Raw=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mục tiêu Q4]))
+				VAR _Sign=SWITCH(TRUE(),LEFT(_Raw,2)="<=","≤",LEFT(_Raw,2)=">=","≥",LEFT(_Raw,1)="≤","≤",LEFT(_Raw,1)="≥","≥",LEFT(_Raw,1)="<","<",LEFT(_Raw,1)=">",">","")
+				VAR _Base=IF(CONTAINSSTRING([Template Đơn vị tính áp dụng],"%"),"0.00\%","#,##0.00")
+				RETURN IF(_Sign<>"",UNICHAR(34)&_Sign&" "&UNICHAR(34)&_Base,_Base)
+
+	/// Ưu tiên đơn vị của dòng đăng ký, dự phòng danh mục theo Mã CV. Dùng thống nhất để hiển thị và chọn kỳ %, số lượng hoặc giá trị.
+	measure 'Template Đơn vị tính áp dụng' =
+			VAR _Registered=SELECTEDVALUE('KPI Đăng ký'[Đơn vị tính])
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Catalog=TOPN(1,FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code),'KPI Danh mục'[Dòng nguồn],ASC)
+			RETURN COALESCE(_Registered,CONCATENATEX(_Catalog,'KPI Danh mục'[Đơn vị tính],""))
+		isHidden
+		displayFolder: TEMPLATE KPI
+		lineageTag: 2f00c8c5-56ee-4762-80e2-77ce117c95d1
+
+	/// Phòng từ DMNV, đối chiếu mã NV (bỏ số 0 đầu); chỉ dùng tên khi đăng ký thiếu mã NV. Không suy đoán phòng từ đăng ký.
+	measure 'Template Phòng theo DMNV' =
+			VAR _ID=TRIM(SELECTEDVALUE('KPI Đăng ký'[Mã NV]) & "")
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Staff=FILTER(ALL('KPI Nhân sự'),IF(_ID<>"",IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=IFERROR(VALUE(_ID),-2),'KPI Nhân sự'[Họ và tên]=_PIC))
+			RETURN IF(_PIC<>"BAN PTC",CALCULATE(SELECTEDVALUE('KPI Nhân sự'[Phòng]),_Staff))
+		displayFolder: TEMPLATE KPI
+		lineageTag: a658fb3e-1b39-4f57-a232-806dde28cc72
+
+	/// Quy tắc ghi nhận theo mã CV trong DANH MUC; nhiều dòng cùng mã phải có cùng quy tắc.
+	measure 'Template Phạm vi ghi nhận' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Rules=FILTER(ALL('KPI Danh mục'),'KPI Danh mục'[Mã CV]=_Code)
+			RETURN CALCULATE(SELECTEDVALUE('KPI Danh mục'[Phạm vi ghi nhận]),_Rules)
+		displayFolder: TEMPLATE KPI
+		lineageTag: 6e571e1d-1800-4f02-bf67-9a889f265576
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Điểm QTHD Q1' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=1))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Điểm QTHD Q1],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: e58810c8-3b00-4160-8720-b4e7510838f1
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Điểm QTHD Q2' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=2))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Điểm QTHD Q2],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: 3ad05890-d28c-4f5c-a46e-742a014db6c9
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Điểm QTHD Q3' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=3))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Điểm QTHD Q3],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: bff1aa4a-5f40-4685-9427-d78e03e98300
+
+	/// Đọc kết quả được tính sẵn khi refresh theo Dòng đăng ký; điều kiện chọn một PIC, năm và kỳ quý vẫn được kiểm tra khi hiển thị. Tối ưu A1 ngày 16/11/2026.
+	measure 'Template Điểm QTHD Q4' =
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=4))>0
+			VAR _ID=SELECTEDVALUE('KPI Đăng ký'[Dòng nguồn])
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && [Template Dòng hiển thị]=1 && _QuarterIn,
+			LOOKUPVALUE('Template KPI Kết quả lưu'[Điểm QTHD Q4],'Template KPI Kết quả lưu'[Dòng đăng ký],_ID))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI
+		lineageTag: 59d51d44-5393-43d4-921b-a58232a5b7d6
+
+	/// Tính sẵn TEMPLATE theo dòng đăng ký khi refresh. TDDT: ngân sách Dự án = 80% tỷ lệ hoàn thành + 20% PCD đúng quý báo cáo; còn lại kể cả rỗng = nguyên tỷ lệ hoàn thành. Thay điều kiện OPEX cũ. PCD rỗng=0; Q4 tiến độ cả năm + PCD4. Giữ phạm vi CN/TH1/TH2 và trần các mã CV khác. Cập nhật 20/11/2026.
+	measure 'Template Kết quả cá nhân Q1' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Dept=UPPER(TRIM([Template Phòng theo DMNV]))
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _AllBan=_PIC="BAN PTC" || _Scope="CHUNG" || (_Code="TDSP" && _Dept="PAS")
+			VAR _DeptScope=_Scope="BAN - PHÒNG" && NOT _AllBan
+			VAR _ValidScope=_AllBan || _Scope="BAN - PIC" || (_DeptScope && NOT ISBLANK(_Dept) && _Dept<>"")
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Unit = UPPER(TRIM(SUBSTITUTE([Template Đơn vị tính áp dụng],UNICHAR(160)," ")))
+			VAR _Percent = CONTAINSSTRING(_Unit,"%")
+			VAR _Count = _Unit IN {"SỐ LƯỢNG","SL"}
+			VAR _Money = CONTAINSSTRING(_Unit,"TỶ")
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=1))>0
+			VAR _Start=DATE(_Y,IF(_Count,1,1),1)
+			VAR _End=EOMONTH(DATE(_Y,3,1),0)
+			VAR _Dates=CALENDAR(_Start,_End)
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && _ValidScope,
+			SWITCH(_Code,
+			"TDDT",VAR _Progress=FILTER(CALCULATETABLE(SUMMARIZE('KPI Tiến độ thầu','KPI Tiến độ thầu'[PIC CẬP NHẬT],'KPI Tiến độ thầu'[PHÒNG]),REMOVEFILTERS('KPI Tiến độ thầu')),_AllBan || IF(NOT ISBLANK(_Department),UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PHÒNG],UNICHAR(160)," ")))=_Department,IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))))
+			VAR _PCDQuarterDates=CALENDAR(DATE(_Y,1,1),EOMONTH(DATE(_Y,3,1),0))
+			VAR _ReportPCD=COALESCE(CALCULATE([TĐT Điểm PCD],REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_PCDQuarterDates,'Kỳ đánh giá đấu thầu'[Ngày])),0)
+			VAR _TenderScore=CALCULATE(
+			    AVERAGEX(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),
+			        VAR _Ratio=[TĐT Tỷ lệ hoàn thành]
+			        VAR _Budget=UPPER(TRIM(SUBSTITUTE(CALCULATE(MAX('KPI Tiến độ thầu'[NGÂN SÁCH])),UNICHAR(160)," ")))
+			        RETURN IF(NOT ISBLANK(_Ratio),IF(_Budget="DỰ ÁN",0.8*_Ratio+0.2*_ReportPCD,_Ratio))),
+			    REMOVEFILTERS('KPI Tiến độ thầu'),_Progress,
+			    REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày]))
+			RETURN IF(_Percent && NOT ISBLANK(_TenderScore),100*_TenderScore),
+			"TUNC",VAR _TU=FILTER(CALCULATETABLE(SUMMARIZE('KPI TUNC Nguồn','KPI TUNC Nguồn'[Phòng],'KPI TUNC Nguồn'[PIC]),REMOVEFILTERS('KPI TUNC Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TUNC Nguồn'[Phòng]))=_Dept || (_Dept="BMD" && UPPER(TRIM('KPI TUNC Nguồn'[Phòng])) IN {"BMD XD","BMD TV"}),'KPI TUNC Nguồn'[PIC]=_PIC))
+			RETURN IF(_Count,CALCULATE([TUNC Tổng hoàn thành],REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])),IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Điểm dòng]),REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])))),
+			"QTHD",VAR _QT=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Count,CALCULATE([QTHD Hoàn thành trong kỳ],REMOVEFILTERS('KPI QTHD'),_QT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])),IF(_Percent,100*[Template Điểm QTHD cá nhân Q1])),
+			"TTHD",VAR _TT=FILTER(CALCULATETABLE(SUMMARIZE('KPI TTHD','KPI TTHD'[PIC],'KPI TTHD'[NGÀY NHẬN HS]),REMOVEFILTERS('KPI TTHD')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) && 'KPI TTHD'[NGÀY NHẬN HS]>=_Start && 'KPI TTHD'[NGÀY NHẬN HS]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(CALCULATE(AVERAGEX(VALUES('KPI TTHD'[MÃ HỒ SƠ]),CALCULATE(MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH]))),KEEPFILTERS(TREATAS(VALUES('DimDate'[Date]),'KPI TTHD'[NGÀY NHẬN HS]))),REMOVEFILTERS('KPI TTHD'),_TT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date]))),
+			"GHBL",VAR _BL=FILTER(CALCULATETABLE(SUMMARIZE('KPI GHBL','KPI GHBL'[PIC],'KPI GHBL'[NGÀY HẾT HẠN CŨ]),REMOVEFILTERS('KPI GHBL')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI GHBL'[NGÀY HẾT HẠN CŨ]) && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]>=_Start && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI GHBL'[MÃ LƯỢT]),CALCULATE(MAX('KPI GHBL'[ĐIỂM HOÀN THÀNH]))),REMOVEFILTERS('KPI GHBL'),_BL,REMOVEFILTERS('DimDate'))),
+			"TDSP",VAR _TD=FILTER(CALCULATETABLE(SUMMARIZE('KPI TDSP Nguồn','KPI TDSP Nguồn'[Phòng],'KPI TDSP Nguồn'[PIC],'KPI TDSP Nguồn'[PIC TP]),REMOVEFILTERS('KPI TDSP Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TDSP Nguồn'[Phòng]))=_Dept,'KPI TDSP Nguồn'[PIC]=_PIC || 'KPI TDSP Nguồn'[PIC TP]=_PIC))
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],1,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Money,IF(_AllBan,_Ban,IF(_DeptScope,CALCULATE([TDSP Công nợ tỷ đồng],REMOVEFILTERS('KPI TDSP Nguồn'),_TD,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(CALENDAR(DATE(_Y,1,1),_End),'Kỳ đánh giá đấu thầu'[Ngày])))),IF(_Percent && _Scope="CHUNG",100*_Ban)),
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],1,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Percent && _Scope="CHUNG",100*_Ban)))
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 6a8a3975-fb26-4bfd-bceb-3604abc671df
+
+	/// Tính điểm nguồn trước điều kiện hiển thị, dùng để tính sẵn bảng Template KPI Kết quả lưu khi refresh. Quy tắc kỳ, CN/TH1/TH2, OPEX/PCD, trần QTHD/TDSP giữ nguyên.
+	measure 'Template Điểm QTHD cá nhân Q1' =
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=1))>0
+			VAR _Dates=CALENDAR(DATE(_Y,1,1),EOMONTH(DATE(_Y,3,1),0))
+			VAR _Rows=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_PIC="BAN PTC" || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Code="QTHD" && HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && (_PIC="BAN PTC" || _Scope="BAN - PIC"),
+			CALCULATE([QTHD Điểm hoàn thành],REMOVEFILTERS('KPI QTHD'),_Rows,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 7a900516-bbe9-4941-9b01-d4505775ee3c
+
+	/// Tính sẵn TEMPLATE theo dòng đăng ký khi refresh. TDDT: ngân sách Dự án = 80% tỷ lệ hoàn thành + 20% PCD đúng quý báo cáo; còn lại kể cả rỗng = nguyên tỷ lệ hoàn thành. Thay điều kiện OPEX cũ. PCD rỗng=0; Q4 tiến độ cả năm + PCD4. Giữ phạm vi CN/TH1/TH2 và trần các mã CV khác. Cập nhật 20/11/2026.
+	measure 'Template Kết quả cá nhân Q2' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Dept=UPPER(TRIM([Template Phòng theo DMNV]))
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _AllBan=_PIC="BAN PTC" || _Scope="CHUNG" || (_Code="TDSP" && _Dept="PAS")
+			VAR _DeptScope=_Scope="BAN - PHÒNG" && NOT _AllBan
+			VAR _ValidScope=_AllBan || _Scope="BAN - PIC" || (_DeptScope && NOT ISBLANK(_Dept) && _Dept<>"")
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Unit = UPPER(TRIM(SUBSTITUTE([Template Đơn vị tính áp dụng],UNICHAR(160)," ")))
+			VAR _Percent = CONTAINSSTRING(_Unit,"%")
+			VAR _Count = _Unit IN {"SỐ LƯỢNG","SL"}
+			VAR _Money = CONTAINSSTRING(_Unit,"TỶ")
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=2))>0
+			VAR _Start=DATE(_Y,IF(_Count,1,4),1)
+			VAR _End=EOMONTH(DATE(_Y,6,1),0)
+			VAR _Dates=CALENDAR(_Start,_End)
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && _ValidScope,
+			SWITCH(_Code,
+			"TDDT",VAR _Progress=FILTER(CALCULATETABLE(SUMMARIZE('KPI Tiến độ thầu','KPI Tiến độ thầu'[PIC CẬP NHẬT],'KPI Tiến độ thầu'[PHÒNG]),REMOVEFILTERS('KPI Tiến độ thầu')),_AllBan || IF(NOT ISBLANK(_Department),UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PHÒNG],UNICHAR(160)," ")))=_Department,IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))))
+			VAR _PCDQuarterDates=CALENDAR(DATE(_Y,4,1),EOMONTH(DATE(_Y,6,1),0))
+			VAR _ReportPCD=COALESCE(CALCULATE([TĐT Điểm PCD],REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_PCDQuarterDates,'Kỳ đánh giá đấu thầu'[Ngày])),0)
+			VAR _TenderScore=CALCULATE(
+			    AVERAGEX(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),
+			        VAR _Ratio=[TĐT Tỷ lệ hoàn thành]
+			        VAR _Budget=UPPER(TRIM(SUBSTITUTE(CALCULATE(MAX('KPI Tiến độ thầu'[NGÂN SÁCH])),UNICHAR(160)," ")))
+			        RETURN IF(NOT ISBLANK(_Ratio),IF(_Budget="DỰ ÁN",0.8*_Ratio+0.2*_ReportPCD,_Ratio))),
+			    REMOVEFILTERS('KPI Tiến độ thầu'),_Progress,
+			    REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày]))
+			RETURN IF(_Percent && NOT ISBLANK(_TenderScore),100*_TenderScore),
+			"TUNC",VAR _TU=FILTER(CALCULATETABLE(SUMMARIZE('KPI TUNC Nguồn','KPI TUNC Nguồn'[Phòng],'KPI TUNC Nguồn'[PIC]),REMOVEFILTERS('KPI TUNC Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TUNC Nguồn'[Phòng]))=_Dept || (_Dept="BMD" && UPPER(TRIM('KPI TUNC Nguồn'[Phòng])) IN {"BMD XD","BMD TV"}),'KPI TUNC Nguồn'[PIC]=_PIC))
+			RETURN IF(_Count,CALCULATE([TUNC Tổng hoàn thành],REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])),IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Điểm dòng]),REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])))),
+			"QTHD",VAR _QT=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Count,CALCULATE([QTHD Hoàn thành trong kỳ],REMOVEFILTERS('KPI QTHD'),_QT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])),IF(_Percent,100*[Template Điểm QTHD cá nhân Q2])),
+			"TTHD",VAR _TT=FILTER(CALCULATETABLE(SUMMARIZE('KPI TTHD','KPI TTHD'[PIC],'KPI TTHD'[NGÀY NHẬN HS]),REMOVEFILTERS('KPI TTHD')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) && 'KPI TTHD'[NGÀY NHẬN HS]>=_Start && 'KPI TTHD'[NGÀY NHẬN HS]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(CALCULATE(AVERAGEX(VALUES('KPI TTHD'[MÃ HỒ SƠ]),CALCULATE(MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH]))),KEEPFILTERS(TREATAS(VALUES('DimDate'[Date]),'KPI TTHD'[NGÀY NHẬN HS]))),REMOVEFILTERS('KPI TTHD'),_TT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date]))),
+			"GHBL",VAR _BL=FILTER(CALCULATETABLE(SUMMARIZE('KPI GHBL','KPI GHBL'[PIC],'KPI GHBL'[NGÀY HẾT HẠN CŨ]),REMOVEFILTERS('KPI GHBL')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI GHBL'[NGÀY HẾT HẠN CŨ]) && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]>=_Start && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI GHBL'[MÃ LƯỢT]),CALCULATE(MAX('KPI GHBL'[ĐIỂM HOÀN THÀNH]))),REMOVEFILTERS('KPI GHBL'),_BL,REMOVEFILTERS('DimDate'))),
+			"TDSP",VAR _TD=FILTER(CALCULATETABLE(SUMMARIZE('KPI TDSP Nguồn','KPI TDSP Nguồn'[Phòng],'KPI TDSP Nguồn'[PIC],'KPI TDSP Nguồn'[PIC TP]),REMOVEFILTERS('KPI TDSP Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TDSP Nguồn'[Phòng]))=_Dept,'KPI TDSP Nguồn'[PIC]=_PIC || 'KPI TDSP Nguồn'[PIC TP]=_PIC))
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],2,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Money,IF(_AllBan,_Ban,IF(_DeptScope,CALCULATE([TDSP Công nợ tỷ đồng],REMOVEFILTERS('KPI TDSP Nguồn'),_TD,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(CALENDAR(DATE(_Y,1,1),_End),'Kỳ đánh giá đấu thầu'[Ngày])))),IF(_Percent && _Scope="CHUNG",100*_Ban)),
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],2,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Percent && _Scope="CHUNG",100*_Ban)))
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 45546d7d-99f2-46d5-a0e5-693f5bda4ed5
+
+	/// Tính điểm nguồn trước điều kiện hiển thị, dùng để tính sẵn bảng Template KPI Kết quả lưu khi refresh. Quy tắc kỳ, CN/TH1/TH2, OPEX/PCD, trần QTHD/TDSP giữ nguyên.
+	measure 'Template Điểm QTHD cá nhân Q2' =
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=2))>0
+			VAR _Dates=CALENDAR(DATE(_Y,4,1),EOMONTH(DATE(_Y,6,1),0))
+			VAR _Rows=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_PIC="BAN PTC" || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Code="QTHD" && HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && (_PIC="BAN PTC" || _Scope="BAN - PIC"),
+			CALCULATE([QTHD Điểm hoàn thành],REMOVEFILTERS('KPI QTHD'),_Rows,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 77791608-7457-4dba-b7df-2a1161a28691
+
+	/// Tính sẵn TEMPLATE theo dòng đăng ký khi refresh. TDDT: ngân sách Dự án = 80% tỷ lệ hoàn thành + 20% PCD đúng quý báo cáo; còn lại kể cả rỗng = nguyên tỷ lệ hoàn thành. Thay điều kiện OPEX cũ. PCD rỗng=0; Q4 tiến độ cả năm + PCD4. Giữ phạm vi CN/TH1/TH2 và trần các mã CV khác. Cập nhật 20/11/2026.
+	measure 'Template Kết quả cá nhân Q3' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Dept=UPPER(TRIM([Template Phòng theo DMNV]))
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _AllBan=_PIC="BAN PTC" || _Scope="CHUNG" || (_Code="TDSP" && _Dept="PAS")
+			VAR _DeptScope=_Scope="BAN - PHÒNG" && NOT _AllBan
+			VAR _ValidScope=_AllBan || _Scope="BAN - PIC" || (_DeptScope && NOT ISBLANK(_Dept) && _Dept<>"")
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Unit = UPPER(TRIM(SUBSTITUTE([Template Đơn vị tính áp dụng],UNICHAR(160)," ")))
+			VAR _Percent = CONTAINSSTRING(_Unit,"%")
+			VAR _Count = _Unit IN {"SỐ LƯỢNG","SL"}
+			VAR _Money = CONTAINSSTRING(_Unit,"TỶ")
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=3))>0
+			VAR _Start=DATE(_Y,IF(_Count,1,7),1)
+			VAR _End=EOMONTH(DATE(_Y,9,1),0)
+			VAR _Dates=CALENDAR(_Start,_End)
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && _ValidScope,
+			SWITCH(_Code,
+			"TDDT",VAR _Progress=FILTER(CALCULATETABLE(SUMMARIZE('KPI Tiến độ thầu','KPI Tiến độ thầu'[PIC CẬP NHẬT],'KPI Tiến độ thầu'[PHÒNG]),REMOVEFILTERS('KPI Tiến độ thầu')),_AllBan || IF(NOT ISBLANK(_Department),UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PHÒNG],UNICHAR(160)," ")))=_Department,IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))))
+			VAR _PCDQuarterDates=CALENDAR(DATE(_Y,7,1),EOMONTH(DATE(_Y,9,1),0))
+			VAR _ReportPCD=COALESCE(CALCULATE([TĐT Điểm PCD],REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_PCDQuarterDates,'Kỳ đánh giá đấu thầu'[Ngày])),0)
+			VAR _TenderScore=CALCULATE(
+			    AVERAGEX(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),
+			        VAR _Ratio=[TĐT Tỷ lệ hoàn thành]
+			        VAR _Budget=UPPER(TRIM(SUBSTITUTE(CALCULATE(MAX('KPI Tiến độ thầu'[NGÂN SÁCH])),UNICHAR(160)," ")))
+			        RETURN IF(NOT ISBLANK(_Ratio),IF(_Budget="DỰ ÁN",0.8*_Ratio+0.2*_ReportPCD,_Ratio))),
+			    REMOVEFILTERS('KPI Tiến độ thầu'),_Progress,
+			    REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày]))
+			RETURN IF(_Percent && NOT ISBLANK(_TenderScore),100*_TenderScore),
+			"TUNC",VAR _TU=FILTER(CALCULATETABLE(SUMMARIZE('KPI TUNC Nguồn','KPI TUNC Nguồn'[Phòng],'KPI TUNC Nguồn'[PIC]),REMOVEFILTERS('KPI TUNC Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TUNC Nguồn'[Phòng]))=_Dept || (_Dept="BMD" && UPPER(TRIM('KPI TUNC Nguồn'[Phòng])) IN {"BMD XD","BMD TV"}),'KPI TUNC Nguồn'[PIC]=_PIC))
+			RETURN IF(_Count,CALCULATE([TUNC Tổng hoàn thành],REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])),IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Điểm dòng]),REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])))),
+			"QTHD",VAR _QT=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Count,CALCULATE([QTHD Hoàn thành trong kỳ],REMOVEFILTERS('KPI QTHD'),_QT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])),IF(_Percent,100*[Template Điểm QTHD cá nhân Q3])),
+			"TTHD",VAR _TT=FILTER(CALCULATETABLE(SUMMARIZE('KPI TTHD','KPI TTHD'[PIC],'KPI TTHD'[NGÀY NHẬN HS]),REMOVEFILTERS('KPI TTHD')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) && 'KPI TTHD'[NGÀY NHẬN HS]>=_Start && 'KPI TTHD'[NGÀY NHẬN HS]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(CALCULATE(AVERAGEX(VALUES('KPI TTHD'[MÃ HỒ SƠ]),CALCULATE(MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH]))),KEEPFILTERS(TREATAS(VALUES('DimDate'[Date]),'KPI TTHD'[NGÀY NHẬN HS]))),REMOVEFILTERS('KPI TTHD'),_TT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date]))),
+			"GHBL",VAR _BL=FILTER(CALCULATETABLE(SUMMARIZE('KPI GHBL','KPI GHBL'[PIC],'KPI GHBL'[NGÀY HẾT HẠN CŨ]),REMOVEFILTERS('KPI GHBL')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI GHBL'[NGÀY HẾT HẠN CŨ]) && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]>=_Start && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI GHBL'[MÃ LƯỢT]),CALCULATE(MAX('KPI GHBL'[ĐIỂM HOÀN THÀNH]))),REMOVEFILTERS('KPI GHBL'),_BL,REMOVEFILTERS('DimDate'))),
+			"TDSP",VAR _TD=FILTER(CALCULATETABLE(SUMMARIZE('KPI TDSP Nguồn','KPI TDSP Nguồn'[Phòng],'KPI TDSP Nguồn'[PIC],'KPI TDSP Nguồn'[PIC TP]),REMOVEFILTERS('KPI TDSP Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TDSP Nguồn'[Phòng]))=_Dept,'KPI TDSP Nguồn'[PIC]=_PIC || 'KPI TDSP Nguồn'[PIC TP]=_PIC))
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],3,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Money,IF(_AllBan,_Ban,IF(_DeptScope,CALCULATE([TDSP Công nợ tỷ đồng],REMOVEFILTERS('KPI TDSP Nguồn'),_TD,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(CALENDAR(DATE(_Y,1,1),_End),'Kỳ đánh giá đấu thầu'[Ngày])))),IF(_Percent && _Scope="CHUNG",100*_Ban)),
+			VAR _Ban=LOOKUPVALUE('BI_Data'[Điểm hoàn thành tính toán],'BI_Data'[Mã CV],_Code,'BI_Data'[Quý],3,'BI_Data'[Năm],_Y,'BI_Data'[PIC],"BAN PTC")
+			RETURN IF(_Percent && _Scope="CHUNG",100*_Ban)))
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 70e91200-4f79-44d1-b7bf-1a67d43d2de3
+
+	/// Tính điểm nguồn trước điều kiện hiển thị, dùng để tính sẵn bảng Template KPI Kết quả lưu khi refresh. Quy tắc kỳ, CN/TH1/TH2, OPEX/PCD, trần QTHD/TDSP giữ nguyên.
+	measure 'Template Điểm QTHD cá nhân Q3' =
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=3))>0
+			VAR _Dates=CALENDAR(DATE(_Y,7,1),EOMONTH(DATE(_Y,9,1),0))
+			VAR _Rows=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_PIC="BAN PTC" || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Code="QTHD" && HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && (_PIC="BAN PTC" || _Scope="BAN - PIC"),
+			CALCULATE([QTHD Điểm hoàn thành],REMOVEFILTERS('KPI QTHD'),_Rows,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 1c60f1c2-227c-4155-8eb8-d65946e393e9
+
+	/// Tính sẵn TEMPLATE theo dòng đăng ký khi refresh. TDDT: ngân sách Dự án = 80% tỷ lệ hoàn thành + 20% PCD đúng quý báo cáo; còn lại kể cả rỗng = nguyên tỷ lệ hoàn thành. Thay điều kiện OPEX cũ. PCD rỗng=0; Q4 tiến độ cả năm + PCD4. Giữ phạm vi CN/TH1/TH2 và trần các mã CV khác. Cập nhật 20/11/2026.
+	measure 'Template Kết quả cá nhân Q4' =
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Dept=UPPER(TRIM([Template Phòng theo DMNV]))
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _AllBan=_PIC="BAN PTC" || _Scope="CHUNG" || (_Code="TDSP" && _Dept="PAS")
+			VAR _DeptScope=_Scope="BAN - PHÒNG" && NOT _AllBan
+			VAR _ValidScope=_AllBan || _Scope="BAN - PIC" || (_DeptScope && NOT ISBLANK(_Dept) && _Dept<>"")
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Unit = UPPER(TRIM(SUBSTITUTE([Template Đơn vị tính áp dụng],UNICHAR(160)," ")))
+			VAR _Percent = CONTAINSSTRING(_Unit,"%")
+			VAR _Count = _Unit IN {"SỐ LƯỢNG","SL"}
+			VAR _Money = CONTAINSSTRING(_Unit,"TỶ")
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=4))>0
+			VAR _Start=DATE(_Y,1,1)
+			VAR _End=EOMONTH(DATE(_Y,12,1),0)
+			VAR _Dates=CALENDAR(_Start,_End)
+			RETURN IF(HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && _ValidScope,
+			SWITCH(_Code,
+			"TDDT",VAR _Progress=FILTER(CALCULATETABLE(SUMMARIZE('KPI Tiến độ thầu','KPI Tiến độ thầu'[PIC CẬP NHẬT],'KPI Tiến độ thầu'[PHÒNG]),REMOVEFILTERS('KPI Tiến độ thầu')),_AllBan || IF(NOT ISBLANK(_Department),UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PHÒNG],UNICHAR(160)," ")))=_Department,IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[PIC CẬP NHẬT],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))))
+			VAR _PCDQuarterDates=CALENDAR(DATE(_Y,10,1),EOMONTH(DATE(_Y,12,1),0))
+			VAR _ReportPCD=COALESCE(CALCULATE([TĐT Điểm PCD],REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_PCDQuarterDates,'Kỳ đánh giá đấu thầu'[Ngày])),0)
+			VAR _TenderScore=CALCULATE(
+			    AVERAGEX(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),
+			        VAR _Ratio=[TĐT Tỷ lệ hoàn thành]
+			        VAR _Budget=UPPER(TRIM(SUBSTITUTE(CALCULATE(MAX('KPI Tiến độ thầu'[NGÂN SÁCH])),UNICHAR(160)," ")))
+			        RETURN IF(NOT ISBLANK(_Ratio),IF(_Budget="DỰ ÁN",0.8*_Ratio+0.2*_ReportPCD,_Ratio))),
+			    REMOVEFILTERS('KPI Tiến độ thầu'),_Progress,
+			    REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày]))
+			RETURN IF(_Percent && NOT ISBLANK(_TenderScore),100*_TenderScore),
+			"TUNC",VAR _TU=FILTER(CALCULATETABLE(SUMMARIZE('KPI TUNC Nguồn','KPI TUNC Nguồn'[Phòng],'KPI TUNC Nguồn'[PIC]),REMOVEFILTERS('KPI TUNC Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TUNC Nguồn'[Phòng]))=_Dept || (_Dept="BMD" && UPPER(TRIM('KPI TUNC Nguồn'[Phòng])) IN {"BMD XD","BMD TV"}),'KPI TUNC Nguồn'[PIC]=_PIC))
+			RETURN IF(_Count,CALCULATE([TUNC Tổng hoàn thành],REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])),IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Điểm dòng]),REMOVEFILTERS('KPI TUNC Nguồn'),_TU,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(_Dates,'Kỳ đánh giá đấu thầu'[Ngày])))),
+			"QTHD",VAR _QT=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Count,CALCULATE([QTHD Hoàn thành trong kỳ],REMOVEFILTERS('KPI QTHD'),_QT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])),IF(_Percent,100*[Template Điểm QTHD cá nhân Q4])),
+			"TTHD",VAR _TT=FILTER(CALCULATETABLE(SUMMARIZE('KPI TTHD','KPI TTHD'[PIC],'KPI TTHD'[NGÀY NHẬN HS]),REMOVEFILTERS('KPI TTHD')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI TTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) && 'KPI TTHD'[NGÀY NHẬN HS]>=_Start && 'KPI TTHD'[NGÀY NHẬN HS]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(CALCULATE(AVERAGEX(VALUES('KPI TTHD'[MÃ HỒ SƠ]),CALCULATE(MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH]))),KEEPFILTERS(TREATAS(VALUES('DimDate'[Date]),'KPI TTHD'[NGÀY NHẬN HS]))),REMOVEFILTERS('KPI TTHD'),_TT,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date]))),
+			"GHBL",VAR _BL=FILTER(CALCULATETABLE(SUMMARIZE('KPI GHBL','KPI GHBL'[PIC],'KPI GHBL'[NGÀY HẾT HẠN CŨ]),REMOVEFILTERS('KPI GHBL')),(_AllBan || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI GHBL'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC)))) && NOT ISBLANK('KPI GHBL'[NGÀY HẾT HẠN CŨ]) && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]>=_Start && 'KPI GHBL'[NGÀY HẾT HẠN CŨ]<=_End)
+			RETURN IF(_Percent,100*CALCULATE(AVERAGEX(VALUES('KPI GHBL'[MÃ LƯỢT]),CALCULATE(MAX('KPI GHBL'[ĐIỂM HOÀN THÀNH]))),REMOVEFILTERS('KPI GHBL'),_BL,REMOVEFILTERS('DimDate'))),
+			"TDSP",VAR _TD=FILTER(CALCULATETABLE(SUMMARIZE('KPI TDSP Nguồn','KPI TDSP Nguồn'[Phòng],'KPI TDSP Nguồn'[PIC],'KPI TDSP Nguồn'[PIC TP]),REMOVEFILTERS('KPI TDSP Nguồn')),_AllBan || IF(_DeptScope,UPPER(TRIM('KPI TDSP Nguồn'[Phòng]))=_Dept,'KPI TDSP Nguồn'[PIC]=_PIC || 'KPI TDSP Nguồn'[PIC TP]=_PIC))
+			VAR _BanRows=FILTER(ALL('BI_Data'),'BI_Data'[Mã CV]=_Code && 'BI_Data'[Năm]=_Y && 'BI_Data'[PIC]="BAN PTC" && NOT ISBLANK('BI_Data'[Điểm hoàn thành tính toán]))
+			VAR _Ban=IF(_Money,MAXX(TOPN(1,_BanRows,'BI_Data'[Quý],DESC),'BI_Data'[Điểm hoàn thành tính toán]),AVERAGEX(_BanRows,'BI_Data'[Điểm hoàn thành tính toán]))
+			RETURN IF(_Money,IF(_AllBan,_Ban,IF(_DeptScope,CALCULATE([TDSP Công nợ tỷ đồng],REMOVEFILTERS('KPI TDSP Nguồn'),_TD,REMOVEFILTERS('Kỳ đánh giá đấu thầu'),TREATAS(CALENDAR(DATE(_Y,1,1),_End),'Kỳ đánh giá đấu thầu'[Ngày])))),IF(_Percent && _Scope="CHUNG",100*_Ban)),
+			VAR _BanRows=FILTER(ALL('BI_Data'),'BI_Data'[Mã CV]=_Code && 'BI_Data'[Năm]=_Y && 'BI_Data'[PIC]="BAN PTC" && NOT ISBLANK('BI_Data'[Điểm hoàn thành tính toán]))
+			VAR _Ban=IF(_Money,MAXX(TOPN(1,_BanRows,'BI_Data'[Quý],DESC),'BI_Data'[Điểm hoàn thành tính toán]),AVERAGEX(_BanRows,'BI_Data'[Điểm hoàn thành tính toán]))
+			RETURN IF(_Percent && _Scope="CHUNG",100*_Ban)))
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: eb1f6ff5-bdbd-4ddb-9616-6054a748ef58
+
+	/// Tính điểm nguồn trước điều kiện hiển thị, dùng để tính sẵn bảng Template KPI Kết quả lưu khi refresh. Quy tắc kỳ, CN/TH1/TH2, OPEX/PCD, trần QTHD/TDSP giữ nguyên.
+	measure 'Template Điểm QTHD cá nhân Q4' =
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Y=SELECTEDVALUE('KPI Đăng ký'[Năm])
+			VAR _Code=SELECTEDVALUE('KPI Đăng ký'[Mã CV])
+			VAR _Scope=UPPER(TRIM([Template Phạm vi ghi nhận]))
+			VAR _Level=UPPER(TRIM([Template Cấp tính điểm]))
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _Self=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			VAR _SelfID=MAXX(_Self,'KPI Nhân sự'[Mã NV chuẩn])
+			VAR _Group=_Scope="BAN - PIC" && _PIC<>"BAN PTC" && (_Level="TH1" || LEFT(_Level,3)="TH2")
+			VAR _Department=SWITCH(_Level,"TH2-PRO","PRO","TH2-BMD","BMD",BLANK())
+			VAR _SelfCount=COUNTROWS(_Self)
+			VAR _ApplyStaff=_Group || (_Scope="BAN - PIC" && _PIC<>"BAN PTC" && _SelfCount=1)
+			VAR _EffectiveStaff=FILTER(ALL('KPI Nhân sự'),
+			IF(_Group,IF(NOT ISBLANK(_Department),
+			UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Phòng],UNICHAR(160)," ")))=_Department,
+			NOT ISBLANK(_SelfID) && PATHCONTAINS('KPI Nhân sự'[Đường dẫn quản lý],_SelfID)),
+			IF(_ApplyStaff,IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC),TRUE())))
+			VAR _MemberNames=SELECTCOLUMNS(_EffectiveStaff,"_Name",UPPER(TRIM(SUBSTITUTE('KPI Nhân sự'[Họ và tên],UNICHAR(160)," "))))
+			VAR _UseTeam=_ApplyStaff
+			VAR _Selected=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _QuarterIn=NOT ISFILTERED('Kỳ đánh giá đấu thầu') || COUNTROWS(FILTER(_Selected,YEAR('Kỳ đánh giá đấu thầu'[Ngày])=_Y && QUARTER('Kỳ đánh giá đấu thầu'[Ngày])=4))>0
+			VAR _Dates=CALENDAR(DATE(_Y,1,1),EOMONTH(DATE(_Y,12,1),0))
+			VAR _Rows=FILTER(CALCULATETABLE(SUMMARIZE('KPI QTHD','KPI QTHD'[PIC]),REMOVEFILTERS('KPI QTHD')),_PIC="BAN PTC" || IF(_UseTeam,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," "))) IN _MemberNames,UPPER(TRIM(SUBSTITUTE('KPI QTHD'[PIC],UNICHAR(160)," ")))=UPPER(TRIM(_PIC))))
+			RETURN IF(_Code="QTHD" && HASONEVALUE('KPI Đăng ký'[Dòng nguồn]) && _QuarterIn && NOT ISBLANK(_PIC) && (_PIC="BAN PTC" || _Scope="BAN - PIC"),
+			CALCULATE([QTHD Điểm hoàn thành],REMOVEFILTERS('KPI QTHD'),_Rows,REMOVEFILTERS('DimDate'),TREATAS(_Dates,'DimDate'[Date])))
+		formatString: 0.00%
+		displayFolder: TEMPLATE KPI\Cá nhân
+		lineageTag: 2c384f38-ec5a-4bba-acc1-cf9ae2a1e4cb
+
+	/// Cấp tính điểm tra DMNV theo mã nhân viên; BAN PTC giữ mức Ban.
+	measure 'Template Cấp tính điểm' =
+			VAR _ID=IFERROR(VALUE(SELECTEDVALUE('KPI Đăng ký'[Mã NV])),BLANK())
+			VAR _PIC=SELECTEDVALUE('KPI Đăng ký'[PIC])
+			VAR _Staff=FILTER(ALL('KPI Nhân sự'),IF(NOT ISBLANK(_ID),IFERROR(VALUE('KPI Nhân sự'[Mã NV]),-1)=_ID,'KPI Nhân sự'[Họ và tên]=_PIC))
+			RETURN IF(_PIC="BAN PTC","BAN",CALCULATE(SELECTEDVALUE('KPI Nhân sự'[Cấp tính điểm]),_Staff))
+		displayFolder: TEMPLATE KPI
+		lineageTag: 9fc048a4-9a54-4e2f-88ff-0a8d914dc1ec
+
+	column 'Mã NV'
+		dataType: string
+		lineageTag: edbb8a14-a264-4c3b-ab27-d8f0b4ebd02c
+		summarizeBy: none
+		sourceColumn: Mã NV
+
+	column PIC
+		dataType: string
+		lineageTag: db80d79e-9946-4909-8303-3003ae416bdc
+		summarizeBy: none
+		sourceColumn: PIC
+
+	column 'Mã phòng'
+		dataType: string
+		lineageTag: ba5f8457-3dec-469b-9e1e-49b564cd0ab8
+		summarizeBy: none
+		sourceColumn: Mã phòng
+
+	column 'Mã quản lý'
+		dataType: string
+		lineageTag: 545e397a-dbc6-47cf-8b70-34bd2e0015f1
+		summarizeBy: none
+		sourceColumn: Mã quản lý
+
+	column 'Email quản lý'
+		dataType: string
+		lineageTag: 770b3b33-a904-4a25-8b9a-82a2f12b8e03
+		summarizeBy: none
+		sourceColumn: Email quản lý
+
+	column 'Tên công việc'
+		dataType: string
+		lineageTag: 42ee6619-954b-4c39-baf1-cc9cfa10662b
+		summarizeBy: none
+		sourceColumn: Tên công việc
+
+	column 'Mã CV'
+		dataType: string
+		lineageTag: ebe35fa6-3740-43a0-979b-ad7445c97f1a
+		summarizeBy: none
+		sourceColumn: Mã CV
+
+	column 'Chỉ số KPI'
+		dataType: string
+		lineageTag: c6c6f944-b70e-4b91-9956-8f7c3e83461a
+		summarizeBy: none
+		sourceColumn: Chỉ số KPI
+
+	column 'Đơn vị tính'
+		dataType: string
+		lineageTag: 54b645da-edf7-45c4-80da-83ecd204b4c2
+		summarizeBy: none
+		sourceColumn: Đơn vị tính
+
+	column Min
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: f03667f9-6773-479c-b294-673f1708b1b3
+		summarizeBy: none
+		sourceColumn: Min
+
+	column Max
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 52d3cfd2-824c-4c5e-874b-0385356d635c
+		summarizeBy: none
+		sourceColumn: Max
+
+	column 'Trọng số'
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 77848973-fc91-4ab6-bddb-f8df448d387b
+		summarizeBy: none
+		sourceColumn: Trọng số
+
+	column 'Mục tiêu Q1'
+		dataType: string
+		lineageTag: e757eaf9-5ed9-4dfd-98bd-af6b4648dd13
+		summarizeBy: none
+		sourceColumn: Mục tiêu Q1
+
+	column 'Mục tiêu Q2'
+		dataType: string
+		lineageTag: 7dc28348-4cda-4262-80bd-e9d78aa271ba
+		summarizeBy: none
+		sourceColumn: Mục tiêu Q2
+
+	column 'Mục tiêu Q3'
+		dataType: string
+		lineageTag: a7335439-4d49-4143-917e-4fa74735134b
+		summarizeBy: none
+		sourceColumn: Mục tiêu Q3
+
+	column 'Mục tiêu Q4'
+		dataType: string
+		lineageTag: a953d287-6de2-4efe-8048-9cef48871a15
+		summarizeBy: none
+		sourceColumn: Mục tiêu Q4
+
+	column Năm
+		dataType: int64
+		lineageTag: 9e53de22-9abb-4633-91d6-1776c51d7edc
+		summarizeBy: none
+		sourceColumn: Năm
+
+	column 'Ghi chú'
+		dataType: string
+		lineageTag: 45c4fe7e-7733-4b9b-9507-264edc549dba
+		summarizeBy: none
+		sourceColumn: Ghi chú
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: 58eb399e-5b68-47a8-9e55-4af93973dcd7
+		summarizeBy: none
+		sourceColumn: Dòng nguồn
+
+	/// STT liên tục theo PIC và năm, theo thứ tự đăng ký nguồn; không thay khóa dòng nguồn.
+	column 'STT theo PIC' =
+			VAR _PIC='KPI Đăng ký'[PIC]
+			VAR _Year='KPI Đăng ký'[Năm]
+			VAR _Row='KPI Đăng ký'[Dòng nguồn]
+			RETURN COUNTROWS(FILTER(ALL('KPI Đăng ký'),'KPI Đăng ký'[PIC]=_PIC && 'KPI Đăng ký'[Năm]=_Year && 'KPI Đăng ký'[Dòng nguồn]<=_Row))
+		dataType: int64
+		formatString: 0
+		lineageTag: 611a31cb-faf4-465d-8cff-975b12c04c23
+		summarizeBy: none
+
+	partition 'KPI Đăng ký' = m
+		mode: import
+		source =
+				let
+				    URL="https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'CF0C399F-E797-43AF-AAB1-1BC25EE82126')/$value",
+				    Sheet="DANG KY KPI",
+				    HeaderKey="Mã NV",
+				    Mapping={{0,"Mã NV","String"},{1,"PIC","String"},{2,"Mã phòng","String"},{3,"Mã quản lý","String"},{4,"Email quản lý","String"},{5,"Tên công việc","String"},{6,"Mã CV","String"},{7,"Chỉ số KPI","String"},{8,"Đơn vị tính","String"},{9,"Min","Decimal"},{10,"Max","Decimal"},{11,"Trọng số","Decimal"},{12,"Mục tiêu Q1","String"},{13,"Mục tiêu Q2","String"},{14,"Mục tiêu Q3","String"},{15,"Mục tiêu Q4","String"},{16,"Năm","Int64"},{19,"Ghi chú","String"}},
+				    ValidRow=(r as record) as logical => Norm(Record.Field(r,"Mã CV"))<>"" and Norm(Record.Field(r,"PIC"))<>"",
+				    Workbook = Excel.Workbook(Web.Contents(URL),null,true),
+				    Raw = Workbook{[Item=Sheet,Kind="Sheet"]}[Data],
+				    Norm = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")),{" ", Character.FromNumber(160), "#(lf)", "#(cr)", "#(tab)"})),
+				    HeaderRow = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)),(r)=>Norm(r{0})=Norm(HeaderKey)),true),
+				    Checked = if HeaderRow<0 then error Error.Record("KPI source","Không tìm thấy tiêu đề " & HeaderKey & " trong " & Sheet,null) else Raw,
+				    Indexed = Table.AddIndexColumn(Checked,"Dòng nguồn",1,1,Int64.Type),
+				    Body = Table.Skip(Indexed,HeaderRow+1),
+				    SourceNames = Table.ColumnNames(Raw),
+				    Projected = Table.FromColumns(List.Combine({List.Transform(Mapping,(m)=>Table.Column(Body,SourceNames{m{0}})),{Table.Column(Body,"Dòng nguồn")}}),List.Combine({List.Transform(Mapping,each _{1}),{"Dòng nguồn"}})),
+				    Selected = Table.SelectRows(Projected,each ValidRow(_)),
+				    Txt = (v as any) as nullable text => if v=null then null else Text.Trim(Text.From(v)),
+				    Num = (v as any) as nullable number => if v=null or Text.Trim(Text.From(v))="" then null else try Number.From(v,"en-US") otherwise null,
+				    Dt = (v as any) as nullable date => if v=null or Text.Trim(Text.From(v))="" then null else if Value.Is(v,type text) then try Date.FromText(Text.Trim(v),[Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted = Table.TransformColumns(Selected,List.Transform(Mapping,(m)=>{m{1},if m{2}="DateTime" then Dt else if m{2}="Decimal" or m{2}="Int64" then Num else Txt,if m{2}="DateTime" then type date else if m{2}="Int64" then Int64.Type else if m{2}="Decimal" then type number else type text})),
+				    CorrectedCdshUnit = Table.ReplaceValue(
+				        Converted,
+				        each [Mã CV] = "CDSH" and [PIC] = "Hồ Huỳnh Hưng",
+				        "%",
+				        (currentValue, matchesRow, replacementValue) => if matchesRow then replacementValue else currentValue,
+				        {"Đơn vị tính"}
+				    )
+				in CorrectedCdshUnit
+

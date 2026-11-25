@@ -1,0 +1,1463 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "32aa4732738dddfba971",
+  "position": {
+    "x": 264,
+    "y": 248,
+    "z": 5000,
+    "height": 800,
+    "width": 1632,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "STT"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.STT",
+              "nativeQueryRef": "STT",
+              "active": true,
+              "displayName": "STT"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Hạng mục"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Hạng mục",
+              "nativeQueryRef": "Hạng mục",
+              "displayName": "Hạng mục"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Phòng"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Phòng",
+              "nativeQueryRef": "Phòng",
+              "displayName": "Phòng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ngày mục tiêu"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ngày mục tiêu",
+              "nativeQueryRef": "Ngày mục tiêu",
+              "displayName": "Ngày mục tiêu"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Cơ sở ghi nhận"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Cơ sở ghi nhận",
+              "nativeQueryRef": "Cơ sở ghi nhận",
+              "displayName": "Cơ sở ghi nhận"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ngày hoàn thành"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ngày hoàn thành",
+              "nativeQueryRef": "Ngày hoàn thành",
+              "displayName": "Ngày hoàn thành"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Điểm hiển thị"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Điểm hiển thị",
+              "nativeQueryRef": "ĐIỂM HOÀN THÀNH",
+              "displayName": "ĐIỂM HOÀN THÀNH"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Giải trình"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Giải trình",
+              "nativeQueryRef": "Giải trình",
+              "displayName": "Giải trình"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Link minh chứng"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Link minh chứng",
+              "nativeQueryRef": "Link minh chứng",
+              "displayName": "Link minh chứng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ghi chú"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ghi chú",
+              "nativeQueryRef": "Ghi chú",
+              "displayName": "Ghi chú"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới PIC"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới PIC",
+              "nativeQueryRef": "PIC",
+              "displayName": "PIC"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Team"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Team",
+              "nativeQueryRef": "Team",
+              "displayName": "Team"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Tình trạng"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Tình trạng",
+              "nativeQueryRef": "Tình trạng",
+              "displayName": "Tình trạng"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Quý mục tiêu nguồn"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Quý mục tiêu nguồn",
+              "nativeQueryRef": "Quý mục tiêu nguồn",
+              "displayName": "Quý mục tiêu nguồn"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Chuẩn hóa BOQ kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Chuẩn hóa BOQ kế hoạch",
+              "nativeQueryRef": "Chuẩn hóa BOQ kế hoạch",
+              "displayName": "Chuẩn hóa BOQ kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Chuẩn hóa BOQ thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Chuẩn hóa BOQ thực tế",
+              "nativeQueryRef": "Chuẩn hóa BOQ thực tế",
+              "displayName": "Chuẩn hóa BOQ thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Tender list kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Tender list kế hoạch",
+              "nativeQueryRef": "Tender list kế hoạch",
+              "displayName": "Tender list kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Tender list thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Tender list thực tế",
+              "nativeQueryRef": "Tender list thực tế",
+              "displayName": "Tender list thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Gom sản lượng kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Gom sản lượng kế hoạch",
+              "nativeQueryRef": "Gom sản lượng kế hoạch",
+              "displayName": "Gom sản lượng kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Phát hành HSMT thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Phát hành HSMT thực tế",
+              "nativeQueryRef": "Phát hành HSMT thực tế",
+              "displayName": "Phát hành HSMT thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ghi nhận loại khỏi KPI"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ghi nhận loại khỏi KPI",
+              "nativeQueryRef": "Ghi nhận loại khỏi KPI",
+              "displayName": "Ghi nhận loại khỏi KPI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Căn cứ loại khỏi KPI"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Căn cứ loại khỏi KPI",
+              "nativeQueryRef": "Căn cứ loại khỏi KPI",
+              "displayName": "Căn cứ loại khỏi KPI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Đánh giá R1 kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R1 kế hoạch",
+              "nativeQueryRef": "Đánh giá R1 kế hoạch",
+              "displayName": "Đánh giá R1 kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Đánh giá R1 thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R1 thực tế",
+              "nativeQueryRef": "Đánh giá R1 thực tế",
+              "displayName": "Đánh giá R1 thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Nhận báo giá R2 kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Nhận báo giá R2 kế hoạch",
+              "nativeQueryRef": "Nhận báo giá R2 kế hoạch",
+              "displayName": "Nhận báo giá R2 kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Nhận báo giá R2 thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Nhận báo giá R2 thực tế",
+              "nativeQueryRef": "Nhận báo giá R2 thực tế",
+              "displayName": "Nhận báo giá R2 thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Đánh giá R2 kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R2 kế hoạch",
+              "nativeQueryRef": "Đánh giá R2 kế hoạch",
+              "displayName": "Đánh giá R2 kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Đánh giá R2 thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R2 thực tế",
+              "nativeQueryRef": "Đánh giá R2 thực tế",
+              "displayName": "Đánh giá R2 thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Trình tờ trình kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Trình tờ trình kế hoạch",
+              "nativeQueryRef": "Trình tờ trình kế hoạch",
+              "displayName": "Trình tờ trình kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Trình tờ trình thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Trình tờ trình thực tế",
+              "nativeQueryRef": "Trình tờ trình thực tế",
+              "displayName": "Trình tờ trình thực tế"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ký HĐNT kế hoạch"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ký HĐNT kế hoạch",
+              "nativeQueryRef": "Ký HĐNT kế hoạch",
+              "displayName": "Ký HĐNT kế hoạch"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI TUNC Nguồn"
+                    }
+                  },
+                  "Property": "TUNC Lưới Ký HĐNT thực tế"
+                }
+              },
+              "queryRef": "KPI TUNC Nguồn.TUNC Lưới Ký HĐNT thực tế",
+              "nativeQueryRef": "Ký HĐNT thực tế",
+              "displayName": "Ký HĐNT thực tế"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI TUNC Nguồn"
+                  }
+                },
+                "Property": "STT"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EFF5FB'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "48D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.STT"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Hạng mục"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Phòng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ngày mục tiêu"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Cơ sở ghi nhận"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ngày hoàn thành"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Điểm hiển thị"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Giải trình"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Link minh chứng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ghi chú"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "184D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới PIC"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Team"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Tình trạng"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Quý mục tiêu nguồn"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Chuẩn hóa BOQ kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Chuẩn hóa BOQ thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Tender list kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Tender list thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Gom sản lượng kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Phát hành HSMT thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ghi nhận loại khỏi KPI"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Căn cứ loại khỏi KPI"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R1 kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R1 thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Nhận báo giá R2 kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Nhận báo giá R2 thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R2 kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Đánh giá R2 thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Trình tờ trình kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Trình tờ trình thực tế"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ký HĐNT kế hoạch"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI TUNC Nguồn.TUNC Lưới Ký HĐNT thực tế"
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "stepped": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showExpandCollapseButtons": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F5F8FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridHorizontalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "rowSubtotalsLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TỔNG'"
+                }
+              }
+            },
+            "rowSubtotalsPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bottom'"
+                }
+              }
+            },
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E7F1FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "applyToHeaders": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CHI TIẾT TỐI ƯU HÓA NGUỒN CUNG'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Lưới chi tiết theo mẫu Excel, có tổng cuối bảng và xuất dữ liệu.'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,108 @@
+/// Nguồn PCD theo 9 cụm GMD từ NVLG_PTC_2026; giữ nguyên tỷ lệ gốc để tránh làm tròn trọng số trước tính toán. Chỉ phần bảng đầu sheet; không gộp khối chi tiết phía dưới.
+table 'KPI PCD'
+	isHidden
+	lineageTag: db89d69c-4851-4ddd-9473-c9b4c702b311
+
+	column STT
+		dataType: int64
+		formatString: #,##0
+		lineageTag: c753556d-4b71-445d-9278-29bbd1a8edad
+		summarizeBy: none
+		sourceColumn: STT
+
+	column 'Cụm dự án'
+		dataType: string
+		formatString: #,##0
+		lineageTag: ac37c0a5-5de3-4314-b219-e8227d34c68e
+		summarizeBy: none
+		sourceColumn: Cụm dự án
+
+	column 'Số gói PTC'
+		dataType: int64
+		formatString: #,##0
+		lineageTag: fd4939a1-58f9-43e2-94f2-deb0fb14428c
+		summarizeBy: none
+		sourceColumn: Số gói PTC
+
+	column 'Trọng số'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: b1240853-bfae-493b-9abd-4698064931d7
+		summarizeBy: none
+		sourceColumn: Trọng số
+
+	column 'Kết quả Q1'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 2b85803a-dd68-44b2-832a-44473e30b03f
+		summarizeBy: none
+		sourceColumn: Kết quả Q1
+
+	column 'Kết quả Q2'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 16bb15fc-8779-441e-b4db-50f4b2d0bbc7
+		summarizeBy: none
+		sourceColumn: Kết quả Q2
+
+	column 'Kết quả Q3'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 70e74996-3dcd-43eb-a587-b6ec0aff88ad
+		summarizeBy: none
+		sourceColumn: Kết quả Q3
+
+	column 'Kết quả áp dụng nguồn'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 2c910295-3ebd-4e98-906e-ebed2818f220
+		summarizeBy: none
+		sourceColumn: Kết quả áp dụng nguồn
+
+	column 'Đóng góp nguồn'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 9f260009-473d-4b8f-8f64-e94d96808512
+		summarizeBy: none
+		sourceColumn: Đóng góp nguồn
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: 4079679a-85b8-45fd-8d2b-3c56b31ad8e9
+		summarizeBy: none
+		sourceColumn: Dòng nguồn
+
+	column 'Kết quả Q4'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 201fa1ec-d5f9-4932-81fc-ae4e61842114
+		summarizeBy: none
+		sourceColumn: Kết quả Q4
+
+	partition 'Tiến độ PCD Nguồn' = m
+		mode: import
+		source =
+				let
+				    URL="https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'D4FA6E74-1B84-40F9-BBC6-E5A2BA0586C6')/$value",
+				    Sheet="Tiến độ PCD",
+				    HeaderKey="STT",
+				    Mapping={{0,"STT","Int64"},{2,"Cụm dự án","String"},{3,"Số gói PTC","Int64"},{4,"Trọng số","Decimal"},{5,"Kết quả Q1","Decimal"},{6,"Kết quả Q2","Decimal"},{7,"Kết quả Q3","Decimal"},{8,"Kết quả Q4","Decimal"},{9,"Kết quả áp dụng nguồn","Decimal"},{10,"Đóng góp nguồn","Decimal"}},
+				    ValidRow=(r as record) as logical => (try Number.From(Record.Field(r,"STT")) otherwise null)<>null and Norm(Record.Field(r,"Cụm dự án"))<>"",
+				    Workbook = Excel.Workbook(Web.Contents(URL),null,true),
+				    Raw = Workbook{[Item=Sheet,Kind="Sheet"]}[Data],
+				    Norm = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")),{" ", Character.FromNumber(160), "#(lf)", "#(cr)", "#(tab)"})),
+				    HeaderRow = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)),(r)=>Norm(r{0})=Norm(HeaderKey)),true),
+				    Checked = if HeaderRow<0 then error Error.Record("KPI source","Không tìm thấy tiêu đề " & HeaderKey & " trong " & Sheet,null) else Raw,
+				    Indexed = Table.AddIndexColumn(Checked,"Dòng nguồn",1,1,Int64.Type),
+				    BodyAll = Table.Skip(Indexed,HeaderRow+1),
+				    TotalPosition = List.PositionOf(List.Transform(Table.Column(BodyAll,"Column3"),each Norm(_)="TỔNG"),true),
+				    Body = if TotalPosition<0 then error Error.Record("PCD source","Không tìm thấy dòng TỔNG kết thúc bảng cụm",null) else Table.FirstN(BodyAll,TotalPosition),
+				    SourceNames = Table.ColumnNames(Raw),
+				    Projected = Table.FromColumns(List.Combine({List.Transform(Mapping,(m)=>Table.Column(Body,SourceNames{m{0}})),{Table.Column(Body,"Dòng nguồn")}}),List.Combine({List.Transform(Mapping,each _{1}),{"Dòng nguồn"}})),
+				    Selected = Table.SelectRows(Projected,each ValidRow(_)),
+				    Txt = (v as any) as nullable text => if v=null then null else Text.Trim(Text.From(v)),
+				    Num = (v as any) as nullable number => if v=null or Text.Trim(Text.From(v))="" then null else try Number.From(v,"en-US") otherwise null,
+				    Dt = (v as any) as nullable date => if v=null or Text.Trim(Text.From(v))="" then null else if Value.Is(v,type text) then try Date.FromText(Text.Trim(v),[Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted = Table.TransformColumns(Selected,List.Transform(Mapping,(m)=>{m{1},if m{2}="DateTime" then Dt else if m{2}="Decimal" or m{2}="Int64" then Num else Txt,if m{2}="DateTime" then type date else if m{2}="Int64" then Int64.Type else if m{2}="Decimal" then type number else type text}))
+				in Converted
+

@@ -1,0 +1,441 @@
+table 'Bảo lãnh theo dõi'
+	lineageTag: 7b6c8e28-6da8-4c2d-bdfc-2f5461219d77
+
+	/// Số dòng bảo lãnh theo loại và các điều kiện lọc chung; không gom theo HĐ hoặc phụ lục.
+	measure 'BL Số lượng' = COUNTROWS ( 'Bảo lãnh theo dõi' )
+		formatString: #,##0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: d71c84d0-269c-411b-90fc-2cd8aabf3301
+
+	/// Tổng giá trị của toàn bộ dòng bảo lãnh theo loại và các điều kiện lọc chung, quy đổi sang tỷ đồng.
+	measure 'BL Tổng giá trị (tỷ)' =
+			DIVIDE (
+			    SUM ( 'Bảo lãnh theo dõi'[Giá trị] ),
+			    1000000000
+			)
+		formatString: #,##0.0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: c190ef3e-eed4-4a7d-89c5-691537f0a0ea
+
+	measure 'BL Số lượng Chưa gia hạn' =
+			CALCULATE (
+			    [BL Số lượng],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Chưa gia hạn" )
+			)
+		formatString: #,##0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: e1d0e670-5233-4752-8947-312a5a4b22db
+
+	measure 'BL Giá trị Chưa gia hạn (tỷ)' =
+			CALCULATE (
+			    [BL Tổng giá trị (tỷ)],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Chưa gia hạn" )
+			)
+		formatString: #,##0.0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 91d27e28-5ad2-4f31-9968-88cc4a401818
+
+	measure 'BL Số lượng Sắp đến hạn' =
+			CALCULATE (
+			    [BL Số lượng],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Sắp đến hạn" )
+			)
+		formatString: #,##0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 94edc74a-8cf4-4d6c-a6ef-b75053c6ba20
+
+	measure 'BL Giá trị Sắp đến hạn (tỷ)' =
+			CALCULATE (
+			    [BL Tổng giá trị (tỷ)],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Sắp đến hạn" )
+			)
+		formatString: #,##0.0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 79c7bb05-b268-4f69-a8b4-b456ff77acd0
+
+	measure 'BL Số lượng Chưa đến hạn' =
+			CALCULATE (
+			    [BL Số lượng],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Chưa đến hạn" )
+			)
+		formatString: #,##0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 8b907f63-2cda-44f5-8583-96385a3651a8
+
+	measure 'BL Giá trị Chưa đến hạn (tỷ)' =
+			CALCULATE (
+			    [BL Tổng giá trị (tỷ)],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] = "Chưa đến hạn" )
+			)
+		formatString: #,##0.0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 4b414aba-d6d9-410f-bf86-6ff9c9731697
+
+	/// Giá trị cần hành động gồm Chưa gia hạn và Sắp đến hạn.
+	measure 'BL Giá trị cần xử lý (tỷ)' =
+			CALCULATE (
+			    [BL Tổng giá trị (tỷ)],
+			    KEEPFILTERS ( 'Bảo lãnh theo dõi'[Tình trạng] IN { "Chưa gia hạn", "Sắp đến hạn" } )
+			)
+		formatString: #,##0.0
+		displayFolder: KPI Bảo lãnh
+		lineageTag: 8d4450a5-24fa-46b4-8715-ae090aa97f61
+
+	measure 'BL Giá trị chi tiết' = SUM ( 'Bảo lãnh theo dõi'[Giá trị] )
+		formatString: #,##0
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 08fe7a2e-d32b-4b9a-ad18-c37f4f713095
+
+	measure 'BL Ngày bắt đầu (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Ngày bắt đầu] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		formatString: dd/MM/yyyy
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 950d2c8f-ac03-4f31-89e6-c37adb08a85e
+
+	measure 'BL Ngày hết hiệu lực (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Ngày hết hiệu lực] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		formatString: dd/MM/yyyy
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 3cc2d47e-ea2a-42cd-98e0-7f233c4175a7
+
+	measure 'BL Ngân hàng (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Ngân hàng] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: a377938d-0076-47ec-af34-83d466f5b1fe
+
+	measure 'BL Cảnh báo (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Cảnh báo] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 8d91ec10-7562-4fae-a563-ffea2e81ea61
+
+	measure 'BL Tình trạng (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Tình trạng] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 046270a3-bd9a-436e-ace6-460216d7183a
+
+	measure 'BL PIC (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[PIC] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: e9079f87-a433-457b-acb8-0e6a9397e825
+
+	/// Chỉ hiện số hợp đồng ở cấp Nhà thầu; không lấy First/Min tại cấp tổng hợp.
+	measure 'BL Số HĐ chính (scope)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Số HĐ chính] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 9f5e2cd7-b181-4f5d-bfd2-5e9a96fdcb01
+
+	/// Chỉ hiện số phụ lục ở cấp Nhà thầu; để trống khi có nhiều phụ lục trong cùng ngữ cảnh.
+	measure 'BL Số PLHĐ (scope)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Nhà thầu] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Số PLHĐ] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: f3cf1108-fb25-40b8-bc5f-d6a14fa10c8c
+
+	/// Giá trị hợp đồng và phát sinh gồm VAT của dòng bảo lãnh đang chọn; không cộng gộp giữa Tạm ứng và THHĐ.
+	measure 'BL Giá trị HĐ+PS gồm VAT (dòng)' =
+			IF (
+			    ISINSCOPE ( 'Bảo lãnh theo dõi'[Số HĐ chính] ),
+			    CALCULATE (
+			        SELECTEDVALUE ( 'Bảo lãnh theo dõi'[Giá trị HĐ+PS gồm VAT] ),
+			        KEEPFILTERS ( 'Bảo lãnh theo dõi'[Là bản ghi mới nhất] = TRUE () )
+			    )
+			)
+		formatString: #,##0
+		displayFolder: Chi tiết Bảo lãnh
+		lineageTag: 2d8ed333-b696-4b27-a635-abb625e4862f
+
+	column 'Loại bảo lãnh'
+		dataType: string
+		lineageTag: 4f77c6ac-5f3f-468d-837c-fde019a4ec12
+		summarizeBy: none
+		sourceColumn: [Loại bảo lãnh]
+
+	column 'Khóa HĐ-PL'
+		dataType: string
+		isHidden
+		lineageTag: 12680caf-4286-4dd3-99a3-34f7f2eea50d
+		summarizeBy: none
+		sourceColumn: [Khóa HĐ-PL]
+
+	column 'Dòng nguồn'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 2116609f-f75d-4a88-9478-3a403ce800b2
+		summarizeBy: sum
+		sourceColumn: [Dòng nguồn]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Số HĐ chính'
+		dataType: string
+		lineageTag: 7b96ceff-866a-44de-bd8c-273de9c8e40e
+		summarizeBy: none
+		sourceColumn: [Số HĐ chính]
+
+	column 'Số PLHĐ'
+		dataType: string
+		lineageTag: 0d789d9a-fb8d-48b7-9231-46c3771dcfbd
+		summarizeBy: none
+		sourceColumn: [Số PLHĐ]
+
+	column 'Dự án'
+		dataType: string
+		lineageTag: 2f86edfd-1533-4d6f-8a65-a2ef5f6c48e1
+		summarizeBy: none
+		sourceColumn: [Dự án]
+
+	column 'Khu vực'
+		dataType: string
+		lineageTag: fcd4b8da-cffc-492e-b15d-0b67a53e07f3
+		summarizeBy: none
+		sourceColumn: [Khu vực]
+
+	column 'Nội dung HĐ'
+		dataType: string
+		lineageTag: 3e436490-a3b4-422f-8c61-1159cd4a65fe
+		summarizeBy: none
+		sourceColumn: [Nội dung HĐ]
+
+	column 'Pháp nhân'
+		dataType: string
+		lineageTag: 7a99b62d-0b51-4d93-baf1-75da6fc3c16d
+		summarizeBy: none
+		sourceColumn: [Pháp nhân]
+
+	column 'Nhà thầu'
+		dataType: string
+		lineageTag: 903553a3-b0db-4621-8dae-43f8efb892ba
+		summarizeBy: none
+		sourceColumn: [Nhà thầu]
+
+	column 'Ngân hàng'
+		dataType: string
+		lineageTag: c558b341-cf40-40cb-99ef-b7ad971012c6
+		summarizeBy: none
+		sourceColumn: [Ngân hàng]
+
+	column 'Ngày bắt đầu'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 3723a042-2b98-4ec6-b4a2-117620e80d68
+		summarizeBy: none
+		sourceColumn: [Ngày bắt đầu]
+
+		variation Variation
+			isDefault
+			relationship: c443fe19-7c06-4699-8de2-c401e4f300f0
+			defaultHierarchy: LocalDateTable_0c2cb0bc-4fee-4110-843d-690c7a58cd9b.'Date Hierarchy'
+
+	column 'Ngày hết hiệu lực'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 96cf584d-c110-473c-948b-256277447f41
+		summarizeBy: none
+		sourceColumn: [Ngày hết hiệu lực]
+
+		variation Variation
+			isDefault
+			relationship: e0eea680-a053-423b-a246-df2dbe39d5b0
+			defaultHierarchy: LocalDateTable_2f9e89ad-410a-40d5-94fb-59f447e1492e.'Date Hierarchy'
+
+	column 'Năm hết hiệu lực'
+		dataType: int64
+		formatString: 0
+		lineageTag: b2045889-9a19-4ede-8fd6-6277aed37b8c
+		summarizeBy: sum
+		sourceColumn: [Năm hết hiệu lực]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tháng hết hiệu lực'
+		dataType: dateTime
+		formatString: MM/yyyy
+		lineageTag: 716ea0e7-2e3a-4795-ae96-f700352898e8
+		summarizeBy: none
+		sourceColumn: [Tháng hết hiệu lực]
+
+		variation Variation
+			isDefault
+			relationship: 914c2c9c-bc6a-44bf-b3d5-62b65525c256
+			defaultHierarchy: LocalDateTable_e87ebc67-304e-4459-ba39-c9f50e909dcd.'Date Hierarchy'
+
+	column 'Giá trị'
+		dataType: int64
+		formatString: #,##0
+		lineageTag: a5019e53-37fa-41a7-87f8-06889a71ce73
+		summarizeBy: sum
+		sourceColumn: [Giá trị]
+
+	column 'Cảnh báo'
+		dataType: string
+		lineageTag: 0ab075b3-4663-4142-918a-36136a44cbcc
+		summarizeBy: none
+		sourceColumn: [Cảnh báo]
+
+	column 'Tình trạng'
+		dataType: string
+		lineageTag: a255c977-197a-478a-9e75-3548901ddcba
+		summarizeBy: none
+		sourceColumn: [Tình trạng]
+
+	column PIC
+		dataType: string
+		lineageTag: 42546214-b1f8-4a4f-bb51-36dd9a0c034d
+		summarizeBy: none
+		sourceColumn: [PIC]
+
+	column 'Là bản ghi mới nhất'
+		dataType: boolean
+		lineageTag: 628101e9-345d-46a5-aecb-b7bdff4010d1
+		summarizeBy: none
+		sourceColumn: [Là bản ghi mới nhất]
+
+	/// Giá trị hợp đồng và phát sinh gồm VAT của dòng hợp đồng; hiển thị riêng theo loại bảo lãnh đang được chọn.
+	column 'Giá trị HĐ+PS gồm VAT'
+		dataType: decimal
+		formatString: #,##0
+		lineageTag: fc443ace-790c-4ec0-97ac-90bdb39988c1
+		summarizeBy: sum
+		sourceColumn: [Giá trị HĐ+PS gồm VAT]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Bảo lãnh theo dõi' = calculated
+		mode: import
+		source =
+				VAR _TamUng =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            BaoLanh,
+				            NOT ISBLANK ( BaoLanh[NGÀY HẾT HIỆU LỰC TẠM ỨNG] )
+				                || NOT ISBLANK ( BaoLanh[GIÁ TRỊ TẠM ỨNG] )
+				                || NOT ISBLANK ( BaoLanh[TÌNH TRẠNG TẠM ỨNG] )
+				        ),
+				        "Loại bảo lãnh", "Tạm ứng",
+				        "Khóa HĐ-PL", COALESCE ( TRIM ( BaoLanh[SỐ HĐ CHÍNH] ), "Chưa có HĐ" ) & "|" & COALESCE ( TRIM ( BaoLanh[SỐ PLHĐ] ), "" ),
+				        "Dòng nguồn", BaoLanh[STT],
+				        "Số HĐ chính", BaoLanh[SỐ HĐ CHÍNH],
+				        "Số PLHĐ", BaoLanh[SỐ PLHĐ],
+				        "Dự án", COALESCE ( BaoLanh[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ], BaoLanh[DỰ ÁN], "Chưa xác định" ),
+				        "Khu vực", COALESCE ( BaoLanh[KHU VỰC], "Chưa xác định" ),
+				        "Nội dung HĐ", BaoLanh[NỘI DUNG HỢP ĐỒNG],
+				        "Pháp nhân", BaoLanh[PHÁP NHÂN KÝ HĐ/PLHĐ],
+				        "Giá trị HĐ+PS gồm VAT", IFERROR ( VALUE ( BaoLanh[GIÁ TRỊ HĐ+PS (GỒM VAT)] ), BLANK () ),
+				        "Nhà thầu", BaoLanh[NT/NCC/TV ],
+				        "Ngân hàng", BaoLanh[TÊN NGÂN HÀNG TẠM ỨNG],
+				        "Ngày bắt đầu", BaoLanh[NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG],
+				        "Ngày hết hiệu lực", BaoLanh[NGÀY HẾT HIỆU LỰC TẠM ỨNG],
+				        "Giá trị", BaoLanh[GIÁ TRỊ TẠM ỨNG],
+				        "Cảnh báo", BaoLanh[CẢNH BÁO TẠM ỨNG],
+				        "Tình trạng", BaoLanh[TÌNH TRẠNG TẠM ỨNG],
+				        "PIC", BaoLanh[PIC THỰC HIỆN]
+				    )
+				VAR _THHD =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            BaoLanh,
+				            NOT ISBLANK ( BaoLanh[NGÀY HẾT HIỆU LỰC THHĐ] )
+				                || NOT ISBLANK ( BaoLanh[GIÁ TRỊ THHĐ] )
+				                || NOT ISBLANK ( BaoLanh[TÌNH TRẠNG THHĐ] )
+				        ),
+				        "Loại bảo lãnh", "THHĐ",
+				        "Khóa HĐ-PL", COALESCE ( TRIM ( BaoLanh[SỐ HĐ CHÍNH] ), "Chưa có HĐ" ) & "|" & COALESCE ( TRIM ( BaoLanh[SỐ PLHĐ] ), "" ),
+				        "Dòng nguồn", BaoLanh[STT],
+				        "Số HĐ chính", BaoLanh[SỐ HĐ CHÍNH],
+				        "Số PLHĐ", BaoLanh[SỐ PLHĐ],
+				        "Dự án", COALESCE ( BaoLanh[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ], BaoLanh[DỰ ÁN], "Chưa xác định" ),
+				        "Khu vực", COALESCE ( BaoLanh[KHU VỰC], "Chưa xác định" ),
+				        "Nội dung HĐ", BaoLanh[NỘI DUNG HỢP ĐỒNG],
+				        "Pháp nhân", BaoLanh[PHÁP NHÂN KÝ HĐ/PLHĐ],
+				        "Giá trị HĐ+PS gồm VAT", IFERROR ( VALUE ( BaoLanh[GIÁ TRỊ HĐ+PS (GỒM VAT)] ), BLANK () ),
+				        "Nhà thầu", BaoLanh[NT/NCC/TV ],
+				        "Ngân hàng", BaoLanh[TÊN NGÂN HÀNG THHĐ],
+				        "Ngày bắt đầu", BaoLanh[NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ],
+				        "Ngày hết hiệu lực", BaoLanh[NGÀY HẾT HIỆU LỰC THHĐ],
+				        "Giá trị", BaoLanh[GIÁ TRỊ THHĐ],
+				        "Cảnh báo", BaoLanh[CẢNH BÁO THHĐ],
+				        "Tình trạng", BaoLanh[TÌNH TRẠNG THHĐ],
+				        "PIC", BaoLanh[PIC THỰC HIỆN]
+				    )
+				VAR _TatCa = UNION ( _TamUng, _THHD )
+				RETURN
+				    ADDCOLUMNS (
+				        _TatCa,
+				        "Năm hết hiệu lực", IF ( NOT ISBLANK ( [Ngày hết hiệu lực] ), YEAR ( [Ngày hết hiệu lực] ) ),
+				        "Tháng hết hiệu lực", IF ( NOT ISBLANK ( [Ngày hết hiệu lực] ), DATE ( YEAR ( [Ngày hết hiệu lực] ), MONTH ( [Ngày hết hiệu lực] ), 1 ) ),
+				        "Là bản ghi mới nhất",
+				            VAR _Khoa = [Khóa HĐ-PL]
+				            VAR _Loai = [Loại bảo lãnh]
+				            VAR _NgayHetHan = [Ngày hết hiệu lực]
+				            VAR _DongNguon = [Dòng nguồn]
+				            VAR _NgayMoiNhat =
+				                MAXX (
+				                    FILTER ( _TatCa, [Khóa HĐ-PL] = _Khoa && [Loại bảo lãnh] = _Loai ),
+				                    [Ngày hết hiệu lực]
+				                )
+				            VAR _DongMoiNhat =
+				                MAXX (
+				                    FILTER (
+				                        _TatCa,
+				                        [Khóa HĐ-PL] = _Khoa
+				                            && [Loại bảo lãnh] = _Loai
+				                            && [Ngày hết hiệu lực] = _NgayMoiNhat
+				                    ),
+				                    [Dòng nguồn]
+				                )
+				            RETURN
+				                NOT ISBLANK ( _NgayHetHan )
+				                    && _NgayHetHan = _NgayMoiNhat
+				                    && _DongNguon = _DongMoiNhat
+				    )
+
+	annotation PBI_Id = 4f887c1d65534b9cb2549e5d0db2cb91
+

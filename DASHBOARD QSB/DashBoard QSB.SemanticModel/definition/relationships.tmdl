@@ -1,0 +1,5 @@
+relationship c917b882-6d8f-4c53-a1ef-549934a27cc2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Tab tình trạng thực hiện NS'.'Ngày tiến độ'
+	toColumn: LocalDateTable_605d5065-371c-461a-9e8b-a9a601b4a19e.Date
+

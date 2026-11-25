@@ -1,0 +1,359 @@
+/// Bảng dẫn xuất ghép bảo lãnh cũ với lần hiệu lực kế tiếp theo HĐ-PL-loại bảo lãnh.
+table 'KPI GHBL'
+	lineageTag: c3bc4b5e-8b1c-4759-88eb-0dbc9a8f51ac
+
+	/// Số Bond theo từng dòng nguồn có tên ngân hàng Tạm ứng hoặc THHĐ. Một dòng có cả hai ngân hàng tính 2 Bond; không loại vì thiếu ngày hết hiệu lực. Áp dụng cùng bộ lọc với Đạt/Không đạt và điểm bình quân.
+	measure 'GHBL Số cặp đánh giá' = COALESCE(COUNTROWS('KPI GHBL'),0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 2c2075ae-da9d-459f-87d1-b243957cac2b
+
+	/// Đếm mỗi bond có tên ngân hàng đạt 100%: bắt đầu mới < hạn cũ < hạn mới, hoặc bond đầu tiên của HĐ+PL+loại. Không xét tình trạng hiện tại.
+	measure 'GHBL Đạt' = COALESCE(CALCULATE(COUNTROWS('KPI GHBL'),KEEPFILTERS('KPI GHBL'[ĐIỂM HOÀN THÀNH]=1)),0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 73de653a-2e4f-4e59-a99f-41970a5401f1
+
+	/// Đếm từng Bond có tên ngân hàng có điểm 0%, trên cùng tập dòng của Số lượng Bond. Đạt + Không đạt = Số lượng Bond trong cùng bộ lọc.
+	measure 'GHBL Không đạt' = COALESCE(CALCULATE(COUNTROWS('KPI GHBL'),KEEPFILTERS('KPI GHBL'[ĐIỂM HOÀN THÀNH]=0)),0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: c3b1610c-c904-44ec-b50e-a4893f0c23eb
+
+	/// Trung bình cộng điểm từng Bond có tên ngân hàng trong bộ lọc hiện tại, không tính trung bình theo PIC hoặc theo khóa HĐ+PL+loại.
+	measure 'GHBL Điểm bình quân' = AVERAGE('KPI GHBL'[ĐIỂM HOÀN THÀNH])
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: 03358b95-4200-4931-9c2e-8ea8283fa440
+
+	/// Điểm từng Bond có tên ngân hàng; dòng tổng lấy trung bình cộng điểm tất cả Bond đang lọc.
+	measure 'GHBL Điểm dòng' = AVERAGE('KPI GHBL'[ĐIỂM HOÀN THÀNH])
+		formatString: 0.00%
+		displayFolder: Chi tiết
+		lineageTag: 320ca0a0-bdf5-4f18-99be-aa7d44a1991a
+
+	column 'MÃ CẶP'
+		lineageTag: a4685c3b-93d6-4736-b0d6-5d3cdd57e886
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MÃ CẶP]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LOẠI BẢO LÃNH'
+		lineageTag: 4ff9b4a8-212e-49cf-a56e-1aab19500846
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [LOẠI BẢO LÃNH]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HỢP ĐỒNG'
+		lineageTag: 850cec48-14b4-47f3-839f-ba4b4894d275
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [SỐ HỢP ĐỒNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ PLHĐ'
+		lineageTag: f2a505b4-7e3e-412b-b5ce-b890d2a5e9c0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [SỐ PLHĐ]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DỰ ÁN'
+		lineageTag: 0065ff2c-b9d9-4dde-9828-4490ffe11d90
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DỰ ÁN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KHU VỰC'
+		lineageTag: 511fad02-d012-483e-abf2-fa7d147b33db
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KHU VỰC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NHÀ THẦU'
+		lineageTag: 60dd3318-aa76-4aaa-98f7-94ac8d39847b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NHÀ THẦU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIC
+		lineageTag: bc025d47-6f5e-47fd-a824-10ee96bf252e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HẾT HẠN CŨ'
+		formatString: dd/MM/yyyy
+		lineageTag: 58e83c9a-03d2-440b-a5aa-045b67209b57
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NGÀY HẾT HẠN CŨ]
+
+		variation Variation
+			isDefault
+			relationship: 1b281cfd-2027-45ae-ab3a-1b228cb8ab44
+			defaultHierarchy: LocalDateTable_97c937be-3329-4fc8-b4d4-1a1b4accc520.'Date Hierarchy'
+
+	column 'NGÀY BẮT ĐẦU MỚI'
+		formatString: dd/MM/yyyy
+		lineageTag: 0fb65324-06e6-4282-880e-cea0f25a2a41
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NGÀY BẮT ĐẦU MỚI]
+
+		variation Variation
+			isDefault
+			relationship: 37357b60-a7be-4b99-bf86-69fac15a26b8
+			defaultHierarchy: LocalDateTable_66c61ed9-6438-45de-9759-0d994c8fc431.'Date Hierarchy'
+
+	column 'NGÀY HẾT HẠN MỚI'
+		formatString: dd/MM/yyyy
+		lineageTag: 76cb8da6-7877-4e05-a02a-07994c5542fd
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NGÀY HẾT HẠN MỚI]
+
+		variation Variation
+			isDefault
+			relationship: 0153f0cb-6cbe-44fd-9cbd-24aa619b116f
+			defaultHierarchy: LocalDateTable_837b3f04-85ea-4518-beb4-3db05a24d84c.'Date Hierarchy'
+
+	column 'TÌNH TRẠNG'
+		lineageTag: bb4cbac2-5504-4d8b-8737-37eb5899c369
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [TÌNH TRẠNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LÝ DO MIỄN'
+		lineageTag: 519a333e-5f5c-4366-a1bb-a60ed90044ce
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [LÝ DO MIỄN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KỲ MỤC TIÊU'
+		lineageTag: e7d75908-e79d-436f-ac35-6930022c2437
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KỲ MỤC TIÊU]
+		sortByColumn: 'KỲ MỤC TIÊU SORT'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NĂM MỤC TIÊU'
+		lineageTag: b89cd0fa-208f-4364-8d8f-a80d805a74a2
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [NĂM MỤC TIÊU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'QUÝ MỤC TIÊU'
+		lineageTag: 870dd68a-2681-49b0-a825-2cf0132a94ca
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [QUÝ MỤC TIÊU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'ĐIỂM HOÀN THÀNH'
+		lineageTag: e497b58d-1511-463b-9545-777b6fc907be
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [ĐIỂM HOÀN THÀNH]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KỲ MỤC TIÊU SORT'
+		isHidden
+		lineageTag: 56727136-2e61-4d9c-93ac-66961d58c3bc
+		summarizeBy: sum
+		sourceColumn: [KỲ MỤC TIÊU SORT]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// HĐ + PL + loại bảo lãnh + thứ tự dòng nguồn; phân biệt các lượt.
+	column 'MÃ LƯỢT'
+		isHidden
+		lineageTag: 0c0f585b-2700-4927-a1ce-13032bba6efa
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MÃ LƯỢT]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Thứ tự dòng nguồn để giữ lịch sử gia hạn theo thứ tự Excel.
+	column 'DÒNG NGUỒN'
+		formatString: 0
+		lineageTag: 3f02ee3d-5d21-4249-a625-0fcf25d1a4db
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [DÒNG NGUỒN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NỘI DUNG HỢP ĐỒNG'
+		lineageTag: a6f8a5fe-de0c-48d6-a4f6-41e05721a743
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NỘI DUNG HỢP ĐỒNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÁP NHÂN'
+		lineageTag: e4684ddc-7a22-402a-879e-72627c6f4349
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PHÁP NHÂN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ+PS GỒM VAT'
+		formatString: #,##0
+		lineageTag: 0f6d3390-e996-48d3-9aac-77f7f9ded173
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [GIÁ TRỊ HĐ+PS GỒM VAT]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ BẢO LÃNH'
+		formatString: #,##0
+		lineageTag: f05975db-a093-4545-b66f-52c479293392
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [GIÁ TRỊ BẢO LÃNH]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI GHBL' = calculated
+		mode: import
+		source =
+				VAR _TamUng =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            BaoLanh,
+				            LEN ( TRIM ( SUBSTITUTE ( COALESCE ( BaoLanh[TÊN NGÂN HÀNG TẠM ỨNG], "" ), UNICHAR(160), " " ) ) ) > 0
+				        ),
+				        "Loại bảo lãnh", "Tạm ứng",
+				        "Khóa HĐ-PL", COALESCE ( TRIM ( BaoLanh[SỐ HĐ CHÍNH] ), "Chưa có HĐ" ) & "|" & COALESCE ( TRIM ( BaoLanh[SỐ PLHĐ] ), "" ),
+				        "Dòng nguồn", BaoLanh[Thứ tự dòng Excel],
+				        "Số HĐ chính", BaoLanh[SỐ HĐ CHÍNH],
+				        "Số PLHĐ", BaoLanh[SỐ PLHĐ],
+				        "Dự án", COALESCE ( BaoLanh[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ], BaoLanh[DỰ ÁN], "Chưa xác định" ),
+				        "Khu vực", COALESCE ( BaoLanh[KHU VỰC], "Chưa xác định" ),
+				        "Nội dung HĐ", BaoLanh[NỘI DUNG HỢP ĐỒNG],
+				        "Pháp nhân", BaoLanh[PHÁP NHÂN KÝ HĐ/PLHĐ],
+				        "Giá trị HĐ+PS gồm VAT", IFERROR ( VALUE ( BaoLanh[GIÁ TRỊ HĐ+PS (GỒM VAT)] ), BLANK () ),
+				        "Nhà thầu", BaoLanh[NT/NCC/TV ],
+				        "Ngân hàng", BaoLanh[TÊN NGÂN HÀNG TẠM ỨNG],
+				        "Ngày bắt đầu", BaoLanh[NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG],
+				        "Ngày hết hiệu lực", BaoLanh[NGÀY HẾT HIỆU LỰC TẠM ỨNG],
+				        "Giá trị", BaoLanh[GIÁ TRỊ TẠM ỨNG],
+				        "Cảnh báo", BaoLanh[CẢNH BÁO TẠM ỨNG],
+				        "Tình trạng", BaoLanh[TÌNH TRẠNG TẠM ỨNG],
+				        "PIC", BaoLanh[PIC THỰC HIỆN]
+				    )
+				VAR _THHD =
+				    SELECTCOLUMNS (
+				        FILTER (
+				            BaoLanh,
+				            LEN ( TRIM ( SUBSTITUTE ( COALESCE ( BaoLanh[TÊN NGÂN HÀNG THHĐ], "" ), UNICHAR(160), " " ) ) ) > 0
+				        ),
+				        "Loại bảo lãnh", "THHĐ",
+				        "Khóa HĐ-PL", COALESCE ( TRIM ( BaoLanh[SỐ HĐ CHÍNH] ), "Chưa có HĐ" ) & "|" & COALESCE ( TRIM ( BaoLanh[SỐ PLHĐ] ), "" ),
+				        "Dòng nguồn", BaoLanh[Thứ tự dòng Excel],
+				        "Số HĐ chính", BaoLanh[SỐ HĐ CHÍNH],
+				        "Số PLHĐ", BaoLanh[SỐ PLHĐ],
+				        "Dự án", COALESCE ( BaoLanh[TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ], BaoLanh[DỰ ÁN], "Chưa xác định" ),
+				        "Khu vực", COALESCE ( BaoLanh[KHU VỰC], "Chưa xác định" ),
+				        "Nội dung HĐ", BaoLanh[NỘI DUNG HỢP ĐỒNG],
+				        "Pháp nhân", BaoLanh[PHÁP NHÂN KÝ HĐ/PLHĐ],
+				        "Giá trị HĐ+PS gồm VAT", IFERROR ( VALUE ( BaoLanh[GIÁ TRỊ HĐ+PS (GỒM VAT)] ), BLANK () ),
+				        "Nhà thầu", BaoLanh[NT/NCC/TV ],
+				        "Ngân hàng", BaoLanh[TÊN NGÂN HÀNG THHĐ],
+				        "Ngày bắt đầu", BaoLanh[NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ],
+				        "Ngày hết hiệu lực", BaoLanh[NGÀY HẾT HIỆU LỰC THHĐ],
+				        "Giá trị", BaoLanh[GIÁ TRỊ THHĐ],
+				        "Cảnh báo", BaoLanh[CẢNH BÁO THHĐ],
+				        "Tình trạng", BaoLanh[TÌNH TRẠNG THHĐ],
+				        "PIC", BaoLanh[PIC THỰC HIỆN]
+				    )
+				VAR _All = UNION(_TamUng, _THHD)
+				// Order each contract/addendum/bond-type history by source expiry ascending.
+				// Blank expiry goes last; original Excel row breaks ties without losing identity.
+				VAR _Base =
+				 ADDCOLUMNS(_All, "__Thứ tự Bond",
+				  VAR _Key=[Khóa HĐ-PL]
+				  VAR _Type=[Loại bảo lãnh]
+				  VAR _End=[Ngày hết hiệu lực]
+				  VAR _SourceRow=[Dòng nguồn]
+				  RETURN 1 + COALESCE(COUNTROWS(FILTER(_All,
+				   [Khóa HĐ-PL]=_Key && [Loại bảo lãnh]=_Type
+				    && (
+				     (NOT ISBLANK([Ngày hết hiệu lực]) && ISBLANK(_End))
+				     || (NOT ISBLANK([Ngày hết hiệu lực]) && NOT ISBLANK(_End) && [Ngày hết hiệu lực]<_End)
+				     || ([Ngày hết hiệu lực] == _End && [Dòng nguồn]<_SourceRow)
+				    ))),0))
+				VAR _WithOldEnd =
+				 ADDCOLUMNS(_Base,"__Ngày hết cũ",
+				  VAR _Key=[Khóa HĐ-PL]
+				  VAR _Type=[Loại bảo lãnh]
+				  VAR _Order=[__Thứ tự Bond]
+				  VAR _PrevRow=MAXX(FILTER(_Base,[Khóa HĐ-PL]=_Key && [Loại bảo lãnh]=_Type && [__Thứ tự Bond]<_Order),[__Thứ tự Bond])
+				  VAR _PrevEnd=MAXX(FILTER(_Base,[Khóa HĐ-PL]=_Key && [Loại bảo lãnh]=_Type && [__Thứ tự Bond]=_PrevRow),[Ngày hết hiệu lực])
+				  RETURN IF(NOT ISBLANK(_PrevRow),_PrevEnd,COALESCE([Ngày bắt đầu],[Ngày hết hiệu lực])))
+				RETURN SELECTCOLUMNS(_WithOldEnd,
+				 "MÃ CẶP",[Khóa HĐ-PL]&"|"&[Loại bảo lãnh],
+				 "MÃ LƯỢT",[Khóa HĐ-PL]&"|"&[Loại bảo lãnh]&"|"&FORMAT([Dòng nguồn],"0"),
+				 "DÒNG NGUỒN",[Dòng nguồn],
+				 "NỘI DUNG HỢP ĐỒNG",[Nội dung HĐ],
+				 "PHÁP NHÂN",[Pháp nhân],
+				 "GIÁ TRỊ HĐ+PS GỒM VAT",[Giá trị HĐ+PS gồm VAT],
+				 "GIÁ TRỊ BẢO LÃNH",[Giá trị],
+				 "LOẠI BẢO LÃNH",[Loại bảo lãnh],
+				 "SỐ HỢP ĐỒNG",TRIM([Số HĐ chính]),
+				 "SỐ PLHĐ",TRIM([Số PLHĐ]),
+				 "DỰ ÁN",[Dự án],
+				 "KHU VỰC",[Khu vực],
+				 "NHÀ THẦU",[Nhà thầu],
+				 "PIC",[PIC],
+				 "NGÀY HẾT HẠN CŨ",[__Ngày hết cũ],
+				 "NGÀY BẮT ĐẦU MỚI",[Ngày bắt đầu],
+				 "NGÀY HẾT HẠN MỚI",[Ngày hết hiệu lực],
+				 "TÌNH TRẠNG",TRIM(SUBSTITUTE(COALESCE([Tình trạng],""),UNICHAR(160)," ")),
+				 "LÝ DO MIỄN",
+				   VAR _Status=UPPER(COALESCE([Tình trạng],""))
+				   RETURN IF(CONTAINSSTRING(_Status,"KHẤU TRỪ TẠM ỨNG") || CONTAINSSTRING(_Status,"MIỄN"),[Tình trạng],BLANK()),
+				 "KỲ MỤC TIÊU",IF(ISBLANK([__Ngày hết cũ]),BLANK(),"Quý "&FORMAT([__Ngày hết cũ],"q")&" - "&FORMAT([__Ngày hết cũ],"yyyy")),
+				 "KỲ MỤC TIÊU SORT",IF(ISBLANK([__Ngày hết cũ]),BLANK(),YEAR([__Ngày hết cũ])*10+QUARTER([__Ngày hết cũ])),
+				 "NĂM MỤC TIÊU",IF(ISBLANK([__Ngày hết cũ]),BLANK(),YEAR([__Ngày hết cũ])),
+				 "QUÝ MỤC TIÊU",IF(ISBLANK([__Ngày hết cũ]),BLANK(),"Quý "&FORMAT([__Ngày hết cũ],"q")),
+				 "ĐIỂM HOÀN THÀNH",
+				   VAR _Order=[__Thứ tự Bond]
+				   VAR _OldEnd=[__Ngày hết cũ]
+				   VAR _NewStart=[Ngày bắt đầu]
+				   VAR _NewEnd=[Ngày hết hiệu lực]
+				   VAR _DatePass=NOT ISBLANK(_OldEnd) && NOT ISBLANK(_NewStart) && NOT ISBLANK(_NewEnd)
+				      && _OldEnd>_NewStart && _OldEnd<_NewEnd
+				   VAR _FirstPass=_Order=1
+				   RETURN IF(_DatePass || _FirstPass,1,0)
+				)
+

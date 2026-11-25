@@ -1,0 +1,543 @@
+table BaoLanh
+	lineageTag: bb53fb29-9af5-4963-9921-48f769242549
+
+	column STT
+		dataType: int64
+		formatString: 0
+		lineageTag: 2cc2653d-aca9-4c1f-8a65-c40f7d154b05
+		summarizeBy: sum
+		sourceColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HĐ TRÊN SAP/SỐ HĐ CHÍNH'
+		dataType: string
+		lineageTag: 761c8d86-76b8-4d91-a9d6-46fc1e4f1e7a
+		summarizeBy: none
+		sourceColumn: SỐ HĐ TRÊN SAP/SỐ HĐ CHÍNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HĐ CHÍNH'
+		dataType: string
+		lineageTag: 82c85b9f-1048-476a-961e-0e729d0d63fa
+		summarizeBy: none
+		sourceColumn: SỐ HĐ CHÍNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ PLHĐ'
+		dataType: string
+		lineageTag: 7c399926-f87d-4b3f-87e4-9fcdf372e759
+		summarizeBy: none
+		sourceColumn: SỐ PLHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'DỰ ÁN'
+		dataType: string
+		lineageTag: be79337d-b2d5-4bc1-aec4-3a27422b0114
+		summarizeBy: none
+		sourceColumn: DỰ ÁN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ'
+		dataType: string
+		lineageTag: 6f1b2524-7701-4f19-8a6f-a129822043ba
+		summarizeBy: none
+		sourceColumn: TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KHU VỰC'
+		dataType: string
+		lineageTag: 411adefe-e551-4f50-9526-146a2964aeae
+		summarizeBy: none
+		sourceColumn: KHU VỰC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HẠNG MỤC HH-DV'
+		dataType: string
+		lineageTag: a5f4a665-4cad-4e1c-9ad1-ef5ef918a461
+		summarizeBy: none
+		sourceColumn: HẠNG MỤC HH-DV
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NỘI DUNG HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 5906ecab-96b3-4a6d-9fd5-ea0c9e7f00e5
+		summarizeBy: none
+		sourceColumn: NỘI DUNG HỢP ĐỒNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'LOẠI HĐ'
+		dataType: string
+		lineageTag: b99e46d7-8e9d-499e-b82c-f9744f774b65
+		summarizeBy: none
+		sourceColumn: LOẠI HĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PHÁP NHÂN KÝ HĐ/PLHĐ'
+		dataType: string
+		lineageTag: 7e3236d4-1bfd-4681-b9f3-ee1c41bde717
+		summarizeBy: none
+		sourceColumn: PHÁP NHÂN KÝ HĐ/PLHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NT/NCC/TV '
+		dataType: string
+		lineageTag: 5cd66860-02b2-4ea1-a64d-4db6fed2fc49
+		summarizeBy: none
+		sourceColumn: "NT/NCC/TV "
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ+PS (GỒM VAT)'
+		dataType: double
+		lineageTag: ed2a3562-671d-4c6a-8c7f-f770cf5f24a8
+		summarizeBy: sum
+		sourceColumn: GIÁ TRỊ HĐ+PS (GỒM VAT)
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT'
+		dataType: string
+		lineageTag: 3037e00d-1dff-4add-bd13-7a931dc70afc
+		summarizeBy: none
+		sourceColumn: TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI'
+		dataType: string
+		lineageTag: 640df181-0aa3-4b59-8578-cd2733f5c599
+		summarizeBy: none
+		sourceColumn: NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'THỜI HẠN BẢO HÀNH'
+		dataType: string
+		lineageTag: 46d6646e-322e-4a53-8dee-252c578e12fa
+		summarizeBy: none
+		sourceColumn: THỜI HẠN BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HẾT HẠN BẢO HÀNH'
+		dataType: string
+		lineageTag: 779926df-e624-4bc4-8f0b-7c1c4aa342a9
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HẠN BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'HÌNH THỨC THANH TOÁN BẢO HÀNH'
+		dataType: string
+		lineageTag: 912584cd-3731-41c9-a460-f7a6d327d0e2
+		summarizeBy: none
+		sourceColumn: HÌNH THỨC THANH TOÁN BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN NGÂN HÀNG TẠM ỨNG'
+		dataType: string
+		lineageTag: c2486d6f-0c59-46c6-be8b-1d79eb6105a2
+		summarizeBy: none
+		sourceColumn: TÊN NGÂN HÀNG TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c73b91a1-ff14-4201-a034-910b2d5a5a07
+		summarizeBy: none
+		sourceColumn: NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG
+
+		variation Variation
+			isDefault
+			relationship: 89791ae8-e113-4006-a31a-c3759f6e9ab1
+			defaultHierarchy: LocalDateTable_b08f15fe-74b1-413f-a5b7-46d23c2fa6b6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY HẾT HIỆU LỰC TẠM ỨNG'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 84134457-7277-4ef0-93c0-2737f68084a7
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HIỆU LỰC TẠM ỨNG
+
+		variation Variation
+			isDefault
+			relationship: 0e9a05c1-fe19-46c3-9ee7-b13fee2f8459
+			defaultHierarchy: LocalDateTable_53411400-ab81-48b8-abf9-8c2cd95368da.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'GIÁ TRỊ TẠM ỨNG'
+		dataType: int64
+		formatString: 0
+		lineageTag: 66fbebd3-a857-4773-ba4a-c747f51f48f6
+		summarizeBy: sum
+		sourceColumn: GIÁ TRỊ TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CẢNH BÁO TẠM ỨNG'
+		dataType: string
+		lineageTag: 8c51b2c5-5532-4d3e-8790-d82ed8783806
+		summarizeBy: none
+		sourceColumn: CẢNH BÁO TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG TẠM ỨNG'
+		dataType: string
+		lineageTag: e7a87c8e-6679-41ea-869f-8292cc0b08ae
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG TẠM ỨNG
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN NGÂN HÀNG THHĐ'
+		dataType: string
+		lineageTag: 406ecb9b-fb17-4765-8d40-c3c9de102c10
+		summarizeBy: none
+		sourceColumn: TÊN NGÂN HÀNG THHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c53d2222-818f-444a-a25f-e37d47cc777d
+		summarizeBy: none
+		sourceColumn: NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ
+
+		variation Variation
+			isDefault
+			relationship: c318c988-03ea-4c07-86d7-47aaa90e6283
+			defaultHierarchy: LocalDateTable_4394b303-9b80-4eed-a00f-7d9f1760870c.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY HẾT HIỆU LỰC THHĐ'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: bdb8d1c0-50e8-45b3-a625-a6543caa690c
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HIỆU LỰC THHĐ
+
+		variation Variation
+			isDefault
+			relationship: 43295ba4-2ec2-4648-a3e2-cf248c45a672
+			defaultHierarchy: LocalDateTable_c895530d-5580-446b-88da-07e86f9eaa41.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'GIÁ TRỊ THHĐ'
+		dataType: int64
+		formatString: 0
+		lineageTag: bc36cb17-ccf5-41dc-82ef-ab63597d64e2
+		summarizeBy: sum
+		sourceColumn: GIÁ TRỊ THHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CẢNH BÁO THHĐ'
+		dataType: string
+		lineageTag: 9a27fdab-0b24-4121-bae7-26343f3c5dca
+		summarizeBy: none
+		sourceColumn: CẢNH BÁO THHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG THHĐ'
+		dataType: string
+		lineageTag: 6bfd1c0e-f9ba-40dc-96e9-c58e8e254b95
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG THHĐ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÊN NGÂN HÀNG BẢO HÀNH'
+		dataType: string
+		lineageTag: 64e5ff4b-9adc-44be-9c52-362ac1ff1c07
+		summarizeBy: none
+		sourceColumn: TÊN NGÂN HÀNG BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY BẮT ĐẦU HIỆU LỰC BẢO HÀNH'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 31f74546-bef9-402b-8452-d8b31f716123
+		summarizeBy: none
+		sourceColumn: NGÀY BẮT ĐẦU HIỆU LỰC BẢO HÀNH
+
+		variation Variation
+			isDefault
+			relationship: eb45cb59-f220-4b4d-80d0-40ec5acd3751
+			defaultHierarchy: LocalDateTable_72355875-84a5-4f2d-8216-9ba7ae715d40.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY HẾT HIỆU LỰC BẢO HÀNH'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: e03e8af4-e04e-410b-9234-3b34c69aff2a
+		summarizeBy: none
+		sourceColumn: NGÀY HẾT HIỆU LỰC BẢO HÀNH
+
+		variation Variation
+			isDefault
+			relationship: f242b9f4-9811-4c22-95a8-e64728f4e83d
+			defaultHierarchy: LocalDateTable_4e98ee1b-bbfc-4edd-beb6-8f11e61b0059.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'GIÁ TRỊ BẢO HÀNH'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8f8d4cb4-07db-49bb-b2e6-894f32c51f72
+		summarizeBy: sum
+		sourceColumn: GIÁ TRỊ BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'TÌNH TRẠNG BẢO HÀNH'
+		dataType: string
+		lineageTag: 2a59cc5f-b6cf-4feb-8d3d-7ec1ead6b236
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG BẢO HÀNH
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GHI CHÚ'
+		dataType: string
+		lineageTag: 3b946b77-18fd-4d0f-8925-ed336c3f97a4
+		summarizeBy: none
+		sourceColumn: GHI CHÚ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC THỰC HIỆN'
+		dataType: string
+		lineageTag: 70f7590d-d48e-4666-9cf9-39b9e05f3e50
+		summarizeBy: none
+		sourceColumn: PIC THỰC HIỆN
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Thứ tự dòng Excel'
+		dataType: int64
+		isHidden
+		lineageTag: 78ed10b4-8b54-4b56-aa84-e7f71c31ced8
+		summarizeBy: none
+		sourceColumn: Thứ tự dòng Excel
+
+	partition BaoLanh = m
+		mode: import
+		source =
+				let
+				    Source =
+				        SharePoint.Contents(
+				            "https://novaland.sharepoint.com/sites/PRT",
+				            [ApiVersion = 15]
+				        ),
+				
+				    Documents = Source{[Name="Documents"]}[Content],
+				
+				    PRC = Documents{[Name="PRC"]}[Content],
+				
+				    NovaGen = PRC{[Name="00. NovaGen"]}[Content],
+				
+				    NghiepVu = NovaGen{[Name="07. Các nghiệp vụ"]}[Content],
+				
+				    PAS = NghiepVu{[Name="05. PAS"]}[Content],
+				
+				    FolderHD = PAS{[Name="01. THEO DOI HD & CPC"]}[Content],
+				
+				    File =
+				        FolderHD{
+				            [
+				                Name =
+				                "NVLG-PTC-REG03.F04 BANG THEO DOI TINH TRANG BAO HANH-BAO LANH.xlsx"
+				            ]
+				        }[Content],
+				
+				    Excel =
+				        Excel.Workbook(
+				            File,
+				            null,
+				            true
+				        ),
+				
+				    Sheet =
+				        Excel{
+				            [
+				                Item = "THEO DÕI BẢO HÀNH-BOND",
+				                Kind = "Sheet"
+				            ]
+				        }[Data],
+				    #"Removed Top Rows" = Table.Skip(Sheet,6),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true]),
+				    // Chuẩn hóa giá trị hợp đồng từ các biến thể tên cột cũ và mới trước khi ép kiểu.
+				    #"Added Normalized Contract Value" =
+				        Table.AddColumn(
+				            #"Promoted Headers",
+				            "__GIÁ TRỊ HĐ+PS (GỒM VAT)",
+				            each
+				                let
+				                    Candidates = {
+				                        Record.FieldOrDefault(_, "GIÁ TRỊ HĐ+PS (GỒM VAT)", null),
+				                        Record.FieldOrDefault(_, "GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)", null),
+				                        Record.FieldOrDefault(_, "GIÁ TRỊ HĐ+PS (GỒM VAT)1", null),
+				                        Record.FieldOrDefault(_, "GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)1", null)
+				                    },
+				                    NonBlank = List.Select(Candidates, each _ <> null and Text.Trim(Text.From(_)) <> ""),
+				                    ContractValue = if List.IsEmpty(NonBlank) then null else List.First(NonBlank)
+				                in
+				                    try Number.From(ContractValue) otherwise null,
+				            type number
+				        ),
+				    #"Removed Contract Value Variants" =
+				        Table.RemoveColumns(
+				            #"Added Normalized Contract Value",
+				            {
+				                "GIÁ TRỊ HĐ+PS (GỒM VAT)",
+				                "GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)",
+				                "GIÁ TRỊ HĐ+PS (GỒM VAT)1",
+				                "GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)1"
+				            },
+				            MissingField.Ignore
+				        ),
+				    #"Renamed Normalized Contract Value" =
+				        Table.RenameColumns(
+				            #"Removed Contract Value Variants",
+				            {{"__GIÁ TRỊ HĐ+PS (GỒM VAT)", "GIÁ TRỊ HĐ+PS (GỒM VAT)"}}
+				        ),
+				    TypeMappings = {{"c", type any}, {"Column2", type any}, {"STT", Int64.Type}, {"SỐ HĐ TRÊN SAP/SỐ HĐ CHÍNH", type text}, {"SỐ HĐ CHÍNH", type text}, {"SỐ PLHĐ", type text}, {"DỰ ÁN", type text}, {"TÊN VIẾT TẮT DỰ ÁN/#(lf)ĐƠN VỊ", type text}, {"KHU VỰC", type text}, {"HẠNG MỤC HH-DV", type any}, {"NỘI DUNG HỢP ĐỒNG", type text}, {"LOẠI HĐ", type text}, {"PHÁP NHÂN KÝ HĐ/PLHĐ", type text}, {"NT/NCC/TV ", type text}, {"GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)", type number}, {"GIÁ TRỊ HĐ+PS (GỒM VAT)", type number}, {"TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT", type any}, {"NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI", type any}, {"THỜI HẠN BẢO HÀNH", type any}, {"NGÀY HẾT HẠN BẢO HÀNH", type any}, {"HÌNH THỨC THANH TOÁN BẢO HÀNH", type text}, {"TÊN NGÂN HÀNG TẠM ỨNG", type text}, {"NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG", type date}, {"NGÀY HẾT HIỆU LỰC TẠM ỨNG", type date}, {"GIÁ TRỊ TẠM ỨNG", Int64.Type}, {"CẢNH BÁO TẠM ỨNG", type text}, {"TÌNH TRẠNG TẠM ỨNG", type text}, {"TÊN NGÂN HÀNG THHĐ", type text}, {"NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ", type date}, {"NGÀY HẾT HIỆU LỰC THHĐ", type date}, {"GIÁ TRỊ THHĐ", Int64.Type}, {"CẢNH BÁO THHĐ", type text}, {"TÌNH TRẠNG THHĐ", type text}, {"TÊN NGÂN HÀNG BẢO HÀNH", type text}, {"NGÀY BẮT ĐẦU HIỆU LỰC BẢO HÀNH", type date}, {"NGÀY HẾT HIỆU LỰC BẢO HÀNH", type date}, {"GIÁ TRỊ BẢO HÀNH", Int64.Type}, {"TÌNH TRẠNG BẢO HÀNH", type text}, {"GHI CHÚ", type text}, {"PIC THỰC HIỆN", type text}, {"Column40", type date}, {"Column41", type any}, {"Column42", type any}, {"Column43", type any}, {"Column44", type any}, {"Column45", type any}, {"Column46", type any}},
+				
+				    ExistingTypeMappings =
+				        List.Select(
+				            TypeMappings,
+				            each Table.HasColumns(
+				                #"Renamed Normalized Contract Value",
+				                {_{0}}
+				            )
+				        ),
+				
+				    #"Changed Type" =
+				        Table.TransformColumnTypes(
+				            #"Renamed Normalized Contract Value",
+				            ExistingTypeMappings
+				        ),
+				
+				    #"Removed Columns" =
+				        Table.RemoveColumns(
+				            #"Changed Type",
+				            {"c", "Column2", "Column40", "Column41", "Column42", "Column43", "Column44", "Column45", "Column46"},
+				            MissingField.Ignore
+				        ),
+				
+				    RequiredColumns = {
+				        "STT",
+				        "SỐ HĐ TRÊN SAP/SỐ HĐ CHÍNH",
+				        "SỐ HĐ CHÍNH",
+				        "SỐ PLHĐ",
+				        "DỰ ÁN",
+				        "TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ",
+				        "KHU VỰC",
+				        "HẠNG MỤC HH-DV",
+				        "NỘI DUNG HỢP ĐỒNG",
+				        "LOẠI HĐ",
+				        "PHÁP NHÂN KÝ HĐ/PLHĐ",
+				        "NT/NCC/TV ",
+				        "GIÁ TRỊ HĐ+PS (GỒM VAT)",
+				        "TIỀN BẢO HÀNH GIỮ LẠI CHƯA VAT",
+				        "NGÀY KÝ TOC HOẶC BIÊN BẢN BÀN GIAO HÀNG HÓA ĐỢT CUỐI",
+				        "THỜI HẠN BẢO HÀNH",
+				        "NGÀY HẾT HẠN BẢO HÀNH",
+				        "HÌNH THỨC THANH TOÁN BẢO HÀNH",
+				        "TÊN NGÂN HÀNG TẠM ỨNG",
+				        "NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG",
+				        "NGÀY HẾT HIỆU LỰC TẠM ỨNG",
+				        "GIÁ TRỊ TẠM ỨNG",
+				        "CẢNH BÁO TẠM ỨNG",
+				        "TÌNH TRẠNG TẠM ỨNG",
+				        "TÊN NGÂN HÀNG THHĐ",
+				        "NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ",
+				        "NGÀY HẾT HIỆU LỰC THHĐ",
+				        "GIÁ TRỊ THHĐ",
+				        "CẢNH BÁO THHĐ",
+				        "TÌNH TRẠNG THHĐ",
+				        "TÊN NGÂN HÀNG BẢO HÀNH",
+				        "NGÀY BẮT ĐẦU HIỆU LỰC BẢO HÀNH",
+				        "NGÀY HẾT HIỆU LỰC BẢO HÀNH",
+				        "GIÁ TRỊ BẢO HÀNH",
+				        "TÌNH TRẠNG BẢO HÀNH",
+				        "GHI CHÚ",
+				        "PIC THỰC HIỆN"
+				    },
+				
+				    #"Ensured Required Columns" =
+				        List.Accumulate(
+				            RequiredColumns,
+				            #"Removed Columns",
+				            (State, ColumnName) =>
+				                if Table.HasColumns(State, {ColumnName}) then
+				                    State
+				                else
+				                    Table.AddColumn(
+				                        State,
+				                        ColumnName,
+				                        each null,
+				                        type any
+				                    )
+				        ),
+				
+				    #"Removed Legacy Schema Columns" =
+				        Table.RemoveColumns(
+				            #"Ensured Required Columns",
+				            {"TÊN VIẾT TẮT DỰ ÁN/#(lf)ĐƠN VỊ", "GIÁ TRỊ HĐ+PS #(lf)(GỒM VAT)", "TÊN VIẾT TẮT DỰ ÁN/ĐƠN VỊ1", "GIÁ TRỊ HĐ+PS (GỒM VAT)1"},
+				            MissingField.Ignore
+				        ),
+				
+				    #"Replaced All Errors With Null" =
+				        Table.ReplaceErrorValues(
+				            #"Removed Legacy Schema Columns",
+				            List.Transform(
+				                Table.ColumnNames(#"Removed Legacy Schema Columns"),
+				                each {_, null}
+				            )
+				        )
+				in
+				    Table.AddIndexColumn(#"Replaced All Errors With Null", "Thứ tự dòng Excel", 1, 1, Int64.Type)
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

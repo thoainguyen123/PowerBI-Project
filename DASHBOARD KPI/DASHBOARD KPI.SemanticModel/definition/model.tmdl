@@ -1,0 +1,71 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Data","BaoLanh","OPEX Chi tiết công nợ","OPEX Tổng công nợ","KPI Tiến độ thầu","KPI TTHD","KPI Đăng ký","KPI Danh mục","KPI Nhân sự","KPI TUNC Nguồn","KPI TDSP Nguồn","KPI PCD","Template Điểm Ban","BI_Data"]
+
+annotation PBI_ProTooling = ["DevMode","MCP-PBIModeling"]
+
+ref table Data
+ref table 'Phân công PIC'
+ref table DimDate
+ref table DateTableTemplate_08463b58-64ff-431d-a9b5-e94248dab4c6
+ref table LocalDateTable_406c8ad4-a74e-4a90-83cd-1b5afaa00b20
+ref table BaoLanh
+ref table LocalDateTable_b08f15fe-74b1-413f-a5b7-46d23c2fa6b6
+ref table LocalDateTable_53411400-ab81-48b8-abf9-8c2cd95368da
+ref table LocalDateTable_4394b303-9b80-4eed-a00f-7d9f1760870c
+ref table LocalDateTable_c895530d-5580-446b-88da-07e86f9eaa41
+ref table LocalDateTable_72355875-84a5-4f2d-8216-9ba7ae715d40
+ref table LocalDateTable_4e98ee1b-bbfc-4edd-beb6-8f11e61b0059
+ref table 'Bảo lãnh theo dõi'
+ref table 'OPEX Chi tiết công nợ'
+ref table 'OPEX Tổng công nợ'
+ref table LocalDateTable_837d440d-bdd6-412c-90be-9a4b6111bede
+ref table 'KPI Tiến độ thầu'
+ref table 'KPI TTHD'
+ref table 'KPI QTHD'
+ref table 'KPI GHBL'
+ref table LocalDateTable_19595c90-f875-40ad-996e-c18708b6e4dd
+ref table LocalDateTable_2730afe9-00d2-4da2-a6cf-c62648fc3724
+ref table LocalDateTable_f12bfe0a-7d32-46ea-936f-d6dbff25cfae
+ref table LocalDateTable_bc2fe546-5d58-4a5b-85d7-584dad37016d
+ref table LocalDateTable_9e8ad1cc-dd53-4e20-9fb0-32d9639ec981
+ref table LocalDateTable_b6b15b13-9e75-4f1b-b2f2-195e13395b90
+ref table LocalDateTable_9e0326da-675b-4f1e-bf88-5945f67e0e65
+ref table LocalDateTable_c2c2e0fb-a972-48fb-8bbb-c84ed5bc5764
+ref table 'Kỳ đánh giá đấu thầu'
+ref table 'KPI Đăng ký'
+ref table 'KPI Danh mục'
+ref table 'KPI Nhân sự'
+ref table 'KPI TUNC Nguồn'
+ref table 'KPI TDSP Nguồn'
+ref table 'KPI PCD'
+ref table LocalDateTable_5e128b16-2b01-4acb-a381-cf52563d2923
+ref table LocalDateTable_f9f5cf79-43d1-4f79-804b-5f2657635f9b
+ref table LocalDateTable_597fd025-25ed-4732-accf-25b1bb53fb76
+ref table LocalDateTable_aae978d4-a3a3-4e8f-939d-84c524d1e3f7
+ref table LocalDateTable_0c2cb0bc-4fee-4110-843d-690c7a58cd9b
+ref table LocalDateTable_2f9e89ad-410a-40d5-94fb-59f447e1492e
+ref table LocalDateTable_e87ebc67-304e-4459-ba39-c9f50e909dcd
+ref table LocalDateTable_b0ee2077-01a1-4301-8ce2-a6e4a2a65d59
+ref table LocalDateTable_09de8167-8d68-47a0-8cb5-da8dd4be9917
+ref table LocalDateTable_d2d572ce-0d01-4edf-84d6-e7bc3b7f1b83
+ref table LocalDateTable_97c937be-3329-4fc8-b4d4-1a1b4accc520
+ref table LocalDateTable_66c61ed9-6438-45de-9759-0d994c8fc431
+ref table LocalDateTable_837b3f04-85ea-4518-beb4-3db05a24d84c
+ref table LocalDateTable_8fd6ea34-e10b-4011-bff8-d0c039c46ab1
+ref table LocalDateTable_7d39db44-ab06-40d4-bac2-ef94c00828a7
+ref table 'Template Điểm Ban'
+ref table BI_Data
+ref table LocalDateTable_f423e2a6-a836-480b-945e-5438f9bf599e
+ref table 'Template KPI Kết quả lưu'
+
+ref cultureInfo en-US
+

@@ -1,0 +1,222 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "logic_3cf0331044ede0872c35",
+  "position": {
+    "x": 18,
+    "y": 520,
+    "z": 51000,
+    "height": 850,
+    "width": 202,
+    "tabOrder": 51000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "TỶ LỆ TIẾN ĐỘ GỐC",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "12pt",
+                      "color": "#7DD3FC",
+                      "bold": true
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "PL.PTC.01 + PL.PTC.01-01",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "10pt",
+                      "color": "#34D399",
+                      "bold": true
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Mục tiêu trung gian: lấy ngày điều chỉnh nếu có, nếu không lấy ngày ban đầu.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Kỳ đánh giá theo slicer: năm hoặc một/nhiều quý; không cố định một quý.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Lưới: mục tiêu trong kỳ, hoặc mục tiêu sau cuối kỳ và hoàn thành trong kỳ. Mỗi mã gói một dòng.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Hoàn thành trong kỳ: tính điểm nếu mục tiêu trong kỳ hoặc sau cuối kỳ (vượt kỳ, tối đa 120%).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Hoàn thành trước kỳ: vẫn hiện nếu mục tiêu trong kỳ, nhưng điểm rỗng.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Đúng/sớm: 100% + 1% mỗi ngày làm việc, tối đa 120%.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Trễ: 100% − 1% mỗi ngày làm việc; trên 20 ngày: 0%. Không tính thứ 7, CN.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• PIC/mục tiêu rỗng: điểm rỗng. Chưa hoàn thành: 0%; nếu do chưa đủ HS thực hiện: điểm rỗng.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "• Tổng bảng chi tiết: bình quân tỷ lệ gốc trong kỳ và vượt kỳ; bỏ rỗng, giữ 0%. Mỗi mã gói tính một lần.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#E2E8F0",
+                      "bold": false
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Hướng dẫn cách tính điểm KPI của trang'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

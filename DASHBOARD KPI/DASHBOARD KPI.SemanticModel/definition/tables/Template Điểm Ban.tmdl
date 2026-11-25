@@ -1,0 +1,54 @@
+/// Điểm BAN PTC theo mã KPI-quý-năm, nhập trực tiếp bằng Enter Data trong Power BI. Chỉ áp dụng khi nhân viên có đăng ký. Chỉnh điểm tại bước Source trong Power Query rồi lưu và publish lại; không phụ thuộc file Excel trên máy.
+table 'Template Điểm Ban'
+	isHidden
+	lineageTag: 4b33723f-2768-4f56-8d28-cb4eba87327e
+
+	column 'Mã CV'
+		dataType: string
+		isHidden
+		lineageTag: 25d91783-1771-4151-ab5b-c74e8364cb8a
+		summarizeBy: none
+		sourceColumn: Mã CV
+
+	column Quý
+		dataType: int64
+		isHidden
+		lineageTag: 29fbe92d-d42b-496d-9294-cb5345f4e34f
+		summarizeBy: none
+		sourceColumn: Quý
+
+	column Năm
+		dataType: int64
+		isHidden
+		lineageTag: 085c2166-ae44-46b5-9d09-f87dccf5e677
+		summarizeBy: none
+		sourceColumn: Năm
+
+	column 'Điểm hoàn thành'
+		dataType: decimal
+		isHidden
+		lineageTag: 96c43601-e988-4386-a672-d309fdd14500
+		summarizeBy: none
+		sourceColumn: Điểm hoàn thành
+
+	column PIC
+		dataType: string
+		isHidden
+		lineageTag: 17068b60-033d-4ce8-98f1-ba7726258392
+		summarizeBy: none
+		sourceColumn: PIC
+
+	partition 'Template Điểm Ban' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(
+				        Json.Document(Binary.Decompress(Binary.FromText("jdCxCoMwFIXhVyl3DhLTkGa1ydChiJLQRXwDcfP9S5MgFeK5bmf4hp8zTeRcdCSoJUFKKvObUpKgZ9ffhuhoFrtRF8x9N+u2LFWiIfm8+JpkmJpkcE0isMYHviYbXJMNrMkE1YzvPnA1xcCaYlBNIagmeh8PNadE8QS1FIJbwnB8xmjZWEtV9nfOw9hG6zrDTYmcNs1f", BinaryEncoding.Base64), Compression.Deflate)),
+				        let _t = ((type nullable text) meta [Serialized.Text = true])
+				        in type table [#"Mã CV" = _t, #"Quý" = _t, #"Năm" = _t, #"Điểm hoàn thành" = _t, PIC = _t]
+				    ),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,
+				        {{"Mã CV", type text}, {"Quý", Int64.Type}, {"Năm", Int64.Type}, {"Điểm hoàn thành", Currency.Type}, {"PIC", type text}}, "en-US")
+				in
+				    #"Changed Type"
+

@@ -1,0 +1,662 @@
+/// PL.PTC.01 và PL.PTC.01-01 từ NVLG_PTC_2026.xlsx; chuẩn hóa ngày mục tiêu trung gian và điểm theo ngày làm việc.
+table 'KPI Tiến độ thầu'
+	lineageTag: bc6ffe58-916b-447b-be94-0f377a029190
+
+	/// Đếm mã công việc duy nhất thuộc kỳ slicer; không nhân đôi do nhiều PIC.
+	measure 'TĐT Số công việc' = COUNTROWS(FILTER(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]), [TĐT Gói thuộc kỳ] = 1))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 4c769371-1d41-41c9-b705-478632002c84
+
+	/// Đếm theo tỷ lệ hoàn thành gốc, giữ ý nghĩa đúng/trễ hạn; không dùng điểm đã kết hợp PCD để phân loại tiến độ.
+	measure 'TĐT Số được chấm' = VAR _T = ADDCOLUMNS(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]), "_Score", [TĐT Tỷ lệ hoàn thành]) RETURN COUNTROWS(FILTER(_T, NOT ISBLANK([_Score])))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 1edd4420-ed35-4979-a3c6-2c752af1e159
+
+	/// Đếm theo tỷ lệ hoàn thành gốc, giữ ý nghĩa đúng/trễ hạn; không dùng điểm đã kết hợp PCD để phân loại tiến độ.
+	measure 'TĐT Số đạt đúng hạn' = VAR _T = ADDCOLUMNS(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]), "_Score", [TĐT Tỷ lệ hoàn thành]) RETURN COUNTROWS(FILTER(_T, NOT ISBLANK([_Score]) && [_Score] >= 1))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: b9180d5f-af4d-4b3a-b50e-7c77dcde3077
+
+	/// Đếm theo tỷ lệ hoàn thành gốc, giữ ý nghĩa đúng/trễ hạn; không dùng điểm đã kết hợp PCD để phân loại tiến độ.
+	measure 'TĐT Số trễ không đạt' = VAR _T = ADDCOLUMNS(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]), "_Score", [TĐT Tỷ lệ hoàn thành]) RETURN COUNTROWS(FILTER(_T, NOT ISBLANK([_Score]) && [_Score] < 1))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 1066337a-6210-4db6-a0ff-d093bbdb9aa1
+
+	/// Trung bình cộng điểm không rỗng của mã công việc duy nhất: gói trong kỳ và vượt kỳ. Giữ điểm 0%, không nhân đôi theo PIC.
+	measure 'TĐT Điểm bình quân' = VAR _T = ADDCOLUMNS(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]), "_Score", [TĐT Điểm dòng]) RETURN AVERAGEX(FILTER(_T, NOT ISBLANK([_Score])), [_Score])
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: 754c5eaa-bcaa-4ccc-b94a-4fa8c5c681ac
+
+	measure 'TĐT Số loại trừ/chưa dữ liệu' = [TĐT Số công việc] - [TĐT Số được chấm]
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 05fc2084-5edc-44e2-89d9-1675c59fafaf
+
+	measure 'TĐT Tỷ lệ đúng hạn' = DIVIDE([TĐT Số đạt đúng hạn], [TĐT Số được chấm])
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: 26312538-7a51-422a-8a21-d4c3e8fd452e
+
+	/// Theo nguồn NVLG_PTC_2026: OPEX (PHÒNG hoặc BỘ PHẬN) giữ nguyên tỷ lệ hoàn thành. Các gói khác: 80% tỷ lệ + 20% PCD kỳ báo cáo; rỗng nếu thiếu tỷ lệ/PCD. Tính từng MÃ CÔNG VIỆC trước khi bình quân.
+	measure 'TĐT Điểm dòng' =
+			VAR _Ratio=[TĐT Tỷ lệ hoàn thành]
+			VAR _Department=UPPER(TRIM(SUBSTITUTE(MAX('KPI Tiến độ thầu'[PHÒNG]),UNICHAR(160)," ")))
+			VAR _Team=UPPER(TRIM(SUBSTITUTE(MAX('KPI Tiến độ thầu'[BỘ PHẬN]),UNICHAR(160)," ")))
+			VAR _IsOpex=_Department="OPEX" || _Team="OPEX"
+			VAR _PCD=IF(NOT _IsOpex,[TĐT Điểm PCD])
+			RETURN IF(ISBLANK(_Ratio),BLANK(),
+			    IF(_IsOpex,_Ratio,
+			        IF(NOT ISBLANK(_PCD),0.8*_Ratio+0.2*_PCD,BLANK())))
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: f8d943bc-5b97-4831-b384-04cf7cc95b0e
+
+	measure 'TĐT Số ngày chênh lệch' = MAX('KPI Tiến độ thầu'[SỐ NGÀY CHÊNH LỆCH LÀM VIỆC])
+		formatString: #,0
+		displayFolder: Chi tiết
+		lineageTag: a15d5795-b88e-4a41-8729-66946dfeaadc
+
+	/// Tổng gói thầu theo định nghĩa PL.PTC.01/01-01: hoàn thành, trong hạn, chưa đến hạn và trễ hạn.
+	measure 'TĐT Tổng gói thầu' = [TĐT Hoàn thành] + [TĐT Trong hạn thực hiện] + [TĐT Chưa đến hạn] + [TĐT Trễ hạn]
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: a2f6cbb0-5f5f-41f1-856b-c8aab71c09c6
+
+	/// Số gói có trạng thái ĐÃ HOÀN THÀNH trong kỳ mục tiêu đã chọn.
+	measure 'TĐT Hoàn thành' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( 'KPI Tiến độ thầu'[TÌNH TRẠNG] IN { "ĐÃ HOÀN THÀNH", "ĐÃ HOÀN HÀNH" } ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: 7cc83caa-bfc8-4603-90d5-1518523de2f1
+
+	/// Số gói đang trong hạn thực hiện trong kỳ mục tiêu đã chọn.
+	measure 'TĐT Trong hạn thực hiện' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( 'KPI Tiến độ thầu'[TÌNH TRẠNG] = "TRONG HẠN THỰC HIỆN" ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: 97b0488b-b10d-4c22-8914-9b441d1af74c
+
+	/// Số gói có trạng thái CHƯA ĐẾN HẠN trong kỳ mục tiêu đã chọn.
+	measure 'TĐT Chưa đến hạn' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( 'KPI Tiến độ thầu'[TÌNH TRẠNG] = "CHƯA ĐẾN HẠN" ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: ece1d52f-0d79-4a04-bef6-69c8da18896e
+
+	/// Số gói có trạng thái TRỄ HẠN trong kỳ mục tiêu đã chọn.
+	measure 'TĐT Trễ hạn' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( 'KPI Tiến độ thầu'[TÌNH TRẠNG] = "TRỄ HẠN" ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: 800030eb-d35c-44a3-9156-630b328518bd
+
+	/// Gói có tình trạng cụ thể ĐANG THỰC HIỆN; dùng để theo dõi phần trễ đang xử lý.
+	measure 'TĐT Trễ đang thực hiện' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( CONTAINSSTRING ( UPPER ( COALESCE ( 'KPI Tiến độ thầu'[TÌNH TRẠNG CỤ THỂ], "" ) ), "ĐANG THỰC HIỆN" ) ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: ba78d35d-49fb-4703-84b7-8102b8969030
+
+	/// Gói có tình trạng cụ thể CHƯA THỰC HIỆN.
+	measure 'TĐT Chưa thực hiện' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( CONTAINSSTRING ( UPPER ( COALESCE ( 'KPI Tiến độ thầu'[TÌNH TRẠNG CỤ THỂ], "" ) ), "CHƯA THỰC HIỆN" ) ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: db3819c2-3195-456e-9f33-4b315a4d56be
+
+	/// Gói bị loại trừ do chưa đủ hồ sơ thực hiện; không nằm trong mẫu số tính điểm.
+	measure 'TĐT Không đủ HS thực hiện' = COALESCE ( CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( CONTAINSSTRING ( UPPER ( COALESCE ( 'KPI Tiến độ thầu'[TÌNH TRẠNG CỤ THỂ], "" ) ), "CHƯA ĐỦ HS THỰC HIỆN" ) ) ), 0 )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: c77b1173-7351-4afd-b00f-9651b439791e
+
+	measure 'TĐT Gói phân công theo PIC' = VAR _PIC = SELECTEDVALUE ( 'KPI Tiến độ thầu'[PIC CẬP NHẬT] ) RETURN IF ( ISBLANK ( _PIC ) || TRIM ( _PIC ) = "", BLANK (), [TĐT Tổng gói thầu] )
+		formatString: #,0
+		displayFolder: Theo PIC
+		lineageTag: 8f72b38e-86f8-4d10-872f-ec83510d8341
+
+	measure 'TĐT Gói trễ theo PIC' = VAR _PIC = SELECTEDVALUE ( 'KPI Tiến độ thầu'[PIC CẬP NHẬT] ) RETURN IF ( ISBLANK ( _PIC ) || TRIM ( _PIC ) = "", BLANK (), [TĐT Trễ hạn] )
+		formatString: #,0
+		displayFolder: Theo PIC
+		lineageTag: 0c716bd0-7318-4424-8c81-c9e079dd414c
+
+	/// Số gói có ngày mục tiêu, dùng cho biểu đồ kế hoạch theo tháng-năm.
+	measure 'TĐT Gói dự kiến thực hiện' = CALCULATE ( [TĐT Số công việc], KEEPFILTERS ( NOT ISBLANK ( 'KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN] ) ) )
+		formatString: #,0
+		displayFolder: Trạng thái gói thầu
+		lineageTag: 7c56a527-b2d8-49fe-b699-e81cbb598a6d
+
+	/// Bảng chi tiết TIẾN ĐỘ THẦU/TRONG KPI/NGOÀI KPI hiển thị tỷ lệ tiến độ gốc trước PCD. Dòng tổng là bình quân tỷ lệ gốc theo mã công việc duy nhất, bỏ rỗng và giữ 0%. Giữ điều kiện kỳ và ký tự ẩn cho điểm rỗng. Điểm KPI tổng hợp và TEMPLATE KPI vẫn dùng TĐT Điểm dòng/TĐT Điểm bình quân theo OPEX hoặc 80% tỷ lệ gốc + 20% PCD. Theo xác nhận ngày 16/11/2026.
+	measure 'TĐT Điểm hiển thị lưới' =
+			VAR _Row=ISINSCOPE('KPI Tiến độ thầu'[MÃ CÔNG VIỆC])
+			VAR _Visible=IF(_Row,[TĐT Gói thuộc kỳ]=1,[TĐT Số công việc]>0)
+			RETURN IF(_Visible,
+			VAR _Ratio=IF(_Row,[TĐT Tỷ lệ hoàn thành],
+			AVERAGEX(VALUES('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),[TĐT Tỷ lệ hoàn thành]))
+			RETURN IF(ISBLANK(_Ratio),UNICHAR(8203),FORMAT(_Ratio,"0.00%")))
+		displayFolder: KPI
+		lineageTag: f9ebc78e-7fda-4186-a8cb-089452036a9c
+
+	/// Hiện mục tiêu thuộc các ngày slicer chọn hoặc hoàn thành thuộc kỳ và mục tiêu sau cuối kỳ. Giữ gói có điểm rỗng; một mã gói một dòng.
+	measure 'TĐT Gói thuộc kỳ' =
+			VAR _Dates = VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _HasPeriod = ISFILTERED('Kỳ đánh giá đấu thầu')
+			VAR _PeriodEnd = MAX('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _Target = MAX('KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN])
+			VAR _Done = MAX('KPI Tiến độ thầu'[NGÀY HOÀN THÀNH])
+			VAR _TargetIn = NOT ISBLANK(_Target) && _Target IN _Dates
+			VAR _OverPeriod = NOT ISBLANK(_Target) && NOT ISBLANK(_Done) && _Done IN _Dates && _Target > _PeriodEnd
+			RETURN IF(NOT _HasPeriod || _TargetIn || _OverPeriod, 1, BLANK())
+		formatString: 0
+		isHidden
+		displayFolder: KPI
+		lineageTag: 5be4e4bf-8e74-4845-826a-05d1449b974e
+
+	/// PIC của dòng chi tiết: kiểm tra gói thuộc kỳ trực tiếp khi MÃ CÔNG VIỆC ở trong scope, gộp tên không rỗng tăng dần. Tránh lặp đếm lại mã công việc đã cố định trong từng dòng. Tối ưu 16/11/2026.
+	measure 'TĐT PIC hiển thị lưới' =
+			IF(ISINSCOPE('KPI Tiến độ thầu'[MÃ CÔNG VIỆC]),
+			IF([TĐT Gói thuộc kỳ]=1,
+			CONCATENATEX(FILTER(VALUES('KPI Tiến độ thầu'[PIC CẬP NHẬT]),NOT ISBLANK('KPI Tiến độ thầu'[PIC CẬP NHẬT])),'KPI Tiến độ thầu'[PIC CẬP NHẬT],"; ",'KPI Tiến độ thầu'[PIC CẬP NHẬT],ASC)))
+		displayFolder: Chi tiết
+		lineageTag: fa2912e5-44b2-48df-b33e-4ec025de7c89
+
+	/// Đếm mã công việc duy nhất có TÌNH TRẠNG=TRỄ HẠN và TÌNH TRẠNG CỤ THỂ=PENDING DO THIẾU NGÂN SÁCH, không phân biệt hoa/thường/khoảng trắng đầu cuối. Ngày mục tiêu trung gian phải có và thuộc đúng kỳ đang chọn; không lấy vượt kỳ theo ngày hoàn thành. Giữ bộ lọc TRONG/NGOÀI KPI, dự án, PIC và các slicer khác; không có dữ liệu trả 0.
+	measure 'TĐT Trễ thiếu ngân sách' =
+			VAR _Dates=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _HasPeriod=ISFILTERED('Kỳ đánh giá đấu thầu')
+			VAR _Rows=FILTER('KPI Tiến độ thầu',
+			    UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[TÌNH TRẠNG],UNICHAR(160)," ")))="TRỄ HẠN" &&
+			    UPPER(TRIM(SUBSTITUTE('KPI Tiến độ thầu'[TÌNH TRẠNG CỤ THỂ],UNICHAR(160)," ")))="PENDING DO THIẾU NGÂN SÁCH" &&
+			    NOT ISBLANK('KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN]) &&
+			    (NOT _HasPeriod || 'KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN] IN _Dates))
+			RETURN COALESCE(COUNTROWS(SUMMARIZE(_Rows,'KPI Tiến độ thầu'[MÃ CÔNG VIỆC])),0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: ac73223a-fedc-43d8-862d-353706e594c3
+
+	/// Tỷ lệ gốc từ cột Tỷ lệ hoàn thành của nguồn, áp dụng điều kiện kỳ/PIC và ngoại lệ thiếu ngân sách đã duyệt; dự phòng công thức tiến độ khi nguồn rỗng. Dùng đếm đúng/trễ hạn trước khi kết hợp PCD.
+	measure 'TĐT Tỷ lệ hoàn thành' =
+			VAR _Dates = VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _HasPeriod = ISFILTERED('Kỳ đánh giá đấu thầu')
+			VAR _PeriodEnd = MAX('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _Target = MAX('KPI Tiến độ thầu'[NGÀY MỤC TIÊU TRUNG GIAN])
+			VAR _Done = MAX('KPI Tiến độ thầu'[NGÀY HOÀN THÀNH])
+			VAR _Out = MAX('KPI Tiến độ thầu'[NGÀY OUT HS KHỎI PHÒNG])
+			VAR _SourceRatio = MAX('KPI Tiến độ thầu'[TỶ LỆ HOÀN THÀNH NGUỒN])
+			VAR _Days = MAX('KPI Tiến độ thầu'[SỐ NGÀY CHÊNH LỆCH LÀM VIỆC])
+			VAR _HasPIC =
+			    COUNTROWS(
+			        FILTER(
+			            VALUES('KPI Tiến độ thầu'[PIC CẬP NHẬT]),
+			            LEN(TRIM(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(
+			                'KPI Tiến độ thầu'[PIC CẬP NHẬT],
+			                UNICHAR(160), " "), UNICHAR(9), ""), UNICHAR(10), ""), UNICHAR(13), ""))) > 0
+			        )
+			    ) > 0
+			VAR _Detail = UPPER(TRIM(SUBSTITUTE(MAX('KPI Tiến độ thầu'[TÌNH TRẠNG CỤ THỂ]),UNICHAR(160)," ")))
+			VAR _TargetIn = NOT ISBLANK(_Target) && _Target IN _Dates
+			VAR _DoneIn = NOT ISBLANK(_Done) && _Done IN _Dates
+			VAR _OutIn = NOT ISBLANK(_Out) && _Out IN _Dates
+			VAR _PendingBudget = _Detail = "PENDING DO THIẾU NGÂN SÁCH"
+			    && NOT ISBLANK(_Out) && NOT ISBLANK(_Target) && _Out < _Target
+			    && IF(_HasPeriod, _TargetIn && _OutIn,
+			        YEAR(_Out)=YEAR(_Target) && QUARTER(_Out)=QUARTER(_Target))
+			VAR _OverPeriod = _DoneIn && _Target > _PeriodEnd
+			VAR _WeekendBonus =
+			    IF(
+			        NOT ISBLANK(_Done) && NOT ISBLANK(_Target)
+			            && _Done < _Target && WEEKDAY(_Target, 2) > 5,
+			        1,
+			        0
+			    )
+			VAR _RawPercent = DIVIDE(100 + _Days + _WeekendBonus, 100)
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        NOT _HasPIC || ISBLANK(_Target), BLANK(),
+			        _HasPeriod && NOT (_TargetIn || _OverPeriod), BLANK(),
+			        _PendingBudget, 1,
+			        ISBLANK(_Done) && CONTAINSSTRING(_Detail,"CHƯA ĐỦ HS THỰC HIỆN"), BLANK(),
+			        _HasPeriod && _TargetIn && NOT ISBLANK(_Done) && NOT _DoneIn && _Done < _Target, BLANK(),
+			        NOT ISBLANK(_SourceRatio), _SourceRatio,
+			        ISBLANK(_Done), 0,
+			        _Done = _Target, 1,
+			        ISBLANK(_Days), BLANK(),
+			        _Days < -20, 0,
+			        MIN(1.2, _RawPercent)
+			    )
+		formatString: 0.00%
+		displayFolder: Tiến độ thầu\Thành phần điểm
+		lineageTag: 20f81f5e-a3dd-47f0-a40d-46d6ba315541
+
+	/// PCD Ban PTC theo quý/năm báo cáo trong BI DATA. Khi chọn nhiều quý/cả năm lấy bình quân các quý có điểm, giữ điểm 0. Không suy ra PCD theo quý mục tiêu từng công việc.
+	measure 'TĐT Điểm PCD' =
+			VAR _Dates=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _Periods=DISTINCT(SELECTCOLUMNS(_Dates,"_Year",YEAR('Kỳ đánh giá đấu thầu'[Ngày]),"_Quarter",QUARTER('Kỳ đánh giá đấu thầu'[Ngày])))
+			VAR _Rows=FILTER(ALL('BI_Data'[Mã CV],'BI_Data'[Quý],'BI_Data'[Năm],'BI_Data'[PIC],'BI_Data'[Điểm hoàn thành]),
+			    UPPER(TRIM('BI_Data'[PIC]))="BAN PTC" &&
+			    UPPER(TRIM('BI_Data'[Mã CV]))="PCD"&FORMAT('BI_Data'[Quý],"0") &&
+			    ('BI_Data'[Năm],'BI_Data'[Quý]) IN _Periods &&
+			    NOT ISBLANK('BI_Data'[Điểm hoàn thành]) && LEN(TRIM('BI_Data'[Điểm hoàn thành]))>0)
+			RETURN AVERAGEX(_Rows,IFERROR(VALUE('BI_Data'[Điểm hoàn thành]),BLANK()))
+		formatString: 0.00%
+		displayFolder: Tiến độ thầu\Thành phần điểm
+		lineageTag: a0e55263-5d95-4913-9a16-e5bb71297ba3
+
+	column 'MÃ CÔNG VIỆC'
+		dataType: int64
+		formatString: 0
+		lineageTag: 85092258-8fe8-4a59-a25c-496a7c109ad4
+		summarizeBy: sum
+		sourceColumn: MÃ CÔNG VIỆC
+
+	column 'LOẠI KPI'
+		dataType: string
+		lineageTag: 70b85e7f-1d51-4227-970a-9e0a488457af
+		summarizeBy: none
+		sourceColumn: LOẠI KPI
+
+	column 'DỰ ÁN'
+		dataType: string
+		lineageTag: 28c63a53-3809-43ce-bcc5-10a798a0153f
+		summarizeBy: none
+		sourceColumn: DỰ ÁN
+
+	column PHÒNG
+		dataType: string
+		lineageTag: 34afcb01-01d9-4bf3-b4a9-5b193910c6b7
+		summarizeBy: none
+		sourceColumn: PHÒNG
+
+	column 'BỘ PHẬN'
+		dataType: string
+		lineageTag: 2dc0ae87-c587-468b-b385-1066358c4511
+		summarizeBy: none
+		sourceColumn: BỘ PHẬN
+
+	column 'HẠNG MỤC CUNG ỨNG - ĐẤU THẦU'
+		dataType: string
+		lineageTag: c940d24c-591b-4f97-b376-c2ed1a902ec3
+		summarizeBy: none
+		sourceColumn: HẠNG MỤC CUNG ỨNG - ĐẤU THẦU
+
+	column 'PIC CẬP NHẬT'
+		dataType: string
+		lineageTag: 2ce2adff-52a3-4ae8-8549-abe16438ca75
+		summarizeBy: none
+		sourceColumn: PIC CẬP NHẬT
+
+	column 'NGÀY MỤC TIÊU BAN ĐẦU'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 83d16a42-16cd-4d23-928a-943262d05063
+		summarizeBy: none
+		sourceColumn: NGÀY MỤC TIÊU BAN ĐẦU
+
+		variation Variation
+			isDefault
+			relationship: dc8a2da7-02a8-4161-8790-f78c2d880542
+			defaultHierarchy: LocalDateTable_bc2fe546-5d58-4a5b-85d7-584dad37016d.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'MỤC TIÊU ĐIỀU CHỈNH'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 3cdc9bb4-ff3d-4d96-a6cf-b30778cf9eb7
+		summarizeBy: none
+		sourceColumn: MỤC TIÊU ĐIỀU CHỈNH
+
+		variation Variation
+			isDefault
+			relationship: 1929ddf4-c976-4d00-8761-420a61001ced
+			defaultHierarchy: LocalDateTable_9e8ad1cc-dd53-4e20-9fb0-32d9639ec981.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY MỤC TIÊU TRUNG GIAN'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 843a3a1b-8201-4b92-baf6-45636008e128
+		summarizeBy: none
+		sourceColumn: NGÀY MỤC TIÊU TRUNG GIAN
+
+		variation Variation
+			isDefault
+			relationship: 9aee81d5-9760-4bb5-9848-d4352a41bc35
+			defaultHierarchy: LocalDateTable_b6b15b13-9e75-4f1b-b2f2-195e13395b90.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'CƠ SỞ GHI NHẬN'
+		dataType: string
+		lineageTag: 5cb784d1-1b43-40f2-abf0-41b752cdcde0
+		summarizeBy: none
+		sourceColumn: CƠ SỞ GHI NHẬN
+
+	column 'NGÀY HOÀN THÀNH'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 3e1d9652-e764-4473-b7a2-1f7cbf4f9cd2
+		summarizeBy: none
+		sourceColumn: NGÀY HOÀN THÀNH
+
+		variation Variation
+			isDefault
+			relationship: 2d6c9405-4e6c-40fa-8e7d-7f5b1aba61c0
+			defaultHierarchy: LocalDateTable_9e0326da-675b-4f1e-bf88-5945f67e0e65.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'SỐ NGÀY CHÊNH LỆCH LÀM VIỆC'
+		dataType: int64
+		formatString: 0
+		lineageTag: c2aedddf-eb34-4d2e-a10a-90fff4cacb6d
+		summarizeBy: sum
+		sourceColumn: SỐ NGÀY CHÊNH LỆCH LÀM VIỆC
+
+	column 'NHÓM NGÀY CHÊNH LỆCH'
+		dataType: string
+		lineageTag: 142e9114-b5aa-4a84-8063-590c7f0f9515
+		summarizeBy: none
+		sourceColumn: NHÓM NGÀY CHÊNH LỆCH
+
+	column 'ĐIỂM HOÀN THÀNH'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 28d6d295-c646-4ffc-a3dc-9636ca955e0b
+		summarizeBy: sum
+		sourceColumn: ĐIỂM HOÀN THÀNH
+
+	column 'TÌNH TRẠNG'
+		dataType: string
+		lineageTag: 866d71c7-d712-40bd-af1a-de70b71f74b6
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG
+
+	column 'TÌNH TRẠNG CỤ THỂ'
+		dataType: string
+		lineageTag: 81463a7c-e2d8-4cf6-a812-8c4de64ca2aa
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG CỤ THỂ
+
+	column 'TÌNH TRẠNG ĐÁNH GIÁ'
+		dataType: string
+		lineageTag: 603c5ac3-491a-458a-a477-f0054a47a1e1
+		summarizeBy: none
+		sourceColumn: TÌNH TRẠNG ĐÁNH GIÁ
+
+	column 'GIẢI TRÌNH'
+		dataType: string
+		lineageTag: 3c4e9efc-68bd-44b7-8d30-773cf52a212f
+		summarizeBy: none
+		sourceColumn: GIẢI TRÌNH
+
+	column 'LOẠI HS ĐẦU VÀO'
+		dataType: string
+		lineageTag: bf512f24-42d0-4268-8136-096db65ecc92
+		summarizeBy: none
+		sourceColumn: LOẠI HS ĐẦU VÀO
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'KỲ MỤC TIÊU'
+		dataType: string
+		isHidden
+		lineageTag: 7dfdfb06-82c6-4ec2-bda5-3f3a03e504d4
+		summarizeBy: none
+		sourceColumn: KỲ MỤC TIÊU
+		sortByColumn: 'KỲ MỤC TIÊU SORT'
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'NĂM MỤC TIÊU'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6f7da931-5d42-4ef3-ae8a-96e3940c3b3e
+		summarizeBy: sum
+		sourceColumn: NĂM MỤC TIÊU
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'QUÝ MỤC TIÊU'
+		dataType: string
+		isHidden
+		lineageTag: 1d523ae1-2ab4-406b-bad2-c070cfa95298
+		summarizeBy: none
+		sourceColumn: QUÝ MỤC TIÊU
+
+	/// Cụm dự án (cột T) từ sheet PL.PTC.01 và PL.PTC.01-01; dùng làm khu vực phân tích.
+	column 'KHU VỰC'
+		dataType: string
+		lineageTag: 4ec0d944-9eb5-4e74-a916-3e5f0631a42f
+		summarizeBy: none
+		sourceColumn: KHU VỰC
+
+	/// Mã dự án lấy đúng từ cột MÃ DỰ ÁN của nguồn PL.PTC.01/01-01.
+	column 'MÃ DỰ ÁN'
+		dataType: string
+		lineageTag: 84116e03-451b-4ae7-9c10-15a4b3ac0d7d
+		summarizeBy: none
+		sourceColumn: MÃ DỰ ÁN
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'KỲ MỤC TIÊU SORT'
+		dataType: int64
+		isHidden
+		lineageTag: 0ad7227b-9969-4b28-a207-e5c8fe13db20
+		summarizeBy: sum
+		sourceColumn: KỲ MỤC TIÊU SORT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'THÁNG MỤC TIÊU'
+		dataType: dateTime
+		formatString: MMM yyyy
+		lineageTag: ab112b3b-52b7-4d45-87c8-d4914d00c006
+		summarizeBy: none
+		sourceColumn: THÁNG MỤC TIÊU
+
+		variation Variation
+			isDefault
+			relationship: c493102f-5bd7-4660-a011-05497f75d584
+			defaultHierarchy: LocalDateTable_c2c2e0fb-a972-48fb-8bbb-c84ed5bc5764.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'THÁNG MỤC TIÊU SORT'
+		dataType: int64
+		isHidden
+		lineageTag: 686a2d9e-5165-490a-8bea-2af9f3fd1c29
+		summarizeBy: sum
+		sourceColumn: THÁNG MỤC TIÊU SORT
+
+		annotation SummarizationSetBy = Automatic
+
+	column PBYC
+		dataType: string
+		lineageTag: 37d296df-1ac7-453b-a7d5-751db2f57236
+		summarizeBy: none
+		sourceColumn: PBYC
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'NGÀY GHI NHẬN KỲ'
+		dataType: dateTime
+		isHidden
+		formatString: dd/MM/yyyy
+		lineageTag: 3a0fe702-040a-4fc8-ad39-0195c60760fd
+		summarizeBy: none
+		sourceColumn: NGÀY GHI NHẬN KỲ
+
+		variation Variation
+			isDefault
+			relationship: 82f51091-6cc3-4a6b-82e9-5f38e2db27ad
+			defaultHierarchy: LocalDateTable_b0ee2077-01a1-4301-8ce2-a6e4a2a65d59.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Trường kỳ cũ theo quý, không sử dụng để lọc/chấm KPI. Dùng bảng Kỳ đánh giá đấu thầu và measure động.
+	column 'LOẠI GHI NHẬN KỲ'
+		dataType: string
+		isHidden
+		lineageTag: 6b1f3c52-8e0d-4d34-9a6e-2c5b7f1a9d40
+		summarizeBy: none
+		sourceColumn: LOẠI GHI NHẬN KỲ
+
+	column 'NGÀY OUT HS KHỎI PHÒNG'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2d0f48cf-5546-4ea3-b301-040f5dc534f9
+		summarizeBy: none
+		sourceColumn: NGÀY OUT HS KHỎI PHÒNG
+
+		variation Variation
+			isDefault
+			relationship: 3a6903b5-e2cf-4836-a411-ac7c76fe62d6
+			defaultHierarchy: LocalDateTable_f423e2a6-a836-480b-945e-5438f9bf599e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Tỷ lệ nguyên bản từ PL.PTC.01/01-01. TEMPLATE TDDT: Ngân sách Dự án = 80% tỷ lệ gốc + 20% PCD đúng quý báo cáo (rỗng=0); ngân sách còn lại giữ nguyên tỷ lệ gốc. Thay điều kiện OPEX cũ từ 20/11/2026.
+	column 'TỶ LỆ HOÀN THÀNH NGUỒN'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 612c2f51-2c04-4212-bea0-f9fc3f3bd0b5
+		summarizeBy: none
+		sourceColumn: TỶ LỆ HOÀN THÀNH NGUỒN
+
+	column 'NGÂN SÁCH'
+		dataType: string
+		lineageTag: 994e5667-8ef6-431a-b67d-1469cd93f289
+		summarizeBy: none
+		sourceColumn: NGÂN SÁCH
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI Tiến độ thầu' = m
+		mode: import
+		source =
+				let
+					    Normalize = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.Trim(Text.From(v ?? ""))), {" ", Character.FromNumber(160), "#(tab)", "#(cr)", "#(lf)"})),
+					    FindColumn = (t as table, names as list) as nullable text =>
+					        let cols = Table.ColumnNames(t),
+					            hits = List.Transform(names, (n) => List.First(List.Select(cols, (c) => Normalize(c)=Normalize(n)), null))
+					        in List.First(List.RemoveNulls(hits), null),
+					    Ensure = (t as table, target as text, aliases as list) as table =>
+					        let src = FindColumn(t, List.Combine({{target}, aliases}))
+					        in if Table.HasColumns(t,{target}) then t else if src=null then Table.AddColumn(t,target,each null,type any) else Table.AddColumn(t,target,each Record.Field(_,src),type any),
+					    CleanSheet = (wb as table, sheetName as text, kpiType as text) as table =>
+					        let hit = Table.SelectRows(wb, each [Kind]="Sheet" and Normalize([Item])=Normalize(sheetName)),
+					            raw = if Table.RowCount(hit)=0 then #table({}, {}) else hit{0}[Data],
+					            safe = Table.ReplaceErrorValues(raw, List.Transform(Table.ColumnNames(raw), each {_,null})),
+					            rows = Table.ToRows(safe),
+					            idx = List.PositionOf(List.Transform(rows, each List.AnyTrue(List.Transform(_, (x)=> Normalize(x)="DỰÁN"))), true),
+					            skipped = if idx<0 then safe else Table.Skip(safe,idx),
+					            promoted = if idx<0 then #table({}, {}) else Table.PromoteHeaders(skipped,[PromoteAllScalars=true]),
+					            mappings = {
+					                {"DỰ ÁN",{}},
+						                {"MÃ DỰ ÁN",{"MÃ DỰ ÁN/ĐƠN VỊ","MÃ DỰ ÁN/ĐV"}},
+						                {"KHU VỰC",{"CỤM DỰ ÁN","CỤM DỰ ÁN (KHU VỰC)"}},
+						                {"PBYC",{"PHÂN BỔ YÊU CẦU","PHÂN BỔ YC"}},
+					                {"NGÂN SÁCH",{}},
+				                {"PHÒNG",{"PHÒNG ","PHÒNG/BAN"}},
+					                {"BỘ PHẬN",{"TEAM","NHÓM","BỘ PHẬN/TEAM"}},
+					                {"HẠNG MỤC CUNG ỨNG - ĐẤU THẦU",{"HẠNG MỤC CÔNG VIỆC/GÓI THẦU","HẠNG MỤC ĐẤU THẦU","HẠNG MỤC"}},
+					                {"PIC CẬP NHẬT",{"PIC","PIC THỰC HIỆN","PIC PHỤ TRÁCH"}},
+					                {"NGÀY MỤC TIÊU BAN ĐẦU",{"MỤC TIÊU BAN ĐẦU","NGÀY MỤC TIÊU","MỤC TIÊU"}},
+					                {"MỤC TIÊU ĐIỀU CHỈNH",{"NGÀY MỤC TIÊU ĐIỀU CHỈNH"}},
+					                {"CƠ SỞ GHI NHẬN",{"CƠ SỞ GHI NHẬN "}},
+					                {"NGÀY HOÀN THÀNH",{"KẾT QUẢ","NGÀY HOÀN TẤT"}},
+				                {"NGÀY OUT HS KHỎI PHÒNG",{"NGÀY OUT HS","NGÀY CHUYỂN HS KHỎI PHÒNG"}},
+					                {"TÌNH TRẠNG",{}},
+					                {"TÌNH TRẠNG CỤ THỂ",{"TRẠNG THÁI CỤ THỂ"}},
+					                {"GIẢI TRÌNH",{"Giải trình lí do chậm trễ (nếu có)","GIẢI TRÌNH LÝ DO CHẬM TRỄ"}},
+					                {"LOẠI HS ĐẦU VÀO",{}},
+				                {"TỶ LỆ HOÀN THÀNH NGUỒN",{"Tỷ lệ hoàn thành"}}
+					            },
+					            budgetChecked = if FindColumn(promoted,{"NGÂN SÁCH"})=null then error Error.Record("MissingBudgetColumn","Không tìm thấy cột Ngân sách trong sheet "&sheetName,[Sheet=sheetName]) else promoted,
+				            standardized = List.Accumulate(mappings,budgetChecked,(s,m)=>Ensure(s,m{0},m{1})),
+					            selected = Table.SelectColumns(standardized,List.Transform(mappings,each _{0}),MissingField.UseNull),
+					            valid = Table.SelectRows(selected, each Text.Trim(Text.From([DỰ ÁN] ?? ""))<>""),
+					            addType = Table.AddColumn(valid,"LOẠI KPI",each kpiType,type text)
+					        in addType,
+					    // Đọc trực tiếp file người dùng cung cấp để tránh phải liệt kê toàn bộ site PRT.
+					    content = Web.Contents("https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'D4FA6E74-1B84-40F9-BBC6-E5A2BA0586C6')/$value"),
+					    wb = Excel.Workbook(content,null,true),
+					    combined = Table.Combine({CleanSheet(wb,"PL.PTC.01","TRONG KPI"),CleanSheet(wb,"PL.PTC.01-01","NGOÀI KPI")}),
+					    typed = Table.TransformColumns(combined,{
+					        {"DỰ ÁN", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"MÃ DỰ ÁN", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"KHU VỰC", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"PBYC", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"NGÂN SÁCH", each try Text.Trim(Text.Clean(Text.Replace(Text.From(_),Character.FromNumber(160)," "))) otherwise null, type text},
+					        {"PHÒNG", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"BỘ PHẬN", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"HẠNG MỤC CUNG ỨNG - ĐẤU THẦU", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"PIC CẬP NHẬT", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"CƠ SỞ GHI NHẬN", each try Text.Trim(Text.From(_)) otherwise null, type text},
+				        {"TÌNH TRẠNG", each let s = try Text.Upper(Text.Trim(Text.From(_))) otherwise null in if s = "ĐÃ HOÀN HÀNH" then "ĐÃ HOÀN THÀNH" else s, type text},
+					        {"TÌNH TRẠNG CỤ THỂ", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"GIẢI TRÌNH", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"LOẠI HS ĐẦU VÀO", each try Text.Trim(Text.From(_)) otherwise null, type text},
+					        {"NGÀY MỤC TIÊU BAN ĐẦU", each try Date.From(_) otherwise null, type date},
+					        {"MỤC TIÊU ĐIỀU CHỈNH", each try Date.From(_) otherwise null, type date},
+					        {"NGÀY HOÀN THÀNH", each try Date.From(_) otherwise null, type date},
+				        {"NGÀY OUT HS KHỎI PHÒNG", each try Date.From(_) otherwise null, type date},
+				        {"TỶ LỆ HOÀN THÀNH NGUỒN", each if _=null or Text.Trim(Text.From(_))="" then null else try Number.From(_) otherwise null, type number}
+					    }),
+					    indexedBase = Table.AddIndexColumn(typed,"MÃ CÔNG VIỆC",1,1,Int64.Type),
+					    picList = Table.AddColumn(indexedBase,"PIC_LIST",each let p=Text.From([PIC CẬP NHẬT] ?? ""), xs=List.Transform(Splitter.SplitTextByAnyDelimiter({";",",","#(lf)","#(cr)","|"},QuoteStyle.Csv)(p), each Text.Trim(_)), ys=List.Distinct(List.Select(xs,each _<>"")) in if List.IsEmpty(ys) then {null} else ys),
+					    expandedPic = Table.ExpandListColumn(picList,"PIC_LIST"),
+					    removedPicSource = Table.RemoveColumns(expandedPic,{"PIC CẬP NHẬT"}),
+					    normalizedPic = Table.RenameColumns(removedPicSource,{{"PIC_LIST","PIC CẬP NHẬT"}}),
+					    addTarget = Table.AddColumn(normalizedPic,"NGÀY MỤC TIÊU TRUNG GIAN",each if [MỤC TIÊU ĐIỀU CHỈNH]=null then [NGÀY MỤC TIÊU BAN ĐẦU] else [MỤC TIÊU ĐIỀU CHỈNH],type date),
+					    addStatus = Table.AddColumn(addTarget,"TÌNH TRẠNG ĐÁNH GIÁ",each Text.Trim(Text.Combine(List.RemoveNulls({[TÌNH TRẠNG],[TÌNH TRẠNG CỤ THỂ]})," - ")),type text),
+					    addDays = Table.AddColumn(addStatus,"SỐ NGÀY CHÊNH LỆCH LÀM VIỆC",each
+					        let t=[NGÀY MỤC TIÊU TRUNG GIAN], c=[NGÀY HOÀN THÀNH],
+					            start=if t=null or c=null then null else if c<=t then c else t,
+					            finish=if t=null or c=null then null else if c<=t then t else c,
+					            n=if start=null then null else Duration.Days(finish-start),
+					            ds=if n=null or n=0 then {} else List.Dates(Date.AddDays(start,1),n,#duration(1,0,0,0)),
+					            wd=if n=null then null else List.Count(List.Select(ds, each Date.DayOfWeek(_,Day.Monday)<5))
+					        in if wd=null then null else if c<=t then wd else -wd, Int64.Type),
+					    addScore = Table.AddColumn(addDays,"ĐIỂM HOÀN THÀNH",each
+				            let
+				                p=Text.Trim(Text.Clean(Text.Replace(Text.From([PIC CẬP NHẬT] ?? ""),Character.FromNumber(160)," "))),
+				                s=Text.Upper(Text.Trim(Text.Clean(Text.Replace([TÌNH TRẠNG CỤ THỂ] ?? "",Character.FromNumber(160)," ")))),
+				                d=[SỐ NGÀY CHÊNH LỆCH LÀM VIỆC],
+				                t=[NGÀY MỤC TIÊU TRUNG GIAN],
+				                c=[NGÀY HOÀN THÀNH],
+				                o=[NGÀY OUT HS KHỎI PHÒNG]
+				            in
+				                if p="" or t=null then null
+				                else if s="PENDING DO THIẾU NGÂN SÁCH" and o<>null and o<t and Date.Year(o)=Date.Year(t) and Date.QuarterOfYear(o)=Date.QuarterOfYear(t) then 1
+				                else if c=null and Text.Contains(s,"CHƯA ĐỦ HS THỰC HIỆN") then null
+				                else if c=null then 0
+				                else if c=t then 1
+				                else if d=null then null
+				                else if c<t then List.Min({1.2,1+d*0.01+(if Date.DayOfWeek(t,Day.Monday)>=5 then 0.01 else 0)})
+				                else if Number.Abs(d)>20 then 0
+				                else 1-Number.Abs(d)*0.01,
+				            type number),
+				        addRecognitionDate = Table.AddColumn(addScore,"NGÀY GHI NHẬN KỲ",each
+					        let t=[NGÀY MỤC TIÊU TRUNG GIAN], c=[NGÀY HOÀN THÀNH],
+					            targetKey=if t=null then null else Date.Year(t)*10+Date.QuarterOfYear(t),
+					            completionKey=if c=null then null else Date.Year(c)*10+Date.QuarterOfYear(c)
+					        in if t=null then null else if completionKey<>null and completionKey<targetKey then c else t, type date),
+					    addRecognitionType = Table.AddColumn(addRecognitionDate,"LOẠI GHI NHẬN KỲ",each let t=[NGÀY MỤC TIÊU TRUNG GIAN], r=[NGÀY GHI NHẬN KỲ] in if t=null then "Chưa có mục tiêu" else if r<>t then "Vượt mục tiêu" else "Theo mục tiêu", type text),
+					    recognized = addRecognitionType,
+					    addYear = Table.AddColumn(recognized,"NĂM MỤC TIÊU",each if [NGÀY GHI NHẬN KỲ]=null then null else Date.Year([NGÀY GHI NHẬN KỲ]),Int64.Type),
+					    addQuarter = Table.AddColumn(addYear,"QUÝ MỤC TIÊU",each if [NGÀY GHI NHẬN KỲ]=null then "Chưa xác định" else "Quý "&Text.From(Date.QuarterOfYear([NGÀY GHI NHẬN KỲ])),type text),
+					    addPeriod = Table.AddColumn(addQuarter,"KỲ MỤC TIÊU",each if [NGÀY GHI NHẬN KỲ]=null then "Chưa có mục tiêu" else "Quý "&Text.From(Date.QuarterOfYear([NGÀY GHI NHẬN KỲ]))&" - "&Text.From([NĂM MỤC TIÊU]),type text),
+					    addPeriodSort = Table.AddColumn(addPeriod,"KỲ MỤC TIÊU SORT",each if [NGÀY GHI NHẬN KỲ]=null then null else [NĂM MỤC TIÊU]*10+Date.QuarterOfYear([NGÀY GHI NHẬN KỲ]),Int64.Type),
+					    addMonth = Table.AddColumn(addPeriodSort,"THÁNG MỤC TIÊU",each if [NGÀY MỤC TIÊU TRUNG GIAN]=null then null else #date(Date.Year([NGÀY MỤC TIÊU TRUNG GIAN]),Date.Month([NGÀY MỤC TIÊU TRUNG GIAN]),1),type date),
+					    addMonthSort = Table.AddColumn(addMonth,"THÁNG MỤC TIÊU SORT",each if [NGÀY MỤC TIÊU TRUNG GIAN]=null then null else Date.Year([NGÀY MỤC TIÊU TRUNG GIAN])*100+Date.Month([NGÀY MỤC TIÊU TRUNG GIAN]),Int64.Type),
+					    addBucket = Table.AddColumn(addMonthSort,"NHÓM NGÀY CHÊNH LỆCH",each let d=[SỐ NGÀY CHÊNH LỆCH LÀM VIỆC] in if d=null then "Chưa chấm" else if d>=0 then "Đúng/sớm hạn" else if d>=-5 then "Trễ 1-5 ngày" else if d>=-10 then "Trễ 6-10 ngày" else if d>=-20 then "Trễ 11-20 ngày" else "Trễ trên 20 ngày",type text),
+					    reordered = Table.ReorderColumns(addBucket,{"MÃ CÔNG VIỆC","LOẠI KPI","DỰ ÁN","MÃ DỰ ÁN","KHU VỰC","PBYC","PHÒNG","BỘ PHẬN","HẠNG MỤC CUNG ỨNG - ĐẤU THẦU","PIC CẬP NHẬT","NGÀY MỤC TIÊU BAN ĐẦU","MỤC TIÊU ĐIỀU CHỈNH","NGÀY MỤC TIÊU TRUNG GIAN","NGÀY GHI NHẬN KỲ","LOẠI GHI NHẬN KỲ","CƠ SỞ GHI NHẬN","NGÀY HOÀN THÀNH","SỐ NGÀY CHÊNH LỆCH LÀM VIỆC","NHÓM NGÀY CHÊNH LỆCH","ĐIỂM HOÀN THÀNH","TÌNH TRẠNG","TÌNH TRẠNG CỤ THỂ","TÌNH TRẠNG ĐÁNH GIÁ","GIẢI TRÌNH","LOẠI HS ĐẦU VÀO","KỲ MỤC TIÊU","KỲ MỤC TIÊU SORT","NĂM MỤC TIÊU","QUÝ MỤC TIÊU","THÁNG MỤC TIÊU","THÁNG MỤC TIÊU SORT"})
+					in
+					    reordered
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Exception
+

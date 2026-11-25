@@ -1,0 +1,1144 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.11.0/schema.json",
+  "name": "c186d542fa53070dd15e",
+  "position": {
+    "x": 288.4390243902439,
+    "y": 208.09756097560975,
+    "z": 5000,
+    "height": 872.147072790177,
+    "width": 1631.7590394138797,
+    "tabOrder": 5000
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "STT theo PIC"
+                }
+              },
+              "queryRef": "KPI Đăng ký.STT theo PIC",
+              "nativeQueryRef": "STT",
+              "active": true,
+              "displayName": "STT"
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mã CV"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mã CV",
+              "nativeQueryRef": "MÃ CV",
+              "displayName": "MÃ CV"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mô tả công việc"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mô tả công việc",
+              "nativeQueryRef": "Mô tả công việc",
+              "displayName": "Mô tả công việc"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mô tả chi tiết"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mô tả chi tiết",
+              "nativeQueryRef": "Mô tả chi tiết",
+              "displayName": "Mô tả chi tiết"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Chỉ số đo lường"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Chỉ số đo lường",
+              "nativeQueryRef": "Chỉ số đo lường KPI",
+              "displayName": "Chỉ số đo lường KPI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Đơn vị"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Đơn vị",
+              "nativeQueryRef": "Đơn vị tính",
+              "displayName": "Đơn vị tính"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Công thức tính"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Công thức tính",
+              "nativeQueryRef": "Công thức tính",
+              "displayName": "Công thức tính"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Trọng số"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Trọng số",
+              "nativeQueryRef": "Trọng số năm",
+              "displayName": "Trọng số năm"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mục tiêu năm"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mục tiêu năm",
+              "nativeQueryRef": "Mục tiêu năm",
+              "displayName": "Mục tiêu năm"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mục tiêu Q1"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mục tiêu Q1",
+              "nativeQueryRef": "Mục tiêu Q1",
+              "displayName": "Mục tiêu Q1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mục tiêu Q2"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mục tiêu Q2",
+              "nativeQueryRef": "Mục tiêu Q2",
+              "displayName": "Mục tiêu Q2"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mục tiêu Q3"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mục tiêu Q3",
+              "nativeQueryRef": "Mục tiêu Q3",
+              "displayName": "Mục tiêu Q3"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Mục tiêu Q4"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Mục tiêu Q4",
+              "nativeQueryRef": "Mục tiêu Q4",
+              "displayName": "Mục tiêu Q4"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Kết quả Q1"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Kết quả Q1",
+              "nativeQueryRef": "Kết quả Q1",
+              "displayName": "Kết quả Q1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Tỷ lệ Q1"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Tỷ lệ Q1",
+              "nativeQueryRef": "Tỷ lệ hoàn thành Q1",
+              "displayName": "Tỷ lệ hoàn thành Q1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Kết quả Q2"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Kết quả Q2",
+              "nativeQueryRef": "Kết quả Q2",
+              "displayName": "Kết quả Q2"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Tỷ lệ Q2"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Tỷ lệ Q2",
+              "nativeQueryRef": "Tỷ lệ hoàn thành Q2",
+              "displayName": "Tỷ lệ hoàn thành Q2"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Kết quả Q3"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Kết quả Q3",
+              "nativeQueryRef": "Kết quả Q3",
+              "displayName": "Kết quả Q3"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Tỷ lệ Q3"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Tỷ lệ Q3",
+              "nativeQueryRef": "Tỷ lệ hoàn thành Q3",
+              "displayName": "Tỷ lệ hoàn thành Q3"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Kết quả Q4"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Kết quả Q4",
+              "nativeQueryRef": "Kết quả Q4",
+              "displayName": "Kết quả Q4"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI Đăng ký"
+                    }
+                  },
+                  "Property": "Template Tỷ lệ Q4"
+                }
+              },
+              "queryRef": "KPI Đăng ký.Template Tỷ lệ Q4",
+              "nativeQueryRef": "Tỷ lệ hoàn thành Q4",
+              "displayName": "Tỷ lệ hoàn thành Q4"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "KPI Đăng ký"
+                  }
+                },
+                "Property": "STT theo PIC"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EFF5FB'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "72D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.STT theo PIC"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mã CV"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "280D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mô tả công việc"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "320D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mô tả chi tiết"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "320D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Chỉ số đo lường"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "80D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Đơn vị"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "320D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Công thức tính"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Trọng số"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mục tiêu năm"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mục tiêu Q1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mục tiêu Q2"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mục tiêu Q3"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Mục tiêu Q4"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Kết quả Q1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Tỷ lệ Q1"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Kết quả Q2"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Tỷ lệ Q2"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Kết quả Q3"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Tỷ lệ Q3"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Kết quả Q4"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "136D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI Đăng ký.Template Tỷ lệ Q4"
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "stepped": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "showExpandCollapseButtons": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F5F8FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridHorizontalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "6D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "rowSubtotalsLabel": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TỔNG'"
+                }
+              }
+            },
+            "rowSubtotalsPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Bottom'"
+                }
+              }
+            },
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowTotal": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E7F1FC'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "applyToHeaders": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'ĐĂNG KÝ VÀ ĐÁNH GIÁ KPI THEO PIC'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Lưới chi tiết theo mẫu Excel, có tổng cuối bảng và xuất dữ liệu.'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,176 @@
+relationship f3c0f680-1cf4-4853-9db1-38cba3cac6c4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.Date
+	toColumn: LocalDateTable_406c8ad4-a74e-4a90-83cd-1b5afaa00b20.Date
+
+relationship aab95426-17d5-455b-a477-5c8ccf6d16df
+	isActive: false
+	toCardinality: many
+	fromColumn: 'Phân công PIC'.Muctieukey
+	toColumn: DimDate.'Năm Quý Sort'
+
+relationship 3ae9ed74-ca83-b037-8f72-388fc5a66f10
+	isActive: false
+	toCardinality: many
+	fromColumn: 'Phân công PIC'.QuyetToankey
+	toColumn: DimDate.'Năm Quý Sort'
+
+relationship 89791ae8-e113-4006-a31a-c3759f6e9ab1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH TẠM ỨNG'
+	toColumn: LocalDateTable_b08f15fe-74b1-413f-a5b7-46d23c2fa6b6.Date
+
+relationship 0e9a05c1-fe19-46c3-9ee7-b13fee2f8459
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY HẾT HIỆU LỰC TẠM ỨNG'
+	toColumn: LocalDateTable_53411400-ab81-48b8-abf9-8c2cd95368da.Date
+
+relationship c318c988-03ea-4c07-86d7-47aaa90e6283
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY BẮT ĐẦU HIỆU LỰC BẢO LÃNH THHĐ'
+	toColumn: LocalDateTable_4394b303-9b80-4eed-a00f-7d9f1760870c.Date
+
+relationship 43295ba4-2ec2-4648-a3e2-cf248c45a672
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY HẾT HIỆU LỰC THHĐ'
+	toColumn: LocalDateTable_c895530d-5580-446b-88da-07e86f9eaa41.Date
+
+relationship eb45cb59-f220-4b4d-80d0-40ec5acd3751
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY BẮT ĐẦU HIỆU LỰC BẢO HÀNH'
+	toColumn: LocalDateTable_72355875-84a5-4f2d-8216-9ba7ae715d40.Date
+
+relationship f242b9f4-9811-4c22-95a8-e64728f4e83d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: BaoLanh.'NGÀY HẾT HIỆU LỰC BẢO HÀNH'
+	toColumn: LocalDateTable_4e98ee1b-bbfc-4edd-beb6-8f11e61b0059.Date
+
+relationship 'OPEX Hợp đồng tổng đến chi tiết'
+	fromColumn: 'OPEX Chi tiết công nợ'.'Số hợp đồng'
+	toColumn: 'OPEX Tổng công nợ'.'Số hợp đồng'
+
+relationship 65f0e4d8-8893-4ca4-a767-71f8bbc6e23e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'OPEX Chi tiết công nợ'.'Ngày đến hạn thanh toán'
+	toColumn: LocalDateTable_837d440d-bdd6-412c-90be-9a4b6111bede.Date
+
+relationship 1b40aee5-9d8e-406c-ba45-725197ce1352
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TTHD'.'NGÀY NHẬN HS'
+	toColumn: LocalDateTable_19595c90-f875-40ad-996e-c18708b6e4dd.Date
+
+relationship 17e819b6-d923-422f-ad4c-ac3749286a68
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TTHD'.'NGÀY HOÀN THÀNH'
+	toColumn: LocalDateTable_2730afe9-00d2-4da2-a6cf-c62648fc3724.Date
+
+relationship 5c203efb-a190-47e6-ae3e-0c62c0b139a6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TTHD'.'NGÀY QUY ĐỊNH'
+	toColumn: LocalDateTable_f12bfe0a-7d32-46ea-936f-d6dbff25cfae.Date
+
+relationship dc8a2da7-02a8-4161-8790-f78c2d880542
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'NGÀY MỤC TIÊU BAN ĐẦU'
+	toColumn: LocalDateTable_bc2fe546-5d58-4a5b-85d7-584dad37016d.Date
+
+relationship 1929ddf4-c976-4d00-8761-420a61001ced
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'MỤC TIÊU ĐIỀU CHỈNH'
+	toColumn: LocalDateTable_9e8ad1cc-dd53-4e20-9fb0-32d9639ec981.Date
+
+relationship 9aee81d5-9760-4bb5-9848-d4352a41bc35
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'NGÀY MỤC TIÊU TRUNG GIAN'
+	toColumn: LocalDateTable_b6b15b13-9e75-4f1b-b2f2-195e13395b90.Date
+
+relationship 2d6c9405-4e6c-40fa-8e7d-7f5b1aba61c0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'NGÀY HOÀN THÀNH'
+	toColumn: LocalDateTable_9e0326da-675b-4f1e-bf88-5945f67e0e65.Date
+
+relationship c493102f-5bd7-4660-a011-05497f75d584
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'THÁNG MỤC TIÊU'
+	toColumn: LocalDateTable_c2c2e0fb-a972-48fb-8bbb-c84ed5bc5764.Date
+
+relationship a697fb58-84fa-48cd-a422-5e993a5dfcb0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TUNC Nguồn'.'Ngày mục tiêu'
+	toColumn: LocalDateTable_5e128b16-2b01-4acb-a381-cf52563d2923.Date
+
+relationship 7c86e470-29cb-4a21-b311-ca45758b6b80
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TUNC Nguồn'.'Ngày hoàn thành'
+	toColumn: LocalDateTable_f9f5cf79-43d1-4f79-804b-5f2657635f9b.Date
+
+relationship b8bbd728-40f3-47a0-9ce1-bb7d33a5d6fa
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'Ngày mục tiêu date'
+	toColumn: LocalDateTable_597fd025-25ed-4732-accf-25b1bb53fb76.Date
+
+relationship 796f0967-aa0a-4737-b480-ff293a73795d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Data.'Ngày duyệt CTQT date'
+	toColumn: LocalDateTable_aae978d4-a3a3-4e8f-939d-84c524d1e3f7.Date
+
+relationship c443fe19-7c06-4699-8de2-c401e4f300f0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Bảo lãnh theo dõi'.'Ngày bắt đầu'
+	toColumn: LocalDateTable_0c2cb0bc-4fee-4110-843d-690c7a58cd9b.Date
+
+relationship e0eea680-a053-423b-a246-df2dbe39d5b0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Bảo lãnh theo dõi'.'Ngày hết hiệu lực'
+	toColumn: LocalDateTable_2f9e89ad-410a-40d5-94fb-59f447e1492e.Date
+
+relationship 914c2c9c-bc6a-44bf-b3d5-62b65525c256
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Bảo lãnh theo dõi'.'Tháng hết hiệu lực'
+	toColumn: LocalDateTable_e87ebc67-304e-4459-ba39-c9f50e909dcd.Date
+
+relationship 82f51091-6cc3-4a6b-82e9-5f38e2db27ad
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'NGÀY GHI NHẬN KỲ'
+	toColumn: LocalDateTable_b0ee2077-01a1-4301-8ce2-a6e4a2a65d59.Date
+
+relationship f46e15ef-9328-41e3-b4e3-983e9a7e761e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI QTHD'.'NGÀY MỤC TIÊU'
+	toColumn: LocalDateTable_09de8167-8d68-47a0-8cb5-da8dd4be9917.Date
+
+relationship f50c04af-7749-432f-964e-d945a0d5cc66
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI QTHD'.'NGÀY HOÀN THÀNH'
+	toColumn: LocalDateTable_d2d572ce-0d01-4edf-84d6-e7bc3b7f1b83.Date
+
+relationship 1b281cfd-2027-45ae-ab3a-1b228cb8ab44
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI GHBL'.'NGÀY HẾT HẠN CŨ'
+	toColumn: LocalDateTable_97c937be-3329-4fc8-b4d4-1a1b4accc520.Date
+
+relationship 37357b60-a7be-4b99-bf86-69fac15a26b8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI GHBL'.'NGÀY BẮT ĐẦU MỚI'
+	toColumn: LocalDateTable_66c61ed9-6438-45de-9759-0d994c8fc431.Date
+
+relationship 0153f0cb-6cbe-44fd-9cbd-24aa619b116f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI GHBL'.'NGÀY HẾT HẠN MỚI'
+	toColumn: LocalDateTable_837b3f04-85ea-4518-beb4-3db05a24d84c.Date
+
+relationship 505387a0-22d7-419f-95b6-683f6bed293e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Kỳ đánh giá đấu thầu'.Ngày
+	toColumn: LocalDateTable_8fd6ea34-e10b-4011-bff8-d0c039c46ab1.Date
+
+relationship c65639ac-60d1-4d5c-a662-47d2036fdab5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI TDSP Nguồn'.'Ngày ký cấn trừ'
+	toColumn: LocalDateTable_7d39db44-ab06-40d4-bac2-ef94c00828a7.Date
+
+relationship 3a6903b5-e2cf-4836-a411-ac7c76fe62d6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI Tiến độ thầu'.'NGÀY OUT HS KHỎI PHÒNG'
+	toColumn: LocalDateTable_f423e2a6-a836-480b-945e-5438f9bf599e.Date
+

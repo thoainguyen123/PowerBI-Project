@@ -1,0 +1,236 @@
+/// Nguồn SharePoint PL SWAP; bảng nguồn chuẩn hóa phục vụ bốn trang KPI mới. Giữ từng dòng gốc và các giá trị rỗng; chưa có quan hệ hay công thức chấm điểm.
+table 'KPI TDSP Nguồn'
+	lineageTag: 07ccf590-e318-4ee2-9971-ed762a6efd04
+
+	/// Quý/năm hoàn thành suy ra ngày ký VBTT/HĐMB cấn trừ vì nguồn PL SWAP chưa có cột quý/năm riêng.
+	measure 'TDSP Dòng thuộc kỳ' =
+			VAR _Dates=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _Done=MAX('KPI TDSP Nguồn'[Ngày ký cấn trừ])
+			RETURN IF(NOT ISFILTERED('Kỳ đánh giá đấu thầu') || (NOT ISBLANK(_Done) && _Done IN _Dates),1,BLANK())
+		formatString: 0
+		displayFolder: Bổ sung KPI
+		lineageTag: f9429d9a-fb04-4619-93cf-d541501c4cb0
+
+	measure 'TDSP Số dòng' = COUNTROWS(FILTER(VALUES('KPI TDSP Nguồn'[Dòng nguồn]),[TDSP Dòng thuộc kỳ]=1))
+		formatString: #,##0
+		displayFolder: Bổ sung KPI
+		lineageTag: dcdb930b-0305-4c79-8462-ddb319d720e6
+
+	/// Cộng theo dòng nguồn thuộc kỳ, không cộng lại theo PIC.
+	measure 'TDSP Công nợ tỷ đồng' = VAR _Amount=SUMX(FILTER(VALUES('KPI TDSP Nguồn'[Dòng nguồn]),[TDSP Dòng thuộc kỳ]=1),CALCULATE(MAX('KPI TDSP Nguồn'[Giá trị công nợ cấn trừ giãn nợ]))) RETURN DIVIDE(CONVERT(_Amount,DOUBLE),1000000000)
+		formatString: #,##0.00
+		displayFolder: Bổ sung KPI
+		lineageTag: 70f4646a-8995-425e-ae9d-c67708f731df
+
+	/// Cộng theo dòng nguồn thuộc kỳ, không cộng lại theo PIC.
+	measure 'TDSP BĐS tỷ đồng' = VAR _Amount=SUMX(FILTER(VALUES('KPI TDSP Nguồn'[Dòng nguồn]),[TDSP Dòng thuộc kỳ]=1),CALCULATE(MAX('KPI TDSP Nguồn'[Tổng giá trị BĐS]))) RETURN DIVIDE(CONVERT(_Amount,DOUBLE),1000000000)
+		formatString: #,##0.00
+		displayFolder: Bổ sung KPI
+		lineageTag: d434fecf-a496-4557-a989-60f0c8f785b9
+
+	/// Cộng theo dòng nguồn thuộc kỳ, không cộng lại theo PIC.
+	measure 'TDSP Tổng số căn' = SUMX(FILTER(VALUES('KPI TDSP Nguồn'[Dòng nguồn]),[TDSP Dòng thuộc kỳ]=1),DIVIDE(CALCULATE(MAX('KPI TDSP Nguồn'[Số căn])),1))
+		formatString: #,##0
+		displayFolder: Bổ sung KPI
+		lineageTag: bb30448f-e662-4675-a29f-ed68354070e2
+
+	measure 'TDSP Quý hoàn thành' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,VAR _D=MAX('KPI TDSP Nguồn'[Ngày ký cấn trừ]) RETURN IF(NOT ISBLANK(_D),"Q"&FORMAT(QUARTER(_D),"0")))
+		displayFolder: Bổ sung KPI
+		lineageTag: 4f414ae8-6e59-4ede-b6ab-8621e69a60b4
+
+	measure 'TDSP Năm hoàn thành' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,YEAR(MAX('KPI TDSP Nguồn'[Ngày ký cấn trừ])))
+		formatString: 0
+		displayFolder: Bổ sung KPI
+		lineageTag: 64abcbb8-f7ca-4657-986f-a94cc4790f28
+
+	measure 'TDSP Lưới Tình trạng' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Tình trạng]))
+		displayFolder: Lưới Excel
+		lineageTag: b532b919-a520-499a-8fc7-dad47a820f8c
+
+	measure 'TDSP Lưới Dự án BĐS' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Dự án BĐS]))
+		displayFolder: Lưới Excel
+		lineageTag: 34de29f2-ea38-44ce-ab52-3aab216a0ac0
+
+	measure 'TDSP Lưới Nhà thầu' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Nhà thầu]))
+		displayFolder: Lưới Excel
+		lineageTag: eadab0c2-d1fa-4897-9957-d39dcdd4409d
+
+	measure 'TDSP Lưới Ngày ký cấn trừ' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Ngày ký cấn trừ]))
+		formatString: dd/MM/yyyy
+		displayFolder: Lưới Excel
+		lineageTag: 0c69f495-c4ef-4acf-80bf-c92210879e9e
+
+	measure 'TDSP Lưới Link minh chứng' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Link minh chứng]))
+		displayFolder: Lưới Excel
+		lineageTag: 3cf86c4b-4a14-4315-9b84-cc921d90cf88
+
+	measure 'TDSP Lưới PIC' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[PIC]))
+		displayFolder: Lưới Excel
+		lineageTag: 232145af-d038-4609-8975-a51087b9eb78
+
+	measure 'TDSP Lưới Phòng' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[Phòng]))
+		displayFolder: Lưới Excel
+		lineageTag: 646cde41-2d90-4f44-b42f-66e4703104c3
+
+	measure 'TDSP Lưới PIC TP' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[PIC TP]))
+		displayFolder: Lưới Excel
+		lineageTag: bf3665a3-78f6-40dd-9d23-9a35fe71eb89
+
+	measure 'TDSP Lưới HRBP Note' = IF(ISINSCOPE('KPI TDSP Nguồn'[STT]) && [TDSP Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TDSP Nguồn'[HRBP Note]))
+		displayFolder: Lưới Excel
+		lineageTag: 6c15064d-aa2c-4655-951a-23eac6b296a4
+
+	column STT
+		dataType: int64
+		lineageTag: 2e71c462-fc71-4f99-ba84-9c5cf0340507
+		summarizeBy: sum
+		sourceColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tình trạng'
+		dataType: string
+		lineageTag: f904ae5e-56d5-4d51-b11b-e494cf752e29
+		summarizeBy: none
+		sourceColumn: Tình trạng
+
+	column 'Dự án BĐS'
+		dataType: string
+		lineageTag: ca0474b2-86ad-4831-8ae5-0e1f1721fa9a
+		summarizeBy: none
+		sourceColumn: Dự án BĐS
+
+	column 'Nhà thầu'
+		dataType: string
+		lineageTag: a5ef630c-f54f-4325-b374-046aad50959d
+		summarizeBy: none
+		sourceColumn: Nhà thầu
+
+	column 'Ngày ký cấn trừ'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 68480f26-0363-4893-9fcd-c77353f9b4e4
+		summarizeBy: none
+		sourceColumn: Ngày ký cấn trừ
+
+		variation Variation
+			isDefault
+			relationship: c65639ac-60d1-4d5c-a662-47d2036fdab5
+			defaultHierarchy: LocalDateTable_7d39db44-ab06-40d4-bac2-ef94c00828a7.'Date Hierarchy'
+
+	column 'Số căn'
+		dataType: int64
+		lineageTag: 18c0ebd6-5ebf-4a48-af13-70fa5e51ebda
+		summarizeBy: sum
+		sourceColumn: Số căn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tổng giá trị BĐS'
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: cae697fd-8993-48d2-839e-49ee601a9214
+		summarizeBy: sum
+		sourceColumn: Tổng giá trị BĐS
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Giá trị công nợ cấn trừ giãn nợ'
+		dataType: decimal
+		formatString: #,##0.00
+		lineageTag: 6734dfad-2bea-4533-9479-c523ee7ae8a1
+		summarizeBy: sum
+		sourceColumn: Giá trị công nợ cấn trừ giãn nợ
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Link minh chứng'
+		dataType: string
+		lineageTag: e569eb9f-e105-45fc-9e20-08f9e1a4ec78
+		summarizeBy: none
+		sourceColumn: Link minh chứng
+
+	column PIC
+		dataType: string
+		lineageTag: 33192b33-0760-4763-91f8-2ef8cd4fe86e
+		summarizeBy: none
+		sourceColumn: PIC
+
+	column Phòng
+		dataType: string
+		lineageTag: 75b12e0a-3994-44ba-a3f7-7b6f8fada8ae
+		summarizeBy: none
+		sourceColumn: Phòng
+
+	column 'PIC TP'
+		dataType: string
+		lineageTag: 55266225-5200-41ed-91df-d6b1972ed24f
+		summarizeBy: none
+		sourceColumn: PIC TP
+
+	column 'HRBP Note'
+		dataType: string
+		lineageTag: fed884d8-bd63-4a78-a365-019eafb58635
+		summarizeBy: none
+		sourceColumn: HRBP Note
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: 34e77e4d-7bc2-43c9-bfb7-fc46ebfd095f
+		summarizeBy: sum
+		sourceColumn: Dòng nguồn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI TDSP Nguồn' = m
+		mode: import
+		source =
+				let
+				    URL = "https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'D4FA6E74-1B84-40F9-BBC6-E5A2BA0586C6')/$value",
+				    Norm = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")), {" ", "_", Character.FromNumber(160), "#(lf)", "#(cr)", "#(tab)"})),
+				    Workbook = Excel.Workbook(Web.Contents(URL), null, true),
+				    Sheets = Table.SelectRows(Workbook, each [Kind] = "Sheet" and Norm([Item]) = "PLSWAP"),
+				    Raw = if Table.RowCount(Sheets) = 1 then Sheets{0}[Data] else error "Không xác định được sheet PL SWAP / PL_SWAP",
+				    HeaderIndex = List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw, 30)), each Norm(_{0}) = "STT"), true),
+				    Header = if HeaderIndex >= 0 then Table.ToRows(Raw){HeaderIndex} else error "Không tìm thấy tiêu đề STT của PL SWAP",
+				    Names = List.Transform(Header, each Norm(_)),
+				    Body = Table.Skip(Raw, HeaderIndex + 1),
+				    SourceNames = Table.ColumnNames(Raw),
+				    Column = (aliases as list, isOptional as logical) as list =>
+				        let Hits = List.Select(List.Positions(Names), (i) => List.Contains(List.Transform(aliases, each Norm(_)), Names{i}))
+				        in if List.Count(Hits) = 1 then Table.Column(Body, SourceNames{Hits{0}})
+				           else if List.Count(Hits) = 0 and isOptional then List.Repeat({null}, Table.RowCount(Body))
+				           else error ("Không xác định duy nhất cột PL SWAP: " & Text.Combine(aliases, " / ")),
+				    Mapping = {
+				        {"STT", {"STT"}, false},
+				        {"Tình trạng", {"Tình trạng"}, false},
+				        {"Dự án BĐS", {"Dự án BĐS/ Dịch vụ", "Dự án BĐS"}, false},
+				        {"Nhà thầu", {"Nhà thầu"}, false},
+				        {"Ngày ký cấn trừ", {"Ngày ký VBTT/HĐMB cấn trừ", "Ngày ký cấn trừ"}, false},
+				        {"Số căn", {"Số căn"}, false},
+				        {"Tổng giá trị BĐS", {"Tổng GT BĐS (VND)", "Tổng giá trị BĐS"}, false},
+				        {"Giá trị công nợ cấn trừ giãn nợ", {"GT Công nợ cấn trừ / giãn nợ (VND)", "Giá trị công nợ cấn trừ giãn nợ"}, false},
+				        {"Link minh chứng", {"Link minh chứng"}, true},
+				        {"PIC", {"Link minh chứng/PIC (người thực hiện)", "PIC"}, false},
+				        {"Phòng", {"BP", "Phòng"}, false},
+				        {"PIC TP", {"PIC/TP", "PIC TP"}, false},
+				        {"HRBP Note", {"HRBP NOTE"}, true}
+				    },
+				    Projected = Table.FromColumns(
+				        List.Combine({List.Transform(Mapping, each Column(_{1}, _{2})), {List.Numbers(HeaderIndex + 2, Table.RowCount(Body))}}),
+				        List.Combine({List.Transform(Mapping, each _{0}), {"Dòng nguồn"}})
+				    ),
+				    Selected = Table.SelectRows(Projected, each (try Number.From([STT]) otherwise null) <> null and Norm([Nhà thầu]) <> ""),
+				    Txt = (v as any) as nullable text => if v = null then null else Text.Trim(Text.From(v)),
+				    Num = (v as any) as nullable number => if v = null or Text.Trim(Text.From(v)) = "" then null else try Number.From(v, "en-US") otherwise null,
+				    Dt = (v as any) as nullable date => if v = null or Text.Trim(Text.From(v)) = "" then null else if Value.Is(v, type text) then try Date.FromText(Text.Trim(v), [Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted = Table.TransformColumns(Selected, {
+				        {"STT", Num, Int64.Type}, {"Tình trạng", Txt, type text}, {"Dự án BĐS", Txt, type text},
+				        {"Nhà thầu", Txt, type text}, {"Ngày ký cấn trừ", Dt, type date}, {"Số căn", Num, Int64.Type},
+				        {"Tổng giá trị BĐS", Num, type number}, {"Giá trị công nợ cấn trừ giãn nợ", Num, type number},
+				        {"Link minh chứng", Txt, type text}, {"PIC", Txt, type text}, {"Phòng", Txt, type text},
+				        {"PIC TP", Txt, type text}, {"HRBP Note", Txt, type text}, {"Dòng nguồn", Num, Int64.Type}
+				    })
+				in
+				    Converted
+

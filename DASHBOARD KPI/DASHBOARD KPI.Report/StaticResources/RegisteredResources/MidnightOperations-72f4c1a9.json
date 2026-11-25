@@ -1,0 +1,300 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.153.json",
+  "name": "MidnightOperations-72f4c1a9.json",
+  "dataColors": [
+    "#00A6B2",
+    "#0B2E4F",
+    "#16A34A",
+    "#F59E0B",
+    "#DC2626",
+    "#526D82",
+    "#22D3EE",
+    "#86EFAC",
+    "#FDBA74",
+    "#CBD5E1"
+  ],
+  "good": "#16A34A",
+  "neutral": "#F59E0B",
+  "bad": "#DC2626",
+  "maximum": "#16A34A",
+  "center": "#FEF3C7",
+  "minimum": "#DC2626",
+  "null": "#5B7083",
+  "foreground": "#102A43",
+  "foregroundNeutralSecondary": "#5B7083",
+  "foregroundNeutralTertiary": "#71879A",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F2F7FA",
+  "backgroundNeutral": "#D9F5F7",
+  "tableAccent": "#00A6B2",
+  "textClasses": {
+    "callout": {
+      "fontSize": 30,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#102A43"
+    },
+    "title": {
+      "fontSize": 13,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#102A43"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#102A43"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#5B7083"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#D5E0E8"
+              }
+            },
+            "width": 1,
+            "radius": 12
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false,
+            "preset": "BottomRight",
+            "color": {
+              "solid": {
+                "color": "#061827"
+              }
+            },
+            "transparency": 96,
+            "position": "Outer"
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ],
+        "padding": [
+          {
+            "top": 10,
+            "bottom": 10,
+            "left": 10,
+            "right": 10
+          }
+        ]
+      }
+    },
+    "pivotTable": {
+      "*": {
+        "columnHeaders": [
+          {
+            "autoSizeColumnWidth": true,
+            "columnAdjustment": "growToFit",
+            "backColor": {
+              "solid": {
+                "color": "#0B2E4F"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "values": [
+          {
+            "backColorPrimary": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": "#F2F7FA"
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": "#102A43"
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": "#102A43"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "columnHeaders": [
+          {
+            "autoSizeColumnWidth": true,
+            "columnAdjustment": "growToFit",
+            "backColor": {
+              "solid": {
+                "color": "#0B2E4F"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ]
+      }
+    },
+    "cardVisual": {
+      "*": {
+        "value": [
+          {
+            "bold": true,
+            "fontColor": {
+              "solid": {
+                "color": "#102A43"
+              }
+            },
+            "$id": "default"
+          }
+        ],
+        "label": [
+          {
+            "show": true,
+            "fontColor": {
+              "solid": {
+                "color": "#5B7083"
+              }
+            },
+            "$id": "default"
+          }
+        ],
+        "title": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "barChart": {
+      "*": {
+        "labels": [
+          {
+            "show": true,
+            "fontSize": 10,
+            "color": {
+              "solid": {
+                "color": "#102A43"
+              }
+            }
+          }
+        ],
+        "valueAxis": [
+          {
+            "show": false,
+            "gridlineShow": false,
+            "showAxisTitle": false
+          }
+        ],
+        "categoryAxis": [
+          {
+            "show": true,
+            "fontSize": 10,
+            "labelColor": {
+              "solid": {
+                "color": "#5B7083"
+              }
+            },
+            "showAxisTitle": false,
+            "innerPadding": 24,
+            "gridlineShow": false
+          }
+        ],
+        "legend": [
+          {
+            "show": false
+          }
+        ],
+        "dataPoint": [
+          {
+            "borderShow": false
+          }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "header": [
+          {
+            "fontFamily": "Segoe UI Semibold",
+            "textSize": 10,
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "background": {
+              "solid": {
+                "color": "#0B2E4F"
+              }
+            },
+            "outlineStyle": 0
+          }
+        ],
+        "items": [
+          {
+            "fontFamily": "Segoe UI",
+            "textSize": 10,
+            "fontColor": {
+              "solid": {
+                "color": "#DCEAF0"
+              }
+            },
+            "background": {
+              "solid": {
+                "color": "#0B2E4F"
+              }
+            },
+            "outlineStyle": 0,
+            "padding": 2
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ]
+      }
+    }
+  }
+}

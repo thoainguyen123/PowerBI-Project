@@ -1,0 +1,167 @@
+table 'Tab tình trạng thực hiện BOQ'
+	lineageTag: 42f155dc-3039-4189-9fc7-4673b7cb2e90
+
+	/// Tổng số dòng theo dõi BOQ trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Tổng line BOQ' = COUNTROWS('Tab tình trạng thực hiện BOQ')
+		formatString: #,##0
+		displayFolder: BOQ KPIs
+		lineageTag: 6ce7ad8c-d76f-4b57-9239-cdec94195b27
+
+	/// Số dòng BOQ được phân loại đúng tiến độ trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Đúng tiến độ BOQ' = CALCULATE([Tổng line BOQ], KEEPFILTERS('Tab tình trạng thực hiện BOQ'[Trễ hạn/ Đúng tiến độ/ Đang thực hiện] = "Đúng tiến độ"))
+		formatString: #,##0
+		displayFolder: BOQ KPIs
+		lineageTag: c3467992-e870-4cff-a68d-b58546c89e45
+
+	/// Số dòng BOQ được phân loại trễ hạn trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Trễ hạn BOQ' = CALCULATE([Tổng line BOQ], KEEPFILTERS('Tab tình trạng thực hiện BOQ'[Trễ hạn/ Đúng tiến độ/ Đang thực hiện] = "Trễ hạn"))
+		formatString: #,##0
+		displayFolder: BOQ KPIs
+		lineageTag: 3c5ef168-0399-4796-bf54-c743fad4b837
+
+	/// Số dòng BOQ được phân loại ngoài kế hoạch trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Ngoài kế hoạch BOQ' = CALCULATE([Tổng line BOQ], KEEPFILTERS('Tab tình trạng thực hiện BOQ'[Trễ hạn/ Đúng tiến độ/ Đang thực hiện] = "Ngoài kế hoạch"))
+		formatString: #,##0
+		displayFolder: BOQ KPIs
+		lineageTag: 009eb8b6-242c-47e7-a5e4-f97a787ac2d4
+
+	/// Tỷ lệ dòng BOQ đúng tiến độ trên tổng số dòng BOQ trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Tỷ lệ đúng tiến độ BOQ' = DIVIDE([Đúng tiến độ BOQ], [Tổng line BOQ], 0)
+		formatString: 0.0%
+		displayFolder: BOQ KPIs
+		lineageTag: 2365e92a-040b-4ec9-a3fa-31b5d340d50a
+
+	column 'Cụm dự án'
+		dataType: string
+		lineageTag: 6c764943-c33a-4bf8-9334-b70f6aee8ac8
+		summarizeBy: none
+		sourceColumn: Cụm dự án
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dự án/ Phân khu'
+		dataType: string
+		lineageTag: 830ad0c9-9a4d-4072-9f50-5d364dea7d91
+		summarizeBy: none
+		sourceColumn: Dự án/ Phân khu
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Công trình'
+		dataType: string
+		lineageTag: 630ed820-b213-4cf8-8bd7-26a25442f3a3
+		summarizeBy: none
+		sourceColumn: Công trình
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gói thầu'
+		dataType: string
+		lineageTag: be739679-ffea-4874-b849-74d9682780ff
+		summarizeBy: none
+		sourceColumn: Gói thầu
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tiến độ kế hoạch'
+		dataType: string
+		lineageTag: 632e9803-3610-4d03-8d74-aea005d27ccd
+		summarizeBy: none
+		sourceColumn: Tiến độ kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tiến độ thực tế/ dự kiến'
+		dataType: string
+		lineageTag: a37b9381-dd44-40d1-80d1-bd680e199636
+		summarizeBy: none
+		sourceColumn: Tiến độ thực tế/ dự kiến
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tình trạng/ vướng mắc'
+		dataType: string
+		lineageTag: 37046a78-5b4a-423e-9d55-b94e1c9d74c6
+		summarizeBy: none
+		sourceColumn: Tình trạng/ vướng mắc
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trong/ Ngoài KH CUDT'
+		dataType: string
+		lineageTag: ac87d97e-6379-45f5-b36b-4b1e8f0b751f
+		summarizeBy: none
+		sourceColumn: Trong/ Ngoài KH CUDT
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIC
+		dataType: string
+		lineageTag: 651f28a4-9a70-4bee-966b-f8c8137a869b
+		summarizeBy: none
+		sourceColumn: PIC
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trễ hạn/ Đúng tiến độ/ Đang thực hiện'
+		dataType: string
+		lineageTag: 6f338432-fc23-41e7-8f33-b7c1d436fef7
+		summarizeBy: none
+		sourceColumn: Trễ hạn/ Đúng tiến độ/ Đang thực hiện
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ưu tiên'
+		dataType: string
+		lineageTag: 03b46bad-4047-4132-909e-7db625d332b9
+		summarizeBy: none
+		sourceColumn: Ưu tiên
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column12
+		dataType: string
+		lineageTag: 8f5f2436-61b7-46f6-b1b1-43841f0d86c1
+		summarizeBy: none
+		sourceColumn: Column12
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column13
+		dataType: string
+		lineageTag: 28723c72-3500-46f7-901b-62f8c7cc9582
+		summarizeBy: none
+		sourceColumn: Column13
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column14
+		dataType: string
+		lineageTag: 5d54c6f7-ea87-4a66-a2dc-28dbca7e3886
+		summarizeBy: none
+		sourceColumn: Column14
+
+		annotation SummarizationSetBy = Automatic
+
+	column Column15
+		dataType: string
+		lineageTag: d1dbccb2-6113-417c-af61-7ff8f035ae81
+		summarizeBy: none
+		sourceColumn: Column15
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tab tình trạng thực hiện BOQ' = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(Web.Contents("https://novaland.sharepoint.com/sites/qs-projectcost/Documents/00.%20NOVAGEN-QSB/08.%20Nhat%20ky%20cong%20viec/00.%20Dashboard%20b%C3%A1o%20c%C3%A1o/01.%20Link%20dashboard/QSB_%20dashboard%20bao%20cao.xlsx"), null, true),
+				  Raw = Source{[Item = "5. Tab tình trạng thực hiện BOQ", Kind = "Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Raw, [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

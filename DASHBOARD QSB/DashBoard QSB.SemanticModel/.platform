@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "DashBoard QSB"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8797602a-2813-4e74-b653-a3e7e4f854a0"
+  }
+}

@@ -1,0 +1,422 @@
+/// PL.PTC.04 từ sheet THEO DÕI CPC; một mã hồ sơ có thể có nhiều dòng PIC nhưng measure đếm phân biệt mã hồ sơ.
+table 'KPI TTHD'
+	lineageTag: 001d8369-387e-46ab-9f2c-e85c8a1cf352
+
+	/// Số hồ sơ riêng biệt có ngày nhận HS trong các ngày của kỳ đã chọn. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Số hồ sơ' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN COALESCE(COUNTROWS(_Rows),0)
+		formatString: #,##0
+		displayFolder: TTHD
+		lineageTag: 62291179-ccce-486a-9af2-e219c885c147
+
+	/// Số hồ sơ có điểm; không dùng thay card hoàn thành đúng hạn. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Số được chấm' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN COALESCE(COUNTROWS(FILTER(_Rows, NOT ISBLANK([_Score]))),0)
+		formatString: #,##0
+		displayFolder: TTHD
+		lineageTag: 1de5460f-08c2-4cba-b440-80cf3c9adfcc
+
+	/// Hồ sơ đã phát hành không muộn hơn ngày quy định; lọc kỳ theo ngày nhận HS, không theo số PIC. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Đúng hạn' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN COALESCE(COUNTROWS(FILTER(_Rows, NOT ISBLANK([_Done]) && [_Done] <= [_Target])),0)
+		formatString: #,##0
+		displayFolder: TTHD
+		lineageTag: cfdb7687-c927-42ce-8c72-13acb033f701
+
+	/// Hồ sơ đã phát hành sau ngày quy định; hồ sơ chưa phát hành không bị coi là đã hoàn thành trễ. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Trễ hạn' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN COALESCE(COUNTROWS(FILTER(_Rows, NOT ISBLANK([_Done]) && [_Done] > [_Target])),0)
+		formatString: #,##0
+		displayFolder: TTHD
+		lineageTag: e2015555-6f16-4f51-bbae-d50dc653dcaf
+
+	/// Trung bình cộng điểm từng hồ sơ có ngày nhận HS trong kỳ; loại điểm rỗng, mỗi hồ sơ một lần. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Điểm bình quân' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN AVERAGEX(_Rows, [_Score])
+		formatString: 0.00%
+		displayFolder: TTHD
+		lineageTag: 834601f8-6039-491c-98d8-9ee684f22cef
+
+	/// Điểm từng hồ sơ và trung bình dòng tổng lưới; lọc ngày nhận HS theo Excel, không lặp do nhiều PIC.
+	measure 'TTHD Điểm dòng' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD','KPI TTHD'[MÃ HỒ SƠ],"_Score",MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates,'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN AVERAGEX(_Rows,[_Score])
+		formatString: 0.00%
+		displayFolder: TTHD
+		lineageTag: e2515b07-849a-4751-a677-d505c0b5a6fe
+
+	/// Lưới gồm tất cả hồ sơ nhận trong kỳ, kể cả chưa có điểm.
+	measure 'TTHD Lưới hiển thị' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			RETURN IF(CALCULATE(DISTINCTCOUNT('KPI TTHD'[MÃ HỒ SƠ]),KEEPFILTERS(TREATAS(_Dates,'KPI TTHD'[NGÀY NHẬN HS]))) > 0,1,BLANK())
+		formatString: 0
+		displayFolder: TTHD
+		lineageTag: 75b37711-a088-4a50-ba6e-d2f9e3da0a99
+
+	/// Dòng chi tiết 1/0/rỗng và tổng số hồ sơ đúng hạn.
+	measure 'TTHD Đúng hạn lưới' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI TTHD'[MÃ HỒ SƠ]),KEEPFILTERS(TREATAS(_Dates,'KPI TTHD'[NGÀY NHẬN HS])),KEEPFILTERS('KPI TTHD'[TỶ LỆ HT]=1))
+		formatString: 0
+		displayFolder: TTHD
+		lineageTag: 080a0edf-84c9-4751-8f67-9cf5ba5c8372
+
+	/// Chi tiết 1 nếu đúng hạn, 0 nếu trễ; tổng đếm hồ sơ đúng hạn một lần.
+	measure 'TTHD Tỷ lệ dòng' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(SUMMARIZE('KPI TTHD','KPI TTHD'[MÃ HỒ SƠ],"_Flag",MAX('KPI TTHD'[TỶ LỆ HT])),KEEPFILTERS(TREATAS(_Dates,'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN IF(HASONEVALUE('KPI TTHD'[MÃ HỒ SƠ]),MAXX(_Rows,[_Flag]),COUNTROWS(FILTER(_Rows,[_Flag]==1)))
+		formatString: 0
+		displayFolder: TTHD
+		lineageTag: 6d69da50-276d-446c-bd91-e2d7bb84cb58
+
+	/// Phần chưa hoàn thành của tổng hồ sơ dùng trong cột chồng; không cộng tổng vào các thành phần. Kỳ đánh giá theo NGÀY NHẬN HS; ngày quy định chỉ dùng đánh giá đúng/trễ.
+	measure 'TTHD Chưa hoàn thành' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Rows = CALCULATETABLE(
+			 SUMMARIZE('KPI TTHD', 'KPI TTHD'[MÃ HỒ SƠ],
+			 "_Target", MAX('KPI TTHD'[NGÀY QUY ĐỊNH]),
+			 "_Done", MAX('KPI TTHD'[NGÀY HOÀN THÀNH]),
+			 "_Score", MAX('KPI TTHD'[ĐIỂM HOÀN THÀNH])),
+			 KEEPFILTERS(TREATAS(_Dates, 'KPI TTHD'[NGÀY NHẬN HS])))
+			RETURN COALESCE(COUNTROWS(FILTER(_Rows, ISBLANK([_Done]))),0)
+		formatString: #,##0
+		displayFolder: TTHD
+		lineageTag: 40c48a6c-9f9d-4475-9960-2e4a8de3a32d
+
+	/// STT liên tục bắt đầu từ 1 trong tập hồ sơ được lọc; không có STT dòng tổng.
+	measure 'TTHD STT' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			VAR _HasPeriod = ISCROSSFILTERED('DimDate')
+			VAR _Dates = SELECTCOLUMNS(
+			 FILTER(ALL('KPI TTHD'[NGÀY NHẬN HS]), NOT ISBLANK('KPI TTHD'[NGÀY NHẬN HS]) &&
+			 (NOT _HasPeriod || 'KPI TTHD'[NGÀY NHẬN HS] IN _SelectedDates)),
+			 "_Date", 'KPI TTHD'[NGÀY NHẬN HS])
+			VAR _Ordinal = MIN('KPI TTHD'[DÒNG NGUỒN])
+			VAR _Selected = CALCULATETABLE(ALLSELECTED('KPI TTHD'),TREATAS(_Dates,'KPI TTHD'[NGÀY NHẬN HS]))
+			VAR _Keys = SUMMARIZE(_Selected,'KPI TTHD'[MÃ HỒ SƠ],'KPI TTHD'[DÒNG NGUỒN])
+			RETURN IF(HASONEVALUE('KPI TTHD'[MÃ HỒ SƠ]) && [TTHD Lưới hiển thị]=1,RANKX(_Keys,'KPI TTHD'[DÒNG NGUỒN],_Ordinal,ASC,DENSE))
+		formatString: 0
+		displayFolder: TTHD
+		lineageTag: ac21d98e-2b1c-44cc-b71e-067642d1476b
+
+	column 'MÃ HỒ SƠ'
+		dataType: string
+		lineageTag: 561fa9ab-af10-41d3-8f28-822541a15d71
+		summarizeBy: none
+		sourceColumn: MÃ HỒ SƠ
+
+	column 'DỰ ÁN'
+		dataType: string
+		lineageTag: 22a4222f-c47f-46f8-8555-6565960770d4
+		summarizeBy: none
+		sourceColumn: DỰ ÁN
+
+	column 'KHU VỰC'
+		dataType: string
+		lineageTag: 35f5d1b6-7d68-4f93-8017-3ffb77ed8b4e
+		summarizeBy: none
+		sourceColumn: KHU VỰC
+
+	column 'SỐ HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 20b87bd2-7e0f-4b2e-b7c5-5a6516ad474e
+		summarizeBy: none
+		sourceColumn: SỐ HỢP ĐỒNG
+
+	column 'NHÀ THẦU'
+		dataType: string
+		lineageTag: f63ac815-0529-48c8-91c6-f2cdee0c81d9
+		summarizeBy: none
+		sourceColumn: NHÀ THẦU
+
+	column 'NỘI DUNG'
+		dataType: string
+		lineageTag: f440d956-58d7-43c3-b59f-ef25996e8cdb
+		summarizeBy: none
+		sourceColumn: NỘI DUNG
+
+	column 'NGÀY NHẬN HS'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: efc61f66-c6d7-4203-a4b2-f8a37f58a44d
+		summarizeBy: none
+		sourceColumn: NGÀY NHẬN HS
+
+		variation Variation
+			isDefault
+			relationship: 1b40aee5-9d8e-406c-ba45-725197ce1352
+			defaultHierarchy: LocalDateTable_19595c90-f875-40ad-996e-c18708b6e4dd.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY HOÀN THÀNH'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 93cd84da-2008-4b79-9b59-37427e69ae98
+		summarizeBy: none
+		sourceColumn: NGÀY HOÀN THÀNH
+
+		variation Variation
+			isDefault
+			relationship: 17e819b6-d923-422f-ad4c-ac3749286a68
+			defaultHierarchy: LocalDateTable_2730afe9-00d2-4da2-a6cf-c62648fc3724.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'NGÀY QUY ĐỊNH'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 24dd9cd0-f646-443e-9087-cd92211c8e8e
+		summarizeBy: none
+		sourceColumn: NGÀY QUY ĐỊNH
+
+		variation Variation
+			isDefault
+			relationship: 5c203efb-a190-47e6-ae3e-0c62c0b139a6
+			defaultHierarchy: LocalDateTable_f12bfe0a-7d32-46ea-936f-d6dbff25cfae.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column PIC
+		dataType: string
+		lineageTag: 237c68c1-1ab3-465f-bb85-c5bd2585581c
+		summarizeBy: none
+		sourceColumn: PIC
+
+	column 'TỶ LỆ HT'
+		dataType: int64
+		formatString: 0
+		lineageTag: dd394923-5f24-4d31-87f1-67edf0481120
+		summarizeBy: sum
+		sourceColumn: TỶ LỆ HT
+
+	column 'ĐIỂM HOÀN THÀNH'
+		dataType: double
+		formatString: 0.00%
+		lineageTag: 9991529e-ac59-44d3-adee-5261d04936ac
+		summarizeBy: sum
+		sourceColumn: ĐIỂM HOÀN THÀNH
+
+	column 'KỲ MỤC TIÊU'
+		dataType: string
+		lineageTag: e3330e4a-c76e-44d1-9068-427295c9dd1b
+		summarizeBy: none
+		sourceColumn: KỲ MỤC TIÊU
+		sortByColumn: 'KỲ MỤC TIÊU SORT'
+
+	column 'NĂM MỤC TIÊU'
+		dataType: int64
+		formatString: 0
+		lineageTag: 585b4e1d-2632-49c8-a207-f3ab809d03d4
+		summarizeBy: sum
+		sourceColumn: NĂM MỤC TIÊU
+
+	column 'QUÝ MỤC TIÊU'
+		dataType: string
+		lineageTag: 2f113607-1ab0-4851-b897-70514afca04e
+		summarizeBy: none
+		sourceColumn: QUÝ MỤC TIÊU
+
+	column FILE
+		dataType: string
+		lineageTag: 77367f19-6ffe-4ebb-8cd0-703335f888e8
+		summarizeBy: none
+		sourceColumn: FILE
+
+	column 'KỲ MỤC TIÊU SORT'
+		dataType: int64
+		isHidden
+		lineageTag: 549490ec-efac-4d08-9143-f98a5f208ff2
+		summarizeBy: none
+		sourceColumn: KỲ MỤC TIÊU SORT
+
+	/// Các PIC của cùng hồ sơ; dùng mã hồ sơ để giữ riêng từng hồ sơ ở lưới.
+	column 'PIC HỒ SƠ'
+		dataType: string
+		lineageTag: d52561d5-bd8b-4078-bc19-61d343f4d51c
+		summarizeBy: none
+		sourceColumn: PIC HỒ SƠ
+
+		relatedColumnDetails
+			groupByColumn: 'MÃ HỒ SƠ'
+
+	column 'DÒNG NGUỒN'
+		dataType: int64
+		isHidden
+		lineageTag: 3f38c2b0-194a-4cbb-a717-cd209a288888
+		summarizeBy: none
+		sourceColumn: DÒNG NGUỒN
+
+	partition 'KPI TTHD' = m
+		mode: import
+		source = ```
+				let
+				    Normalize = (v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.Trim(Text.From(v ?? ""))), {" ", Character.FromNumber(160), "#(tab)", "#(cr)", "#(lf)"})),
+				    FileKey = (v as text) as text => Normalize(Text.TrimEnd(Text.BeforeDelimiter(v,".xlsx"),".")),
+				    ToText = (v as any) as nullable text => if v=null then null else Text.Combine(List.Select(Text.Split(Text.Trim(Text.Clean(Text.Replace(Text.From(v),Character.FromNumber(160)," ")))," "),each _<>"")," "),
+				    ToDate = (v as any) as nullable date => let d=try Date.From(v) otherwise null in if d=null or d<#date(2000,1,1) then null else d,
+				    FindColumn = (t as table, names as list) as nullable text => List.First(List.RemoveNulls(List.Transform(names,(n)=>List.First(List.Select(Table.ColumnNames(t),(c)=>Normalize(c)=Normalize(n)),null))),null),
+				    Expected = {
+				        "THEO DOI HD KV BINH THUAN CON LAI.xlsx",
+				        "THEO DOI HD KV HCM (23DA).xlsx",
+				        "THEO DOI HD KV HO TRAM (23DA).xlsx",
+				        "THEO DOI HD KV KHAC.xlsx",
+				        "THEO DOI HD KV DONG NAI (23DA).xlsx",
+				        "THEO DOI HD KV HCM CON LAI.xlsx",
+				        "THEO DOI HD KV BINH THUAN 1.xlsx",
+				        "THEO DOI CONG NO CHI PHI HOAT DONG.xlsx"
+				    },
+				    Source=SharePoint.Contents("https://novaland.sharepoint.com/sites/PRT",[ApiVersion=15]),
+				    Documents=Source{[Name="Documents"]}[Content],
+				    Folder=Documents{[Name="PRC"]}[Content]{[Name="00. NovaGen"]}[Content]{[Name="07. Các nghiệp vụ"]}[Content]{[Name="05. PAS"]}[Content]{[Name="01. THEO DOI HD & CPC"]}[Content],
+				    ExcelFiles=Table.SelectRows(Folder,each [Extension]<>null and Text.Lower([Extension])=".xlsx" and not Text.StartsWith([Name],"~$")),
+				    // Match the eight approved files only. A trailing extra dot is tolerated; old-project files are excluded.
+				    Approved=List.Transform(Expected,(name)=>let matches=Table.SelectRows(ExcelFiles,each FileKey(Text.Lower([Name]))=FileKey(Text.Lower(name))) in
+				        if Table.RowCount(matches)<>1 then error Error.Record("TTHD source", "Phải tìm thấy đúng một file: "&name,[Count=Table.RowCount(matches)]) else matches{0}),
+				    ReadFile = (file as record) as table =>
+				        let
+				            IsOpex=FileKey(Text.Lower(file[Name]))=FileKey(Text.Lower(Expected{7})),
+				            Sheet=if IsOpex then "CHI TIET CONG NO" else "THEO DÕI CPC",
+				            Workbook=Excel.Workbook(file[Content],null,true),
+				            Matching=Table.SelectRows(Workbook,each [Kind]="Sheet" and Normalize([Item])=Normalize(Sheet)),
+				            Raw=if Table.RowCount(Matching)<>1 then error Error.Record("TTHD sheet",file[Name]&": thiếu sheet "&Sheet,null) else Matching{0}[Data],
+				            Safe=Table.ReplaceErrorValues(Raw,List.Transform(Table.ColumnNames(Raw),each {_,null})),
+				            HeaderIndex=List.PositionOf(List.Transform(Table.ToRows(Safe),each List.Contains(List.Transform(_,Normalize),"STT")),true),
+				            Promoted=if HeaderIndex<0 then error Error.Record("TTHD header",file[Name]&": không tìm thấy dòng tiêu đề STT",null) else Table.PromoteHeaders(Table.Skip(Safe,HeaderIndex),[PromoteAllScalars=true]),
+				            Mappings={
+				                {"DỰ ÁN",if IsOpex then {"TÊN DỰ ÁN/ĐỊA CHỈ SỬ DỤNG"} else {"TÊN VIẾT TẮT DỰ ÁN"}},
+				                {"KHU VỰC",{"KHU VỰC"}},
+				                {"SỐ HỢP ĐỒNG",{"SỐ HỢP ĐỒNG","SỐ HỢP ĐỒNG CHÍNH","SỐ HĐ CHÍNH","SỐ HỢP ĐỒNG GỐC"}},
+				                {"NHÀ THẦU",{"NT/NCC/TV","TÊN NHÀ THẦU","NHÀ THẦU","NHÀ CUNG CẤP"}},
+				                {"NỘI DUNG",if IsOpex then {"NỘI DUNG THANH TOÁN"} else {"NỘI DUNG TT"}},
+				                {"NGÀY NHẬN HS",if IsOpex then {"NGÀY NHẬN HSTT"} else {"NGÀY NHẬN HS TQT TẠI PAS HO"}},
+				                {"NGÀY HOÀN THÀNH",{"NGÀY PHÁT HÀNH","NGÀY PHÁT HÀNH CPC"}},
+				                {"PIC XÂY DỰNG/CUNG ỨNG",if IsOpex then {"PAYMENT PIC"} else {"PIC XÂY DỰNG/CUNG ỨNG","PIC XÂY DỰNG","PIC CUNG ỨNG"}},
+				                {"PIC MEP",{"PIC MEP"}},
+				                {"PIC SITE1",{"PIC SITE1","PIC SITE 1"}},
+				                {"PIC SITE2",{"PIC SITE12","PIC SITE2","PIC SITE 2"}}
+				            },
+				            Required={"DỰ ÁN","SỐ HỢP ĐỒNG","NỘI DUNG","NGÀY NHẬN HS","NGÀY HOÀN THÀNH","PIC XÂY DỰNG/CUNG ỨNG"},
+				            Projected=Table.FromColumns(List.Transform(Mappings,(m)=>let col=FindColumn(Promoted,m{1}) in if col=null and List.Contains(Required,m{0}) then error Error.Record("TTHD column",file[Name]&": thiếu "&Text.Combine(m{1}," / "),[Headers=Table.ColumnNames(Promoted)]) else if col=null then List.Repeat({null},Table.RowCount(Promoted)) else Table.Column(Promoted,col)),List.Transform(Mappings,each _{0})),
+				            WithRegion=if IsOpex then Table.TransformColumns(Projected,{{"KHU VỰC",each "OPEX",type text}}) else Projected,
+				            WithFile=Table.AddColumn(WithRegion,"FILE",each file[Name],type text),
+				            Indexed=Table.AddIndexColumn(WithFile,"DÒNG FILE",1,1,Int64.Type),
+				            Valid=Table.SelectRows(Indexed,each let contract=Normalize([SỐ HỢP ĐỒNG]) in contract<>"" and not List.Contains({"SỐHỢPĐỒNG","SỐHỢPĐỒNGCHÍNH","TOTAL","TỔNGCỘNG"},contract)),
+				            Key=Table.AddColumn(Valid,"MÃ HỒ SƠ",each file[Name]&"|"&Text.From([DÒNG FILE]),type text)
+				        in Key,
+				    Combined=Table.Combine(List.Transform(Approved,ReadFile)),
+				    TextColumns={"DỰ ÁN","KHU VỰC","SỐ HỢP ĐỒNG","NHÀ THẦU","NỘI DUNG","PIC XÂY DỰNG/CUNG ỨNG","PIC MEP","PIC SITE1","PIC SITE2"},
+				    TextTyped=Table.TransformColumns(Combined,List.Transform(TextColumns,each {_,ToText,type text})),
+				    Typed=Table.TransformColumns(TextTyped,{{"NGÀY NHẬN HS",ToDate,type date},{"NGÀY HOÀN THÀNH",ToDate,type date}}),
+				    Indexed=Table.AddIndexColumn(Typed,"DÒNG NGUỒN",1,1,Int64.Type),
+				    Target=Table.AddColumn(Indexed,"NGÀY QUY ĐỊNH",each if [NGÀY NHẬN HS]=null then null else
+				        let
+				            CandidateDays = List.Dates(Date.AddDays([NGÀY NHẬN HS],1),7,#duration(1,0,0,0)),
+				            WorkingDays = List.Select(CandidateDays,each Date.DayOfWeek(_,Day.Monday)<5)
+				        in WorkingDays{1},type date),
+				    Flag=Table.AddColumn(Target,"TỶ LỆ HT",each if [NGÀY HOÀN THÀNH]=null or [NGÀY QUY ĐỊNH]=null then null else if [NGÀY HOÀN THÀNH]<=[NGÀY QUY ĐỊNH] then 1 else 0,Int64.Type),
+				    Score=Table.AddColumn(Flag,"ĐIỂM HOÀN THÀNH",each if [NGÀY HOÀN THÀNH]=null or [NGÀY QUY ĐỊNH]=null then null else let raw=1+Duration.Days([NGÀY QUY ĐỊNH]-[NGÀY HOÀN THÀNH])/100 in if raw<1 then 0 else raw,type number),
+				    Year=Table.AddColumn(Score,"NĂM MỤC TIÊU",each if [NGÀY NHẬN HS]=null then null else Date.Year([NGÀY NHẬN HS]),Int64.Type),
+				    Quarter=Table.AddColumn(Year,"QUÝ MỤC TIÊU",each if [NGÀY NHẬN HS]=null then "Chưa xác định" else "Quý "&Text.From(Date.QuarterOfYear([NGÀY NHẬN HS])),type text),
+				    Period=Table.AddColumn(Quarter,"KỲ MỤC TIÊU",each if [NGÀY NHẬN HS]=null then "Chưa có ngày nhận HS" else [QUÝ MỤC TIÊU]&" - "&Text.From([NĂM MỤC TIÊU]),type text),
+				    PeriodSort=Table.AddColumn(Period,"KỲ MỤC TIÊU SORT",each if [NGÀY NHẬN HS]=null then null else [NĂM MỤC TIÊU]*10+Date.QuarterOfYear([NGÀY NHẬN HS]),Int64.Type),
+				    PicList=Table.AddColumn(PeriodSort,"PIC LIST",each let text=Text.Combine(List.Transform({[#"PIC XÂY DỰNG/CUNG ỨNG"],[PIC MEP],[PIC SITE1],[PIC SITE2]},each Text.From(_ ?? "")),";"), names=List.Distinct(List.Select(List.Transform(Splitter.SplitTextByAnyDelimiter({";",",","#(lf)","#(cr)","|"},QuoteStyle.Csv)(text),ToText),each _<>null and _<>"")) in if List.IsEmpty(names) then {null} else names),
+				    PicDisplay=Table.AddColumn(PicList,"PIC HỒ SƠ",each Text.Combine(List.RemoveNulls([PIC LIST]),"; "),type text),
+				    Expanded=Table.ExpandListColumn(PicDisplay,"PIC LIST"),
+				    Renamed=Table.RenameColumns(Expanded,{{"PIC LIST","PIC"}}),
+				    Result=Table.SelectColumns(Renamed,{"MÃ HỒ SƠ","DỰ ÁN","KHU VỰC","SỐ HỢP ĐỒNG","NHÀ THẦU","NỘI DUNG","NGÀY NHẬN HS","NGÀY HOÀN THÀNH","NGÀY QUY ĐỊNH","PIC","PIC HỒ SƠ","DÒNG NGUỒN","TỶ LỆ HT","ĐIỂM HOÀN THÀNH","KỲ MỤC TIÊU","KỲ MỤC TIÊU SORT","NĂM MỤC TIÊU","QUÝ MỤC TIÊU","FILE"})
+				in
+				    Result
+				
+				
+				```
+

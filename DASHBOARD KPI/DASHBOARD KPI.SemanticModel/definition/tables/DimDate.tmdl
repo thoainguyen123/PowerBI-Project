@@ -1,0 +1,65 @@
+table DimDate
+	lineageTag: 2d1e2e1a-5b1a-4e2a-9e1a-2d1e2e1a5b1a
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: General Date
+		lineageTag: 3d1e2e1a-5b1a-4e2a-9e1a-3d1e2e1a5b1b
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: f3c0f680-1cf4-4853-9db1-38cba3cac6c4
+			defaultHierarchy: LocalDateTable_406c8ad4-a74e-4a90-83cd-1b5afaa00b20.'Date Hierarchy'
+
+	column Năm
+		dataType: int64
+		formatString: 0
+		lineageTag: 4d1e2e1a-5b1a-4e2a-9e1a-4d1e2e1a5b1c
+		summarizeBy: sum
+		sourceColumn: [Năm]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quý
+		dataType: string
+		lineageTag: 5d1e2e1a-5b1a-4e2a-9e1a-5d1e2e1a5b1d
+		summarizeBy: none
+		sourceColumn: [Quý]
+
+	column 'Năm - Quý'
+		dataType: string
+		lineageTag: 6d1e2e1a-5b1a-4e2a-9e1a-6d1e2e1a5b1e
+		summarizeBy: none
+		sourceColumn: [Năm - Quý]
+		sortByColumn: 'Năm Quý Sort'
+
+	column 'Năm Quý Sort'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7d1e2e1a-5b1a-4e2a-9e1a-7d1e2e1a5b1f
+		summarizeBy: sum
+		sourceColumn: [Năm Quý Sort]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = calculated
+		mode: import
+		source =
+				
+				ADDCOLUMNS (
+				    CALENDAR (
+				        DATE ( 2020, 1, 1 ),
+				        DATE ( 2027, 12, 31 )
+				    ),
+				    "Năm", YEAR ( [Date] ),
+				    "Quý", "Q" & QUARTER ( [Date] ),
+				    "Năm - Quý", FORMAT ( [Date], "yyyy" ) & " - Q" & QUARTER ( [Date] ),
+				    "Năm Quý Sort", YEAR ( [Date] ) * 10 + QUARTER ( [Date] )
+				)
+
+	annotation PBI_Id = 1d1e2e1a5b1a4e2a9e1a2d1e2e1a5b1a
+

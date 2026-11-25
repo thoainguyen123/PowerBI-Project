@@ -1,0 +1,129 @@
+table 'Ngân sách gói thầu'
+	lineageTag: df0fedae-abe5-49a2-9ed4-882bcf1191f8
+
+	measure 'Tổng ngân sách' = DIVIDE(SUM('Ngân sách gói thầu'[Ngân sách gói thầu(A)]), 1000000000)
+		formatString: #,0.00
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: 8d59ce88-3024-4bab-b8b2-72224200abc9
+
+	measure 'Ngân sách thực thi' = DIVIDE(SUM('Ngân sách gói thầu'[Đã giao thầu(B)]), 1000000000)
+		formatString: #,0.00
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: ebb1f995-8f68-4308-bd8b-db9668567a95
+
+	measure 'Ngân sách còn lại' = DIVIDE(SUM('Ngân sách gói thầu'[Ngân sách gói thầu còn lại(A-B)]), 1000000000)
+		formatString: #,0.00
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: 28015583-809f-4cfa-a885-862fd44846db
+
+	measure 'Tỷ lệ sử dụng' = DIVIDE([Ngân sách thực thi], [Tổng ngân sách])
+		formatString: 0.0%
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: ff62ae48-0d35-4e47-bac1-6df8395cbb84
+
+	measure 'Số gói thầu' = COUNTROWS('Ngân sách gói thầu')
+		formatString: #,0
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: 126269ce-bf41-4ec2-9f22-3514a8c2ae7e
+
+	measure 'Số lượng căn' = SUM('Ngân sách gói thầu'[Số căn])
+		formatString: #,0
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: 8c175ce7-b8dc-4dc8-a6b3-d7b054dfbc45
+
+	column Cụm
+		dataType: string
+		lineageTag: cde4cf74-24b7-49e6-92e8-b3fceee11d28
+		summarizeBy: none
+		sourceColumn: Cụm
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dự án'
+		dataType: string
+		lineageTag: f53694fa-0749-4477-87ee-36fcd71143d4
+		summarizeBy: none
+		sourceColumn: Dự án
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gói thầu'
+		dataType: string
+		lineageTag: 0e96ebcd-ca25-45bd-9b46-fd5776055433
+		summarizeBy: none
+		sourceColumn: Gói thầu
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Số căn'
+		dataType: int64
+		formatString: 0
+		lineageTag: ae3da43a-9bce-4ffd-b78a-a234c6c8d99a
+		summarizeBy: sum
+		sourceColumn: Số căn
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column Khu
+		dataType: string
+		lineageTag: ad84eeee-a96a-429a-b2f5-ae577a4d759c
+		summarizeBy: none
+		sourceColumn: Khu
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngân sách gói thầu(A)'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 1df584a2-9c0d-4c25-b801-6c5b6d1b5f26
+		summarizeBy: sum
+		sourceColumn: Ngân sách gói thầu(A)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Đã giao thầu(B)'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 8b1aec12-590d-4b37-9019-487911014d85
+		summarizeBy: sum
+		sourceColumn: Đã giao thầu(B)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngân sách gói thầu còn lại(A-B)'
+		dataType: int64
+		formatString: #,0
+		lineageTag: be9bfc7e-67a1-442b-8372-8177bd935457
+		summarizeBy: sum
+		sourceColumn: Ngân sách gói thầu còn lại(A-B)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tỉ lệ còn lại(%)'
+		dataType: double
+		formatString: 0.0%
+		lineageTag: ddba3165-4561-405f-adaa-ca008506e58b
+		summarizeBy: sum
+		sourceColumn: Tỉ lệ còn lại(%)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Ngân sách gói thầu' = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(Web.Contents("https://novaland.sharepoint.com/sites/qs-projectcost/Documents/00.%20NOVAGEN-QSB/08.%20Nhat%20ky%20cong%20viec/00.%20Dashboard%20b%C3%A1o%20c%C3%A1o/01.%20Link%20dashboard/QSB_%20dashboard%20bao%20cao.xlsx"), null, true),
+				  Raw = Source{[Item = "4. Ngân sách gói thầu", Kind = "Sheet"]}[Data],
+				  PromotedHeaders = Table.PromoteHeaders(Raw, [PromoteAllScalars = true]),
+				  Renamed = Table.RenameColumns(PromotedHeaders, {{"Ngân sách gói thầu#(lf)(A)", "Ngân sách gói thầu(A)"}, {"Đã giao thầu#(lf)(B)", "Đã giao thầu(B)"}, {"Ngân sách gói thầu còn lại#(lf)(A-B)", "Ngân sách gói thầu còn lại(A-B)"}, {"Tỉ lệ còn lại#(lf)(%)", "Tỉ lệ còn lại(%)"}}, MissingField.Ignore),
+				  Selected = Table.SelectColumns(Renamed, {"Cụm", "Dự án", "Gói thầu", "Số căn", "Khu", "Ngân sách gói thầu(A)", "Đã giao thầu(B)", "Ngân sách gói thầu còn lại(A-B)", "Tỉ lệ còn lại(%)"}),
+				  Typed = Table.TransformColumnTypes(Selected,{{"Cụm", type text}, {"Dự án", type text}, {"Gói thầu", type text}, {"Số căn", type text}, {"Khu", type text}, {"Ngân sách gói thầu(A)", Int64.Type}, {"Đã giao thầu(B)", Int64.Type}, {"Ngân sách gói thầu còn lại(A-B)", Int64.Type}, {"Tỉ lệ còn lại(%)", type number}})
+				in
+				  Typed
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

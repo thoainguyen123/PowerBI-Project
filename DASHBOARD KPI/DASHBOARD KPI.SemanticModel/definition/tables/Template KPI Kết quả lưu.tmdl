@@ -1,0 +1,101 @@
+/// Bảng kết quả phục vụ TEMPLATE KPI trên A1. Mỗi Dòng đăng ký là một khóa duy nhất; lưu kết quả và điểm QTHD Q1–Q4, tự tính lại khi refresh từ dữ liệu đã nạp. Không nối quan hệ để tránh thay đổi bộ lọc các trang khác; measure tra theo Dòng đăng ký. Giữ số 0, BLANK, đơn vị, CN/TH1/TH2 và các trần điểm của công thức nguồn.
+table 'Template KPI Kết quả lưu'
+	isHidden
+	lineageTag: 9cfe5878-678a-4d61-9ea4-f0f54c5544b9
+
+	column 'Dòng đăng ký'
+		isHidden
+		isKey
+		isAvailableInMdx: false
+		lineageTag: ad2c6979-b775-476f-b245-8855bad411a9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Dòng đăng ký]
+
+	column 'Kết quả Q1'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 69f0737d-b0f9-4079-997a-a9df3ed7c4f5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Kết quả Q1]
+
+	column 'Điểm QTHD Q1'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 8bef60bf-fab1-4d48-9b1a-51196a4cf463
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Điểm QTHD Q1]
+
+	column 'Kết quả Q2'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 09413099-8894-49f9-bdd5-2f2b09b5ad5e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Kết quả Q2]
+
+	column 'Điểm QTHD Q2'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: b608a2d3-d63f-47d2-8cc4-3ff7f894bc14
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Điểm QTHD Q2]
+
+	column 'Kết quả Q3'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: f665b70e-925c-4866-8618-1b716b1a9b4a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Kết quả Q3]
+
+	column 'Điểm QTHD Q3'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: ff7a34ae-1d3c-4f2e-9070-f0b0e81a637a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Điểm QTHD Q3]
+
+	column 'Kết quả Q4'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 165eb8f3-b331-4b5d-8a36-f258fcacc7c0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Kết quả Q4]
+
+	column 'Điểm QTHD Q4'
+		isHidden
+		isAvailableInMdx: false
+		lineageTag: 7b90d533-9655-4229-a5ae-af0272768a4e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Điểm QTHD Q4]
+
+	partition 'Template KPI Kết quả lưu' = calculated
+		mode: import
+		source =
+				VAR _Rows=ADDCOLUMNS(SUMMARIZE('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),
+				"__R1",CALCULATE([Template Kết quả cá nhân Q1],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__P1",CALCULATE([Template Điểm QTHD cá nhân Q1],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__R2",CALCULATE([Template Kết quả cá nhân Q2],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__P2",CALCULATE([Template Điểm QTHD cá nhân Q2],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__R3",CALCULATE([Template Kết quả cá nhân Q3],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__P3",CALCULATE([Template Điểm QTHD cá nhân Q3],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__R4",CALCULATE([Template Kết quả cá nhân Q4],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')),
+				"__P4",CALCULATE([Template Điểm QTHD cá nhân Q4],ALLEXCEPT('KPI Đăng ký','KPI Đăng ký'[Dòng nguồn]),REMOVEFILTERS('Kỳ đánh giá đấu thầu')))
+				RETURN SELECTCOLUMNS(_Rows,
+				"Dòng đăng ký",'KPI Đăng ký'[Dòng nguồn],
+				"Kết quả Q1",[__R1],
+				"Điểm QTHD Q1",[__P1],
+				"Kết quả Q2",[__R2],
+				"Điểm QTHD Q2",[__P2],
+				"Kết quả Q3",[__R3],
+				"Điểm QTHD Q3",[__P3],
+				"Kết quả Q4",[__R4],
+				"Điểm QTHD Q4",[__P4])
+

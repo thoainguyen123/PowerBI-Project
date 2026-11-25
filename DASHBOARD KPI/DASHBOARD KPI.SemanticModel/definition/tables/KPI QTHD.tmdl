@@ -1,0 +1,480 @@
+/// Bridge KPI quyết toán từ Data, tách một dòng cho từng PIC và giữ khóa hợp đồng để không đếm trùng ở cấp phòng.
+table 'KPI QTHD'
+	lineageTag: 0dae5e0d-f7e7-4bd0-9143-493eb97028f8
+
+	measure 'QTHD Số hợp đồng' = DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG])
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 9fe49bb7-4f69-47d6-b98d-c8c231456b65
+
+	measure 'QTHD Số được chấm' = VAR _T = SUMMARIZE('KPI QTHD', 'KPI QTHD'[MÃ HỢP ĐỒNG], "_Score", MAX('KPI QTHD'[ĐIỂM HOÀN THÀNH])) RETURN COUNTROWS(FILTER(_T, NOT ISBLANK([_Score])))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 803b4e68-c976-439f-97e7-a8a20bebaaff
+
+	measure 'QTHD Đúng hạn' = VAR _T = SUMMARIZE('KPI QTHD', 'KPI QTHD'[MÃ HỢP ĐỒNG], "_Score", MAX('KPI QTHD'[ĐIỂM HOÀN THÀNH])) RETURN COUNTROWS(FILTER(_T, [_Score] >= 1))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: b63cdec2-61bc-4ead-8bff-af663b9908f0
+
+	measure 'QTHD Không đạt' = VAR _T = SUMMARIZE('KPI QTHD', 'KPI QTHD'[MÃ HỢP ĐỒNG], "_Score", MAX('KPI QTHD'[ĐIỂM HOÀN THÀNH])) RETURN COUNTROWS(FILTER(_T, NOT ISBLANK([_Score]) && [_Score] < 1))
+		formatString: #,0
+		displayFolder: KPI
+		lineageTag: 8ab771e0-56f1-4012-83ee-ace7ccc2bf7a
+
+	measure 'QTHD Điểm bình quân' = VAR _T = SUMMARIZE('KPI QTHD', 'KPI QTHD'[MÃ HỢP ĐỒNG], "_Score", MAX('KPI QTHD'[ĐIỂM HOÀN THÀNH])) RETURN AVERAGEX(FILTER(_T, NOT ISBLANK([_Score])), [_Score])
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: 51eec30a-1183-4833-b03a-c07e0190d36a
+
+	measure 'QTHD Điểm dòng' = MAX('KPI QTHD'[ĐIỂM HOÀN THÀNH])
+		formatString: 0.00%
+		displayFolder: Chi tiết
+		lineageTag: c756f2e3-ab02-4d82-90c7-f481e1c88d5b
+
+	/// Số hợp đồng có ngày mục tiêu trong kỳ chọn và KPI quyết toán chứa KPI.
+	measure 'QTHD KPI trong kỳ' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), FILTER('KPI QTHD', 'KPI QTHD'[KỲ MỤC TIÊU SORT] IN _Selected && CONTAINSSTRING(UPPER(COALESCE('KPI QTHD'[KPI QUYẾT TOÁN], "")), "KPI")))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: dd5bbcae-8e06-4b77-bd48-3acd43d7cd0f
+
+	/// Số hợp đồng có ngày mục tiêu trong kỳ chọn và KPI quyết toán chứa NGOÀI.
+	measure 'QTHD KPI bổ sung' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), FILTER('KPI QTHD', 'KPI QTHD'[KỲ MỤC TIÊU SORT] IN _Selected && CONTAINSSTRING(UPPER(COALESCE('KPI QTHD'[KPI QUYẾT TOÁN], "")), "NGOÀI")))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 2aa7a965-efa1-4053-8daf-f51e7f1fedb6
+
+	/// Mục tiêu và ngày duyệt đều thuộc toàn bộ kỳ slicer đang chọn, duyệt không trễ mục tiêu. Đếm duy nhất File + HĐ + PL.
+	measure 'QTHD Hoàn thành đạt mục tiêu' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			VAR _MaxSelected = MAXX(_Selected,'DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]),FILTER('KPI QTHD',VAR _Target = 'KPI QTHD'[NGÀY MỤC TIÊU] VAR _Done = 'KPI QTHD'[NGÀY HOÀN THÀNH]
+			VAR _TargetKey = 'KPI QTHD'[KỲ MỤC TIÊU SORT]
+			VAR _DoneKey = IF(NOT ISBLANK(_Done),YEAR(_Done)*10+QUARTER(_Done))
+			RETURN NOT ISBLANK(_Target) && NOT ISBLANK(_Done) && _Done<=_Target && _TargetKey IN _Selected && _DoneKey IN _Selected))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 39629512-83aa-4724-bd1d-61909d3bceb7
+
+	/// Ngày duyệt trong kỳ slicer, mục tiêu sau cuối kỳ đang chọn; đếm duy nhất File + HĐ + PL.
+	measure 'QTHD Vượt mục tiêu' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			VAR _MaxSelected = MAXX(_Selected,'DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]),FILTER('KPI QTHD',VAR _Target = 'KPI QTHD'[NGÀY MỤC TIÊU] VAR _Done = 'KPI QTHD'[NGÀY HOÀN THÀNH]
+			VAR _TargetKey = 'KPI QTHD'[KỲ MỤC TIÊU SORT]
+			VAR _DoneKey = IF(NOT ISBLANK(_Done),YEAR(_Done)*10+QUARTER(_Done))
+			RETURN NOT ISBLANK(_Target) && NOT ISBLANK(_Done) && _Done<=_Target && _DoneKey IN _Selected && _TargetKey>_MaxSelected))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 25855cff-0f8d-455d-b0de-f1fc2fc32624
+
+	/// Số hợp đồng hoàn thành đúng hạn trong quý mục tiêu hoặc vượt mục tiêu ở quý trước.
+	measure 'QTHD Hoàn thành trong kỳ' = COALESCE([QTHD Hoàn thành đạt mục tiêu], 0) + COALESCE([QTHD Vượt mục tiêu], 0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 0e60083a-d90e-48c6-85a4-57a41ba0f93a
+
+	/// Số hợp đồng duyệt CTQT sau ngày mục tiêu, có ngày mục tiêu trong kỳ chọn.
+	measure 'QTHD Hoàn thành trễ hạn' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), FILTER('KPI QTHD', 'KPI QTHD'[KỲ MỤC TIÊU SORT] IN _Selected && NOT ISBLANK('KPI QTHD'[NGÀY HOÀN THÀNH]) && 'KPI QTHD'[NGÀY HOÀN THÀNH] > 'KPI QTHD'[NGÀY MỤC TIÊU]))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: b7a02d7e-e481-4f70-b54b-018e21e26dbb
+
+	/// Số hợp đồng có ngày mục tiêu trong kỳ chọn nhưng chưa duyệt CTQT.
+	measure 'QTHD Chưa hoàn thành' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), FILTER('KPI QTHD', 'KPI QTHD'[KỲ MỤC TIÊU SORT] IN _Selected && ISBLANK('KPI QTHD'[NGÀY HOÀN THÀNH])))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: a0733f56-19c8-42c2-81d2-dbbab5c39fa8
+
+	/// Lọc bảng chi tiết để gồm gói mục tiêu trong kỳ hoặc hoàn thành sớm trong kỳ.
+	measure 'QTHD Hiển thị dòng' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			VAR _MaxSelected = MAXX(_Selected,'DimDate'[Năm Quý Sort])
+			VAR _TargetKey=SELECTEDVALUE('KPI QTHD'[KỲ MỤC TIÊU SORT])
+			VAR _Done=SELECTEDVALUE('KPI QTHD'[NGÀY HOÀN THÀNH])
+			VAR _DoneKey=IF(NOT ISBLANK(_Done),YEAR(_Done)*10+QUARTER(_Done))
+			RETURN IF(_TargetKey IN _Selected || (NOT ISBLANK(_Done) && _DoneKey IN _Selected && _TargetKey>_MaxSelected),1,0)
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: fe6d9b66-f816-48cb-80f4-c1b70a333a07
+
+	/// Theo toàn bộ kỳ slicer: đạt hoặc vượt = 1; chưa duyệt hoặc duyệt trễ và mục tiêu trong kỳ = 0; thiếu mục tiêu hoặc hoàn thành trước kỳ = rỗng. Không chấm lặp PIC.
+	measure 'QTHD Điểm gói' =
+			VAR _Selected = VALUES('DimDate'[Năm Quý Sort])
+			VAR _MaxSelected = MAXX(_Selected,'DimDate'[Năm Quý Sort])
+			VAR _Target=SELECTEDVALUE('KPI QTHD'[NGÀY MỤC TIÊU])
+			VAR _TargetKey=SELECTEDVALUE('KPI QTHD'[KỲ MỤC TIÊU SORT])
+			VAR _Done=SELECTEDVALUE('KPI QTHD'[NGÀY HOÀN THÀNH])
+			VAR _DoneKey=IF(NOT ISBLANK(_Done),YEAR(_Done)*10+QUARTER(_Done))
+			RETURN IF(ISBLANK(_Target),BLANK(),IF(ISBLANK(_Done),IF(_TargetKey IN _Selected,0,BLANK()),IF(_Done<=_Target && _DoneKey IN _Selected && (_TargetKey IN _Selected || _TargetKey>_MaxSelected),1,IF(_TargetKey IN _Selected && _Done>_Target,0,BLANK()))))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: f15e8401-06de-4ec6-8504-693b2383f191
+
+	/// Tổng điểm gói quyết toán trong kỳ chọn; cộng một điểm mỗi hợp đồng hoàn thành đạt hoặc vượt mục tiêu.
+	measure 'QTHD Tổng điểm' = SUMX(VALUES('KPI QTHD'[MÃ HỢP ĐỒNG]), [QTHD Điểm gói])
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: 69f2aac9-5e2b-437d-81d5-f6419259662d
+
+	/// Số hợp đồng theo khu vực và tình trạng; gói vượt mục tiêu được ghi nhận vào quý hoàn thành, các trạng thái còn lại theo quý mục tiêu.
+	measure 'QTHD Tình hình theo kỳ' = VAR _Selected = VALUES('DimDate'[Năm Quý Sort]) RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), FILTER('KPI QTHD', VAR _Done = 'KPI QTHD'[NGÀY HOÀN THÀNH] VAR _DoneKey = IF(NOT ISBLANK(_Done), YEAR(_Done)*10+QUARTER(_Done)) RETURN IF('KPI QTHD'[TÌNH TRẠNG QTHD] = "Vượt mục tiêu", _DoneKey IN _Selected, 'KPI QTHD'[KỲ MỤC TIÊU SORT] IN _Selected)))
+		formatString: #,##0
+		displayFolder: KPI
+		lineageTag: bd4dc544-6522-4a86-bc45-d899941ea060
+
+	/// Đếm mỗi mã hợp đồng một lần trong từng tình trạng, khu vực hoặc PIC; ngày mục tiêu thuộc các ngày được chọn trên slicer.
+	measure 'QTHD Số hợp đồng theo tình trạng' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), KEEPFILTERS(TREATAS(_SelectedDates,'KPI QTHD'[NGÀY MỤC TIÊU])))
+		formatString: #,##0
+		displayFolder: Biểu đồ
+		lineageTag: e99d6408-fcae-41d7-a788-57b3ee764bc9
+
+	/// Hợp đồng chưa có ngày duyệt CTQT, ngày mục tiêu thuộc kỳ chọn và tình trạng hợp đồng Hoàn thành - Cần quyết toán. Đếm mã hợp đồng duy nhất trong từng PIC.
+	measure 'QTHD Tồn đọng chưa quyết toán' =
+			VAR _SelectedDates = VALUES('DimDate'[Date])
+			RETURN CALCULATE(DISTINCTCOUNT('KPI QTHD'[MÃ HỢP ĐỒNG]), KEEPFILTERS(TREATAS(_SelectedDates,'KPI QTHD'[NGÀY MỤC TIÊU])), KEEPFILTERS('KPI QTHD'[NGÀY HOÀN THÀNH] = BLANK()), KEEPFILTERS('KPI QTHD'[TÌNH TRẠNG HỢP ĐỒNG] = "Hoàn thành - Cần quyết toán"))
+		formatString: #,##0
+		displayFolder: Biểu đồ
+		lineageTag: 1a92dedd-fbe4-4016-bd1c-666ed4dac26b
+
+	/// Hoàn thành trong kỳ / KPI trong kỳ theo các bộ lọc hiện tại; giới hạn tối đa 120%. Mẫu số bằng 0 hoặc rỗng trả về rỗng.
+	measure 'QTHD Điểm hoàn thành' =
+			VAR _Ratio = DIVIDE([QTHD Hoàn thành trong kỳ], [QTHD KPI trong kỳ])
+			RETURN IF(ISBLANK(_Ratio), BLANK(), MIN(_Ratio, 1.2))
+		formatString: 0.00%
+		displayFolder: KPI
+		lineageTag: a9c0ee2c-dee6-4ab5-9249-42d1a6cd7503
+
+	column 'MÃ HỢP ĐỒNG'
+		lineageTag: 7b04f1ab-5d77-4737-a813-c521642b0fb5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MÃ HỢP ĐỒNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Tên viết tắt dự án từ cột Data[TÊN VIẾT TẮT DỰ ÁN]; dùng nhất quán cho lưới và bộ lọc QTHD.
+	column 'DỰ ÁN'
+		lineageTag: 8369eb07-d5cc-45c0-aa08-6ccdd3eece3b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DỰ ÁN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KHU VỰC'
+		lineageTag: b207a0d0-b8d5-461e-83b6-4b163d75049a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KHU VỰC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'SỐ HỢP ĐỒNG'
+		lineageTag: be21f930-e642-49fc-8ff3-8ce3b0643d53
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [SỐ HỢP ĐỒNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NỘI DUNG'
+		lineageTag: e9248d39-ec9f-4c76-8760-f523f3cf9eb7
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NỘI DUNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'BỘ MÔN'
+		lineageTag: fe2babbd-b9f5-4c3a-a48c-cb115898578e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [BỘ MÔN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column PIC
+		lineageTag: 12ffcd22-0b5e-49e0-83a6-28dde1a9ef35
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NHÓM PIC'
+		lineageTag: 1486e08b-fe72-470c-b41b-074f8db3a01b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NHÓM PIC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY MỤC TIÊU'
+		formatString: dd/MM/yyyy
+		lineageTag: cb80ac43-d5ea-41c2-8bf1-4b7aa4142c39
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NGÀY MỤC TIÊU]
+
+		variation Variation
+			isDefault
+			relationship: f46e15ef-9328-41e3-b4e3-983e9a7e761e
+			defaultHierarchy: LocalDateTable_09de8167-8d68-47a0-8cb5-da8dd4be9917.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NGÀY HOÀN THÀNH'
+		formatString: dd/MM/yyyy
+		lineageTag: 7cb237e9-b31f-426c-923b-9211e7714af0
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NGÀY HOÀN THÀNH]
+
+		variation Variation
+			isDefault
+			relationship: f50c04af-7749-432f-964e-d945a0d5cc66
+			defaultHierarchy: LocalDateTable_d2d572ce-0d01-4edf-84d6-e7bc3b7f1b83.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KỲ MỤC TIÊU'
+		lineageTag: 7353e0f8-5260-4775-8a87-755fa3df4a22
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KỲ MỤC TIÊU]
+		sortByColumn: 'KỲ MỤC TIÊU SORT'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NĂM MỤC TIÊU'
+		lineageTag: be4c34c9-714b-41bd-b02d-70845365bb07
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [NĂM MỤC TIÊU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'QUÝ MỤC TIÊU'
+		lineageTag: e3d82409-a55a-4e9a-abb4-d5b415d6c206
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [QUÝ MỤC TIÊU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'ĐIỂM HOÀN THÀNH'
+		lineageTag: ec1e6603-166c-4625-b50d-0ab0ffbc7e59
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [ĐIỂM HOÀN THÀNH]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'GIÁ TRỊ HĐ+PS GỒM VAT'
+		dataType: double
+		formatString: #,##0
+		lineageTag: 2a35b9e4-cd12-48d5-9776-e657d387e428
+		summarizeBy: sum
+		sourceColumn: [GIÁ TRỊ HĐ+PS GỒM VAT]
+
+	column 'KỲ MỤC TIÊU SORT'
+		isHidden
+		lineageTag: 87558787-1a87-4bf9-bab0-6703fe20ad95
+		summarizeBy: sum
+		sourceColumn: [KỲ MỤC TIÊU SORT]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Phân loại hợp đồng theo ngày duyệt CTQT và ngày mục tiêu; vượt mục tiêu là hoàn thành ở quý trước quý mục tiêu.
+	column 'TÌNH TRẠNG QTHD' = VAR _Target = 'KPI QTHD'[NGÀY MỤC TIÊU] VAR _Done = 'KPI QTHD'[NGÀY HOÀN THÀNH] VAR _TargetKey = YEAR(_Target)*10+QUARTER(_Target) VAR _DoneKey = YEAR(_Done)*10+QUARTER(_Done) RETURN SWITCH(TRUE(), ISBLANK(_Done), "Chưa hoàn thành", _Done > _Target, "Trễ hạn", _DoneKey < _TargetKey, "Vượt mục tiêu", "Đạt mục tiêu")
+		dataType: string
+		lineageTag: f1f4236c-4c42-461c-8578-60f605cb9a56
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'KPI QUYẾT TOÁN'
+		lineageTag: dadcbae9-9915-418e-9f4a-385b56fd6bb1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [KPI QUYẾT TOÁN]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'NHÀ THẦU'
+		lineageTag: 30545529-70e9-4648-aff8-b811be2416b8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [NHÀ THẦU]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC XÂY DỰNG/CUNG ỨNG'
+		lineageTag: 39236efc-7e37-4286-9307-26adb14afb92
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC XÂY DỰNG/CUNG ỨNG]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC MEP'
+		lineageTag: 1fdbbfd0-a877-4dfc-8192-1085b8a8dd88
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC MEP]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC SITE1'
+		lineageTag: ee12867a-ba48-4317-baad-7d80627ae5d8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC SITE1]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'PIC SITE2'
+		lineageTag: 9782e26a-3ccd-4c4e-b1b9-a549d2e68829
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [PIC SITE2]
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Dựa vào tình trạng quyết toán nguồn Data; dùng quy tắc chuẩn hóa sẵn của TQT: TRIM, gộp biến thể dấu cách và ô trống là Chưa cập nhật. Không suy ra từ ngày hoàn thành hoặc điểm.
+	column 'TÌNH TRẠNG QUYẾT TOÁN'
+		dataType: string
+		lineageTag: 458a9b00-3f61-42e0-8a8b-afbe3138bbc2
+		summarizeBy: none
+		sourceColumn: [TÌNH TRẠNG QUYẾT TOÁN]
+
+	/// Lấy nguyên tình trạng từ Data, không suy ra từ điểm hoặc ngày hoàn thành.
+	column 'TÌNH TRẠNG HỢP ĐỒNG'
+		dataType: string
+		lineageTag: 5eb18281-c273-45af-8c12-e59517d8aec0
+		summarizeBy: none
+		sourceColumn: [TÌNH TRẠNG HỢP ĐỒNG]
+
+	partition 'KPI QTHD' = calculated
+		mode: import
+		source =
+					VAR _Base =
+					    FILTER ( 'Data', NOT ISBLANK ( 'Data'[Ngày mục tiêu date] ) )
+					VAR _XD =
+					    SELECTCOLUMNS (
+					        FILTER ( _Base, NOT ISBLANK ( 'Data'[PIC XÂY DỰNG/CUNG ỨNG] ) ),
+					        "MÃ HỢP ĐỒNG", COALESCE('Data'[File],"") & "|" & COALESCE('Data'[SỐ HỢP ĐỒNG CHÍNH],"") & "|" & COALESCE('Data'[SỐ PLHĐ],""),
+					        "DỰ ÁN", 'Data'[TÊN VIẾT TẮT DỰ ÁN],
+					        "KHU VỰC", 'Data'[Khu vực chuẩn],
+					        "SỐ HỢP ĐỒNG", 'Data'[SỐ HỢP ĐỒNG CHÍNH],
+				        "NỘI DUNG", 'Data'[NỘI DUNG HỢP ĐỒNG],
+				        "GIÁ TRỊ HĐ+PS GỒM VAT", 'Data'[Giá trị HĐ + PS gồm VAT số],
+				        "BỘ MÔN", 'Data'[PHÂN LOẠI THEO BỘ MÔN],
+				        "KPI QUYẾT TOÁN", 'Data'[KPI QUYẾT TOÁN],
+				        "TÌNH TRẠNG QUYẾT TOÁN", 'Data'[Tình trạng quyết toán (chuẩn)],
+				        "TÌNH TRẠNG HỢP ĐỒNG", 'Data'[TÌNH TRẠNG HỢP ĐỒNG],
+				        "NHÀ THẦU", 'Data'[Nhà thầu chuẩn],
+				        "PIC XÂY DỰNG/CUNG ỨNG", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+				        "PIC MEP", 'Data'[PIC MEP],
+				        "PIC SITE1", 'Data'[PIC SITE1],
+				        "PIC SITE2", 'Data'[PIC SITE2],
+					        "PIC", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+					        "NHÓM PIC", "XD/CUNG ỨNG",
+					        "NGÀY MỤC TIÊU", 'Data'[Ngày mục tiêu date],
+					        "NGÀY HOÀN THÀNH", 'Data'[Ngày duyệt CTQT date],
+					        "KỲ MỤC TIÊU", "Quý " & FORMAT('Data'[Ngày mục tiêu date],"q") & " - " & FORMAT('Data'[Ngày mục tiêu date],"yyyy"),
+					        "KỲ MỤC TIÊU SORT", YEAR('Data'[Ngày mục tiêu date])*10+QUARTER('Data'[Ngày mục tiêu date]),
+					        "NĂM MỤC TIÊU", 'Data'[Năm mục tiêu],
+					        "QUÝ MỤC TIÊU", 'Data'[Quý mục tiêu]
+					    )
+					VAR _MEP =
+					    SELECTCOLUMNS (
+					        FILTER ( _Base, NOT ISBLANK ( 'Data'[PIC MEP] ) ),
+					        "MÃ HỢP ĐỒNG", COALESCE('Data'[File],"") & "|" & COALESCE('Data'[SỐ HỢP ĐỒNG CHÍNH],"") & "|" & COALESCE('Data'[SỐ PLHĐ],""),
+					        "DỰ ÁN", 'Data'[TÊN VIẾT TẮT DỰ ÁN], "KHU VỰC", 'Data'[Khu vực chuẩn], "SỐ HỢP ĐỒNG", 'Data'[SỐ HỢP ĐỒNG CHÍNH],
+				        "NỘI DUNG", 'Data'[NỘI DUNG HỢP ĐỒNG], "GIÁ TRỊ HĐ+PS GỒM VAT", 'Data'[Giá trị HĐ + PS gồm VAT số], "BỘ MÔN", 'Data'[PHÂN LOẠI THEO BỘ MÔN],
+				        "KPI QUYẾT TOÁN", 'Data'[KPI QUYẾT TOÁN],
+				        "TÌNH TRẠNG QUYẾT TOÁN", 'Data'[Tình trạng quyết toán (chuẩn)],
+				        "TÌNH TRẠNG HỢP ĐỒNG", 'Data'[TÌNH TRẠNG HỢP ĐỒNG],
+				        "NHÀ THẦU", 'Data'[Nhà thầu chuẩn],
+				        "PIC XÂY DỰNG/CUNG ỨNG", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+				        "PIC MEP", 'Data'[PIC MEP],
+				        "PIC SITE1", 'Data'[PIC SITE1],
+				        "PIC SITE2", 'Data'[PIC SITE2],
+					        "PIC", 'Data'[PIC MEP], "NHÓM PIC", "MEP", "NGÀY MỤC TIÊU", 'Data'[Ngày mục tiêu date],
+					        "NGÀY HOÀN THÀNH", 'Data'[Ngày duyệt CTQT date], "KỲ MỤC TIÊU", "Quý " & FORMAT('Data'[Ngày mục tiêu date],"q") & " - " & FORMAT('Data'[Ngày mục tiêu date],"yyyy"),
+					        "KỲ MỤC TIÊU SORT", YEAR('Data'[Ngày mục tiêu date])*10+QUARTER('Data'[Ngày mục tiêu date]),
+					        "NĂM MỤC TIÊU", 'Data'[Năm mục tiêu], "QUÝ MỤC TIÊU", 'Data'[Quý mục tiêu]
+					    )
+					VAR _SITE1 =
+					    SELECTCOLUMNS (
+					        FILTER ( _Base, NOT ISBLANK ( 'Data'[PIC SITE1] ) ),
+					        "MÃ HỢP ĐỒNG", COALESCE('Data'[File],"") & "|" & COALESCE('Data'[SỐ HỢP ĐỒNG CHÍNH],"") & "|" & COALESCE('Data'[SỐ PLHĐ],""),
+					        "DỰ ÁN", 'Data'[TÊN VIẾT TẮT DỰ ÁN], "KHU VỰC", 'Data'[Khu vực chuẩn], "SỐ HỢP ĐỒNG", 'Data'[SỐ HỢP ĐỒNG CHÍNH],
+				        "NỘI DUNG", 'Data'[NỘI DUNG HỢP ĐỒNG], "GIÁ TRỊ HĐ+PS GỒM VAT", 'Data'[Giá trị HĐ + PS gồm VAT số], "BỘ MÔN", 'Data'[PHÂN LOẠI THEO BỘ MÔN],
+				        "KPI QUYẾT TOÁN", 'Data'[KPI QUYẾT TOÁN],
+				        "TÌNH TRẠNG QUYẾT TOÁN", 'Data'[Tình trạng quyết toán (chuẩn)],
+				        "TÌNH TRẠNG HỢP ĐỒNG", 'Data'[TÌNH TRẠNG HỢP ĐỒNG],
+				        "NHÀ THẦU", 'Data'[Nhà thầu chuẩn],
+				        "PIC XÂY DỰNG/CUNG ỨNG", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+				        "PIC MEP", 'Data'[PIC MEP],
+				        "PIC SITE1", 'Data'[PIC SITE1],
+				        "PIC SITE2", 'Data'[PIC SITE2],
+					        "PIC", 'Data'[PIC SITE1], "NHÓM PIC", "SITE1", "NGÀY MỤC TIÊU", 'Data'[Ngày mục tiêu date],
+					        "NGÀY HOÀN THÀNH", 'Data'[Ngày duyệt CTQT date], "KỲ MỤC TIÊU", "Quý " & FORMAT('Data'[Ngày mục tiêu date],"q") & " - " & FORMAT('Data'[Ngày mục tiêu date],"yyyy"),
+					        "KỲ MỤC TIÊU SORT", YEAR('Data'[Ngày mục tiêu date])*10+QUARTER('Data'[Ngày mục tiêu date]),
+					        "NĂM MỤC TIÊU", 'Data'[Năm mục tiêu], "QUÝ MỤC TIÊU", 'Data'[Quý mục tiêu]
+					    )
+					VAR _SITE2 =
+					    SELECTCOLUMNS (
+					        FILTER ( _Base, NOT ISBLANK ( 'Data'[PIC SITE2] ) ),
+					        "MÃ HỢP ĐỒNG", COALESCE('Data'[File],"") & "|" & COALESCE('Data'[SỐ HỢP ĐỒNG CHÍNH],"") & "|" & COALESCE('Data'[SỐ PLHĐ],""),
+					        "DỰ ÁN", 'Data'[TÊN VIẾT TẮT DỰ ÁN], "KHU VỰC", 'Data'[Khu vực chuẩn], "SỐ HỢP ĐỒNG", 'Data'[SỐ HỢP ĐỒNG CHÍNH],
+				        "NỘI DUNG", 'Data'[NỘI DUNG HỢP ĐỒNG], "GIÁ TRỊ HĐ+PS GỒM VAT", 'Data'[Giá trị HĐ + PS gồm VAT số], "BỘ MÔN", 'Data'[PHÂN LOẠI THEO BỘ MÔN],
+				        "KPI QUYẾT TOÁN", 'Data'[KPI QUYẾT TOÁN],
+				        "TÌNH TRẠNG QUYẾT TOÁN", 'Data'[Tình trạng quyết toán (chuẩn)],
+				        "TÌNH TRẠNG HỢP ĐỒNG", 'Data'[TÌNH TRẠNG HỢP ĐỒNG],
+				        "NHÀ THẦU", 'Data'[Nhà thầu chuẩn],
+				        "PIC XÂY DỰNG/CUNG ỨNG", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+				        "PIC MEP", 'Data'[PIC MEP],
+				        "PIC SITE1", 'Data'[PIC SITE1],
+				        "PIC SITE2", 'Data'[PIC SITE2],
+					        "PIC", 'Data'[PIC SITE2], "NHÓM PIC", "SITE2", "NGÀY MỤC TIÊU", 'Data'[Ngày mục tiêu date],
+					        "NGÀY HOÀN THÀNH", 'Data'[Ngày duyệt CTQT date], "KỲ MỤC TIÊU", "Quý " & FORMAT('Data'[Ngày mục tiêu date],"q") & " - " & FORMAT('Data'[Ngày mục tiêu date],"yyyy"),
+					        "KỲ MỤC TIÊU SORT", YEAR('Data'[Ngày mục tiêu date])*10+QUARTER('Data'[Ngày mục tiêu date]),
+					        "NĂM MỤC TIÊU", 'Data'[Năm mục tiêu], "QUÝ MỤC TIÊU", 'Data'[Quý mục tiêu]
+					    )
+					VAR _Unassigned =
+					    SELECTCOLUMNS (
+					        FILTER ( _Base, ISBLANK('Data'[PIC XÂY DỰNG/CUNG ỨNG]) && ISBLANK('Data'[PIC MEP]) && ISBLANK('Data'[PIC SITE1]) && ISBLANK('Data'[PIC SITE2]) ),
+					        "MÃ HỢP ĐỒNG", COALESCE('Data'[File],"") & "|" & COALESCE('Data'[SỐ HỢP ĐỒNG CHÍNH],"") & "|" & COALESCE('Data'[SỐ PLHĐ],""),
+					        "DỰ ÁN", 'Data'[TÊN VIẾT TẮT DỰ ÁN], "KHU VỰC", 'Data'[Khu vực chuẩn], "SỐ HỢP ĐỒNG", 'Data'[SỐ HỢP ĐỒNG CHÍNH],
+				        "NỘI DUNG", 'Data'[NỘI DUNG HỢP ĐỒNG], "GIÁ TRỊ HĐ+PS GỒM VAT", 'Data'[Giá trị HĐ + PS gồm VAT số], "BỘ MÔN", 'Data'[PHÂN LOẠI THEO BỘ MÔN],
+				        "KPI QUYẾT TOÁN", 'Data'[KPI QUYẾT TOÁN],
+				        "TÌNH TRẠNG QUYẾT TOÁN", 'Data'[Tình trạng quyết toán (chuẩn)],
+				        "TÌNH TRẠNG HỢP ĐỒNG", 'Data'[TÌNH TRẠNG HỢP ĐỒNG],
+				        "NHÀ THẦU", 'Data'[Nhà thầu chuẩn],
+				        "PIC XÂY DỰNG/CUNG ỨNG", 'Data'[PIC XÂY DỰNG/CUNG ỨNG],
+				        "PIC MEP", 'Data'[PIC MEP],
+				        "PIC SITE1", 'Data'[PIC SITE1],
+				        "PIC SITE2", 'Data'[PIC SITE2],
+					        "PIC", BLANK(), "NHÓM PIC", "CHƯA PHÂN CÔNG", "NGÀY MỤC TIÊU", 'Data'[Ngày mục tiêu date],
+					        "NGÀY HOÀN THÀNH", 'Data'[Ngày duyệt CTQT date], "KỲ MỤC TIÊU", "Quý " & FORMAT('Data'[Ngày mục tiêu date],"q") & " - " & FORMAT('Data'[Ngày mục tiêu date],"yyyy"),
+					        "KỲ MỤC TIÊU SORT", YEAR('Data'[Ngày mục tiêu date])*10+QUARTER('Data'[Ngày mục tiêu date]),
+					        "NĂM MỤC TIÊU", 'Data'[Năm mục tiêu], "QUÝ MỤC TIÊU", 'Data'[Quý mục tiêu]
+					    )
+					VAR _Rows = UNION(_XD,_MEP,_SITE1,_SITE2,_Unassigned)
+					RETURN
+					    ADDCOLUMNS(_Rows,"ĐIỂM HOÀN THÀNH",IF(ISBLANK([NGÀY HOÀN THÀNH]),0,IF([NGÀY HOÀN THÀNH]<=[NGÀY MỤC TIÊU],1,0)))
+

@@ -1,0 +1,21 @@
+table 'Cơ cấu ngân sách'
+	lineageTag: 78b6e6a4-41fa-49d7-a12a-dfd3c5a62ef5
+
+	measure 'Giá trị cơ cấu ngân sách' = SWITCH(SELECTEDVALUE('Cơ cấu ngân sách'[Loại ngân sách]), "Đã sử dụng", [Ngân sách thực thi], "Còn lại", [Ngân sách còn lại])
+		formatString: #,0.00
+		displayFolder: 01. KPI Ngân sách
+		lineageTag: e7f8971a-de66-4fa9-b592-2d441fb192f5
+
+	column 'Loại ngân sách'
+		dataType: string
+		lineageTag: f0ba556b-7122-4463-9b9c-bad5203b711f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Loại ngân sách]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Cơ cấu ngân sách' = calculated
+		mode: import
+		source = DATATABLE("Loại ngân sách", STRING, {{"Đã sử dụng"}, {"Còn lại"}})
+

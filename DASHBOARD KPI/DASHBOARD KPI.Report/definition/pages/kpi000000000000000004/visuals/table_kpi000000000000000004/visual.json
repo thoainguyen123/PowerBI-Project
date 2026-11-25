@@ -1,0 +1,817 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "table_kpi000000000000000004",
+  "position": {
+    "x": 262,
+    "y": 986,
+    "z": 13000,
+    "height": 510,
+    "width": 1634,
+    "tabOrder": 13000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "KHU VỰC"
+                }
+              },
+              "queryRef": "KPI QTHD.KHU VỰC",
+              "nativeQueryRef": "KHU VỰC",
+              "displayName": "KHU VỰC"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "DỰ ÁN"
+                }
+              },
+              "queryRef": "KPI QTHD.DỰ ÁN",
+              "nativeQueryRef": "DỰ ÁN",
+              "displayName": "DỰ ÁN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "NHÀ THẦU"
+                }
+              },
+              "queryRef": "KPI QTHD.NHÀ THẦU",
+              "nativeQueryRef": "NHÀ THẦU",
+              "displayName": "NHÀ THẦU"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "SỐ HỢP ĐỒNG"
+                }
+              },
+              "queryRef": "KPI QTHD.SỐ HỢP ĐỒNG",
+              "nativeQueryRef": "SỐ HỢP ĐỒNG",
+              "displayName": "SỐ HỢP ĐỒNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "NỘI DUNG"
+                }
+              },
+              "queryRef": "KPI QTHD.NỘI DUNG",
+              "nativeQueryRef": "NỘI DUNG",
+              "displayName": "NỘI DUNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "KPI QUYẾT TOÁN"
+                }
+              },
+              "queryRef": "KPI QTHD.KPI QUYẾT TOÁN",
+              "nativeQueryRef": "KPI QUYẾT TOÁN",
+              "displayName": "KPI QUYẾT TOÁN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "BỘ MÔN"
+                }
+              },
+              "queryRef": "KPI QTHD.BỘ MÔN",
+              "nativeQueryRef": "BỘ MÔN",
+              "displayName": "BỘ MÔN"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "GIÁ TRỊ HĐ+PS GỒM VAT"
+                }
+              },
+              "queryRef": "KPI QTHD.GIÁ TRỊ HĐ+PS GỒM VAT",
+              "nativeQueryRef": "GIÁ TRỊ HĐ+PS GỒM VAT",
+              "displayName": "GIÁ TRỊ HĐ+PS GỒM VAT"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "PIC XÂY DỰNG/CUNG ỨNG"
+                }
+              },
+              "queryRef": "KPI QTHD.PIC XÂY DỰNG/CUNG ỨNG",
+              "nativeQueryRef": "PIC XÂY DỰNG/CUNG ỨNG",
+              "displayName": "PIC XÂY DỰNG/CUNG ỨNG"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "PIC MEP"
+                }
+              },
+              "queryRef": "KPI QTHD.PIC MEP",
+              "nativeQueryRef": "PIC MEP",
+              "displayName": "PIC MEP"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "PIC SITE1"
+                }
+              },
+              "queryRef": "KPI QTHD.PIC SITE1",
+              "nativeQueryRef": "PIC SITE1",
+              "displayName": "PIC SITE1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "PIC SITE2"
+                }
+              },
+              "queryRef": "KPI QTHD.PIC SITE2",
+              "nativeQueryRef": "PIC SITE2 (SITE12)",
+              "displayName": "PIC SITE2 (SITE12)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "NGÀY MỤC TIÊU"
+                }
+              },
+              "queryRef": "KPI QTHD.NGÀY MỤC TIÊU",
+              "nativeQueryRef": "NGÀY MỤC TIÊU",
+              "displayName": "NGÀY MỤC TIÊU"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "KỲ MỤC TIÊU"
+                }
+              },
+              "queryRef": "KPI QTHD.KỲ MỤC TIÊU",
+              "nativeQueryRef": "KỲ MỤC TIÊU",
+              "displayName": "KỲ MỤC TIÊU"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "NGÀY HOÀN THÀNH"
+                }
+              },
+              "queryRef": "KPI QTHD.NGÀY HOÀN THÀNH",
+              "nativeQueryRef": "NGÀY DUYỆT CTQT",
+              "displayName": "NGÀY DUYỆT CTQT"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "TÌNH TRẠNG QTHD"
+                }
+              },
+              "queryRef": "KPI QTHD.TÌNH TRẠNG QTHD",
+              "nativeQueryRef": "TÌNH TRẠNG",
+              "displayName": "TÌNH TRẠNG"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "KPI QTHD"
+                    }
+                  },
+                  "Property": "QTHD Tổng điểm"
+                }
+              },
+              "queryRef": "KPI QTHD.QTHD Tổng điểm",
+              "nativeQueryRef": "ĐIỂM HOÀN THÀNH",
+              "displayName": "ĐIỂM HOÀN THÀNH"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "columnHeaders": [
+        {
+          "properties": {
+            "autoSizeColumnWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "columnAdjustment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'growToFit'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F0F5FA'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "11D"
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorPrimary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#F8FAFC'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "4D"
+                }
+              }
+            },
+            "gridHorizontal": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridVertical": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "gridHorizontalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#D9E2EC'"
+                    }
+                  }
+                }
+              }
+            },
+            "gridVerticalColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#E8EEF5'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DCE5F0'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "label": {
+              "expr": {
+                "Literal": {
+                  "Value": "'TỔNG ĐIỂM'"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#EAF4FF'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#DFE7F1'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'CHI TIẾT QUYẾT TOÁN VÀ ĐIỂM THEO KỲ'"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI Semibold'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#071F5B'"
+                    }
+                  }
+                }
+              }
+            },
+            "background": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#FFFFFF'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "general": [
+        {
+          "properties": {
+            "altText": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Chi tiết hợp đồng với đủ bốn cột PIC và dòng tổng điểm'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'None'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "a168b59c083b41299214a8cd",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "KPI QTHD"
+              }
+            },
+            "Property": "QTHD Hiển thị dòng"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "q",
+              "Entity": "KPI QTHD",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Comparison": {
+                  "ComparisonKind": 0,
+                  "Left": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Source": "q"
+                        }
+                      },
+                      "Property": "QTHD Hiển thị dòng"
+                    }
+                  },
+                  "Right": {
+                    "Literal": {
+                      "Value": "1L"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  }
+}

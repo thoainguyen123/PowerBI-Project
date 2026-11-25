@@ -1,0 +1,290 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/powerbi-desktop-samples/main/Report%20Theme%20JSON%20Schema/reportThemeSchema-2.153.json",
+  "name": "CorporateCool-ceb0debc.json",
+  "dataColors": [
+    "#0F2747",
+    "#0E7490",
+    "#15803D",
+    "#D97706",
+    "#B91C1C",
+    "#475569",
+    "#38BDF8",
+    "#86EFAC",
+    "#FCA5A5",
+    "#CBD5E1"
+  ],
+  "good": "#15803D",
+  "neutral": "#D97706",
+  "bad": "#B91C1C",
+  "maximum": "#15803D",
+  "center": "#FEF3C7",
+  "minimum": "#B91C1C",
+  "null": "#64748B",
+  "foreground": "#0F2747",
+  "foregroundNeutralSecondary": "#475569",
+  "foregroundNeutralTertiary": "#64748B",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F4F7FB",
+  "backgroundNeutral": "#E7EEF7",
+  "tableAccent": "#0E7490",
+  "textClasses": {
+    "callout": {
+      "fontSize": 30,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F2747"
+    },
+    "title": {
+      "fontSize": 14,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F2747"
+    },
+    "header": {
+      "fontSize": 12,
+      "fontFace": "Segoe UI Semibold",
+      "color": "#0F2747"
+    },
+    "label": {
+      "fontSize": 10,
+      "fontFace": "Segoe UI",
+      "color": "#475569"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#DCE5F0"
+              }
+            },
+            "width": 1,
+            "radius": 10
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": true,
+            "preset": "BottomRight",
+            "color": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "transparency": 92,
+            "position": "Outer"
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ],
+        "padding": [
+          {
+            "top": 10,
+            "bottom": 10,
+            "left": 10,
+            "right": 10
+          }
+        ]
+      }
+    },
+    "pivotTable": {
+      "*": {
+        "columnHeaders": [
+          {
+            "autoSizeColumnWidth": true,
+            "columnAdjustment": "growToFit",
+            "backColor": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ],
+        "values": [
+          {
+            "backColorPrimary": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": "#F4F7FB"
+              }
+            },
+            "fontColorPrimary": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "fontColorSecondary": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "tableEx": {
+      "*": {
+        "columnHeaders": [
+          {
+            "autoSizeColumnWidth": true,
+            "columnAdjustment": "growToFit",
+            "backColor": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": "#FFFFFF"
+              }
+            },
+            "bold": true
+          }
+        ]
+      }
+    },
+    "cardVisual": {
+      "*": {
+        "value": [
+          {
+            "bold": true,
+            "fontColor": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "$id": "default"
+          }
+        ],
+        "label": [
+          {
+            "show": true,
+            "fontColor": {
+              "solid": {
+                "color": "#64748B"
+              }
+            },
+            "$id": "default"
+          }
+        ],
+        "title": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "barChart": {
+      "*": {
+        "labels": [
+          {
+            "show": true,
+            "fontSize": 10,
+            "color": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            }
+          }
+        ],
+        "valueAxis": [
+          {
+            "show": false,
+            "gridlineShow": false,
+            "showAxisTitle": false
+          }
+        ],
+        "categoryAxis": [
+          {
+            "show": true,
+            "fontSize": 10,
+            "labelColor": {
+              "solid": {
+                "color": "#475569"
+              }
+            },
+            "showAxisTitle": false,
+            "innerPadding": 24,
+            "gridlineShow": false
+          }
+        ],
+        "legend": [
+          {
+            "show": false
+          }
+        ],
+        "dataPoint": [
+          {
+            "borderShow": false
+          }
+        ]
+      }
+    },
+    "slicer": {
+      "*": {
+        "header": [
+          {
+            "fontFamily": "Segoe UI Semibold",
+            "textSize": 10,
+            "fontColor": {
+              "solid": {
+                "color": "#0F2747"
+              }
+            },
+            "outlineStyle": 0
+          }
+        ],
+        "items": [
+          {
+            "fontFamily": "Segoe UI",
+            "textSize": 10,
+            "fontColor": {
+              "solid": {
+                "color": "#334155"
+              }
+            },
+            "outlineStyle": 0,
+            "padding": 2
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "padding": [
+          {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ],
+        "background": [
+          {
+            "show": false
+          }
+        ],
+        "border": [
+          {
+            "show": false
+          }
+        ]
+      }
+    }
+  }
+}

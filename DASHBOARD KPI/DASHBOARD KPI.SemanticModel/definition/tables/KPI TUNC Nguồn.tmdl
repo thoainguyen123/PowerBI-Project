@@ -1,0 +1,480 @@
+/// Nguồn SharePoint PL.PTC.02; bảng nguồn chuẩn hóa phục vụ bốn trang KPI mới. Giữ từng dòng gốc và các giá trị rỗng; chưa có quan hệ hay công thức chấm điểm.
+table 'KPI TUNC Nguồn'
+	lineageTag: 620f55ac-1840-4b0e-9938-1e55056433dd
+
+	/// Lưới theo ngày mục tiêu thuộc tập ngày slicer; giữ cả dòng loại khỏi KPI để đối chiếu.
+	measure 'TUNC Dòng thuộc kỳ' =
+			VAR _Dates=VALUES('Kỳ đánh giá đấu thầu'[Ngày])
+			VAR _Target=MAX('KPI TUNC Nguồn'[Ngày mục tiêu])
+			RETURN IF(NOT ISFILTERED('Kỳ đánh giá đấu thầu') || (NOT ISBLANK(_Target) && _Target IN _Dates),1,BLANK())
+		formatString: 0
+		displayFolder: Bổ sung KPI
+		lineageTag: 9ba136a0-40b8-431a-949d-b324c6debc0d
+
+	/// Giữ điểm nguồn PL.PTC.02; nội dung Loại khỏi danh sách không chuyển thành 0.
+	measure 'TUNC Điểm dòng' = IF([TUNC Dòng thuộc kỳ]=1,IFERROR(VALUE(SELECTEDVALUE('KPI TUNC Nguồn'[Điểm nguồn])),BLANK()))
+		formatString: 0.00%
+		displayFolder: Bổ sung KPI
+		lineageTag: 3e2bf93f-d1a6-4600-b7e5-8ecfdbbd53c8
+
+	measure 'TUNC Số gói' = COALESCE(COUNTROWS(FILTER(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Dòng thuộc kỳ]=1)),0)
+		formatString: #,##0
+		displayFolder: Bổ sung KPI
+		lineageTag: a41580df-4a07-444c-9cb8-7be57106388b
+
+	/// Dòng tổng Excel: đếm dòng điểm hoàn thành bằng 1, mỗi dòng nguồn một lần.
+	measure 'TUNC Tổng hoàn thành' = COALESCE(COUNTROWS(FILTER(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Điểm dòng]==1)),0)
+		formatString: #,##0
+		displayFolder: Bổ sung KPI
+		lineageTag: 40a3cecd-be9d-4144-bb5d-b194aaab0641
+
+	measure 'TUNC Gói loại khỏi KPI' = COALESCE(COUNTROWS(FILTER(VALUES('KPI TUNC Nguồn'[Dòng nguồn]),[TUNC Dòng thuộc kỳ]=1 && CALCULATE(SELECTEDVALUE('KPI TUNC Nguồn'[Tình trạng]))="BỎ")),0)
+		formatString: #,##0
+		displayFolder: Bổ sung KPI
+		lineageTag: 869d5ef0-74c9-41c9-a62c-50a20d9ec33c
+
+	/// Tổng đếm điểm bằng 1, chi tiết hiển thị điểm nguồn; giữ dòng điểm rỗng.
+	measure 'TUNC Điểm hiển thị' = IF([TUNC Số gói]>0,IF(ISINSCOPE('KPI TUNC Nguồn'[STT]),IF(ISBLANK([TUNC Điểm dòng]),UNICHAR(8203),FORMAT([TUNC Điểm dòng],"0.00%")),FORMAT([TUNC Tổng hoàn thành],"#,##0")),BLANK())
+		displayFolder: Bổ sung KPI
+		lineageTag: 42feffe9-f40b-4a58-9c25-fb7693dd6716
+
+	measure 'TUNC Lưới Hạng mục' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Hạng mục]))
+		displayFolder: Lưới Excel
+		lineageTag: 1710b65b-a2ee-48b2-8ffd-1e23e1af3f5f
+
+	measure 'TUNC Lưới Phòng' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Phòng]))
+		displayFolder: Lưới Excel
+		lineageTag: 759f6774-ca69-4756-ac06-bfba6189ecae
+
+	measure 'TUNC Lưới Ngày mục tiêu' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ngày mục tiêu]))
+		formatString: dd/MM/yyyy
+		displayFolder: Lưới Excel
+		lineageTag: 7c75c25d-b70e-4c51-b611-cd7b3ed31752
+
+	measure 'TUNC Lưới Cơ sở ghi nhận' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Cơ sở ghi nhận]))
+		displayFolder: Lưới Excel
+		lineageTag: f633e20c-3da7-4a07-9270-a50faf37f6f7
+
+	measure 'TUNC Lưới Ngày hoàn thành' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ngày hoàn thành]))
+		formatString: dd/MM/yyyy
+		displayFolder: Lưới Excel
+		lineageTag: a1d8daf9-1434-40a2-83df-145a64efc1dd
+
+	measure 'TUNC Lưới Giải trình' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Giải trình]))
+		displayFolder: Lưới Excel
+		lineageTag: a6f66a3b-26cd-4adf-a48b-0f9221123a9a
+
+	measure 'TUNC Lưới Link minh chứng' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Link minh chứng]))
+		displayFolder: Lưới Excel
+		lineageTag: e4e9f932-b29f-4b0c-8939-48f0cf9d62fc
+
+	measure 'TUNC Lưới Ghi chú' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ghi chú]))
+		displayFolder: Lưới Excel
+		lineageTag: feb6c3d4-c73f-496b-a838-e6a54e7ae123
+
+	measure 'TUNC Lưới PIC' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[PIC]))
+		displayFolder: Lưới Excel
+		lineageTag: 5e11eefa-4776-4e13-810c-342c347e1852
+
+	measure 'TUNC Lưới Team' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Team]))
+		displayFolder: Lưới Excel
+		lineageTag: 92e91f59-7194-493c-9ae4-4e173652f535
+
+	measure 'TUNC Lưới Tình trạng' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Tình trạng]))
+		displayFolder: Lưới Excel
+		lineageTag: a52cf016-dd85-4ba2-8366-ab2814431e7e
+
+	measure 'TUNC Lưới Quý mục tiêu nguồn' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Quý mục tiêu nguồn]))
+		displayFolder: Lưới Excel
+		lineageTag: 4c57548d-c835-4e2d-ad6a-351f748feca8
+
+	measure 'TUNC Lưới Chuẩn hóa BOQ kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Chuẩn hóa BOQ kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: 26715677-fe73-4a67-b3be-ad9dd2ef55e1
+
+	measure 'TUNC Lưới Chuẩn hóa BOQ thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Chuẩn hóa BOQ thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: baa63305-e710-46a3-967b-59260a5442b4
+
+	measure 'TUNC Lưới Tender list kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Tender list kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: 31e83222-5f7d-45b3-ac14-325e70e9f9a6
+
+	measure 'TUNC Lưới Tender list thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Tender list thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: f2dfceaf-6c1c-4ade-81c8-79ea7593a02c
+
+	measure 'TUNC Lưới Gom sản lượng kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Gom sản lượng kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: 67bea61e-0ed2-4281-84d7-a266138ff36c
+
+	measure 'TUNC Lưới Phát hành HSMT thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Phát hành HSMT thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: 9b4e5483-969e-4c08-8b22-bd88521bf2f2
+
+	measure 'TUNC Lưới Ghi nhận loại khỏi KPI' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ghi nhận loại khỏi KPI]))
+		displayFolder: Lưới Excel
+		lineageTag: 2d493b9d-2c68-4964-aa73-afe8d038a3f0
+
+	measure 'TUNC Lưới Căn cứ loại khỏi KPI' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Căn cứ loại khỏi KPI]))
+		displayFolder: Lưới Excel
+		lineageTag: 96f01848-bf63-41ef-974a-04c98619cdc7
+
+	measure 'TUNC Lưới Đánh giá R1 kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Đánh giá R1 kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: 2dba3a7c-6460-4514-808e-d701e1f43b21
+
+	measure 'TUNC Lưới Đánh giá R1 thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Đánh giá R1 thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: ff64692e-4551-40a6-8e80-47697d88a214
+
+	measure 'TUNC Lưới Nhận báo giá R2 kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Nhận báo giá R2 kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: c3592995-f864-49ab-9fc5-ea0690316334
+
+	measure 'TUNC Lưới Nhận báo giá R2 thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Nhận báo giá R2 thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: dcad75cc-5ea9-4260-9033-69ffaa10a835
+
+	measure 'TUNC Lưới Đánh giá R2 kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Đánh giá R2 kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: fbd407ed-394c-4f90-87f9-b1b41f19191e
+
+	measure 'TUNC Lưới Đánh giá R2 thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Đánh giá R2 thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: f9bd9391-9062-4a71-beb7-ef39da92668d
+
+	measure 'TUNC Lưới Trình tờ trình kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Trình tờ trình kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: a1b9f100-3581-4e0e-bfdb-965f8870c53f
+
+	measure 'TUNC Lưới Trình tờ trình thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Trình tờ trình thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: 1d6dc752-40e8-4423-bfb0-e3f558ff16c9
+
+	measure 'TUNC Lưới Ký HĐNT kế hoạch' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ký HĐNT kế hoạch]))
+		displayFolder: Lưới Excel
+		lineageTag: 093ac034-4a35-4e96-8fe3-ad924a2816ff
+
+	measure 'TUNC Lưới Ký HĐNT thực tế' = IF(ISINSCOPE('KPI TUNC Nguồn'[STT]) && [TUNC Dòng thuộc kỳ]=1,SELECTEDVALUE('KPI TUNC Nguồn'[Ký HĐNT thực tế]))
+		displayFolder: Lưới Excel
+		lineageTag: d4dee0a3-c605-42f2-aae1-3ddb92dd91ec
+
+	column STT
+		dataType: int64
+		lineageTag: d573c155-822e-46f4-9187-10d899c34cf4
+		summarizeBy: sum
+		sourceColumn: STT
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hạng mục'
+		dataType: string
+		lineageTag: e7482e24-31ab-498e-a2a4-9d8630016cb4
+		summarizeBy: none
+		sourceColumn: Hạng mục
+
+	column Phòng
+		dataType: string
+		lineageTag: f46fdcb2-342c-4a0c-b320-2638471209df
+		summarizeBy: none
+		sourceColumn: Phòng
+
+	column 'Ngày mục tiêu'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: d91ec322-44f1-4745-a8a2-83aa11dfccc9
+		summarizeBy: none
+		sourceColumn: Ngày mục tiêu
+
+		variation Variation
+			isDefault
+			relationship: a697fb58-84fa-48cd-a422-5e993a5dfcb0
+			defaultHierarchy: LocalDateTable_5e128b16-2b01-4acb-a381-cf52563d2923.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Cơ sở ghi nhận'
+		dataType: string
+		lineageTag: d914ac47-cc04-471b-9f20-38e35051354a
+		summarizeBy: none
+		sourceColumn: Cơ sở ghi nhận
+
+	column 'Ngày hoàn thành'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 900898af-22a2-41b2-af7c-622604814770
+		summarizeBy: none
+		sourceColumn: Ngày hoàn thành
+
+		variation Variation
+			isDefault
+			relationship: 7c86e470-29cb-4a21-b311-ca45758b6b80
+			defaultHierarchy: LocalDateTable_f9f5cf79-43d1-4f79-804b-5f2657635f9b.'Date Hierarchy'
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Điểm nguồn'
+		dataType: string
+		lineageTag: d2a7bddc-cc6e-4958-a85b-8942d5f54c40
+		summarizeBy: none
+		sourceColumn: Điểm nguồn
+
+	column 'Giải trình'
+		dataType: string
+		lineageTag: 03ca3b73-dfd5-42e8-ab5e-b418b3089d44
+		summarizeBy: none
+		sourceColumn: Giải trình
+
+	column 'Link minh chứng'
+		dataType: string
+		lineageTag: e8cb3e1b-a612-443b-91ae-d40f29553ab1
+		summarizeBy: none
+		sourceColumn: Link minh chứng
+
+	column 'Ghi chú'
+		dataType: string
+		lineageTag: 64ec399d-e7cb-4755-9878-2ef4ad95a8f4
+		summarizeBy: none
+		sourceColumn: Ghi chú
+
+	column PIC
+		dataType: string
+		lineageTag: 0f57255f-4359-498a-9017-b94e5f4fc338
+		summarizeBy: none
+		sourceColumn: PIC
+
+	column Team
+		dataType: string
+		lineageTag: a8b91977-8d3c-4e1d-8c6d-1b7fae31d85a
+		summarizeBy: none
+		sourceColumn: Team
+
+	column 'Tình trạng'
+		dataType: string
+		lineageTag: a0b6369e-289d-4db1-b751-68222029cbeb
+		summarizeBy: none
+		sourceColumn: Tình trạng
+
+	column 'Quý mục tiêu nguồn'
+		dataType: string
+		lineageTag: 10cd2156-9225-4204-b198-cc51be9a5fab
+		summarizeBy: none
+		sourceColumn: Quý mục tiêu nguồn
+
+	column 'Dòng nguồn'
+		dataType: int64
+		lineageTag: eb7872e8-db6d-43fc-9cf0-5a3207d68655
+		summarizeBy: sum
+		sourceColumn: Dòng nguồn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chuẩn hóa BOQ kế hoạch'
+		dataType: string
+		lineageTag: 30b57ed9-5376-46da-b751-f5941ab483f3
+		summarizeBy: none
+		sourceColumn: Chuẩn hóa BOQ kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Chuẩn hóa BOQ thực tế'
+		dataType: string
+		lineageTag: 9525bd24-42f3-44a5-9ec0-e92ecd2ef76b
+		summarizeBy: none
+		sourceColumn: Chuẩn hóa BOQ thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tender list kế hoạch'
+		dataType: string
+		lineageTag: 56437c6c-3eb6-4c6c-8386-5c89a07429bf
+		summarizeBy: none
+		sourceColumn: Tender list kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tender list thực tế'
+		dataType: string
+		lineageTag: 372a4665-ee68-4404-bda9-c4bc2eea1b47
+		summarizeBy: none
+		sourceColumn: Tender list thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Gom sản lượng kế hoạch'
+		dataType: string
+		lineageTag: 4854de08-404d-4773-aa1b-6c208b0891ad
+		summarizeBy: none
+		sourceColumn: Gom sản lượng kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Phát hành HSMT thực tế'
+		dataType: string
+		lineageTag: eb0d8d40-00b2-4bcf-846c-4b1a3737e34e
+		summarizeBy: none
+		sourceColumn: Phát hành HSMT thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ghi nhận loại khỏi KPI'
+		dataType: string
+		lineageTag: f8eb7a10-c99c-4b1b-902d-bd9993c17726
+		summarizeBy: none
+		sourceColumn: Ghi nhận loại khỏi KPI
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Căn cứ loại khỏi KPI'
+		dataType: string
+		lineageTag: 86f1d595-0b4c-483b-8743-32005518b018
+		summarizeBy: none
+		sourceColumn: Căn cứ loại khỏi KPI
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Đánh giá R1 kế hoạch'
+		dataType: string
+		lineageTag: fd2a9a13-85c7-4546-8cbb-1f85acd23a4e
+		summarizeBy: none
+		sourceColumn: Đánh giá R1 kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Đánh giá R1 thực tế'
+		dataType: string
+		lineageTag: 0114e1b3-f883-45d9-a507-de770b776839
+		summarizeBy: none
+		sourceColumn: Đánh giá R1 thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nhận báo giá R2 kế hoạch'
+		dataType: string
+		lineageTag: 0443bb24-45c7-4d9e-a220-cb6f608c9ce5
+		summarizeBy: none
+		sourceColumn: Nhận báo giá R2 kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nhận báo giá R2 thực tế'
+		dataType: string
+		lineageTag: 77ccc9fd-d06c-4005-9d56-aa736e426ff7
+		summarizeBy: none
+		sourceColumn: Nhận báo giá R2 thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Đánh giá R2 kế hoạch'
+		dataType: string
+		lineageTag: cadf7013-ced3-4631-acd7-b5fc75b691b4
+		summarizeBy: none
+		sourceColumn: Đánh giá R2 kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Đánh giá R2 thực tế'
+		dataType: string
+		lineageTag: 2275350d-96fb-4cef-ab2e-6b073d260d22
+		summarizeBy: none
+		sourceColumn: Đánh giá R2 thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trình tờ trình kế hoạch'
+		dataType: string
+		lineageTag: a67b092c-afb4-46e3-b491-6fafbbd5db4b
+		summarizeBy: none
+		sourceColumn: Trình tờ trình kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trình tờ trình thực tế'
+		dataType: string
+		lineageTag: 58c6ae22-9a48-4c9c-b014-a07f3382fa4b
+		summarizeBy: none
+		sourceColumn: Trình tờ trình thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ký HĐNT kế hoạch'
+		dataType: string
+		lineageTag: 993e1c9a-f525-4353-8e40-fb0db355a209
+		summarizeBy: none
+		sourceColumn: Ký HĐNT kế hoạch
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ký HĐNT thực tế'
+		dataType: string
+		lineageTag: 8ac9ad5d-86c0-4262-92f2-4f2d032dafb2
+		summarizeBy: none
+		sourceColumn: Ký HĐNT thực tế
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI TUNC Nguồn' = m
+		mode: import
+		source =
+				let
+				    URL="https://novaland.sharepoint.com/sites/PRT/_api/web/GetFileById(guid'D4FA6E74-1B84-40F9-BBC6-E5A2BA0586C6')/$value",
+				    Sheet="PL.PTC.02",
+				    Norm=(v as any) as text => Text.Upper(Text.Remove(Text.Clean(Text.From(v ?? "")),{" ",Character.FromNumber(160),"#(lf)","#(cr)","#(tab)"})),
+				    Mapping={{"STT","Int64",{"STT"}},
+				        {"Hạng mục","String",{"HẠNG MỤC HÀNG HÓA DỊCH VỤ","HẠNG MỤC","HẠNG MỤC HÀNG HÓA - DỊCH VỤ"}},
+				        {"Phòng","String",{"PHÒNG","PHÒNG/BAN"}},
+				        {"Ngày mục tiêu","DateTime",{"MỤC TIÊU","NGÀY MỤC TIÊU"}},
+				        {"Cơ sở ghi nhận","String",{"CƠ SỞ GHI NHẬN"}},
+				        {"Ngày hoàn thành","DateTime",{"KẾT QUẢ","NGÀY HOÀN THÀNH"}},
+				        {"Điểm nguồn","String",{"TỶ LỆ HOÀN THÀNH (1=đạt, 0=không đạt)","TỶ LỆ HOÀN THÀNH","ĐIỂM NGUỒN"}},
+				        {"Giải trình","String",{"GIẢI TRÌNH LÝ DO CHẬM TRỄ","GIẢI TRÌNH"}},
+				        {"Link minh chứng","String",{"LINK MINH CHỨNG"}},
+				        {"Ghi chú","String",{"GHI CHÚ"}},
+				        {"PIC","String",{"PIC","PIC CẬP NHẬT"}},
+				        {"Team","String",{"TEAM"}},
+				        {"Tình trạng","String",{"TÌNH TRẠNG"}},
+				        {"Quý mục tiêu nguồn","String",{"Quý MT","QUÝ MỤC TIÊU"}},
+				        {"Chuẩn hóa BOQ kế hoạch","String",{"CHUẨN HÓA/ BOQ KH"}},
+				        {"Chuẩn hóa BOQ thực tế","String",{"CHUẨN HÓA/ BOQ - THỰC TẾ"}},
+				        {"Tender list kế hoạch","String",{"TENDER LIST - KH"}},
+				        {"Tender list thực tế","String",{"TENDER LIST - THỰC TẾ"}},
+				        {"Gom sản lượng kế hoạch","String",{"GOM SẢN LƯỢNG - KH (NẾU CÓ)"}},
+				        {"Phát hành HSMT thực tế","String",{"PHÁT HÀNH HỒ SƠ MỜI THẦU - THỰC TẾ"}},
+				        {"Ghi nhận loại khỏi KPI","String",{"BỎ 19 gói","GHI NHẬN LOẠI KHỎI KPI"}},
+				        {"Căn cứ loại khỏi KPI","String",{"18 gói theo BBH 0095 + bổ sung ""Thi công hoàn thiện Nhôm kính"" (STT9) theo email a.Tuấn 20/07 → tổng 19 gói loại khỏi KPI3.","CĂN CỨ LOẠI KHỎI KPI"}},
+				        {"Đánh giá R1 kế hoạch","String",{"ĐÁNH GIÁ/ THƯƠNG THẢO THẦU R1 - KH"}},
+				        {"Đánh giá R1 thực tế","String",{"ĐÁNH GIÁ/ THƯƠNG THẢO THẦU R1 - THỰC TẾ"}},
+				        {"Nhận báo giá R2 kế hoạch","String",{"NHẬN HỒ SƠ BÁO GIÁ R2 - KH"}},
+				        {"Nhận báo giá R2 thực tế","String",{"NHẬN HỒ SƠ BÁO GIÁ R2 - THỰC TẾ"}},
+				        {"Đánh giá R2 kế hoạch","String",{"ĐÁNH GIÁ/ THƯƠNG THẢO THẦU R2 - KH"}},
+				        {"Đánh giá R2 thực tế","String",{"ĐÁNH GIÁ/ THƯƠNG THẢO THẦU R2 - THỰC TẾ"}},
+				        {"Trình tờ trình kế hoạch","String",{"TRÌNH TỜ TRÌNH - KH"}},
+				        {"Trình tờ trình thực tế","String",{"TRÌNH TỜ TRÌNH - THỰC TẾ"}},
+				        {"Ký HĐNT kế hoạch","String",{"KÝ HDNT - KH"}},
+				        {"Ký HĐNT thực tế","String",{"KÝ HDNT - THỰC TẾ"}}},
+				    Workbook=Excel.Workbook(Web.Contents(URL),null,true),
+				    Raw=Workbook{[Item=Sheet,Kind="Sheet"]}[Data],
+				    HeaderRow=List.PositionOf(List.Transform(Table.ToRows(Table.FirstN(Raw,20)),(r)=>Norm(r{0})="STT"),true),
+				    Checked=if HeaderRow<0 then error Error.Record("KPI source","Không tìm thấy tiêu đề STT trong "&Sheet,null) else Raw,
+				    Headers=Record.FieldValues(Checked{HeaderRow}),
+				    Resolve=(aliases as list) as nullable number =>
+				        List.First(List.RemoveNulls(List.Transform(aliases,(a)=>let i=List.PositionOf(List.Transform(Headers,each Norm(_)),Norm(a)) in if i<0 then null else i)),null),
+				    Resolved=List.Transform(Mapping,(m)=>{m{0},m{1},Resolve(m{2})}),
+				    Required={"STT","Hạng mục","Phòng","Ngày mục tiêu","Điểm nguồn","PIC"},
+				    Missing=List.Select(Resolved,each List.Contains(Required,_{0}) and _{2}=null),
+				    SchemaChecked=if List.Count(Missing)>0 then error Error.Record("KPI source","Thiếu tiêu đề bắt buộc trong "&Sheet, List.Transform(Missing,each _{0})) else Checked,
+				    Indexed=Table.AddIndexColumn(SchemaChecked,"Dòng nguồn",1,1,Int64.Type),
+				    Body=Table.Skip(Indexed,HeaderRow+1),
+				    SourceNames=Table.ColumnNames(Raw),
+				    Projected=Table.FromColumns(
+				        List.Combine({List.Transform(Resolved,(m)=>if m{2}=null then List.Repeat({null},Table.RowCount(Body)) else Table.Column(Body,SourceNames{m{2}})),{Table.Column(Body,"Dòng nguồn")}}),
+				        List.Combine({List.Transform(Resolved,each _{0}),{"Dòng nguồn"}})),
+				    Selected=Table.SelectRows(Projected,each (try Number.From([STT]) otherwise null)<>null and Norm([Hạng mục])<>""),
+				    Txt=(v as any) as nullable text => if v=null then null else Text.Trim(Text.From(v)),
+				    Num=(v as any) as nullable number => if v=null or Text.Trim(Text.From(v))="" then null else try Number.From(v,"en-US") otherwise null,
+				    Dt=(v as any) as nullable date => if v=null or Text.Trim(Text.From(v))="" or v=0 then null else if Value.Is(v,type text) then try Date.FromText(Text.Trim(v),[Culture="en-GB"]) otherwise null else try Date.From(v) otherwise null,
+				    Converted=Table.TransformColumns(Selected,List.Transform(Resolved,(m)=>{m{0},if m{1}="DateTime" then Dt else if m{1}="Int64" then Num else Txt,if m{1}="DateTime" then type date else if m{1}="Int64" then Int64.Type else type text}))
+				in
+				    Converted
+

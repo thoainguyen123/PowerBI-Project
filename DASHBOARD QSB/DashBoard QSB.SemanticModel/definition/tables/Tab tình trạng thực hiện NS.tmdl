@@ -1,0 +1,162 @@
+table 'Tab tình trạng thực hiện NS'
+	lineageTag: 3610c016-4eb8-4f17-862d-4922a6b9abf3
+
+	measure 'Tổng line trình' = COUNTROWS('Tab tình trạng thực hiện NS')
+		formatString: #,0
+		displayFolder: 02. KPI Tình trạng
+		lineageTag: ab8935ab-6f76-4268-b983-3f0394e2024a
+
+	measure 'Hoàn thành' = CALCULATE([Tổng line trình], KEEPFILTERS('Tab tình trạng thực hiện NS'[Tình trạng chuẩn hóa] = "Hoàn thành"))
+		formatString: #,0
+		displayFolder: 02. KPI Tình trạng
+		lineageTag: 9e88eba1-88b6-4e3c-8e68-d98e70ee5062
+
+	/// Số đầu việc đang thực hiện trong ngữ cảnh bộ lọc hiện tại.
+	measure 'Đang thực hiện' = CALCULATE([Tổng line trình], KEEPFILTERS('Tab tình trạng thực hiện NS'[Tình trạng chuẩn hóa] = "Đang thực hiện"))
+		formatString: #,0
+		displayFolder: 02. KPI Tình trạng
+		lineageTag: 9d5e3281-09d4-46d2-bf94-09dda91fb2ce
+
+	measure 'Chậm tiến độ' = CALCULATE([Tổng line trình], KEEPFILTERS('Tab tình trạng thực hiện NS'[Tình trạng chuẩn hóa] = "Chậm tiến độ"))
+		formatString: #,0
+		displayFolder: 02. KPI Tình trạng
+		lineageTag: e570d712-8cdc-41d0-9da5-91ff123b04fb
+
+	measure 'Tỷ lệ hoàn thành' = DIVIDE([Hoàn thành], [Tổng line trình])
+		formatString: 0.0%
+		displayFolder: 02. KPI Tình trạng
+		lineageTag: 75020898-a8df-4b8b-8e27-a15845afd5e3
+
+	column 'Dự án'
+		dataType: string
+		lineageTag: e26cecd2-dfe7-4109-ba9a-b2ce155cc89e
+		summarizeBy: none
+		sourceColumn: Dự án
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nội dung tình trạng'
+		dataType: string
+		lineageTag: f8bbea6d-95ba-4cc7-bea6-772f14948237
+		summarizeBy: none
+		sourceColumn: Nội dung tình trạng
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tiến độ gốc'
+		dataType: string
+		lineageTag: a7c22860-2337-4e8e-a58a-7ef53e9250c5
+		summarizeBy: none
+		sourceColumn: Tiến độ gốc
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nhóm dự án'
+		dataType: string
+		lineageTag: 18a066cb-e1aa-414f-9350-5f570e25160c
+		summarizeBy: none
+		sourceColumn: Nhóm dự án
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ngày tiến độ'
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 90217095-d56d-4464-962a-31d1b5d3d413
+		summarizeBy: none
+		sourceColumn: Ngày tiến độ
+
+		variation Variation
+			isDefault
+			relationship: c917b882-6d8f-4c53-a1ef-549934a27cc2
+			defaultHierarchy: LocalDateTable_605d5065-371c-461a-9e8b-a9a601b4a19e.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Ngày tiến độ hiển thị'
+		dataType: string
+		lineageTag: 930ccb51-0181-4997-924a-75319116e5dc
+		summarizeBy: none
+		sourceColumn: Ngày tiến độ hiển thị
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tình trạng chuẩn hóa'
+		dataType: string
+		lineageTag: 585459a0-76b4-4c38-88de-b72c3832f646
+		summarizeBy: none
+		sourceColumn: Tình trạng chuẩn hóa
+		sortByColumn: 'Thứ tự tình trạng'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Thứ tự tình trạng'
+		dataType: int64
+		formatString: 0
+		lineageTag: 16fe064e-00d8-4344-9594-1835d39d876c
+		summarizeBy: sum
+		sourceColumn: Thứ tự tình trạng
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Mức độ ưu tiên của đầu việc theo dữ liệu nguồn.
+	column 'Ưu tiên'
+		dataType: string
+		lineageTag: 18caff63-829a-40fc-a95c-0e4bc85738f8
+		summarizeBy: none
+		sourceColumn: Ưu tiên
+
+	column 'Tình trạng nguồn'
+		dataType: string
+		lineageTag: b43ae3a7-0149-4973-8650-651b22d08bf8
+		summarizeBy: none
+		sourceColumn: Tình trạng nguồn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tab tình trạng thực hiện NS' = m
+		mode: import
+		source =
+				let
+				  Source = Excel.Workbook(Web.Contents("https://novaland.sharepoint.com/sites/qs-projectcost/Documents/00.%20NOVAGEN-QSB/08.%20Nhat%20ky%20cong%20viec/00.%20Dashboard%20b%C3%A1o%20c%C3%A1o/01.%20Link%20dashboard/QSB_%20dashboard%20bao%20cao.xlsx"), null, true),
+				  Raw = Source{[Item = "3. Tab tình trạng thực hiện NS", Kind = "Sheet"]}[Data],
+				  PromotedHeaders = Table.PromoteHeaders(Raw, [PromoteAllScalars = true]),
+				  Renamed = Table.RenameColumns(PromotedHeaders, {{"CỤM DỰ ÁN", "Nhóm dự án"}, {"DỰ ÁN", "Dự án"}, {"TÌNH TRẠNG", "Nội dung tình trạng"}, {"Tiến độ MTL", "Tiến độ gốc"}, {"Tình trạng tiến độ", "Tình trạng nguồn"}, {"Ưu tiên", "Ưu tiên"}}, MissingField.Ignore),
+				  Selected = Table.SelectColumns(Renamed, {"Nhóm dự án", "Dự án", "Nội dung tình trạng", "Tiến độ gốc", "Tình trạng nguồn", "Ưu tiên"}, MissingField.UseNull),
+				  TypedText = Table.TransformColumns(Selected, {
+				    {"Nhóm dự án", each let v = if _ = null then null else Text.Trim(Text.From(_)) in if v = "" then null else v, type text},
+				    {"Dự án", each let v = if _ = null then null else Text.Trim(Text.From(_)) in if v = "" then null else v, type text},
+				    {"Nội dung tình trạng", each let v = if _ = null then null else Text.Trim(Text.From(_)) in if v = "" then null else v, type text},
+				    {"Tình trạng nguồn", each let v = if _ = null then null else Text.Trim(Text.From(_)) in if v = "" then null else v, type text},
+				    {"Ưu tiên", each let v = if _ = null then null else Text.Trim(Text.From(_)) in if v = "" then null else v, type text}
+				  }),
+				  FilledGroup = Table.FillDown(TypedText, {"Nhóm dự án"}),
+				  GroupHeadings = {"NGÂN SÁCH THỰC THI", "AQUA", "PHAN THIẾT", "HỒ TRÀM", "CẦU ĐẤT", "TPHCM", "ĐB SCL", "DỰ TOÁN", "NVW.PT", "ĐỒNG NAI 2", "ĐỒNG NAI 3", "THƯ VIỆN MẪU NHÀ VÀ DATA SUẤT ĐẦU TƯ"},
+				  AddedGroupFallback = Table.AddColumn(FilledGroup, "Nhóm dự án chuẩn", each if [Nhóm dự án] <> null then [Nhóm dự án] else if [Dự án] <> null and List.Contains(GroupHeadings, Text.Upper([Dự án])) then [Dự án] else null, type text),
+				  RemovedOldGroup = Table.RemoveColumns(AddedGroupFallback, {"Nhóm dự án"}),
+				  RenamedGroup = Table.RenameColumns(RemovedOldGroup, {{"Nhóm dự án chuẩn", "Nhóm dự án"}}),
+				  FilledFallbackGroup = Table.FillDown(RenamedGroup, {"Nhóm dự án"}),
+				  AddedDate = Table.AddColumn(FilledFallbackGroup, "Ngày tiến độ", each try Date.From([Tiến độ gốc]) otherwise try Date.FromText(Text.From([Tiến độ gốc]), [Culture = "vi-VN"]) otherwise try Date.AddDays(#date(1899, 12, 30), Number.FromText(Text.From([Tiến độ gốc]), "en-US")) otherwise null, type date),
+				  AddedDateDisplay = Table.AddColumn(AddedDate, "Ngày tiến độ hiển thị", each if [Ngày tiến độ] <> null then Date.ToText([Ngày tiến độ], "dd/MM/yyyy", "vi-VN") else "-", type text),
+				  DetailOnly = Table.SelectRows(AddedDateDisplay, each [Dự án] <> null and [Nội dung tình trạng] <> null and not List.Contains(GroupHeadings, Text.Upper([Dự án]))),
+				  AddedNormalizedStatus = Table.AddColumn(DetailOnly, "Tình trạng chuẩn hóa", each
+				    let
+				      SourceStatus = if [Tình trạng nguồn] = null then "" else Text.Lower([Tình trạng nguồn]),
+				      StatusText = Text.Lower([Nội dung tình trạng]),
+				      IsComplete = Text.Contains(SourceStatus, "hoàn thành") or List.AnyTrue(List.Transform({"hoàn thành", "đã duyệt", "đã gửi"}, (token) => Text.Contains(StatusText, token))),
+				      IsExplicitLate = Text.Contains(SourceStatus, "trễ") or Text.Contains(SourceStatus, "chậm") or List.AnyTrue(List.Transform({"trễ hạn", "chậm", "quá hạn"}, (token) => Text.Contains(StatusText, token))),
+				      IsPastDue = [Ngày tiến độ] <> null and [Ngày tiến độ] < Date.From(DateTime.LocalNow())
+				    in
+				      if IsComplete then "Hoàn thành" else if IsExplicitLate or IsPastDue then "Chậm tiến độ" else "Đang thực hiện",
+				    type text),
+				  AddedStatusOrder = Table.AddColumn(AddedNormalizedStatus, "Thứ tự tình trạng", each if [Tình trạng chuẩn hóa] = "Chậm tiến độ" then 3 else if [Tình trạng chuẩn hóa] = "Đang thực hiện" then 2 else 1, Int64.Type),
+				  FinalTyped = Table.TransformColumns(AddedStatusOrder, {{"Tiến độ gốc", each if _ = null then null else Text.From(_, "vi-VN"), type text}})
+				in
+				  FinalTyped
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

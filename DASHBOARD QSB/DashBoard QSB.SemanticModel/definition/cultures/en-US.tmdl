@@ -1,0 +1,323 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "tab_tình_trạng_thực_hiện_ns.dự_án": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Dự án"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Dự án / đầu việc": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_ns.line_trình": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Line trình"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "tab_tình_trạng_thực_hiện_ns.nhóm_dự_án": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Nhóm dự án"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Nhóm dự án": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_ns.nội_dung_tình_trạng": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Nội dung tình trạng"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Nội dung tình trạng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_ns.tình_trạng_chuẩn_hóa": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Tình trạng chuẩn hóa"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tình trạng": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_ns.ngày_tiến_độ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện NS",
+			          "ConceptualProperty": "Ngày tiến độ"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Ngày tiến độ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.cụm_dự_án": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Cụm dự án"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Cụm dự án": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.dự_án__phân_khu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Dự án/ Phân khu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Dự án / Phân khu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.công_trình": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Công trình"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Công trình": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.gói_thầu": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Gói thầu"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Gói thầu": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.tiến_độ_kế_hoạch": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Tiến độ kế hoạch"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Kế hoạch": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.tiến_độ_thực_tế__dự_kiến": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Tiến độ thực tế/ dự kiến"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Thực tế / dự kiến": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.tình_trạng__vướng_mắc": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Tình trạng/ vướng mắc"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tình trạng / vướng mắc": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.pic": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "PIC"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "PIC": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.trễ_hạn__đúng_tiến_độ": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Trễ hạn/ Đúng tiến độ"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "tab_tình_trạng_thực_hiện_boq.trễ_hạn__đúng_tiến_độ__đang_thực_hiện": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Tab tình trạng thực hiện BOQ",
+			          "ConceptualProperty": "Trễ hạn/ Đúng tiến độ/ Đang thực hiện"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tiến độ": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+
